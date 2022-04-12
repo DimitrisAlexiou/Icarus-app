@@ -9,6 +9,8 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
 const MySwal = withReactContent(Swal);
 const Toast = MySwal.mixin({
@@ -24,6 +26,8 @@ const Toast = MySwal.mixin({
 });
 
 export default function Register() {
+	const [showPassword, setShowPassword] = useState(false);
+
 	const [formData, setFormData] = useState({
 		name: '',
 		surname: '',
@@ -223,7 +227,7 @@ export default function Register() {
 																	className="text-gray-600"
 																>
 																	<Form.Control
-																		type="password"
+																		type={showPassword ? 'text' : 'password'}
 																		className="form-control"
 																		id="password"
 																		name="password"
@@ -232,6 +236,14 @@ export default function Register() {
 																		placeholder="Password"
 																		required
 																	/>
+																	<FontAwesomeIcon
+																		className="showPassword"
+																		icon={faEyeSlash}
+																		onClick={() =>
+																			setShowPassword((prevState) => !prevState)
+																		}
+																	/>
+
 																	<Form.Control.Feedback type="invalid">
 																		Please provide a password!
 																	</Form.Control.Feedback>
@@ -246,7 +258,7 @@ export default function Register() {
 																	className="text-gray-600"
 																>
 																	<Form.Control
-																		type="password"
+																		type={showPassword ? 'text' : 'password'}
 																		className="form-control"
 																		id="confirmPassword"
 																		name="confirmPassword"
@@ -255,6 +267,14 @@ export default function Register() {
 																		placeholder="Confirm Password"
 																		required
 																	/>
+																	<FontAwesomeIcon
+																		className="showPassword"
+																		icon={faEyeSlash}
+																		onClick={() =>
+																			setShowPassword((prevState) => !prevState)
+																		}
+																	/>
+
 																	<Form.Control.Feedback type="invalid">
 																		Please confirm your given password!
 																	</Form.Control.Feedback>

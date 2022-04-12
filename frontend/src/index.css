@@ -11921,3 +11921,16 @@ body.sidebar-toggled footer.sticky-footer {
 .colored-toast .swal2-html-container {
 	color: white;
 }
+
+.passwordInputDiv {
+	position: relative;
+}
+
+.showPassword {
+	cursor: pointer;
+	position: absolute;
+	top: 9%;
+	bottom: 6%;
+	right: 5%;
+	padding: 1rem;
+}

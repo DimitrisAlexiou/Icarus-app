@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Review = require('./Review');
+// const Review = require('./Review');
 const Schema = mongoose.Schema;
 
 const courseSchema = new Schema({
@@ -60,22 +60,22 @@ const courseSchema = new Schema({
 		required: true,
 	},
 
-	reviews: [
-		{
-			type: Schema.Types.ObjectId,
-			ref: 'Review',
-		},
-	],
+	// reviews: [
+	// 	{
+	// 		type: Schema.Types.ObjectId,
+	// 		ref: 'Review',
+	// 	},
+	// ],
 });
 
-courseSchema.post('findOneAndDelete', async function (data) {
-	if (data) {
-		await Review.deleteMany({
-			_id: {
-				$in: data.reviews,
-			},
-		});
-	}
-});
+// courseSchema.post('findOneAndDelete', async function (data) {
+// 	if (data) {
+// 		await Review.deleteMany({
+// 			_id: {
+// 				$in: data.reviews,
+// 			},
+// 		});
+// 	}
+// });
 
 module.exports = mongoose.model('Course', courseSchema);
