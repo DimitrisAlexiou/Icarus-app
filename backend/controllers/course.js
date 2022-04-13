@@ -22,7 +22,8 @@ module.exports.getCourses = asyncHandler(async (req, res) => {
 // View Course
 module.exports.viewCourse = asyncHandler(async (req, res) => {
 	try {
-		const course = await Course.findById(req.params.id);
+		const { id } = req.params;
+		const course = await Course.findById(id);
 		if (!course) {
 			return res
 				.status(404)
@@ -53,38 +54,49 @@ module.exports.createCourse = asyncHandler(async (req, res) => {
 });
 
 // Update Course
-// router.get(
-// 	'/:id/edit',
-// 	isLoggedIn,
-// 	catchAsync(async (req, res) => {
-// 		const course = await Course.findById(req.params.id);
-// 		if (!course) {
-// 			req.flash('error', 'Course not found!');
-// 			return res.redirect('/courses/all');
-// 		}
-// 		res.render('courses/edit', { course });
-// 	}),
-// );
-// router.post(
-// 	'/:id',
-// 	isLoggedIn,
-// 	validateCourse,
-// 	catchAsync(async (req, res) => {
-// 		const { id } = req.params;
-// 		const course = await Course.findByIdAndUpdate(id, { ...req.body.course });
-// 		req.flash('success', 'Course updated successfully!');
-// 		res.redirect(`/courses/${course._id}`);
-// 	}),
-// );
+module.exports.updateCourse = asyncHandler(async (req, res) => {
+	try {
+		const { id } = req.params;
+		const course = await Course.findByIdAndUpdate(id, { ...req.body.course });
+		if (!course) {
+			return res
+				.status(404)
+				.json('Seems like there is no course with this ID!');
+		} else {
+			const updatedCourse = await course.save();
+			return res.status(200).json(updatedCourse);
+		}
+	} catch (error) {
+		console.error('❌ Error while finding course', error);
+		return res
+			.status(500)
+			.json('Something wrong happened while finding this course!');
+	}
+});
 
-// // Delete Course
-// router.delete(
-// 	'/:id',
-// 	isLoggedIn,
-// 	catchAsync(async (req, res) => {
-// 		const { id } = req.params;
-// 		await Course.findByIdAndDelete(id);
-// 		req.flash('success', 'Course deleted successfully!');
-// 		res.redirect('/courses');
-// 	}),
-// );
+// Delete Course by ID
+module.exports.deleteCourse = asyncHandler(async (req, res) => {
+	try {
+		const { id } = req.params;
+		await Course.findByIdAndDelete(id);
+		return res.status(200).json('Course deleted successfully!');
+	} catch (error) {
+		console.error('❌ Error while deleting course', error);
+		return res
+			.status(500)
+			.json('Something wrong happened while deleting course!');
+	}
+});
+
+// Delete All Courses
+module.exports.deleteCourses = asyncHandler(async (req, res) => {
+	try {
+		await Course.deleteMany({});
+		return res.status(200).json('All courses deleted!');
+	} catch (error) {
+		console.error('❌ Error while deleting all courses', error);
+		return res
+			.status(500)
+			.json('Something wrong happened while deleting all courses!');
+	}
+});

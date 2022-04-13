@@ -152,14 +152,14 @@ export default function Login() {
 													</Button>
 
 													<hr />
-													<div class="form-group">
-														<div class="text-center">
+													<div className="form-group">
+														<div className="text-center">
 															<button
 																type="button"
-																class="btn btn-outline-light"
+																className="btn btn-outline-light"
 															>
 																<Link
-																	class="small"
+																	className="small"
 																	to="/register"
 																	style={{ textDecoration: 'none' }}
 																>
