@@ -18,8 +18,9 @@ import {
 	faSignOut,
 } from '@fortawesome/free-solid-svg-icons';
 import Clock from 'react-live-clock';
-import '../index.css';
-import '../index2.css';
+import '../App.css';
+// import '../index.css';
+// import '../index2.css';
 
 export default function NavBar() {
 	// state = {

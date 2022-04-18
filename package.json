@@ -12,6 +12,7 @@
 	"author": "Dimitris Alexiou",
 	"license": "ISC",
 	"dependencies": {
+		"bcryptjs": "^2.4.3",
 		"colors": "^1.4.0",
 		"concurrently": "^7.0.0",
 		"cors": "^2.8.5",
@@ -21,6 +22,7 @@
 		"express-mongo-sanitize": "^2.2.0",
 		"helmet": "^5.0.2",
 		"joi": "^17.6.0",
+		"jsonwebtoken": "^8.5.1",
 		"mongoose": "^6.2.7"
 	},
 	"devDependencies": {

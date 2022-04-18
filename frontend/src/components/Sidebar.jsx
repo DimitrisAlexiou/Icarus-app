@@ -14,8 +14,9 @@ import {
 	faWrench,
 	faBarsProgress,
 } from '@fortawesome/free-solid-svg-icons';
-import '../index.css';
-import '../index2.css';
+import '../App.css';
+// import '../index.css';
+// import '../index2.css';
 
 export default function Sidebar() {
 	const [isOpen, setIsOpen] = useState(false);
