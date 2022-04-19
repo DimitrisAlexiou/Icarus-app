@@ -86,6 +86,13 @@ module.exports.login = asyncHandler(async (req, res) => {
 	}
 });
 
+// @desc	Get current User
+// @route	/api/users/current
+// @access	Private
+module.exports.current = asyncHandler(async (req, res) => {
+	res.send();
+});
+
 // @desc	Logout User
 // @route	/api/users/logout
 // @access	Private
