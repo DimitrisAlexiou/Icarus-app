@@ -4,6 +4,7 @@
 	"proxy": "http://localhost:3000",
 	"private": true,
 	"dependencies": {
+		"@auth0/auth0-react": "^1.10.1",
 		"@fortawesome/fontawesome-svg-core": "^6.1.0",
 		"@fortawesome/free-regular-svg-icons": "^6.1.0",
 		"@fortawesome/free-solid-svg-icons": "^6.1.0",
@@ -14,7 +15,6 @@
 		"@testing-library/user-event": "^7.2.1",
 		"axios": "^0.26.1",
 		"react": "^17.0.2",
-		"react-bootstrap": "^2.2.1",
 		"react-dom": "^17.0.2",
 		"react-icons": "^4.3.1",
 		"react-live-clock": "^5.7.0",
@@ -23,6 +23,7 @@
 		"react-router-dom": "^6.2.2",
 		"react-scripts": "5.0.0",
 		"react-toastify": "^8.2.0",
+		"reactstrap": "^9.0.2",
 		"sass": "^1.49.9",
 		"sweetalert2": "^11.4.6",
 		"sweetalert2-react-content": "^4.2.0"

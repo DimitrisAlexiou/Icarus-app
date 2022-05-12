@@ -12,7 +12,7 @@ module.exports.getCourses = asyncHandler(async (req, res) => {
 			return res.status(200).json(courses);
 		}
 	} catch (error) {
-		console.error('❌ Error while finding courses', error);
+		console.error('❌ Error while finding courses: ', error);
 		return res
 			.status(500)
 			.json('Something wrong happened while finding courses!');
@@ -32,7 +32,7 @@ module.exports.viewCourse = asyncHandler(async (req, res) => {
 			return res.status(200).json(course);
 		}
 	} catch (error) {
-		console.error('❌ Error while finding course', error);
+		console.error('❌ Error while finding course: ', error);
 		return res
 			.status(500)
 			.json('Something wrong happened while finding this course!');
@@ -41,12 +41,51 @@ module.exports.viewCourse = asyncHandler(async (req, res) => {
 
 // Create Course
 module.exports.createCourse = asyncHandler(async (req, res) => {
+	const {
+		cid,
+		title,
+		type,
+		semester,
+		year,
+		isActive,
+		hasLab,
+		isObligatory,
+		cycle,
+		ects,
+	} = req.body;
+
+	if (
+		!cid ||
+		!title ||
+		!type ||
+		!semester ||
+		!year ||
+		!isActive ||
+		!hasLab ||
+		!isObligatory ||
+		!cycle ||
+		!ects
+	) {
+		return res.status(400).json('Please fill in all the required fields!');
+	}
+
 	try {
-		const course = new Course(req.body);
-		const newCourse = await course.save();
-		return res.status(201).json(newCourse);
+		const course = await Course.create({
+			cid,
+			title,
+			type,
+			semester,
+			year,
+			isActive,
+			hasLab,
+			isObligatory,
+			cycle,
+			ects,
+			status: 'new',
+		});
+		return res.status(201).json(course);
 	} catch (error) {
-		console.error('❌ Error while creating course', error);
+		console.error('❌ Error while creating course: ', error);
 		return res
 			.status(500)
 			.json('Something wrong happened while creating this course!');
@@ -55,6 +94,34 @@ module.exports.createCourse = asyncHandler(async (req, res) => {
 
 // Update Course
 module.exports.updateCourse = asyncHandler(async (req, res) => {
+	const {
+		cid,
+		title,
+		type,
+		semester,
+		year,
+		isActive,
+		hasLab,
+		isObligatory,
+		cycle,
+		ects,
+	} = req.body;
+
+	if (
+		!cid ||
+		!title ||
+		!type ||
+		!semester ||
+		!year ||
+		!isActive ||
+		!hasLab ||
+		!isObligatory ||
+		!cycle ||
+		!ects
+	) {
+		return res.status(400).json('Please fill in all the required fields!');
+	}
+
 	try {
 		const { id } = req.params;
 		const course = await Course.findByIdAndUpdate(id, { ...req.body.course });
@@ -67,7 +134,7 @@ module.exports.updateCourse = asyncHandler(async (req, res) => {
 			return res.status(200).json(updatedCourse);
 		}
 	} catch (error) {
-		console.error('❌ Error while finding course', error);
+		console.error('❌ Error while finding course: ', error);
 		return res
 			.status(500)
 			.json('Something wrong happened while finding this course!');
@@ -81,7 +148,7 @@ module.exports.deleteCourse = asyncHandler(async (req, res) => {
 		await Course.findByIdAndDelete(id);
 		return res.status(200).json('Course deleted successfully!');
 	} catch (error) {
-		console.error('❌ Error while deleting course', error);
+		console.error('❌ Error while deleting course: ', error);
 		return res
 			.status(500)
 			.json('Something wrong happened while deleting course!');
@@ -94,7 +161,7 @@ module.exports.deleteCourses = asyncHandler(async (req, res) => {
 		await Course.deleteMany({});
 		return res.status(200).json('All courses deleted!');
 	} catch (error) {
-		console.error('❌ Error while deleting all courses', error);
+		console.error('❌ Error while deleting all courses: ', error);
 		return res
 			.status(500)
 			.json('Something wrong happened while deleting all courses!');

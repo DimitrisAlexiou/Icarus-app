@@ -1,16 +1,38 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './App.css';
-// import './index.css';
+import './index.css';
 import App from './App';
+import * as serviceWorker from './serviceWorker';
+import { Auth0Provider } from '@auth0/auth0-react';
+import history from './utils/history';
+import { getConfig } from './config';
 import { store } from './app/store';
 import { Provider } from 'react-redux';
-import * as serviceWorker from './serviceWorker';
+
+const onRedirectCallback = (appState) => {
+	history.push(
+		appState && appState.returnTo
+			? appState.returnTo
+			: window.location.pathname,
+	);
+};
+
+const config = getConfig();
+
+const providerConfig = {
+	domain: config.domain,
+	clientId: config.clientId,
+	...(config.audience ? { audience: config.audience } : null),
+	redirectUri: 'http://localhost:3000',
+	onRedirectCallback,
+};
 
 ReactDOM.render(
 	<React.StrictMode>
 		<Provider store={store}>
-			<App />
+			<Auth0Provider {...providerConfig}>
+				<App />
+			</Auth0Provider>
 		</Provider>
 	</React.StrictMode>,
 	document.getElementById('root'),

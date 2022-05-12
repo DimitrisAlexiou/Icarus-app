@@ -43,3 +43,33 @@ module.exports.courseSchema = Joi.object({
 		ects: Joi.number().min(1).max(2).required(),
 	}).required(),
 });
+
+module.exports.teachingReviewSchema = Joi.object({
+	teachingReview: Joi.object({
+		clear_course_objectives: Joi.number().required(),
+		course_material: Joi.number().required(),
+		course_comprehension: Joi.number().required(),
+		examination_method: Joi.number().required(),
+		course_difficulty: Joi.number().required(),
+		course_activities: Joi.number().required(),
+	}).required(),
+});
+
+module.exports.instructorReviewSchema = Joi.object({
+	instructorReview: Joi.object({
+		good_organization: Joi.number().required(),
+		clear_comprehensive_answers: Joi.number().required(),
+		student_participation: Joi.number().required(),
+		course_consistency: Joi.number().required(),
+		instructor_approachable: Joi.number().required(),
+	}).required(),
+});
+
+module.exports.generalReviewSchema = Joi.object({
+	generalReview: Joi.object({
+		course_opinion: Joi.string().required(),
+		instructor_opinion: Joi.string().required(),
+		likes: Joi.string().required(),
+		dislikes: Joi.string().required(),
+	}).required(),
+});

@@ -7,6 +7,10 @@ const connectDB = require('./database/db');
 const { errorHandler } = require('./middleware/errorHandler');
 const ExpressError = require('./utils/ExpressError');
 const courseRoute = require('./routes/course.routes');
+const userRoute = require('./routes/user.routes');
+const teachingReviewRoute = require('./routes/teachingReview.routes');
+const instructorReviewRoute = require('./routes/instructorReview.routes');
+const generalReviewRoute = require('./routes/generalReview.routes');
 
 //? PORT
 const PORT = process.env.PORT || 4000;
@@ -28,6 +32,10 @@ app.use(mongoSanitize({ replaceWith: '_' }));
 
 //? ROUTES
 app.use('/api/course', courseRoute);
+app.use('/api/user', userRoute);
+app.use('/api/review/teaching', teachingReviewRoute);
+app.use('/api/review/instructor', instructorReviewRoute);
+app.use('/api/review/general', generalReviewRoute);
 
 // app.get('/', async (req, res) => {
 // });

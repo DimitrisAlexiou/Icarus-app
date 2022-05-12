@@ -11934,3 +11934,25 @@ body.sidebar-toggled footer.sticky-footer {
 	right: 5%;
 	padding: 1rem;
 }
+
+.contentArea {
+	flex-grow: 1;
+}
+
+.wrapperApp {
+	max-width: 1300px;
+	margin: 0 auto;
+}
+
+.sidebarArea {
+	flex-shrink: 0;
+	position: static;
+	height: 100%;
+	overflow: auto;
+	z-index: 1;
+	transition: 0.2s ease-in;
+}
+
+.pageWrapper {
+	min-height: 100vh;
+}

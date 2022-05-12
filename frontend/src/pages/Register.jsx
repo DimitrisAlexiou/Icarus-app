@@ -2,11 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { register, reset } from '../features/auth/authSlice';
-import FloatingLabel from 'react-bootstrap/esm/FloatingLabel';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/esm/Col';
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
+import { Row, Col, Form, Button } from 'reactstrap';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -132,153 +128,153 @@ export default function Register() {
 													<Row>
 														<Col>
 															<Form.Group className="form-floating mb-3">
-																<FloatingLabel
+																{/* <FloatingLabel
 																	label="Name"
 																	className="text-gray-600"
-																>
-																	<Form.Control
-																		type="text"
-																		className="form-control"
-																		id="name"
-																		name="name"
-																		value={name}
-																		onChange={onChange}
-																		placeholder="Name"
-																		required
-																	/>
-																	<Form.Control.Feedback type="invalid">
-																		Please enter your name!
-																	</Form.Control.Feedback>
-																</FloatingLabel>
+																> */}
+																<Form.Control
+																	type="text"
+																	className="form-control"
+																	id="name"
+																	name="name"
+																	value={name}
+																	onChange={onChange}
+																	placeholder="Name"
+																	required
+																/>
+																<Form.Control.Feedback type="invalid">
+																	Please enter your name!
+																</Form.Control.Feedback>
+																{/* </FloatingLabel> */}
 															</Form.Group>
 														</Col>
 
 														<Col>
 															<Form.Group className="form-floating mb-3">
-																<FloatingLabel
+																{/* <FloatingLabel
 																	label="Surname"
 																	className="text-gray-600"
-																>
-																	<Form.Control
-																		type="text"
-																		className="form-control"
-																		id="surname"
-																		name="surname"
-																		value={surname}
-																		onChange={onChange}
-																		placeholder="Surname"
-																		required
-																	/>
-																	<Form.Control.Feedback type="invalid">
-																		Please enter your surname!
-																	</Form.Control.Feedback>
-																</FloatingLabel>
+																> */}
+																<Form.Control
+																	type="text"
+																	className="form-control"
+																	id="surname"
+																	name="surname"
+																	value={surname}
+																	onChange={onChange}
+																	placeholder="Surname"
+																	required
+																/>
+																<Form.Control.Feedback type="invalid">
+																	Please enter your surname!
+																</Form.Control.Feedback>
+																{/* </FloatingLabel> */}
 															</Form.Group>
 														</Col>
 													</Row>
 
 													<Form.Group className="form-floating mb-3">
-														<FloatingLabel
+														{/* <FloatingLabel
 															label="Username"
 															className="text-gray-600"
-														>
-															<Form.Control
-																type="text"
-																className="form-control"
-																id="username"
-																name="username"
-																value={username}
-																onChange={onChange}
-																placeholder="Username"
-																required
-															/>
-															<Form.Control.Feedback type="invalid">
-																Please provide a username!
-															</Form.Control.Feedback>
-														</FloatingLabel>
+														> */}
+														<Form.Control
+															type="text"
+															className="form-control"
+															id="username"
+															name="username"
+															value={username}
+															onChange={onChange}
+															placeholder="Username"
+															required
+														/>
+														<Form.Control.Feedback type="invalid">
+															Please provide a username!
+														</Form.Control.Feedback>
+														{/* </FloatingLabel> */}
 													</Form.Group>
 
 													<Form.Group className="form-floating mb-3">
-														<FloatingLabel
+														{/* <FloatingLabel
 															label="Email Address"
 															className="text-gray-600"
-														>
-															<Form.Control
-																type="email"
-																className="form-control"
-																id="email"
-																name="email"
-																value={email}
-																onChange={onChange}
-																placeholder="Email Address"
-																required
-															/>
-															<Form.Control.Feedback type="invalid">
-																Please provide your email address!
-															</Form.Control.Feedback>
-														</FloatingLabel>
+														> */}
+														<Form.Control
+															type="email"
+															className="form-control"
+															id="email"
+															name="email"
+															value={email}
+															onChange={onChange}
+															placeholder="Email Address"
+															required
+														/>
+														<Form.Control.Feedback type="invalid">
+															Please provide your email address!
+														</Form.Control.Feedback>
+														{/* </FloatingLabel> */}
 													</Form.Group>
 
 													<Row>
 														<Col>
 															<Form.Group className="form-floating mb-3">
-																<FloatingLabel
+																{/* <FloatingLabel
 																	label="Password"
 																	className="text-gray-600"
-																>
-																	<Form.Control
-																		type={showPassword ? 'text' : 'password'}
-																		className="form-control"
-																		id="password"
-																		name="password"
-																		value={password}
-																		onChange={onChange}
-																		placeholder="Password"
-																		required
-																	/>
-																	<FontAwesomeIcon
-																		className="showPassword"
-																		icon={faEyeSlash}
-																		onClick={() =>
-																			setShowPassword((prevState) => !prevState)
-																		}
-																	/>
+																> */}
+																<Form.Control
+																	type={showPassword ? 'text' : 'password'}
+																	className="form-control"
+																	id="password"
+																	name="password"
+																	value={password}
+																	onChange={onChange}
+																	placeholder="Password"
+																	required
+																/>
+																<FontAwesomeIcon
+																	className="showPassword"
+																	icon={faEyeSlash}
+																	onClick={() =>
+																		setShowPassword((prevState) => !prevState)
+																	}
+																/>
 
-																	<Form.Control.Feedback type="invalid">
-																		Please provide a password!
-																	</Form.Control.Feedback>
-																</FloatingLabel>
+																<Form.Control.Feedback type="invalid">
+																	Please provide a password!
+																</Form.Control.Feedback>
+																{/* </FloatingLabel> */}
 															</Form.Group>
 														</Col>
 
 														<Col>
 															<Form.Group className="form-floating mb-3">
-																<FloatingLabel
+																{/* <FloatingLabel
 																	label="Confirm Password"
 																	className="text-gray-600"
-																>
-																	<Form.Control
-																		type={showPassword ? 'text' : 'password'}
-																		className="form-control"
-																		id="confirmPassword"
-																		name="confirmPassword"
-																		value={confirmPassword}
-																		onChange={onChange}
-																		placeholder="Confirm Password"
-																		required
-																	/>
-																	<FontAwesomeIcon
-																		className="showPassword"
-																		icon={faEyeSlash}
-																		onClick={() =>
-																			setShowPassword((prevState) => !prevState)
-																		}
-																	/>
+																> */}
+																<Form.Control
+																	type={showPassword ? 'text' : 'password'}
+																	className="form-control"
+																	id="confirmPassword"
+																	name="confirmPassword"
+																	value={confirmPassword}
+																	onChange={onChange}
+																	placeholder="Confirm Password"
+																	required
+																/>
+																<FontAwesomeIcon
+																	className="showPassword"
+																	icon={faEyeSlash}
+																	onClick={() =>
+																		setShowPassword((prevState) => !prevState)
+																	}
+																/>
 
-																	<Form.Control.Feedback type="invalid">
-																		Please confirm your given password!
-																	</Form.Control.Feedback>
-																</FloatingLabel>
+																<Form.Control.Feedback type="invalid">
+																	Please confirm your given password!
+																</Form.Control.Feedback>
+																{/* </FloatingLabel> */}
 															</Form.Group>
 														</Col>
 													</Row>
