@@ -16,8 +16,23 @@ const createTeachingReview = async (teachingReviewData, token) => {
 	return response.data;
 };
 
+// Get User Teaching Reviews
+const getTeachingReviews = async (token) => {
+	const config = {
+		headers: {
+			'Content-Type': 'application/json',
+			Authorization: `Bearer ${token}`,
+		},
+	};
+
+	const response = await axios.get(API_URL, config);
+
+	return response.data;
+};
+
 const teachingReviewService = {
 	createTeachingReview,
+	getTeachingReviews,
 };
 
 export default teachingReviewService;

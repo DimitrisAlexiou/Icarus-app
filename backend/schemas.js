@@ -5,7 +5,7 @@ module.exports.userSchema = Joi.object({
 		name: Joi.string().required(),
 		surname: Joi.string().required(),
 		email: Joi.string()
-			.email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } })
+			.email({ minDomainSegments: 2, tlds: { allow: ['com', 'net', 'gr'] } })
 			.required(),
 		username: Joi.string().alphanum().min(10).max(30).required(),
 	}).required(),
@@ -14,33 +14,51 @@ module.exports.userSchema = Joi.object({
 module.exports.studentSchema = Joi.object({
 	student: Joi.object({
 		sid: Joi.string().required(),
-		entranceYear: Joi.number().min(4).max(4).required(),
-		studentType: Joi.string().required(),
+		entranceYear: Joi.number()
+			.min(1980)
+			.max(new Date().getFullYear())
+			.required(),
+		studentType: Joi.string()
+			.valid('Undergraduate', 'Master', 'PhD')
+			.required(),
 	}).required(),
 });
 
 module.exports.instructorSchema = Joi.object({
 	instructor: Joi.object({
-		facultyType: Joi.string().required(),
-		degree: Joi.string().required(),
-		entranceYear: Joi.number().min(4).max(4).required(),
+		facultyType: Joi.string().valid('DEP', 'EDIP', 'ETEP').required(),
+		degree: Joi.string()
+			.valid('Assistant', 'Associate', 'Professor')
+			.required(),
+		entranceYear: Joi.number()
+			.min(1980)
+			.max(new Date().getFullYear())
+			.required(),
 	}).required(),
 });
 
 module.exports.courseSchema = Joi.object({
 	course: Joi.object({
-		cid: Joi.string().required(),
-		title: Joi.string().required(),
-		type: Joi.string().required(),
+		cid: Joi.string().max(8).required(),
+		title: Joi.string().max(30).required(),
+		type: Joi.string().valid('Undergraduate', 'Master', 'Mixed').required(),
 		description: Joi.string().required(),
-		prerequisites: Joi.string().required(),
-		semester: Joi.string().required(),
-		year: Joi.string().required(),
+		// prerequisites: Joi.string().required(),
+		semester: Joi.string().valid('Winter', 'Spring', 'Any').required(),
+		year: Joi.string().valid('1', '2', '3', '4', '5').required(),
 		isActive: Joi.boolean().required(),
 		hasLab: Joi.boolean().required(),
 		isObligatory: Joi.boolean().required(),
-		cycle: Joi.string().required(),
-		ects: Joi.number().min(1).max(2).required(),
+		cycle: Joi.string()
+			.valid(
+				'Security',
+				'Software engineering',
+				'Information systems',
+				'Communication systems',
+				'AI',
+			)
+			.required(),
+		ects: Joi.number().min(1).required(),
 	}).required(),
 });
 

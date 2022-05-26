@@ -79,7 +79,7 @@ export default function Sidebar() {
 							<h6 className="collapse-header">Utilities :</h6>
 							<DropdownItem className="dropdown-item d-flex animated--grow-in text-gray-600">
 								<NavLink
-									to="courses/new"
+									to="course/new"
 									style={{ textDecoration: 'none', color: 'inherit' }}
 								>
 									Add Course
@@ -119,7 +119,7 @@ export default function Sidebar() {
 			<div className="sidebar-heading">Data</div>
 
 			<NavItem className="nav-item">
-				<NavLink className="nav-link" to="/courses">
+				<NavLink className="nav-link" to="/course">
 					<FontAwesomeIcon icon={faBook} />
 					<span className="ml-1">Courses</span>
 				</NavLink>

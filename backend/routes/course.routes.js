@@ -15,33 +15,31 @@ const { authenticate } = require('../middleware/authMiddleware');
 // @desc Get Courses
 // @route GET /api/course
 // @access private
-router.route('/').get(authenticate, catchAsync(getCourses));
-
-// @desc Create Course
-// @route POST /api/course
-// @access private
-router.route('/').post(authenticate, validateCourse, catchAsync(createCourse));
+router.route('/').get(catchAsync(getCourses));
 
 // @desc Delete All Courses
 // @route DELETE /api/course
 // @access private
-router.route('/').delete(authenticate, catchAsync(deleteCourses));
+router.route('/').delete(catchAsync(deleteCourses));
+
+// @desc Create Course
+// @route POST /api/course/new
+// @access private
+router.route('/new').post(validateCourse, catchAsync(createCourse));
 
 // @desc Get Course by ID
 // @route GET /api/course/:id
 // @access private
-router.route('/:id').get(authenticate, catchAsync(viewCourse));
+router.route('/:id').get(catchAsync(viewCourse));
 
 // @desc Update Course by ID
 // @route PUT /api/course/:id
 // @access private
-router
-	.route('/:id')
-	.put(authenticate, validateCourse, catchAsync(updateCourse));
+router.route('/:id').put(validateCourse, catchAsync(updateCourse));
 
 // @desc Delete Course by ID
 // @route DELETE /api/course/:id
 // @access private
-router.route('/:id').delete(authenticate, catchAsync(deleteCourse));
+router.route('/:id').delete(catchAsync(deleteCourse));
 
 module.exports = router;

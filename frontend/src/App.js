@@ -8,52 +8,17 @@ import { Container } from 'reactstrap';
 import Navbar from './components/Navbar';
 import Sidebar from './components/Sidebar';
 import Footer from './components/Footer';
-import Dashboard from './pages/Dashboard';
-import Register from './pages/Register';
 import Login from './pages/Login';
+import Course from './pages/Course';
+import Courses from './pages/Courses';
 import Reviews from './pages/Reviews';
+import TeachingReview from './pages/TeachingReview';
 import TeachingReviews from './pages/TeachingReviews';
+import InstructorReview from './pages/InstructorReview';
 import InstructorReviews from './pages/InstructorReviews';
+import GeneralReview from './pages/GeneralReview';
 import GeneralReviews from './pages/GeneralReviews';
-import { useAuth0 } from '@auth0/auth0-react';
 import './App.css';
-
-// const Home = () => {
-// 	<div className="wrapper">
-// 		<Navbar />
-// 		<div id="content-wrapper" className="d-flex flex-column">
-// 			<div id="content">
-// 				<Sidebar />
-// 			</div>
-// 			<Footer />
-// 		</div>
-// 	</div>;
-// };
-
-// export default function App() {
-// 	return (
-// 		<>
-// 			<Router>
-// 				<div className="wrapper">
-// 					<Navbar />
-// 					{/* <Sidebar /> */}
-// 					<div id="content-wrapper" className="d-flex flex-column">
-// 						<div id="content">
-// 							<Sidebar />
-// 						</div>
-// 						<Routes>
-// 							<Route path="/dashboard" element={<Dashboard />} />
-// 							<Route path="/register" element={<Register />} />
-// 							<Route path="/login" element={<Login />} />
-// 							<Route path="/reviews" element={<Reviews />} />
-// 						</Routes>
-// 						{/* <Footer /> */}
-// 					</div>
-// 				</div>
-// 			</Router>
-// 		</>
-// 	);
-// }
 
 export default function App() {
 	return (
@@ -69,16 +34,28 @@ export default function App() {
 						<Container fluid>
 							<Outlet />
 							<Routes>
-								<Route path="/dashboard" element={<Dashboard />} />
-								<Route path="/register" element={<Register />} />
 								<Route path="/login" element={<Login />} />
+								<Route path="/course" element={<Courses />} />
+								<Route path="/course/new" element={<Course />} />
 								<Route path="/review" element={<Reviews />} />
-								<Route path="/review/teaching" element={<TeachingReviews />} />
+								<Route path="/review/teaching" element={<TeachingReview />} />
+								<Route
+									path="/review/teaching/all"
+									element={<TeachingReviews />}
+								/>
 								<Route
 									path="/review/instructor"
+									element={<InstructorReview />}
+								/>
+								<Route
+									path="/review/instructor/all"
 									element={<InstructorReviews />}
 								/>
-								<Route path="/review/general" element={<GeneralReviews />} />
+								<Route path="/review/general" element={<GeneralReview />} />
+								<Route
+									path="/review/general/all"
+									element={<GeneralReviews />}
+								/>
 							</Routes>
 						</Container>
 					</div>
@@ -88,19 +65,3 @@ export default function App() {
 		</>
 	);
 }
-
-// export default function App() {
-// 	return (
-// 		<>
-// 			<Router>
-// 				<Routes>
-// 					<Route path="/" element={<Home />} />
-// 					<Route path="/dashboard" element={<Dashboard />} />
-// 					<Route path="/register" element={<Register />} />
-// 					<Route path="/login" element={<Login />} />
-// 				</Routes>
-// 				<Footer />
-// 			</Router>
-// 		</>
-// 	);
-// }

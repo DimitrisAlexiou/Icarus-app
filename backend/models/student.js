@@ -14,7 +14,7 @@ const studentSchema = new Schema({
 	},
 	studentType: {
 		type: String,
-		enum: ['undergraduate', 'master', 'PhD'],
+		enum: ['Undergraduate', 'Master', 'PhD'],
 		required: true,
 	},
 });

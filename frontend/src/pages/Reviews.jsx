@@ -17,7 +17,7 @@ export default function Reviews() {
 
 						<div className="row justify-content-center">
 							<Row>
-								<Col md="7" lg="4">
+								<Col className=" mb-3" md="7" lg="4">
 									<Card body color="primary" inverse>
 										<CardTitle tag="h5">Teaching Review</CardTitle>
 										<CardText>Review the teaching of the course.</CardText>
@@ -27,15 +27,15 @@ export default function Reviews() {
 													<Button>Review</Button>
 												</Link>
 											</div>
-											{/* <div className="col-sm-6 text-right">
+											<div className="col-sm-6 text-right">
 												<Link to="/review/teaching/all">
 													<Button>See Reviews</Button>
 												</Link>
-											</div> */}
+											</div>
 										</div>
 									</Card>
 								</Col>
-								<Col md="7" lg="4">
+								<Col className=" mb-3" md="7" lg="4">
 									<Card body color="info" inverse>
 										<CardTitle tag="h5">Instructor Review</CardTitle>
 										<CardText>Review the instructor of the course.</CardText>
@@ -45,11 +45,11 @@ export default function Reviews() {
 													<Button>Review</Button>
 												</Link>
 											</div>
-											{/* <div className="col-sm-6 text-right">
+											<div className="col-sm-6 text-right">
 												<Link to="/review/instructor/all">
 													<Button>See Reviews</Button>
 												</Link>
-											</div> */}
+											</div>
 										</div>
 									</Card>
 								</Col>
@@ -65,11 +65,11 @@ export default function Reviews() {
 													<Button>Review</Button>
 												</Link>
 											</div>
-											{/* <div className="col-sm-6 text-right">
+											<div className="col-sm-6 text-right">
 												<Link to="/review/general/all">
 													<Button>See Reviews</Button>
 												</Link>
-											</div> */}
+											</div>
 										</div>
 									</Card>
 								</Col>

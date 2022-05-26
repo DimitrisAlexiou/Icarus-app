@@ -12,9 +12,7 @@ module.exports.getUsers = asyncHandler(async (req, res) => {
 		}
 	} catch (error) {
 		console.error('❌ Error while finding users', error);
-		return res
-			.status(500)
-			.json('Something wrong happened while finding users!');
+		return res.status(500).json(`${error.message}`);
 	}
 });
 
@@ -30,9 +28,7 @@ module.exports.viewUser = asyncHandler(async (req, res) => {
 		}
 	} catch (error) {
 		console.error('❌ Error while finding user', error);
-		return res
-			.status(500)
-			.json('Something wrong happened while finding this user!');
+		return res.status(500).json(`${error.message}`);
 	}
 });
 
@@ -44,9 +40,7 @@ module.exports.createUser = asyncHandler(async (req, res) => {
 		return res.status(201).json(newUser);
 	} catch (error) {
 		console.error('❌ Error while creating user', error);
-		return res
-			.status(500)
-			.json('Something wrong happened while creating this user!');
+		return res.status(500).json(`${error.message}`);
 	}
 });
 
@@ -63,9 +57,7 @@ module.exports.updateUser = asyncHandler(async (req, res) => {
 		}
 	} catch (error) {
 		console.error('❌ Error while finding user', error);
-		return res
-			.status(500)
-			.json('Something wrong happened while finding this user!');
+		return res.status(500).json(`${error.message}`);
 	}
 });
 
@@ -77,9 +69,7 @@ module.exports.deleteUser = asyncHandler(async (req, res) => {
 		return res.status(200).json('User deleted successfully!');
 	} catch (error) {
 		console.error('❌ Error while deleting user', error);
-		return res
-			.status(500)
-			.json('Something wrong happened while deleting user!');
+		return res.status(500).json(`${error.message}`);
 	}
 });
 
@@ -90,8 +80,6 @@ module.exports.deleteUsers = asyncHandler(async (req, res) => {
 		return res.status(200).json('All users deleted!');
 	} catch (error) {
 		console.error('❌ Error while deleting all users', error);
-		return res
-			.status(500)
-			.json('Something wrong happened while deleting all users!');
+		return res.status(500).json(`${error.message}`);
 	}
 });

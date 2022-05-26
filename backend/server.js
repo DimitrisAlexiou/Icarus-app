@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoSanitize = require('express-mongo-sanitize');
+const cors = require('cors');
 const dotenv = require('dotenv').config();
 const colors = require('colors');
 // const helmet = require('helmet');
@@ -27,6 +28,7 @@ app.use(
 		extended: true,
 	}),
 );
+app.use(cors());
 app.use(mongoSanitize({ replaceWith: '_' }));
 // app.use(helmet({ contentSecurityPolicy: false }));
 

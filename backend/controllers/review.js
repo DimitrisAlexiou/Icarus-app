@@ -15,9 +15,7 @@ module.exports.getTeachingReviews = asyncHandler(async (req, res) => {
 		}
 	} catch (error) {
 		console.error('❌ Error while finding teaching reviews: ', error);
-		return res
-			.status(500)
-			.json('Something wrong happened while finding teaching reviews!');
+		return res.status(500).json(`${error.message}`);
 	}
 });
 
@@ -46,9 +44,7 @@ module.exports.getUserTeachingReviews = asyncHandler(async (req, res) => {
 		}
 	} catch (error) {
 		console.error('❌ Error while finding user teaching reviews: ', error);
-		return res
-			.status(500)
-			.json('Something wrong happened while finding user teaching reviews!');
+		return res.status(500).json(`${error.message}`);
 	}
 });
 
@@ -80,9 +76,7 @@ module.exports.viewUserTeachingReview = asyncHandler(async (req, res) => {
 		}
 	} catch (error) {
 		console.error('❌ Error while finding teaching review: ', error);
-		return res
-			.status(500)
-			.json('Something wrong happened while finding this teaching review!');
+		return res.status(500).json(`${error.message}`);
 	}
 });
 
@@ -129,9 +123,7 @@ module.exports.createTeachingReview = asyncHandler(async (req, res) => {
 			return res.status(201).json(teachingReview);
 		} catch (error) {
 			console.error('❌ Error while creating teaching review: ', error);
-			return res
-				.status(500)
-				.json('Something wrong happened while creating this teaching review!');
+			return res.status(500).json(`${error.message}`);
 		}
 	}
 });
@@ -192,9 +184,7 @@ module.exports.updateTeachingReview = asyncHandler(async (req, res) => {
 		}
 	} catch (error) {
 		console.error('❌ Error while finding teaching review: ', error);
-		return res
-			.status(500)
-			.json('Something wrong happened while finding this teaching review!');
+		return res.status(500).json(`${error.message}`);
 	}
 });
 
@@ -228,9 +218,7 @@ module.exports.deleteTeachingReview = asyncHandler(async (req, res) => {
 		}
 	} catch (error) {
 		console.error('❌ Error while deleting teaching review: ', error);
-		return res
-			.status(500)
-			.json('Something wrong happened while deleting teaching review!');
+		return res.status(500).json(`${error.message}`);
 	}
 });
 
@@ -241,9 +229,7 @@ module.exports.deleteTeachingReviews = asyncHandler(async (req, res) => {
 		return res.status(200).json('All teaching reviews deleted!');
 	} catch (error) {
 		console.error('❌ Error while deleting all teaching reviews: ', error);
-		return res
-			.status(500)
-			.json('Something wrong happened while deleting all teaching reviews!');
+		return res.status(500).json(`${error.message}`);
 	}
 });
 
@@ -261,9 +247,7 @@ module.exports.getInstructorReviews = asyncHandler(async (req, res) => {
 		}
 	} catch (error) {
 		console.error('❌ Error while finding instructor reviews: ', error);
-		return res
-			.status(500)
-			.json('Something wrong happened while finding instructor reviews!');
+		return res.status(500).json(`${error.message}`);
 	}
 });
 
@@ -292,9 +276,7 @@ module.exports.getUserInstructorReviews = asyncHandler(async (req, res) => {
 		}
 	} catch (error) {
 		console.error('❌ Error while finding user instructor reviews: ', error);
-		return res
-			.status(500)
-			.json('Something wrong happened while finding user instructor reviews!');
+		return res.status(500).json(`${error.message}`);
 	}
 });
 
@@ -326,9 +308,7 @@ module.exports.viewUserInstructorReview = asyncHandler(async (req, res) => {
 		}
 	} catch (error) {
 		console.error('❌ Error while finding instructor review: ', error);
-		return res
-			.status(500)
-			.json('Something wrong happened while finding this instructor review!');
+		return res.status(500).json(`${error.message}`);
 	}
 });
 
@@ -372,11 +352,7 @@ module.exports.createInstructorReview = asyncHandler(async (req, res) => {
 			return res.status(201).json(instructorReview);
 		} catch (error) {
 			console.error('❌ Error while creating instructor review: ', error);
-			return res
-				.status(500)
-				.json(
-					'Something wrong happened while creating this instructor review!',
-				);
+			return res.status(500).json(`${error.message}`);
 		}
 	}
 });
@@ -436,9 +412,7 @@ module.exports.updateInstructorReview = asyncHandler(async (req, res) => {
 		}
 	} catch (error) {
 		console.error('❌ Error while finding instructor review: ', error);
-		return res
-			.status(500)
-			.json('Something wrong happened while finding this instructor review!');
+		return res.status(500).json(`${error.message}`);
 	}
 });
 
@@ -474,9 +448,7 @@ module.exports.deleteInstructorReview = asyncHandler(async (req, res) => {
 		}
 	} catch (error) {
 		console.error('❌ Error while deleting instructor review: ', error);
-		return res
-			.status(500)
-			.json('Something wrong happened while deleting instructor review!');
+		return res.status(500).json(`${error.message}`);
 	}
 });
 
@@ -487,9 +459,7 @@ module.exports.deleteInstructorReviews = asyncHandler(async (req, res) => {
 		return res.status(200).json('All instructor reviews deleted!');
 	} catch (error) {
 		console.error('❌ Error while deleting all instructor reviews: ', error);
-		return res
-			.status(500)
-			.json('Something wrong happened while deleting all instructor reviews!');
+		return res.status(500).json(`${error.message}`);
 	}
 });
 
@@ -505,9 +475,7 @@ module.exports.getGeneralReviews = asyncHandler(async (req, res) => {
 		}
 	} catch (error) {
 		console.error('❌ Error while finding general reviews: ', error);
-		return res
-			.status(500)
-			.json('Something wrong happened while finding general reviews!');
+		return res.status(500).json(`${error.message}`);
 	}
 });
 
@@ -536,9 +504,7 @@ module.exports.viewGeneralReview = asyncHandler(async (req, res) => {
 		}
 	} catch (error) {
 		console.error('❌ Error while finding user general reviews: ', error);
-		return res
-			.status(500)
-			.json('Something wrong happened while finding user general reviews!');
+		return res.status(500).json(`${error.message}`);
 	}
 });
 
@@ -570,9 +536,7 @@ module.exports.viewUserGeneralReview = asyncHandler(async (req, res) => {
 		}
 	} catch (error) {
 		console.error('❌ Error while finding general review: ', error);
-		return res
-			.status(500)
-			.json('Something wrong happened while finding this general review!');
+		return res.status(500).json(`${error.message}`);
 	}
 });
 
@@ -603,9 +567,7 @@ module.exports.createGeneralReview = asyncHandler(async (req, res) => {
 			return res.status(201).json(generalReview);
 		} catch (error) {
 			console.error('❌ Error while creating general review: ', error);
-			return res
-				.status(500)
-				.json('Something wrong happened while creating this general review!');
+			return res.status(500).json(`${error.message}`);
 		}
 	}
 });
@@ -652,9 +614,7 @@ module.exports.updateGeneralReview = asyncHandler(async (req, res) => {
 		}
 	} catch (error) {
 		console.error('❌ Error while finding general review: ', error);
-		return res
-			.status(500)
-			.json('Something wrong happened while finding this general review!');
+		return res.status(500).json(`${error.message}`);
 	}
 });
 
@@ -688,9 +648,7 @@ module.exports.deleteGeneralReview = asyncHandler(async (req, res) => {
 		}
 	} catch (error) {
 		console.error('❌ Error while deleting general review: ', error);
-		return res
-			.status(500)
-			.json('Something wrong happened while deleting general review!');
+		return res.status(500).json(`${error.message}`);
 	}
 });
 
@@ -701,8 +659,6 @@ module.exports.deleteGeneralReviews = asyncHandler(async (req, res) => {
 		return res.status(200).json('All general reviews deleted!');
 	} catch (error) {
 		console.error('❌ Error while deleting all general reviews: ', error);
-		return res
-			.status(500)
-			.json('Something wrong happened while deleting all general reviews!');
+		return res.status(500).json(`${error.message}`);
 	}
 });

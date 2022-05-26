@@ -16,8 +16,23 @@ const createGeneralReview = async (generalReviewData, token) => {
 	return response.data;
 };
 
+// Get User General Reviews
+const getGeneralReviews = async (token) => {
+	const config = {
+		headers: {
+			'Content-Type': 'application/json',
+			Authorization: `Bearer ${token}`,
+		},
+	};
+
+	const response = await axios.get(API_URL, config);
+
+	return response.data;
+};
+
 const generalReviewService = {
 	createGeneralReview,
+	getGeneralReviews,
 };
 
 export default generalReviewService;

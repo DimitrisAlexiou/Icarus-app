@@ -10,6 +10,7 @@ const initialState = {
 	message: '',
 };
 
+// Create Instructor Review
 export const createInstructorReview = createAsyncThunk(
 	'api/review/instructor',
 	async (instructorReviewData, thunkAPI) => {
@@ -19,6 +20,26 @@ export const createInstructorReview = createAsyncThunk(
 				instructorReviewData,
 				token,
 			);
+		} catch (error) {
+			const message =
+				(error.response &&
+					error.response.data &&
+					error.response.data.message) ||
+				error.message ||
+				error.toString();
+
+			return thunkAPI.rejectWithValue(message);
+		}
+	},
+);
+
+// Get All Instructor Reviews
+export const getInstructorReviews = createAsyncThunk(
+	'/api/review/instructor/all',
+	async (_, thunkAPI) => {
+		try {
+			const token = thunkAPI.getState().auth.user.token;
+			return await instructorReviewService.getInstructorReviews(token);
 		} catch (error) {
 			const message =
 				(error.response &&
@@ -48,6 +69,19 @@ export const instructorReviewSlice = createSlice({
 				state.isSuccess = true;
 			})
 			.addCase(createInstructorReview.rejected, (state, action) => {
+				state.isLoading = false;
+				state.isError = true;
+				state.message = action.payload;
+			})
+			.addCase(getInstructorReviews.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(getInstructorReviews.fulfilled, (state, action) => {
+				state.isLoading = false;
+				state.isSuccess = true;
+				state.teachingReviews = action.payload;
+			})
+			.addCase(getInstructorReviews.rejected, (state, action) => {
 				state.isLoading = false;
 				state.isError = true;
 				state.message = action.payload;

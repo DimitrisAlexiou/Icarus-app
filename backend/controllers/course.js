@@ -13,9 +13,7 @@ module.exports.getCourses = asyncHandler(async (req, res) => {
 		}
 	} catch (error) {
 		console.error('❌ Error while finding courses: ', error);
-		return res
-			.status(500)
-			.json('Something wrong happened while finding courses!');
+		return res.status(500).json(`${error.message}`);
 	}
 });
 
@@ -33,9 +31,7 @@ module.exports.viewCourse = asyncHandler(async (req, res) => {
 		}
 	} catch (error) {
 		console.error('❌ Error while finding course: ', error);
-		return res
-			.status(500)
-			.json('Something wrong happened while finding this course!');
+		return res.status(500).json(`${error.message}`);
 	}
 });
 
@@ -45,6 +41,7 @@ module.exports.createCourse = asyncHandler(async (req, res) => {
 		cid,
 		title,
 		type,
+		description,
 		semester,
 		year,
 		isActive,
@@ -55,40 +52,46 @@ module.exports.createCourse = asyncHandler(async (req, res) => {
 	} = req.body;
 
 	if (
-		!cid ||
-		!title ||
-		!type ||
-		!semester ||
-		!year ||
-		!isActive ||
-		!hasLab ||
-		!isObligatory ||
-		!cycle ||
-		!ects
+		cid === undefined ||
+		title === undefined ||
+		type === undefined ||
+		description === undefined ||
+		semester === undefined ||
+		year === undefined ||
+		hasLab === undefined ||
+		isObligatory === undefined ||
+		cycle === undefined ||
+		ects === undefined
 	) {
 		return res.status(400).json('Please fill in all the required fields!');
 	}
 
 	try {
-		const course = await Course.create({
-			cid,
-			title,
-			type,
-			semester,
-			year,
-			isActive,
-			hasLab,
-			isObligatory,
-			cycle,
-			ects,
-			status: 'new',
-		});
-		return res.status(201).json(course);
+		const course = await Course.findOne({ cid: cid });
+		if (course) {
+			return res
+				.status(400)
+				.json('Seems like a course with this ID already exists!');
+		} else {
+			const newCourse = await Course.create({
+				cid,
+				title,
+				type,
+				description,
+				semester,
+				year,
+				isActive,
+				hasLab,
+				isObligatory,
+				cycle,
+				ects,
+				status: 'new',
+			});
+			return res.status(201).json(newCourse);
+		}
 	} catch (error) {
 		console.error('❌ Error while creating course: ', error);
-		return res
-			.status(500)
-			.json('Something wrong happened while creating this course!');
+		return res.status(500).json(`${error.message}`);
 	}
 });
 
@@ -98,6 +101,7 @@ module.exports.updateCourse = asyncHandler(async (req, res) => {
 		cid,
 		title,
 		type,
+		description,
 		semester,
 		year,
 		isActive,
@@ -108,16 +112,17 @@ module.exports.updateCourse = asyncHandler(async (req, res) => {
 	} = req.body;
 
 	if (
-		!cid ||
-		!title ||
-		!type ||
-		!semester ||
-		!year ||
-		!isActive ||
-		!hasLab ||
-		!isObligatory ||
-		!cycle ||
-		!ects
+		cid === undefined ||
+		title === undefined ||
+		type === undefined ||
+		description === undefined ||
+		semester === undefined ||
+		year === undefined ||
+		isActive === undefined ||
+		hasLab === undefined ||
+		isObligatory === undefined ||
+		cycle === undefined ||
+		ects === undefined
 	) {
 		return res.status(400).json('Please fill in all the required fields!');
 	}
@@ -135,9 +140,7 @@ module.exports.updateCourse = asyncHandler(async (req, res) => {
 		}
 	} catch (error) {
 		console.error('❌ Error while finding course: ', error);
-		return res
-			.status(500)
-			.json('Something wrong happened while finding this course!');
+		return res.status(500).json(`${error.message}`);
 	}
 });
 
@@ -149,9 +152,7 @@ module.exports.deleteCourse = asyncHandler(async (req, res) => {
 		return res.status(200).json('Course deleted successfully!');
 	} catch (error) {
 		console.error('❌ Error while deleting course: ', error);
-		return res
-			.status(500)
-			.json('Something wrong happened while deleting course!');
+		return res.status(500).json(`${error.message}`);
 	}
 });
 
@@ -162,8 +163,6 @@ module.exports.deleteCourses = asyncHandler(async (req, res) => {
 		return res.status(200).json('All courses deleted!');
 	} catch (error) {
 		console.error('❌ Error while deleting all courses: ', error);
-		return res
-			.status(500)
-			.json('Something wrong happened while deleting all courses!');
+		return res.status(500).json(`${error.message}`);
 	}
 });

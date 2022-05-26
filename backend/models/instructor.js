@@ -9,7 +9,7 @@ const instructorSchema = new Schema({
 	},
 	degree: {
 		type: String,
-		enum: ['assistant', 'associate', 'professor'],
+		enum: ['Assistant', 'Associate', 'Professor'],
 	},
 	entranceYear: {
 		type: Number,
