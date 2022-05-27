@@ -59,7 +59,7 @@ export default function NewCourse() {
 			<div id="content">
 				<div>
 					<h1 className="h3 mb-5 text-gray-800 font-weight-bold">
-						{course.title}
+						Edit {course.title} Course
 					</h1>
 					<div className="row justify-content-center">
 						<div className="col-sm-12 col-md-10 col-lg-8 col-xl-6">
@@ -71,39 +71,13 @@ export default function NewCourse() {
 												Course Information
 											</h6>
 										</div>
-										<div class="col-6 d-flex justify-content-end">
-											<div class="px-2">
-												<Link
-													to={`/course/${course._id}/edit`}
-													class="btn btn-light btn-small"
-													style={{ fontWeight: 500, fontSize: 15 }}
-												>
-													<FontAwesomeIcon icon={faEdit} />
-													<span className="ml-1">Update</span>
-												</Link>
-											</div>
-											<div class="px-2">
-												<Form
-													action={`/course/${course._id}?_method=DELETE`}
-													method="POST"
-													style={{ display: 'inline' }}
-												>
-													<Button
-														class="btn btn-light btn-small"
-														style={{ fontWeight: 500, fontSize: 15 }}
-													>
-														<FontAwesomeIcon icon={faTrashAlt} /> Delete
-													</Button>
-												</Form>
-											</div>
-										</div>
 									</div>
 								</div>
 								<div className="card-body">
 									<CourseCard key={course._id} course={course} />
 									<Link
 										class="btn btn-secondary btn-user btn-block"
-										to="/course"
+										to={`/course/${course._id}`}
 									>
 										Back
 									</Link>

@@ -10,6 +10,8 @@ import Sidebar from './components/Sidebar';
 import Footer from './components/Footer';
 import Login from './pages/Login';
 import Course from './pages/Course';
+import CourseEdit from './pages/CourseEdit';
+import NewCourse from './pages/NewCourse';
 import Courses from './pages/Courses';
 import Reviews from './pages/Reviews';
 import TeachingReview from './pages/TeachingReview';
@@ -36,7 +38,9 @@ export default function App() {
 							<Routes>
 								<Route path="/login" element={<Login />} />
 								<Route path="/course" element={<Courses />} />
-								<Route path="/course/new" element={<Course />} />
+								<Route path="/course/:courseId" element={<Course />} />
+								<Route path="/course/:courseId/edit" element={<CourseEdit />} />
+								<Route path="/course/new" element={<NewCourse />} />
 								<Route path="/review" element={<Reviews />} />
 								<Route path="/review/teaching" element={<TeachingReview />} />
 								<Route
