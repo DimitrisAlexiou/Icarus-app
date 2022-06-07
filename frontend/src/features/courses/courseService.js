@@ -19,6 +19,24 @@ const createCourse = async (courseData, token) => {
 	return response.data;
 };
 
+// Update Course
+const updateCourse = async (courseId, courseData, token) => {
+	const config = {
+		headers: {
+			'Content-Type': 'application/json',
+			// Authorization: `Bearer ${token}`,
+		},
+	};
+
+	const response = await axios.put(
+		API_URL_COURSE + courseId + '/edit',
+		{ courseData },
+		config,
+	);
+
+	return response.data;
+};
+
 // Get Courses
 // const getCourses = async (token) => {
 const getCourses = async () => {
@@ -51,6 +69,7 @@ const getCourse = async (courseId) => {
 
 const courseService = {
 	createCourse,
+	updateCourse,
 	getCourses,
 	getCourse,
 };

@@ -23,7 +23,7 @@ const Toast = MySwal.mixin({
 	timerProgressBar: true,
 });
 
-export default function NewCourse() {
+export default function Course() {
 	// const { user, isAuthenticated, isLoading } = useAuth0();
 	const { course, isError, isLoading, message } = useSelector(
 		(state) => state.courses,

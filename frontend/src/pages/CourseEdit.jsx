@@ -1,14 +1,12 @@
-import { useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { useAuth0 } from '@auth0/auth0-react';
-import { getCourse } from '../features/courses/courseSlice';
-import { Spinner, Button, Form } from 'reactstrap';
+import { updateCourse, reset } from '../features/courses/courseSlice';
+import { Spinner, FormGroup, Input, Button, Form, Label } from 'reactstrap';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import CourseCard from '../components/CourseCard';
+import CourseForm from '../components/CourseForm';
 
 const MySwal = withReactContent(Swal);
 const Toast = MySwal.mixin({
@@ -23,34 +21,99 @@ const Toast = MySwal.mixin({
 	timerProgressBar: true,
 });
 
-export default function NewCourse() {
+export default function CourseEdit() {
 	// const { user, isAuthenticated, isLoading } = useAuth0();
-	const { course, isError, isLoading, message } = useSelector(
+	const { course, isSuccess, isError, message } = useSelector(
 		(state) => state.courses,
 	);
 
+	const [formCourseData, setFormData] = useState({
+		cid: '',
+		title: '',
+		type: '',
+		description: '',
+		// description: 'Please enter a description of the course..',
+		semester: '',
+		year: '',
+		cycle: '',
+		ects: 0,
+		hasLab: false,
+		isObligatory: false,
+		isActive: false,
+	});
+
+	const [validated, setValidated] = useState(false);
 	const dispatch = useDispatch();
+	// const navigate = useNavigate();
 	const { courseId } = useParams();
 
-	useEffect(() => {
-		if (isError) {
-			Toast.fire({
-				animation: 'true',
-				title: 'Error!',
-				text: message,
-				icon: 'error',
-			});
-		}
-		dispatch(getCourse(courseId));
-	}, [dispatch, isError, message, courseId]);
+	// useEffect(() => {
+	// 	if (isError) {
+	// 		Toast.fire({
+	// 			animation: 'true',
+	// 			title: 'Error!',
+	// 			text: message,
+	// 			icon: 'error',
+	// 		});
+	// 	}
+	// 	dispatch(updateCourse(courseId, formCourseData));
+	// }, [dispatch, isError, message, courseId, formCourseData]);
 
-	if (isLoading) {
-		return (
-			<Spinner color="primary" type="grow">
-				Loading...
-			</Spinner>
-		);
-	}
+	// useEffect(() => {
+	// 	if (isError) {
+	// 		Toast.fire({
+	// 			animation: 'true',
+	// 			title: 'Error!',
+	// 			text: message,
+	// 			icon: 'error',
+	// 		});
+	// 	}
+	// 	if (isSuccess) {
+	// 		Toast.fire({
+	// 			animation: 'true',
+	// 			title: 'Success!',
+	// 			text: message,
+	// 			icon: 'success',
+	// 		});
+	// 		dispatch(reset());
+	// 		navigate('/course/' + courseId);
+	// 	}
+	// 	dispatch(reset());
+	// }, [
+	// 	dispatch,
+	// 	isError,
+	// 	isSuccess,
+	// 	message,
+	// 	courseId,
+	// 	formCourseData,
+	// 	navigate,
+	// ]);
+
+	const onChange = (e) => {
+		setFormData((prevState) => ({
+			...prevState,
+			[e.target.name]: e.target.value,
+		}));
+	};
+
+	const onSubmit = (e) => {
+		const form = e.target;
+		if (form.checkValidity() === false) {
+			e.preventDefault();
+			e.stopPropagation();
+		}
+		setValidated(true);
+		dispatch(updateCourse(courseId, formCourseData));
+		setFormData(formCourseData);
+	};
+
+	// if (isLoading) {
+	// 	return (
+	// 		<Spinner color="primary" type="grow">
+	// 			Loading...
+	// 		</Spinner>
+	// 	);
+	// }
 
 	return (
 		// isAuthenticated && (
@@ -74,13 +137,50 @@ export default function NewCourse() {
 									</div>
 								</div>
 								<div className="card-body">
-									<CourseCard key={course._id} course={course} />
-									<Link
-										class="btn btn-secondary btn-user btn-block"
-										to={`/course/${course._id}`}
+									<Form
+										className="user validated-form"
+										validated={validated}
+										onSubmit={onSubmit}
+										noValidate
 									>
-										Back
-									</Link>
+										<CourseForm onChange={onChange} formCourseData />
+
+										<FormGroup className="mx-1 mb-3" check>
+											<Input
+												type="checkbox"
+												id="isActive"
+												name="isActive"
+												value={formCourseData.isActive}
+												// onChangeCheckBox={checked ? 'true' : 'false'}
+												// ={onChangeCheckBox}
+												// onChange={onChange}
+												required
+											/>
+											<Label for="isActive" className="text-gray-500">
+												Course Activity
+											</Label>
+										</FormGroup>
+
+										<div className="form-group row">
+											<div className="col-sm-6 mb-3 mb-sm-0">
+												<Link
+													className="btn btn-secondary btn-block"
+													to={`/course/${course._id}`}
+												>
+													Cancel
+												</Link>
+											</div>
+											<div className="col-sm-6 mb-3 mb-sm-0 text-right">
+												<Button
+													className="btn btn-primary btn-block"
+													type="submit"
+													color="primary"
+												>
+													Update Course
+												</Button>
+											</div>
+										</div>
+									</Form>
 								</div>
 							</div>
 						</div>

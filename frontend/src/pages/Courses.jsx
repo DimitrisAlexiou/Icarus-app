@@ -46,7 +46,6 @@ export default function Courses() {
 					<div class="col-6 mb-3 px-3 d-flex justify-content-end">
 						<Link
 							to="/course/new"
-							// type="button"
 							class="btn btn-light-cornflower-blue btn-small align-self-center"
 						>
 							Add Course
@@ -55,13 +54,13 @@ export default function Courses() {
 				</div>
 
 				<div className="row">
-					<div className="col-sm-12 col-md-6 col-lg-4 g-4 mb-3">
-						<div className="col">
-							{courses.map((course) => (
+					{courses.map((course) => (
+						<div className="col-sm-12 col-md-6 col-lg-4 g-4 mb-3">
+							<div className="col">
 								<CourseItem key={course._id} course={course} />
-							))}
+							</div>
 						</div>
-					</div>
+					))}
 				</div>
 			</div>
 		</div>

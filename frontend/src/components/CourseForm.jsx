@@ -179,7 +179,9 @@ export default function CourseForm({ onChange, formCourseData }) {
 					id="hasLab"
 					name="hasLab"
 					value={formCourseData.hasLab}
-					onChange={onChange}
+					defaultChecked={false}
+					// onChangeCheckBox={onChangeCheckBox}
+					// onChangeCheckBox={() => setHasLab(!hasLab)}
 					required
 				/>
 				<Label for="hasLab" className="text-gray-500">
@@ -193,7 +195,9 @@ export default function CourseForm({ onChange, formCourseData }) {
 					id="isObligatory"
 					name="isObligatory"
 					value={formCourseData.isObligatory}
-					onChange={onChange}
+					// onChangeCheckBox={checked ? 'true' : 'false'}
+					// ={onChangeCheckBox}
+					// onChange={onChange}
 					required
 				/>
 				<Label for="isObligatory" className="text-gray-500">
