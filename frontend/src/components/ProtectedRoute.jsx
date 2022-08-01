@@ -16,7 +16,7 @@ const ProtectedRoute = () => {
 	return isAuthenticated === true ? (
 		<Outlet />
 	) : (
-		<Navigate to="/UnAuthorized" />
+		<Navigate to="/unauthorized" />
 	);
 };
 

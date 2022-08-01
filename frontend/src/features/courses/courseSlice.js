@@ -169,9 +169,7 @@ export const courseSlice = createSlice({
 				state.isLoading = false;
 				state.isSuccess = true;
 				state.courses.map((course) =>
-					course._id === action.payload._id
-						? (course = action.payload)
-						: course,
+					course._id === action.payload._id ? action.payload : course,
 				);
 			})
 			.addCase(updateCourse.rejected, (state, action) => {

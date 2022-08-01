@@ -28,12 +28,13 @@ import Professors from './pages/Professors';
 import Students from './pages/Students';
 import Unauthorized from './pages/auth/UnAuthorized';
 import Forbidden from './pages/auth/Forbidden';
+import history from './utils/history';
 import './App.css';
 
 export default function App() {
 	return (
 		<>
-			<Router>
+			<Router history={history}>
 				<div className="pageWrapper d-flex wrapper">
 					<aside className="sidebarArea shadow">
 						<Sidebar />
@@ -82,11 +83,11 @@ export default function App() {
 									/>
 								</Route>
 								<Route path="/review" element={<Reviews />} />
-								<Route path="/Users" element={<Users />} />
-								<Route path="/Professors" element={<Professors />} />
-								<Route path="/Students" element={<Students />} />
-								<Route path="/UnAuthorized" element={<Unauthorized />} />
-								<Route path="/Forbidden" element={<Forbidden />} />
+								<Route path="/users" element={<Users />} />
+								<Route path="/professors" element={<Professors />} />
+								<Route path="/students" element={<Students />} />
+								<Route path="/unauthorized" element={<Unauthorized />} />
+								<Route path="/forbidden" element={<Forbidden />} />
 							</Routes>
 						</Container>
 						<Footer />

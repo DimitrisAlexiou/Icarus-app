@@ -89,7 +89,7 @@ export default function NavBar() {
 					</a>
 				</NavItem>
 
-				<NavItem className="navbar-nav ml-auto">
+				<div className="navbar-nav ml-auto">
 					<NavItem className="nav-item mx-1">
 						<div className="nav-link" id="clock">
 							<Clock format={'HH:mm:ss'} ticking={true} />
@@ -320,7 +320,8 @@ export default function NavBar() {
 										</DropdownItem>
 										<DropdownItem divider />
 										<DropdownItem className="dropdown-item d-flex align-items-center">
-											<Button
+											<div
+												type="button"
 												onClick={() =>
 													logout({ returnTo: window.location.origin })
 												}
@@ -330,7 +331,7 @@ export default function NavBar() {
 													<FontAwesomeIcon icon={faSignOut} />
 												</i>
 												Logout
-											</Button>
+											</div>
 											{/* <Modal isOpenLogout={modal} onHide={handleClose}>
 												<ModalHeader className="modal-header" closeButton>
 													Ready to Leave?
@@ -362,7 +363,7 @@ export default function NavBar() {
 							</>
 						) : null}
 					</NavItem>
-				</NavItem>
+				</div>
 			</Nav>
 		</>
 	);

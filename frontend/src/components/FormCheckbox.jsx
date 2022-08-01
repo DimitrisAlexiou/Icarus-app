@@ -12,3 +12,5 @@ export const FormCheckbox = ({
 		)}
 	</div>
 );
+
+export default FormCheckbox;
