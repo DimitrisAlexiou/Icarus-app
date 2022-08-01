@@ -10572,10 +10572,11 @@ body.sidebar-toggled footer.sticky-footer {
 	width: 15%;
 }
 
-.notauthorized {
-	background-position: center;
-	background-size: cover;
+.notauthorized_img {
+	height: auto;
 	width: 20%;
+	background-position: center;
+	/* background-size: cover; */
 }
 
 .registerAccount {

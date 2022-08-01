@@ -1,15 +1,15 @@
 export default function CourseCard({ course }) {
 	return (
 		<>
-			<div class="form-group row">
-				<div class="col-sm-6 mb-3 mb-sm-0">
+			<div className="form-group row">
+				<div className="col-sm-6 mb-3 mb-sm-0">
 					<label>
 						<b>Course ID</b>
 					</label>
 					<p style={{ textAlign: 'justify' }}>{course.cid}</p>
 					<hr />
 				</div>
-				<div class="col-sm-6">
+				<div className="col-sm-6">
 					<label>
 						<b>Course Title</b>
 					</label>
@@ -17,15 +17,15 @@ export default function CourseCard({ course }) {
 					<hr />
 				</div>
 			</div>
-			<div class="form-group row">
-				<div class="col-sm-6 mb-3 mb-sm-0">
+			<div className="form-group row">
+				<div className="col-sm-6 mb-3 mb-sm-0">
 					<label>
 						<b>Course Type</b>
 					</label>
 					<p style={{ textAlign: 'justify' }}>{course.type}</p>
 					<hr />
 				</div>
-				<div class="col-sm-6">
+				<div className="col-sm-6">
 					<label>
 						<b>Course Semester</b>
 					</label>
@@ -33,15 +33,15 @@ export default function CourseCard({ course }) {
 					<hr />
 				</div>
 			</div>
-			<div class="form-group row">
-				<div class="col-sm-6 mb-3 mb-sm-0">
+			<div className="form-group row">
+				<div className="col-sm-6 mb-3 mb-sm-0">
 					<label>
 						<b>Course Year</b>
 					</label>
 					<p style={{ textAlign: 'justify' }}>{course.year}</p>
 					<hr />
 				</div>
-				<div class="col-sm-6">
+				<div className="col-sm-6">
 					<label>
 						<b>Course Cycle</b>
 					</label>
@@ -49,22 +49,22 @@ export default function CourseCard({ course }) {
 					<hr />
 				</div>
 			</div>
-			<div class="form-group">
+			<div className="form-group">
 				<label>
 					<b>Course Description</b>
 				</label>
 				<p style={{ textAlign: 'justify' }}>{course.description}</p>
 				<hr />
 			</div>
-			<div class="form-group row">
-				<div class="col-sm-6 mb-3 mb-sm-0">
+			<div className="form-group row">
+				<div className="col-sm-6 mb-3 mb-sm-0">
 					<label>
 						<b>Course ECTS</b>
 					</label>
 					<p style={{ textAlign: 'justify' }}>{course.ects}</p>
 					<hr />
 				</div>
-				<div class="col-sm-6">
+				<div className="col-sm-6">
 					<label>
 						<b>Course Activity</b>
 					</label>
@@ -74,14 +74,14 @@ export default function CourseCard({ course }) {
 					<hr />
 				</div>
 			</div>
-			<div class="form-group row">
-				<div class="col-sm-6 mb-3 mb-sm-0">
+			<div className="form-group row">
+				<div className="col-sm-6 mb-3 mb-sm-0">
 					<label>
 						<b>Course Lab</b>
 					</label>
 					<p style={{ textAlign: 'justify' }}>{course.hasLab ? 'Yes' : 'No'}</p>
 				</div>
-				<div class="col-sm-6 mb-3 mb-sm-0">
+				<div className="col-sm-6 mb-3 mb-sm-0">
 					<label>
 						<b>Course Obligation</b>
 					</label>

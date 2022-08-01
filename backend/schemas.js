@@ -39,22 +39,28 @@ module.exports.instructorSchema = Joi.object({
 
 module.exports.courseSchema = Joi.object({
 	course: Joi.object({
-		cid: Joi.string().max(8).required(),
-		title: Joi.string().max(30).required(),
+		cid: Joi.string()
+			.max(9)
+			.pattern(/^([3][2][1])\/[0-9][0-9][0-9][0-9][0-9]*$/)
+			.required(),
+		title: Joi.string()
+			.max(40)
+			.pattern(/^[A-Za-z ]+$/)
+			.required(),
 		type: Joi.string().valid('Undergraduate', 'Master', 'Mixed').required(),
 		description: Joi.string().required(),
 		// prerequisites: Joi.string().required(),
 		semester: Joi.string().valid('Winter', 'Spring', 'Any').required(),
 		year: Joi.string().valid('1', '2', '3', '4', '5').required(),
-		isActive: Joi.boolean().required(),
+		isActive: Joi.boolean().default(false).required(),
 		hasLab: Joi.boolean().required(),
 		isObligatory: Joi.boolean().required(),
 		cycle: Joi.string()
 			.valid(
 				'Security',
-				'Software engineering',
-				'Information systems',
-				'Communication systems',
+				'Software Engineering',
+				'Information Systems',
+				'Communication Systems',
 				'AI',
 			)
 			.required(),

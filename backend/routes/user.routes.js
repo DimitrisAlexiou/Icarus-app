@@ -34,7 +34,7 @@ const { authenticate } = require('../middleware/authMiddleware');
 // @desc Get Users
 // @route GET /api/user
 // @access private ADMIN
-router.route('/').get(authenticate, catchAsync(getUsers));
+router.route('/').get(catchAsync(getUsers));
 
 // @desc Create User
 // @route POST /api/user

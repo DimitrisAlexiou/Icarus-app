@@ -3,9 +3,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
 	getTeachingReviews,
 	reset,
-} from '../features/reviews/teachingReviewSlice';
+} from '../../features/reviews/teachingReviewSlice';
 import { Spinner } from 'reactstrap';
-import TeachingReviewItem from '../components/TeachingReviewItem';
+import TeachingReviewItem from '../../components/review/TeachingReviewItem';
 
 export default function TeachingReviews() {
 	const { teachingReview, isLoading, isSuccess } = useSelector(

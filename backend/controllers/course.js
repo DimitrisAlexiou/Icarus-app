@@ -2,7 +2,9 @@ const asyncHandler = require('express-async-handler');
 const Course = require('../models/course');
 
 //? --------------------- * * COURSES CRUD * * --------------------
-// View Courses
+// @desc    Get Courses
+// @route   GET /api/course
+// @access  Private
 module.exports.getCourses = asyncHandler(async (req, res) => {
 	try {
 		const courses = await Course.find({});
@@ -17,7 +19,9 @@ module.exports.getCourses = asyncHandler(async (req, res) => {
 	}
 });
 
-// View Course
+// @desc    Get Course
+// @route   GET /api/course/:id
+// @access  Private
 module.exports.viewCourse = asyncHandler(async (req, res) => {
 	try {
 		const { id } = req.params;
@@ -35,7 +39,9 @@ module.exports.viewCourse = asyncHandler(async (req, res) => {
 	}
 });
 
-// Create Course
+// @desc    Create new Course
+// @route   POST /api/course/new
+// @access  Private
 module.exports.createCourse = asyncHandler(async (req, res) => {
 	const {
 		cid,
@@ -44,11 +50,11 @@ module.exports.createCourse = asyncHandler(async (req, res) => {
 		description,
 		semester,
 		year,
-		isActive,
-		hasLab,
-		isObligatory,
 		cycle,
 		ects,
+		hasLab,
+		isObligatory,
+		isActive,
 	} = req.body;
 
 	if (
@@ -58,10 +64,10 @@ module.exports.createCourse = asyncHandler(async (req, res) => {
 		description === undefined ||
 		semester === undefined ||
 		year === undefined ||
-		hasLab === undefined ||
-		isObligatory === undefined ||
 		cycle === undefined ||
-		ects === undefined
+		ects === undefined ||
+		hasLab === undefined ||
+		isObligatory === undefined
 	) {
 		return res.status(400).json('Please fill in all the required fields!');
 	}
@@ -95,7 +101,9 @@ module.exports.createCourse = asyncHandler(async (req, res) => {
 	}
 });
 
-// Update Course
+// @desc    Update Course
+// @route   PUT /api/course/:id/edit
+// @access  Private
 module.exports.updateCourse = asyncHandler(async (req, res) => {
 	const {
 		cid,
@@ -129,7 +137,11 @@ module.exports.updateCourse = asyncHandler(async (req, res) => {
 
 	try {
 		const { id } = req.params;
-		const course = await Course.findByIdAndUpdate(id, { ...req.body.course });
+		const course = await Course.findByIdAndUpdate(
+			id,
+			{ ...req.body.course },
+			{ new: true },
+		);
 		if (!course) {
 			return res
 				.status(404)
@@ -144,7 +156,9 @@ module.exports.updateCourse = asyncHandler(async (req, res) => {
 	}
 });
 
-// Delete Course by ID
+// @desc    Delete Course
+// @route   DELETE /api/course/:id
+// @access  Private
 module.exports.deleteCourse = asyncHandler(async (req, res) => {
 	try {
 		const { id } = req.params;
@@ -156,7 +170,9 @@ module.exports.deleteCourse = asyncHandler(async (req, res) => {
 	}
 });
 
-// Delete All Courses
+// @desc    Delete All Courses
+// @route   DELETE /api/course
+// @access  Private
 module.exports.deleteCourses = asyncHandler(async (req, res) => {
 	try {
 		await Course.deleteMany({});

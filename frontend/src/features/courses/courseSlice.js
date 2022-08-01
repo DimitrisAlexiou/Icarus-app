@@ -39,7 +39,7 @@ export const updateCourse = createAsyncThunk(
 		try {
 			// const token = thunkAPI.getState().auth.user.token;
 			// return await courseService.createCourse(courseData, token);
-			return await courseService.createCourse(courseId, courseData);
+			return await courseService.updateCourse(courseId, courseData);
 		} catch (error) {
 			const message =
 				(error.response &&
@@ -95,6 +95,27 @@ export const getCourse = createAsyncThunk(
 	},
 );
 
+// Delete Course
+export const deleteCourse = createAsyncThunk(
+	`${BASE_URL}/api/course/:courseId`,
+	async (courseId, thunkAPI) => {
+		try {
+			// const token = thunkAPI.getState().auth.user.token;
+			// return await courseService.createCourse(courseData, token);
+			return await courseService.deleteCourse(courseId);
+		} catch (error) {
+			const message =
+				(error.response &&
+					error.response.data &&
+					error.response.data.message) ||
+				error.message ||
+				error.toString();
+
+			return thunkAPI.rejectWithValue(message);
+		}
+	},
+);
+
 export const courseSlice = createSlice({
 	name: 'course',
 	initialState,
@@ -112,8 +133,8 @@ export const courseSlice = createSlice({
 			})
 			.addCase(createCourse.rejected, (state, action) => {
 				state.isLoading = false;
-				state.isError = true;
-				state.message = action.payload;
+				state.isError = action.payload.status === 'error';
+				state.message = action.payload.message;
 			})
 			.addCase(getCourses.pending, (state) => {
 				state.isLoading = true;
@@ -147,18 +168,30 @@ export const courseSlice = createSlice({
 			.addCase(updateCourse.fulfilled, (state, action) => {
 				state.isLoading = false;
 				state.isSuccess = true;
-				state.courses.map((course) => {
-					if (course._id === action.payload._id) {
-						course = action.payload;
-					}
-					return course;
-				});
+				state.courses.map((course) =>
+					course._id === action.payload._id
+						? (course = action.payload)
+						: course,
+				);
 			})
 			.addCase(updateCourse.rejected, (state, action) => {
 				state.isLoading = false;
-				state.isError = true;
-				state.message = action.payload;
+				state.isError = action.payload.status === 'error';
+				state.message = action.payload.message;
 			});
+		// .addCase(deleteCourse.fulfilled, (state, action) => {
+		// 	state.isLoading = false;
+		// 	state.isSuccess = true;
+		// 	state.message = action.payload.message;
+		// });
+		// .addCase(deleteCourse.pending, (state) => {
+		// 	state.isLoading = true;
+		// })
+		// .addCase(deleteCourse.rejected, (state, action) => {
+		// 	state.isLoading = false;
+		// 	state.isError = action.payload.status === 'error';
+		// 	state.message = action.payload.message;
+		// });
 	},
 });
 

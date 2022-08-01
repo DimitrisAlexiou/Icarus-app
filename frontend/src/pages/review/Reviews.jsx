@@ -1,9 +1,5 @@
 import { Link } from 'react-router-dom';
 import { Button, Card, CardText, CardTitle, Row, Col } from 'reactstrap';
-import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
-
-withReactContent(Swal);
 
 export default function Reviews() {
 	return (

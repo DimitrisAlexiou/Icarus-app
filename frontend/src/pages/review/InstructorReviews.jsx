@@ -1,15 +1,15 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-	getGeneralReviews,
+	getInstructorReviews,
 	reset,
-} from '../features/reviews/generalReviewSlice';
+} from '../../features/reviews/instructorReviewSlice';
 import { Spinner } from 'reactstrap';
-import GeneralReviewItem from '../components/GeneralReviewItem';
+import InstructorReviewItem from '../../components/review/InstructorReviewItem';
 
-export default function GeneralReviews() {
-	const { generalReview, isLoading, isSuccess } = useSelector(
-		(state) => state.generalReview,
+export default function InstructorReviews() {
+	const { instructorReview, isLoading, isSuccess } = useSelector(
+		(state) => state.instructorReview,
 	);
 
 	const dispatch = useDispatch();
@@ -23,7 +23,7 @@ export default function GeneralReviews() {
 	}, [dispatch, isSuccess]);
 
 	useEffect(() => {
-		dispatch(getGeneralReviews());
+		dispatch(getInstructorReviews());
 	}, [dispatch]);
 
 	if (isLoading) {
@@ -40,17 +40,17 @@ export default function GeneralReviews() {
 				<div id="content">
 					<div>
 						<h1 className="h3 mb-5 text-gray-800 font-weight-bold">
-							General Reviews !
+							Instructor Reviews !
 						</h1>
 					</div>
 
 					<div className="row">
 						<div className="col-sm-12 col-md-6 col-lg-4 g-4 mb-3">
 							<div className="col">
-								{generalReview.map((generalReview) => (
-									<GeneralReviewItem
-										key={generalReview._id}
-										generalReview={generalReview}
+								{instructorReview.map((instructorReview) => (
+									<InstructorReviewItem
+										key={instructorReview._id}
+										instructorReview={instructorReview}
 									/>
 								))}
 							</div>

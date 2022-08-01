@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import { useNavigate, NavLink } from 'react-router-dom';
-import { useAuth0 } from '@auth0/auth0-react';
 import {
 	Nav,
 	NavItem,
@@ -14,9 +12,10 @@ import {
 	ModalBody,
 	ModalFooter,
 } from 'reactstrap';
+import { useNavigate, NavLink } from 'react-router-dom';
+import { useAuth0 } from '@auth0/auth0-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-	faUserPlus,
 	faUnlock,
 	faGraduationCap,
 	faUser,
@@ -30,11 +29,10 @@ import {
 	faEnvelope,
 } from '@fortawesome/free-solid-svg-icons';
 import Clock from 'react-live-clock';
-import '../App.css';
+import '../../App.css';
 
 export default function NavBar() {
-	const { loginWithRedirect } = useAuth0();
-	const { user, logout } = useAuth0();
+	const { loginWithRedirect, user, logout } = useAuth0();
 
 	// NOTIFICATIONS NAV
 	const [isOpen, setIsOpen] = useState(false);
@@ -65,10 +63,14 @@ export default function NavBar() {
 	};
 
 	// LOGOUT MODAL
-	const [show, setShow] = useState(false);
+	const [isOpenLogout, setIsOpenLogout] = useState(false);
+	const [modal, setModal] = useState(false);
 
-	const handleClose = () => setShow(false);
-	const toggleLogout = () => setShow(true);
+	const toggleLogout = () => setModal((prevState) => !prevState);
+	const handleClose = () => setIsOpenLogout(!isOpenLogout);
+
+	// const [show, setShow] = useState(false);
+	// const toggleLogout = () => setShow(true);
 
 	return (
 		<>
@@ -90,14 +92,8 @@ export default function NavBar() {
 				<NavItem className="navbar-nav ml-auto">
 					<NavItem className="nav-item mx-1">
 						<div className="nav-link" id="clock">
-							<Clock format={'HH:mm:ss'} ticking={true} timezone={'EU/UTC+2'} />
+							<Clock format={'HH:mm:ss'} ticking={true} />
 						</div>
-					</NavItem>
-
-					<NavItem className="nav-item mx-1">
-						<NavLink className="nav-link" color="null" to="/register">
-							<FontAwesomeIcon icon={faUserPlus} />
-						</NavLink>
 					</NavItem>
 
 					<NavItem className="nav-item mx-1">
@@ -194,7 +190,7 @@ export default function NavBar() {
 										<div className="dropdown-list-image mr-3">
 											<img
 												className="rounded-circle"
-												src="../assets/images/undraw_profile_1.svg"
+												// src="../assets/undraw_profile_1.svg"
 												alt="..."
 											/>
 											<div className="status-indicator bg-success"></div>
@@ -213,7 +209,7 @@ export default function NavBar() {
 										<div className="dropdown-list-image mr-3">
 											<img
 												className="rounded-circle"
-												src="/img/undraw_profile_2.svg"
+												// src="../public/undraw_profile_2.svg"
 												alt="..."
 											/>
 											<div className="status-indicator"></div>
@@ -230,7 +226,7 @@ export default function NavBar() {
 										<div className="dropdown-list-image mr-3">
 											<img
 												className="rounded-circle"
-												src="../public/undraw_profile_3.svg"
+												// src="../public/undraw_profile_3.svg"
 												alt="..."
 											/>
 											<div className="status-indicator bg-warning"></div>
@@ -276,7 +272,11 @@ export default function NavBar() {
 					<NavItem className="nav-item mx-1">
 						{user ? (
 							<>
-								<Dropdown isOpen={dropdownOpenUser} toggle={toggleUser}>
+								<Dropdown
+									className="animated--grow-in"
+									isOpen={dropdownOpenUser}
+									toggle={toggleUser}
+								>
 									<DropdownToggle className="nav-link mx-1" color="null">
 										<img
 											className="img-profile rounded-circle"
@@ -285,7 +285,6 @@ export default function NavBar() {
 										/>
 									</DropdownToggle>
 									<DropdownMenu>
-										<div className="dropdown-menu dropdown-menu-right shadow animated--grow-in"></div>
 										<DropdownItem className="dropdown-item d-flex align-items-center">
 											<NavLink
 												to="profile"
@@ -322,8 +321,9 @@ export default function NavBar() {
 										<DropdownItem divider />
 										<DropdownItem className="dropdown-item d-flex align-items-center">
 											<Button
-												className="btn btn-default"
-												onClick={toggleLogout}
+												onClick={() =>
+													logout({ returnTo: window.location.origin })
+												}
 												style={{ textDecoration: 'none', color: 'inherit' }}
 											>
 												<i className="mr-2 text-gray-400">
@@ -331,9 +331,8 @@ export default function NavBar() {
 												</i>
 												Logout
 											</Button>
-											<Modal show={show} onHide={handleClose}>
+											{/* <Modal isOpenLogout={modal} onHide={handleClose}>
 												<ModalHeader className="modal-header" closeButton>
-													{/* <ModalTitle className="modal-title"> */}
 													Ready to Leave?
 												</ModalHeader>
 												<ModalBody className="modal-body">
@@ -356,7 +355,7 @@ export default function NavBar() {
 														Logout
 													</Button>
 												</ModalFooter>
-											</Modal>
+											</Modal> */}
 										</DropdownItem>
 									</DropdownMenu>
 								</Dropdown>

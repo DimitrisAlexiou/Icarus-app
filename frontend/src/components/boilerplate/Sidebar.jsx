@@ -6,7 +6,6 @@ import {
 	DropdownToggle,
 	DropdownMenu,
 	DropdownItem,
-	Button,
 	Nav,
 	NavItem,
 } from 'reactstrap';
@@ -21,7 +20,7 @@ import {
 	faWrench,
 	faBarsProgress,
 } from '@fortawesome/free-solid-svg-icons';
-import '../App.css';
+import '../../App.css';
 
 export default function Sidebar() {
 	const { user, isAuthenticated } = useAuth0();
@@ -115,7 +114,6 @@ export default function Sidebar() {
 			</NavItem>
 
 			<hr className="sidebar-divider" />
-
 			<div className="sidebar-heading">Data</div>
 
 			<NavItem className="nav-item">

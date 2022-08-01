@@ -1,10 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import App from './App';
+import './index.css';
+import history from './utils/history';
 import * as serviceWorker from './serviceWorker';
 import { Auth0Provider } from '@auth0/auth0-react';
-import history from './utils/history';
 import { getConfig } from './config';
 import { store } from './app/store';
 import { Provider } from 'react-redux';
@@ -23,7 +23,7 @@ const providerConfig = {
 	domain: config.domain,
 	clientId: config.clientId,
 	...(config.audience ? { audience: config.audience } : null),
-	redirectUri: 'http://localhost:3000',
+	redirectUri: 'http://localhost:3000/course',
 	onRedirectCallback,
 };
 

@@ -1,10 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Form, Button, FloatingLabel } from 'reactstrap';
-import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
-
-withReactContent(Swal);
 
 export default function ForgotPassword() {
 	const [formData, setFormData] = useState({
@@ -31,8 +27,6 @@ export default function ForgotPassword() {
 			e.stopPropagation();
 		}
 		setValidated(true);
-
-		// e.preventDefault();
 	};
 
 	return (
@@ -57,12 +51,7 @@ export default function ForgotPassword() {
 												</p>
 											</div>
 
-											<Form
-												className="user validated-form"
-												validated={validated}
-												onSubmit={onSubmit}
-												noValidate
-											>
+											<Form>
 												<Form.Group className="form-group form-floating">
 													<FloatingLabel
 														label="Enter Email Address . . ."
