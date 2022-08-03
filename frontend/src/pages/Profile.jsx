@@ -1,20 +1,16 @@
 import React from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useState, useEffect } from 'react';
-import { Spinner } from 'reactstrap';
 import ProfileCard1 from '../components/user/ProfileCard1';
 import ProfileCard2 from '../components/user/ProfileCard2';
 import ProfileCard3 from '../components/user/ProfileCard3';
+import Spinner from '../components/boilerplate/Spinner';
 
 export default function Profile() {
 	const { user, isAuthenticated, isLoading } = useAuth0();
 
 	if (isLoading) {
-		return (
-			<Spinner color="primary" type="grow">
-				Loading...
-			</Spinner>
-		);
+		return <Spinner />;
 	}
 
 	return (

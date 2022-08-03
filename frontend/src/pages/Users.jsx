@@ -1,8 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
-import { Spinner } from 'reactstrap';
 import UsersDataTable from '../components/UsersDataTable';
+import Spinner from '../components/boilerplate/Spinner';
 
 export default function Users() {
 	const { isAuthenticated, isLoading } = useAuth0();
@@ -10,11 +10,7 @@ export default function Users() {
 	const navigate = useNavigate();
 
 	if (isLoading) {
-		return (
-			<Spinner color="primary" type="grow">
-				Loading...
-			</Spinner>
-		);
+		return <Spinner />;
 	}
 
 	return (

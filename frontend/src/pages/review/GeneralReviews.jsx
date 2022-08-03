@@ -4,8 +4,8 @@ import {
 	getGeneralReviews,
 	reset,
 } from '../../features/reviews/generalReviewSlice';
-import { Spinner } from 'reactstrap';
 import GeneralReviewItem from '../../components/review/GeneralReviewItem';
+import Spinner from '../../components/boilerplate/Spinner';
 
 export default function GeneralReviews() {
 	const { generalReview, isLoading, isSuccess } = useSelector(
@@ -27,11 +27,7 @@ export default function GeneralReviews() {
 	}, [dispatch]);
 
 	if (isLoading) {
-		return (
-			<Spinner color="primary" type="grow">
-				Loading...
-			</Spinner>
-		);
+		return <Spinner />;
 	}
 
 	return (

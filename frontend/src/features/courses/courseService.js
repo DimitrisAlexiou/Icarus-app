@@ -28,6 +28,21 @@ const updateCourse = async (courseId, courseData, token) => {
 	return response.data;
 };
 
+// Activate Course
+const activateCourse = async (courseId, token) => {
+	const config = {
+		headers: { headers },
+	};
+
+	const response = await axios.put(
+		API_URL_COURSE + courseId + '/activate',
+		{ isActive: true },
+		config,
+	);
+
+	return response.data;
+};
+
 // Delete Course
 const deleteCourse = async (courseId, token) => {
 	const config = {
@@ -64,6 +79,7 @@ const getCourse = async (courseId) => {
 const courseService = {
 	createCourse,
 	updateCourse,
+	activateCourse,
 	deleteCourse,
 	getCourses,
 	getCourse,

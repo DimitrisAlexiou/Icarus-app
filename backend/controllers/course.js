@@ -137,17 +137,18 @@ module.exports.updateCourse = asyncHandler(async (req, res) => {
 
 	try {
 		const { id } = req.params;
-		const course = await Course.findByIdAndUpdate(
-			id,
-			{ ...req.body.course },
-			{ new: true },
-		);
+		const course = await Course.findById(id);
+
 		if (!course) {
 			return res
 				.status(404)
 				.json('Seems like there is no course with this ID!');
 		} else {
-			const updatedCourse = await course.save();
+			const updatedCourse = await Course.findByIdAndUpdate(
+				id,
+				{ ...req.body.course },
+				{ new: true },
+			);
 			return res.status(200).json(updatedCourse);
 		}
 	} catch (error) {

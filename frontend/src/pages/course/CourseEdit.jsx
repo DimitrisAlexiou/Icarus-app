@@ -4,7 +4,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Formik, Form } from 'formik';
 import { useAuth0 } from '@auth0/auth0-react';
 import { updateCourse, reset } from '../../features/courses/courseSlice';
-import { Spinner } from 'reactstrap';
 import { Toast } from '../../constants/sweetAlertNotification';
 import { CourseSchema } from '../../schemas/Course';
 // import courseService from '../../features/courses/courseService';
@@ -14,6 +13,7 @@ import FormErrorMessage from '../../components/FormErrorMessage';
 import FormCheckbox from '../../components/FormCheckbox';
 import CancelButton from '../../components/buttons/CancelButton';
 import SubmitButton from '../../components/buttons/SubmitButton';
+import Spinner from '../../components/boilerplate/Spinner';
 
 export default function CourseEdit() {
 	const { isAuthenticated } = useAuth0();
@@ -66,11 +66,7 @@ export default function CourseEdit() {
 	};
 
 	if (isLoading) {
-		return (
-			<Spinner color="primary" type="grow">
-				Loading...
-			</Spinner>
-		);
+		return <Spinner />;
 	}
 
 	return (

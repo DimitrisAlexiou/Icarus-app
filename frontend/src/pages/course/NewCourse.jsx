@@ -3,12 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Formik, Form } from 'formik';
 import { CourseSchema } from '../../schemas/Course';
-import { Spinner } from 'reactstrap';
 import { Toast } from '../../constants/sweetAlertNotification';
 import courseService from '../../features/courses/courseService';
 import CourseForm from '../../components/course/CourseForm';
 import CancelButton from '../../components/buttons/CancelButton';
 import SubmitButton from '../../components/buttons/SubmitButton';
+import Spinner from '../../components/boilerplate/Spinner';
 
 export default function NewCourse() {
 	const { isAuthenticated, isLoading } = useAuth0();
@@ -47,11 +47,7 @@ export default function NewCourse() {
 	};
 
 	if (isLoading) {
-		return (
-			<Spinner color="primary" type="grow">
-				Loading...
-			</Spinner>
-		);
+		return <Spinner />;
 	}
 
 	return (

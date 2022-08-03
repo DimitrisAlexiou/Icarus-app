@@ -32,14 +32,14 @@ router.route('/new').post(validateCourse, catchAsync(createCourse));
 // @access private
 router.route('/:id').get(catchAsync(viewCourse));
 
-// @desc Update Course by ID
-// @route PUT /api/course/:id
-// @access private
-router.route('/:id').put(validateCourse, catchAsync(updateCourse));
-
 // @desc Delete Course by ID
 // @route DELETE /api/course/:id
 // @access private
 router.route('/:id').delete(catchAsync(deleteCourse));
+
+// @desc Update Course by ID
+// @route PUT /api/course/:id
+// @access private
+router.route('/:id/edit').put(validateCourse, catchAsync(updateCourse));
 
 module.exports = router;

@@ -3,12 +3,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Link } from 'react-router-dom';
 import { getCourses, reset } from '../../features/courses/courseSlice';
-import { Spinner } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBook } from '@fortawesome/free-solid-svg-icons';
 import CycleCourseItem from '../../components/course/CycleCourseItem';
 import CourseItem from '../../components/course/CourseItem';
 import Notification from '../../components/boilerplate/Notification';
+import Spinner from '../../components/boilerplate/Spinner';
 
 export default function Courses() {
 	const { isAuthenticated } = useAuth0();
@@ -31,11 +31,7 @@ export default function Courses() {
 	}, [dispatch]);
 
 	if (isLoading) {
-		return (
-			<Spinner color="primary" type="grow">
-				Loading...
-			</Spinner>
-		);
+		return <Spinner />;
 	}
 
 	return (

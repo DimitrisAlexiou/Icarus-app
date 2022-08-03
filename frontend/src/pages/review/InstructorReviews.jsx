@@ -4,8 +4,8 @@ import {
 	getInstructorReviews,
 	reset,
 } from '../../features/reviews/instructorReviewSlice';
-import { Spinner } from 'reactstrap';
 import InstructorReviewItem from '../../components/review/InstructorReviewItem';
+import Spinner from '../../components/boilerplate/Spinner';
 
 export default function InstructorReviews() {
 	const { instructorReview, isLoading, isSuccess } = useSelector(
@@ -27,11 +27,7 @@ export default function InstructorReviews() {
 	}, [dispatch]);
 
 	if (isLoading) {
-		return (
-			<Spinner color="primary" type="grow">
-				Loading...
-			</Spinner>
-		);
+		return <Spinner />;
 	}
 
 	return (

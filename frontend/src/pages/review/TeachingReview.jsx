@@ -6,11 +6,12 @@ import {
 	createTeachingReview,
 	reset,
 } from '../../features/reviews/teachingReviewSlice';
-import { Spinner, Form } from 'reactstrap';
+import { Form } from 'reactstrap';
 import { Toast } from '../../constants/sweetAlertNotification';
 import TeachingReviewForm from '../../components/review/TeachingReviewForm';
 import CancelButton from '../../components/buttons/CancelButton';
 import SubmitButton from '../../components/buttons/SubmitButton';
+import Spinner from '../../components/boilerplate/Spinner';
 
 export default function TeachingReview() {
 	const { isAuthenticated, isLoading } = useAuth0();
@@ -71,11 +72,7 @@ export default function TeachingReview() {
 	};
 
 	if (isLoading) {
-		return (
-			<Spinner color="primary" type="grow">
-				Loading...
-			</Spinner>
-		);
+		return <Spinner />;
 	}
 
 	return (

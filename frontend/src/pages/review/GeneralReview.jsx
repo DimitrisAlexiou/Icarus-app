@@ -8,12 +8,12 @@ import {
 	reset,
 } from '../../features/reviews/generalReviewSlice';
 import generalReviewService from '../../features/reviews/generalReviewService';
-import { Spinner } from 'reactstrap';
 import { GeneralReviewSchema } from '../../schemas/GeneralReviewSchema';
 import { Toast } from '../../constants/sweetAlertNotification';
 import GeneralReviewForm from '../../components/review/GeneralReviewForm';
 import CancelButton from '../../components/buttons/CancelButton';
 import SubmitButton from '../../components/buttons/SubmitButton';
+import Spinner from '../../components/boilerplate/Spinner';
 
 export default function GeneralReview() {
 	const { isAuthenticated, isLoading } = useAuth0();
@@ -75,11 +75,7 @@ export default function GeneralReview() {
 	};
 
 	if (isLoading) {
-		return (
-			<Spinner color="primary" type="grow">
-				Loading...
-			</Spinner>
-		);
+		return <Spinner />;
 	}
 
 	return (

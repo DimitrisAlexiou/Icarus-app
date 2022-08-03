@@ -3,13 +3,14 @@ import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { useAuth0 } from '@auth0/auth0-react';
 import { getCourse, deleteCourse } from '../../features/courses/courseSlice';
-import { Spinner, Button } from 'reactstrap';
+import { Button } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { Toast } from '../../constants/sweetAlertNotification';
 import courseService from '../../features/courses/courseService';
 import CourseCard from '../../components/course/CourseCard';
 import BackButton from '../../components/buttons/BackButton';
+import Spinner from '../../components/boilerplate/Spinner';
 
 export default function Course() {
 	const { isAuthenticated } = useAuth0();
@@ -61,11 +62,7 @@ export default function Course() {
 	// };
 
 	if (isLoading) {
-		return (
-			<Spinner color="primary" type="grow">
-				Loading...
-			</Spinner>
-		);
+		return <Spinner />;
 	}
 
 	return (

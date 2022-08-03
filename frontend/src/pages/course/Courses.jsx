@@ -1,18 +1,15 @@
 import { useAuth0 } from '@auth0/auth0-react';
 import { Link } from 'react-router-dom';
-import { Spinner } from 'reactstrap';
 import { Card, CardText, CardTitle, Row, Col } from 'reactstrap';
+import Spinner from '../../components/boilerplate/Spinner';
 
 export default function Courses() {
 	const { isAuthenticated, isLoading } = useAuth0();
 
 	if (isLoading) {
-		return (
-			<Spinner color="primary" type="grow">
-				Loading...
-			</Spinner>
-		);
+		return <Spinner />;
 	}
+
 	return (
 		isAuthenticated && (
 			<>
