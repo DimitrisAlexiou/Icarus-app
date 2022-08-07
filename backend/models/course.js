@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
-// const Review = require('./Review');
+const Prerequisites = require('./prerequisites');
+const Teaching = require('./teaching');
 const Schema = mongoose.Schema;
 
 const courseSchema = new Schema(
@@ -20,9 +21,12 @@ const courseSchema = new Schema(
 		description: {
 			type: String,
 		},
-		prerequisites: {
-			type: String,
-		},
+		prerequisites: [
+			{
+				type: Schema.Types.ObjectId,
+				ref: 'Prerequisites',
+			},
+		],
 		semester: {
 			type: String,
 			enum: ['Winter', 'Spring', 'Any'],
@@ -63,27 +67,36 @@ const courseSchema = new Schema(
 			type: Number,
 			required: true,
 		},
-
-		// reviews: [
-		// 	{
-		// 		type: Schema.Types.ObjectId,
-		// 		ref: 'Review',
-		// 	},
-		// ],
+		teaching: [
+			{
+				type: Schema.Types.ObjectId,
+				ref: 'Teaching',
+			},
+		],
 	},
 	{
 		timestamps: true,
 	},
 );
 
-// courseSchema.post('findOneAndDelete', async function (data) {
-// 	if (data) {
-// 		await Review.deleteMany({
-// 			_id: {
-// 				$in: data.reviews,
-// 			},
-// 		});
-// 	}
-// });
+courseSchema.post('findOneAndDelete', async function (data) {
+	if (data) {
+		await Prerequisites.deleteMany({
+			_id: {
+				$in: data.prerequisites,
+			},
+		});
+	}
+});
+
+courseSchema.post('findOneAndDelete', async function (data) {
+	if (data) {
+		await Teaching.deleteMany({
+			_id: {
+				$in: data.teaching,
+			},
+		});
+	}
+});
 
 module.exports = mongoose.model('Course', courseSchema);

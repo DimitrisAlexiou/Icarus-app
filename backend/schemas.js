@@ -68,6 +68,12 @@ module.exports.courseSchema = Joi.object({
 	}).required(),
 });
 
+module.exports.prerequisitesSchema = Joi.object({
+	prerequisites: Joi.object({
+		type: Joi.string().valid('hard', 'soft').required(),
+	}).required(),
+});
+
 module.exports.teachingReviewSchema = Joi.object({
 	teachingReview: Joi.object({
 		clear_course_objectives: Joi.number().required(),
@@ -97,3 +103,14 @@ module.exports.generalReviewSchema = Joi.object({
 		dislikes: Joi.string().required(),
 	}).required(),
 });
+
+module.exports.degreeRulesSchema = Joi.object({
+	degreeRules: Joi.object({
+		cycles: Joi.number().min(1).required(),
+		courses: Joi.number().min(1).required(),
+		cycleCourses: Joi.number().min(1).required(),
+		practice: Joi.boolean().default(false).required(),
+	}).required(),
+});
+
+//TODO rest schema validations
