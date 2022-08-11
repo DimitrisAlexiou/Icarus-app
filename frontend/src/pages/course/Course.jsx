@@ -5,7 +5,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import { getCourse, deleteCourse } from '../../features/courses/courseSlice';
 import { Button } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faTrashAlt, faCheck } from '@fortawesome/free-solid-svg-icons';
 import { Toast } from '../../constants/sweetAlertNotification';
 import courseService from '../../features/courses/courseService';
 import CourseCard from '../../components/course/CourseCard';
@@ -13,13 +13,17 @@ import BackButton from '../../components/buttons/BackButton';
 import Spinner from '../../components/boilerplate/Spinner';
 
 export default function Course() {
-	const { isAuthenticated } = useAuth0();
-	const { course, isError, isLoading, message } = useSelector(
-		(state) => state.courses,
-	);
+	const { isAuthenticated, isLoading } = useAuth0();
 
-	const dispatch = useDispatch();
+	const {
+		course,
+		isError,
+		isLoading: courseIsLoading,
+		message,
+	} = useSelector((state) => state.courses);
+
 	const { courseId } = useParams();
+	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
 	const deleteCourse = async () => {
@@ -40,6 +44,24 @@ export default function Course() {
 		}
 	};
 
+	const activateCourse = async () => {
+		try {
+			await courseService.activateCourse(courseId);
+			Toast.fire({
+				title: 'Success',
+				text: 'Course activated successfully!',
+				icon: 'success',
+			});
+			navigate('/course/' + courseId + '/teaching');
+		} catch (error) {
+			Toast.fire({
+				title: 'Error while activating course!',
+				text: error.response.data,
+				icon: 'error',
+			});
+		}
+	};
+
 	useEffect(() => {
 		if (isError) {
 			Toast.fire({
@@ -52,16 +74,16 @@ export default function Course() {
 	}, [dispatch, isError, message, courseId]);
 
 	// const deleteCourse = () => {
-	// 	dispatch(deleteCourse(courseId));
-	// 	Toast.fire({
-	// 		title: 'Success',
-	// 		text: 'Course deleted successfully!',
-	// 		icon: 'success',
-	// 	});
-	// 	navigate('/course');
+	//  dispatch(deleteCourse(courseId));
+	//  Toast.fire({
+	//      title: 'Success',
+	//      text: 'Course deleted successfully!',
+	//      icon: 'success',
+	//  });
+	//  navigate('/course');
 	// };
 
-	if (isLoading) {
+	if (isLoading || courseIsLoading) {
 		return <Spinner />;
 	}
 
@@ -85,6 +107,15 @@ export default function Course() {
 													</h6>
 												</div>
 												<div className="col-6 d-flex justify-content-end">
+													<div className="px-2">
+														<Button
+															className="btn btn-light btn-small"
+															style={{ fontWeight: 500, fontSize: 15 }}
+															onClick={activateCourse}
+														>
+															<FontAwesomeIcon icon={faCheck} /> Activate
+														</Button>
+													</div>
 													<div className="px-2">
 														<Link
 															to={`/course/${course._id}/edit`}

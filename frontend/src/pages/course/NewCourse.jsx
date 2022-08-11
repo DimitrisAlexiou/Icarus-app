@@ -17,6 +17,7 @@ export default function NewCourse() {
 		title: '',
 		type: '',
 		description: '',
+		prerequisites: 'None',
 		semester: '',
 		year: '',
 		cycle: '',
@@ -76,7 +77,7 @@ export default function NewCourse() {
 												</h6>
 											</div>
 											<div className="card-body">
-												<Form>
+												<Form name="NewCourse">
 													<CourseForm initialValues={initialValues} />
 
 													<div className="row">

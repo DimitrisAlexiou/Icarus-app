@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Badge } from 'reactstrap';
 import { Formik, Form } from 'formik';
-import { DegreeRulesSchema } from '../schemas/DegreeRules';
+import { DegreeRulesSchema } from '../../schemas/DegreeRules';
 import { Toast } from '../../constants/sweetAlertNotification';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -12,11 +12,12 @@ import {
 	faUserGraduate,
 	faUsers,
 } from '@fortawesome/free-solid-svg-icons';
-import degreeRulesService from '../features/rules/degreeRulesService';
-import DegreeRulesForm from '../components/DegreeRulesForm';
-import SubmitButton from '../components/buttons/SubmitButton';
-import DatePicker from '../components/DatePicker';
-import Spinner from '../components/boilerplate/Spinner';
+import degreeRulesService from '../../features/rules/degreeRulesService';
+import DegreeRulesForm from '../../components/DegreeRulesForm';
+import SubmitButton from '../../components/buttons/SubmitButton';
+import DatePicker from '../../components/DatePicker';
+import CoursesDataTable from '../../components/admin/CoursesDataTable';
+import Spinner from '../../components/boilerplate/Spinner';
 
 export default function AdminDashboard() {
 	const { isAuthenticated, isLoading } = useAuth0();
@@ -37,7 +38,7 @@ export default function AdminDashboard() {
 				text: 'Rules assigned successfully!',
 				icon: 'success',
 			});
-			navigate('/adminDashboard');
+			navigate('/admin/dashboard');
 		} catch (error) {
 			Toast.fire({
 				title: 'Error while assigning degree rules!',
@@ -211,6 +212,7 @@ export default function AdminDashboard() {
 											<div className="card-body">
 												<Form>
 													<DegreeRulesForm initialValues={initialValues} />
+
 													<div className="row">
 														{/* <CancelButton url={'/course'} /> */}
 														<SubmitButton message={'Assign Rules'} />
@@ -221,6 +223,11 @@ export default function AdminDashboard() {
 									</div>
 								</div>
 							</Formik>
+							<div className="row justify-content-center">
+								<div className="col-sm-12 col-md-11 col-lg-10 col-xl-8">
+									<CoursesDataTable />
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>

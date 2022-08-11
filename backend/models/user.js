@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
-// const passportLocalMongoose = require('passport-local-mongoose');
+const Note = require('./note');
 const Schema = mongoose.Schema;
 
-const UserSchema = new Schema(
+const userSchema = new Schema(
 	{
 		name: {
 			type: String,
@@ -31,12 +31,26 @@ const UserSchema = new Schema(
 			required: true,
 			default: false,
 		},
+		notes: [
+			{
+				type: Schema.Types.ObjectId,
+				ref: 'Note',
+			},
+		],
 	},
 	{
 		timestamps: true,
 	},
 );
 
-// UserSchema.plugin(passportLocalMongoose);
+userSchema.post('findOneAndDelete', async function (data) {
+	if (data) {
+		await Note.deleteMany({
+			_id: {
+				$in: data.notes,
+			},
+		});
+	}
+});
 
-module.exports = mongoose.model('User', UserSchema);
+module.exports = mongoose.model('User', userSchema);

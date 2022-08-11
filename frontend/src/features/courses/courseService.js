@@ -1,9 +1,9 @@
 import axios from 'axios';
 import { BASE_URL, headers } from '../../constants/config';
-
 const API_URL_NEW_COURSE = `${BASE_URL}/api/course/new`;
 const API_URL_COURSES = `${BASE_URL}/api/course`;
 const API_URL_COURSE = `${BASE_URL}/api/course/`;
+const API_URL_TEACHING = `${BASE_URL}/api/course/:courseId/teaching`;
 
 // Create Course
 const createCourse = async (courseData, token) => {
@@ -35,7 +35,7 @@ const activateCourse = async (courseId, token) => {
 	};
 
 	const response = await axios.put(
-		API_URL_COURSE + courseId + '/activate',
+		API_URL_COURSE + courseId,
 		{ isActive: true },
 		config,
 	);
@@ -76,6 +76,16 @@ const getCourse = async (courseId) => {
 	return response.data;
 };
 
+// Create Teaching
+const createTeaching = async (teachingData, token) => {
+	const config = {
+		headers: { headers },
+	};
+
+	// return await axios.post(API_URL_COURSE + courseId + '/teaching', teachingData, config);
+	return await axios.post(API_URL_TEACHING, teachingData, config);
+};
+
 const courseService = {
 	createCourse,
 	updateCourse,
@@ -83,6 +93,7 @@ const courseService = {
 	deleteCourse,
 	getCourses,
 	getCourse,
+	createTeaching,
 };
 
 export default courseService;

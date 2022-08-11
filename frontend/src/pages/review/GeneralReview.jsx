@@ -17,9 +17,13 @@ import Spinner from '../../components/boilerplate/Spinner';
 
 export default function GeneralReview() {
 	const { isAuthenticated, isLoading } = useAuth0();
-	const { isError, isSuccess, message } = useSelector(
-		(state) => state.generalReview,
-	);
+	const {
+		generalReview,
+		isError,
+		isSuccess,
+		isLoading: generalReviewIsLoading,
+		message,
+	} = useSelector((state) => state.generalReview);
 
 	const initialValues = {
 		course_opinion: '',
@@ -74,7 +78,7 @@ export default function GeneralReview() {
 		}
 	};
 
-	if (isLoading) {
+	if (isLoading || generalReviewIsLoading) {
 		return <Spinner />;
 	}
 

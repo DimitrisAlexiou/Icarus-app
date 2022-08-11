@@ -15,9 +15,13 @@ import Spinner from '../../components/boilerplate/Spinner';
 
 export default function InstructorReview() {
 	const { isAuthenticated, isLoading } = useAuth0();
-	const { isError, isSuccess, message } = useSelector(
-		(state) => state.instructorReview,
-	);
+	const {
+		instructorReview,
+		isError,
+		isSuccess,
+		isLoading: instructorReviewIsLoading,
+		message,
+	} = useSelector((state) => state.instructorReview);
 
 	const [instructorReviewData, setFormData] = useState({
 		good_organization: '',
@@ -70,7 +74,7 @@ export default function InstructorReview() {
 		dispatch(createInstructorReview(instructorReviewData));
 	};
 
-	if (isLoading) {
+	if (isLoading || instructorReviewIsLoading) {
 		return <Spinner />;
 	}
 

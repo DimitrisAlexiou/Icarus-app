@@ -1,10 +1,9 @@
 const asyncHandler = require('express-async-handler');
 const Course = require('../models/course');
+const Teaching = require('../models/teaching');
 
 //? --------------------- * * COURSES CRUD * * --------------------
-// @desc    Get Courses
-// @route   GET /api/course
-// @access  Private
+// View all Courses
 module.exports.getCourses = asyncHandler(async (req, res) => {
 	try {
 		const courses = await Course.find({});
@@ -19,9 +18,7 @@ module.exports.getCourses = asyncHandler(async (req, res) => {
 	}
 });
 
-// @desc    Get Course
-// @route   GET /api/course/:id
-// @access  Private
+// View Course by ID
 module.exports.viewCourse = asyncHandler(async (req, res) => {
 	try {
 		const { id } = req.params;
@@ -39,9 +36,7 @@ module.exports.viewCourse = asyncHandler(async (req, res) => {
 	}
 });
 
-// @desc    Create new Course
-// @route   POST /api/course/new
-// @access  Private
+// Create new Course
 module.exports.createCourse = asyncHandler(async (req, res) => {
 	const {
 		cid,
@@ -101,9 +96,45 @@ module.exports.createCourse = asyncHandler(async (req, res) => {
 	}
 });
 
-// @desc    Update Course
-// @route   PUT /api/course/:id/edit
-// @access  Private
+// Activate Course and create Course Teaching
+module.exports.activateCourse = asyncHandler(async (req, res) => {
+	try {
+		const { id } = req.params;
+		const course = await Course.findById(id);
+
+		if (!course) {
+			return res
+				.status(404)
+				.json('Seems like there is no course with this ID!');
+		} else {
+			try {
+				await Course.findByIdAndUpdate(
+					id,
+					{ ...req.body.course },
+					{ new: true },
+				);
+				try {
+					await Teaching.create({
+						course: course,
+						status: 'new',
+					});
+					return res.status(201).json(course);
+				} catch (error) {
+					console.error('❌ Error while creating course teaching: ', error);
+					return res.status(500).json(`${error.message}`);
+				}
+			} catch (error) {
+				console.error('❌ Error while activating course: ', error);
+				return res.status(500).json(`${error.message}`);
+			}
+		}
+	} catch (error) {
+		console.error('❌ Error while finding course: ', error);
+		return res.status(500).json(`${error.message}`);
+	}
+});
+
+// Update Course
 module.exports.updateCourse = asyncHandler(async (req, res) => {
 	const {
 		cid,
@@ -157,9 +188,7 @@ module.exports.updateCourse = asyncHandler(async (req, res) => {
 	}
 });
 
-// @desc    Delete Course
-// @route   DELETE /api/course/:id
-// @access  Private
+// Delete Course by ID
 module.exports.deleteCourse = asyncHandler(async (req, res) => {
 	try {
 		const { id } = req.params;
@@ -171,9 +200,7 @@ module.exports.deleteCourse = asyncHandler(async (req, res) => {
 	}
 });
 
-// @desc    Delete All Courses
-// @route   DELETE /api/course
-// @access  Private
+// Delete all Courses
 module.exports.deleteCourses = asyncHandler(async (req, res) => {
 	try {
 		await Course.deleteMany({});

@@ -2,9 +2,10 @@ const asyncHandler = require('express-async-handler');
 const TeachingReview = require('../models/teachingReview');
 const InstructorReview = require('../models/instructorReview');
 const GeneralReview = require('../models/generalReview');
+const User = require('../models/user');
 
-//? --------------------- * * Teaching Reviews CRUD * * --------------------
-// View All Teaching Reviews
+//? --------------------- * * TEACHING REVIEWS CRUD * * --------------------
+// View all Teaching Reviews (ADMIN)
 module.exports.getTeachingReviews = asyncHandler(async (req, res) => {
 	try {
 		const teachingReviews = await TeachingReview.find({});
@@ -19,31 +20,35 @@ module.exports.getTeachingReviews = asyncHandler(async (req, res) => {
 	}
 });
 
-// View All User Teaching Reviews
+// View all User Teaching Reviews
 module.exports.getUserTeachingReviews = asyncHandler(async (req, res) => {
 	try {
-		// Get user using the id in the JWT
 		const userId = req.user.id;
 		const user = await User.findById(userId);
 
 		if (!user) {
 			return res.status(401).json('User not found!');
 		} else {
-			const userTeachingReviews = await TeachingReview.find({
-				user: userId,
-			});
-			if (userTeachingReviews.length === 0) {
-				return res
-					.status(404)
-					.json(
-						`Seems like there are no teaching reviews from user: ${req.user.username}!`,
-					);
-			} else {
-				return res.status(200).json(userTeachingReviews);
+			try {
+				const userTeachingReviews = await TeachingReview.find({
+					user: userId,
+				});
+				if (userTeachingReviews.length === 0) {
+					return res
+						.status(404)
+						.json(
+							`Seems like there are no teaching reviews from user: ${req.user.username}!`,
+						);
+				} else {
+					return res.status(200).json(userTeachingReviews);
+				}
+			} catch (error) {
+				console.error('❌ Error while finding user teaching reviews: ', error);
+				return res.status(500).json(`${error.message}`);
 			}
 		}
 	} catch (error) {
-		console.error('❌ Error while finding user teaching reviews: ', error);
+		console.error('❌ Error while finding user: ', error);
 		return res.status(500).json(`${error.message}`);
 	}
 });
@@ -58,30 +63,35 @@ module.exports.viewUserTeachingReview = asyncHandler(async (req, res) => {
 			return res.status(401).json('User not found!');
 		} else {
 			const { id } = req.params;
-			const teachingReview = await TeachingReview.findById(id);
-			if (!teachingReview) {
-				return res
-					.status(404)
-					.json(
-						`Seems like there is no teaching review with this ID for user: ${req.user.username}!`,
-					);
-			} else {
-				if (teachingReview.user.toString() !== userId) {
+			try {
+				const teachingReview = await TeachingReview.findById(id);
+				if (!teachingReview) {
 					return res
-						.status(401)
-						.json('You are not authorized to view this teaching review!');
+						.status(404)
+						.json(
+							`Seems like there is no teaching review with this ID for user: ${req.user.username}!`,
+						);
+				} else {
+					if (teachingReview.user.toString() !== userId) {
+						return res
+							.status(401)
+							.json('You are not authorized to view this teaching review!');
+					}
+					return res.status(200).json(teachingReview);
 				}
-				return res.status(200).json(teachingReview);
+			} catch (error) {
+				console.error('❌ Error while finding user teaching review: ', error);
+				return res.status(500).json(`${error.message}`);
 			}
 		}
 	} catch (error) {
-		console.error('❌ Error while finding teaching review: ', error);
+		console.error('❌ Error while finding user: ', error);
 		return res.status(500).json(`${error.message}`);
 	}
 });
 
 // Create User Teaching Review
-module.exports.createTeachingReview = asyncHandler(async (req, res) => {
+module.exports.createUserTeachingReview = asyncHandler(async (req, res) => {
 	const {
 		clear_course_objectives,
 		course_material,
@@ -102,34 +112,58 @@ module.exports.createTeachingReview = asyncHandler(async (req, res) => {
 		return res.status(400).json('Please fill in all the fields!');
 	}
 
-	// Get user using the id in the JWT
-	const userId = req.user.id;
-	const user = await User.findById(userId);
+	try {
+		const userId = req.user.id;
+		const user = await User.findById(userId);
 
-	if (!user) {
-		return res.status(401).json('User not found!');
-	} else {
-		try {
-			const teachingReview = await TeachingReview.create({
-				clear_course_objectives,
-				course_material,
-				course_comprehension,
-				examination_method,
-				course_difficulty,
-				course_activities,
-				user: userId,
-				status: 'new',
-			});
-			return res.status(201).json(teachingReview);
-		} catch (error) {
-			console.error('❌ Error while creating teaching review: ', error);
-			return res.status(500).json(`${error.message}`);
+		if (!user) {
+			return res.status(401).json('User not found!');
+		} else {
+			try {
+				const teachingReview = await TeachingReview.findOne({ user: userId });
+				if (teachingReview) {
+					return res
+						.status(406)
+						.json(
+							`${req.user.username} has already submitted a teaching review for this semester !`,
+						);
+				} else {
+					try {
+						const newTeachingReview = await TeachingReview.create({
+							clear_course_objectives,
+							course_material,
+							course_comprehension,
+							examination_method,
+							course_difficulty,
+							course_activities,
+							user: userId,
+							status: 'new',
+						});
+						return res.status(201).json(newTeachingReview);
+					} catch (error) {
+						console.error(
+							'❌ Error while creating user teaching review: ',
+							error,
+						);
+						return res.status(500).json(`${error.message}`);
+					}
+				}
+			} catch (error) {
+				console.error(
+					'❌ Error while checking if user has already submitted a teaching review for this semester: ',
+					error,
+				);
+				return res.status(500).json(`${error.message}`);
+			}
 		}
+	} catch (error) {
+		console.error('❌ Error while finding user: ', error);
+		return res.status(500).json(`${error.message}`);
 	}
 });
 
 // Update User Teaching Review
-module.exports.updateTeachingReview = asyncHandler(async (req, res) => {
+module.exports.updateUserTeachingReview = asyncHandler(async (req, res) => {
 	const {
 		clear_course_objectives,
 		course_material,
@@ -158,38 +192,53 @@ module.exports.updateTeachingReview = asyncHandler(async (req, res) => {
 			return res.status(401).json('User not found!');
 		} else {
 			const { id } = req.params;
-			const teachingReview = await TeachingReview.findById(id);
-			if (!teachingReview) {
-				return res
-					.status(404)
-					.json(
-						`Seems like there is no teaching review with this ID for user: ${req.user.username}!`,
-					);
-			} else {
-				if (teachingReview.user.toString() !== userId) {
+			try {
+				const teachingReview = await TeachingReview.findById(id);
+				if (!teachingReview) {
 					return res
-						.status(401)
-						.json('You are not authorized to view this teaching review!');
+						.status(404)
+						.json(
+							`Seems like there is no teaching review with this ID for user: ${req.user.username}!`,
+						);
 				} else {
-					const updatedTeachingReview = await TeachingReview.findByIdAndUpdate(
-						id,
-						{
-							...req.body.teachingReview,
-						},
-						{ new: true },
-					);
-					return res.status(200).json(updatedTeachingReview);
+					if (teachingReview.user.toString() !== userId) {
+						return res
+							.status(401)
+							.json('You are not authorized to view this teaching review!');
+					} else {
+						try {
+							const updatedTeachingReview =
+								await TeachingReview.findByIdAndUpdate(
+									id,
+									{
+										...req.body.teachingReview,
+									},
+									{ user: userId },
+									{ new: true },
+								);
+							return res.status(200).json(updatedTeachingReview);
+						} catch (error) {
+							console.error(
+								'❌ Error while updating user teaching review: ',
+								error,
+							);
+							return res.status(500).json(`${error.message}`);
+						}
+					}
 				}
+			} catch (error) {
+				console.error('❌ Error while finding user teaching review: ', error);
+				return res.status(500).json(`${error.message}`);
 			}
 		}
 	} catch (error) {
-		console.error('❌ Error while finding teaching review: ', error);
+		console.error('❌ Error while finding user: ', error);
 		return res.status(500).json(`${error.message}`);
 	}
 });
 
 // Delete User Teaching Review by ID
-module.exports.deleteTeachingReview = asyncHandler(async (req, res) => {
+module.exports.deleteUserTeachingReview = asyncHandler(async (req, res) => {
 	try {
 		const userId = req.user.id;
 		const user = await User.findById(userId);
@@ -198,31 +247,21 @@ module.exports.deleteTeachingReview = asyncHandler(async (req, res) => {
 			return res.status(401).json('User not found!');
 		} else {
 			const { id } = req.params;
-			const teachingReview = await TeachingReview.findById(id);
-			if (!teachingReview) {
-				return res
-					.status(404)
-					.json(
-						`Seems like there is no teaching review with this ID for user: ${req.user.username}!`,
-					);
-			} else {
-				if (teachingReview.user.toString() !== userId) {
-					return res
-						.status(401)
-						.json('You are not authorized to view this teaching review!');
-				} else {
-					await teachingReview.remove();
-					return res.status(200).json('Teaching review deleted successfully!');
-				}
+			try {
+				await TeachingReview.findByIdAndDelete(id);
+				return res.status(200).json('Teaching review deleted successfully!');
+			} catch (error) {
+				console.error('❌ Error while deleting user teaching review: ', error);
+				return res.status(500).json(`${error.message}`);
 			}
 		}
 	} catch (error) {
-		console.error('❌ Error while deleting teaching review: ', error);
+		console.error('❌ Error while finding user: ', error);
 		return res.status(500).json(`${error.message}`);
 	}
 });
 
-// Delete All Teaching Reviews
+// Delete all Teaching Reviews (ADMIN)
 module.exports.deleteTeachingReviews = asyncHandler(async (req, res) => {
 	try {
 		await TeachingReview.deleteMany({});
@@ -233,8 +272,8 @@ module.exports.deleteTeachingReviews = asyncHandler(async (req, res) => {
 	}
 });
 
-//? --------------------- * * Instructor Reviews CRUD * * --------------------
-// View All Instructor Reviews
+//? --------------------- * * INSTRUCTOR REVIEWS CRUD * * --------------------
+// View all Instructor Reviews (ADMIN)
 module.exports.getInstructorReviews = asyncHandler(async (req, res) => {
 	try {
 		const instructorReviews = await InstructorReview.find({});
@@ -251,31 +290,35 @@ module.exports.getInstructorReviews = asyncHandler(async (req, res) => {
 	}
 });
 
-// View All User Instructor Reviews
+// View all User Instructor Reviews
 module.exports.getUserInstructorReviews = asyncHandler(async (req, res) => {
 	try {
-		// Get user using the id in the JWT
 		const userId = req.user.id;
 		const user = await User.findById(userId);
 
 		if (!user) {
 			return res.status(401).json('User not found!');
 		} else {
-			const userInstructorReviews = await InstructorReview.find({
-				user: userId,
-			});
-			if (userInstructorReviews.length === 0) {
-				return res
-					.status(404)
-					.json(
-						`Seems like there are no instructor reviews from user: ${req.user.username}!`,
-					);
-			} else {
-				return res.status(200).json(userInstructorReviews);
+			try {
+				const userInstructorReviews = await InstructorReview.find({
+					user: userId,
+				});
+				if (userInstructorReviews.length === 0) {
+					return res
+						.status(404)
+						.json(
+							`Seems like there are no instructor reviews from user: ${req.user.username}!`,
+						);
+				} else {
+					return res.status(200).json(userInstructorReviews);
+				}
+			} catch (error) {
+				console.error('❌ Error while finding user teaching reviews: ', error);
+				return res.status(500).json(`${error.message}`);
 			}
 		}
 	} catch (error) {
-		console.error('❌ Error while finding user instructor reviews: ', error);
+		console.error('❌ Error while finding user: ', error);
 		return res.status(500).json(`${error.message}`);
 	}
 });
@@ -290,30 +333,35 @@ module.exports.viewUserInstructorReview = asyncHandler(async (req, res) => {
 			return res.status(401).json('User not found!');
 		} else {
 			const { id } = req.params;
-			const instructorReview = await InstructorReview.findById(id);
-			if (!instructorReview) {
-				return res
-					.status(404)
-					.json(
-						`Seems like there is no instructor review with this ID for user: ${req.user.username}!`,
-					);
-			} else {
-				if (instructorReview.user.toString() !== userId) {
+			try {
+				const instructorReview = await InstructorReview.findById(id);
+				if (!instructorReview) {
 					return res
-						.status(401)
-						.json('You are not authorized to view this instructor review!');
+						.status(404)
+						.json(
+							`Seems like there is no instructor review with this ID for user: ${req.user.username}!`,
+						);
+				} else {
+					if (instructorReview.user.toString() !== userId) {
+						return res
+							.status(401)
+							.json('You are not authorized to view this instructor review!');
+					}
+					return res.status(200).json(instructorReview);
 				}
-				return res.status(200).json(instructorReview);
+			} catch (error) {
+				console.error('❌ Error while finding user instructor review: ', error);
+				return res.status(500).json(`${error.message}`);
 			}
 		}
 	} catch (error) {
-		console.error('❌ Error while finding instructor review: ', error);
+		console.error('❌ Error while finding user: ', error);
 		return res.status(500).json(`${error.message}`);
 	}
 });
 
 // Create User Instructor Review
-module.exports.createInstructorReview = asyncHandler(async (req, res) => {
+module.exports.createUserInstructorReview = asyncHandler(async (req, res) => {
 	const {
 		good_organization,
 		clear_comprehensive_answers,
@@ -332,33 +380,59 @@ module.exports.createInstructorReview = asyncHandler(async (req, res) => {
 		return res.status(400).json('Please fill in all the fields!');
 	}
 
-	// Get user using the id in the JWT
-	const userId = req.user.id;
-	const user = await User.findById(userId);
+	try {
+		const userId = req.user.id;
+		const user = await User.findById(userId);
 
-	if (!user) {
-		return res.status(401).json('User not found!');
-	} else {
-		try {
-			const instructorReview = await InstructorReview.create({
-				good_organization,
-				clear_comprehensive_answers,
-				student_participation,
-				course_consistency,
-				instructor_approachable,
-				user: userId,
-				status: 'new',
-			});
-			return res.status(201).json(instructorReview);
-		} catch (error) {
-			console.error('❌ Error while creating instructor review: ', error);
-			return res.status(500).json(`${error.message}`);
+		if (!user) {
+			return res.status(401).json('User not found!');
+		} else {
+			try {
+				const instructorReview = await InstructorReview.findOne({
+					user: userId,
+				});
+				if (instructorReview) {
+					return res
+						.status(406)
+						.json(
+							`${req.user.username} has already submitted an instructor review for this semester !`,
+						);
+				} else {
+					try {
+						const newInstructorReview = await InstructorReview.create({
+							good_organization,
+							clear_comprehensive_answers,
+							student_participation,
+							course_consistency,
+							instructor_approachable,
+							user: userId,
+							status: 'new',
+						});
+						return res.status(201).json(newInstructorReview);
+					} catch (error) {
+						console.error(
+							'❌ Error while creating user instructor review: ',
+							error,
+						);
+						return res.status(500).json(`${error.message}`);
+					}
+				}
+			} catch (error) {
+				console.error(
+					'❌ Error while checking if user has already submitted an instructor review for this semester: ',
+					error,
+				);
+				return res.status(500).json(`${error.message}`);
+			}
 		}
+	} catch (error) {
+		console.error('❌ Error while finding user: ', error);
+		return res.status(500).json(`${error.message}`);
 	}
 });
 
 // Update User Instructor Review
-module.exports.updateInstructorReview = asyncHandler(async (req, res) => {
+module.exports.updateUserInstructorReview = asyncHandler(async (req, res) => {
 	const {
 		good_organization,
 		clear_comprehensive_answers,
@@ -385,39 +459,53 @@ module.exports.updateInstructorReview = asyncHandler(async (req, res) => {
 			return res.status(401).json('User not found!');
 		} else {
 			const { id } = req.params;
-			const instructorReview = await InstructorReview.findById(id);
-			if (!instructorReview) {
-				return res
-					.status(404)
-					.json(
-						`Seems like there is no instructor review with this ID for user: ${req.user.username}!`,
-					);
-			} else {
-				if (instructorReview.user.toString() !== userId) {
+			try {
+				const instructorReview = await InstructorReview.findById(id);
+				if (!instructorReview) {
 					return res
-						.status(401)
-						.json('You are not authorized to view this instructor review!');
-				} else {
-					const updatedInstructorReview =
-						await InstructorReview.findByIdAndUpdate(
-							id,
-							{
-								...req.body.instructorReview,
-							},
-							{ new: true },
+						.status(404)
+						.json(
+							`Seems like there is no instructor review with this ID for user: ${req.user.username}!`,
 						);
-					return res.status(200).json(updatedInstructorReview);
+				} else {
+					if (instructorReview.user.toString() !== userId) {
+						return res
+							.status(401)
+							.json('You are not authorized to view this instructor review!');
+					} else {
+						try {
+							const updatedInstructorReview =
+								await InstructorReview.findByIdAndUpdate(
+									id,
+									{
+										...req.body.instructorReview,
+									},
+									{ user: userId },
+									{ new: true },
+								);
+							return res.status(200).json(updatedInstructorReview);
+						} catch (error) {
+							console.error(
+								'❌ Error while updating user instructor review: ',
+								error,
+							);
+							return res.status(500).json(`${error.message}`);
+						}
+					}
 				}
+			} catch (error) {
+				console.error('❌ Error while finding user instructor review: ', error);
+				return res.status(500).json(`${error.message}`);
 			}
 		}
 	} catch (error) {
-		console.error('❌ Error while finding instructor review: ', error);
+		console.error('❌ Error while finding user: ', error);
 		return res.status(500).json(`${error.message}`);
 	}
 });
 
 // Delete User Instructor Review by ID
-module.exports.deleteInstructorReview = asyncHandler(async (req, res) => {
+module.exports.deleteUserInstructorReview = asyncHandler(async (req, res) => {
 	try {
 		const userId = req.user.id;
 		const user = await User.findById(userId);
@@ -426,33 +514,24 @@ module.exports.deleteInstructorReview = asyncHandler(async (req, res) => {
 			return res.status(401).json('User not found!');
 		} else {
 			const { id } = req.params;
-			const instructorReview = await InstructorReview.findById(id);
-			if (!instructorReview) {
-				return res
-					.status(404)
-					.json(
-						`Seems like there is no instructor review with this ID for user: ${req.user.username}!`,
-					);
-			} else {
-				if (instructorReview.user.toString() !== userId) {
-					return res
-						.status(401)
-						.json('You are not authorized to view this instructor review!');
-				} else {
-					await InstructorReview.remove();
-					return res
-						.status(200)
-						.json('Instructor review deleted successfully!');
-				}
+			try {
+				await InstructorReview.findByIdAndDelete(id);
+				return res.status(200).json('Instructor review deleted successfully!');
+			} catch (error) {
+				console.error(
+					'❌ Error while deleting user instructor review: ',
+					error,
+				);
+				return res.status(500).json(`${error.message}`);
 			}
 		}
 	} catch (error) {
-		console.error('❌ Error while deleting instructor review: ', error);
+		console.error('❌ Error while finding user: ', error);
 		return res.status(500).json(`${error.message}`);
 	}
 });
 
-// Delete All Instructor Reviews
+// Delete All Instructor Reviews (ADMIN)
 module.exports.deleteInstructorReviews = asyncHandler(async (req, res) => {
 	try {
 		await InstructorReview.deleteMany({});
@@ -463,8 +542,8 @@ module.exports.deleteInstructorReviews = asyncHandler(async (req, res) => {
 	}
 });
 
-//? --------------------- * * General Reviews CRUD * * --------------------
-// View All General Reviews
+//? --------------------- * * GENERAL REVIEWS CRUD * * --------------------
+// View all General Reviews (ADMIN)
 module.exports.getGeneralReviews = asyncHandler(async (req, res) => {
 	try {
 		const generalReviews = await GeneralReview.find({});
@@ -479,31 +558,35 @@ module.exports.getGeneralReviews = asyncHandler(async (req, res) => {
 	}
 });
 
-// View All User General Review
-module.exports.viewGeneralReview = asyncHandler(async (req, res) => {
+// View all User General Reviews
+module.exports.getUserGeneralReviews = asyncHandler(async (req, res) => {
 	try {
-		// Get user using the id in the JWT
 		const userId = req.user.id;
 		const user = await User.findById(userId);
 
 		if (!user) {
 			return res.status(401).json('User not found!');
 		} else {
-			const userGeneralReviews = await GeneralReview.find({
-				user: userId,
-			});
-			if (userGeneralReviews.length === 0) {
-				return res
-					.status(404)
-					.json(
-						`Seems like there are no general reviews from user: ${req.user.username}!`,
-					);
-			} else {
-				return res.status(200).json(userGeneralReviews);
+			try {
+				const userGeneralReviews = await GeneralReview.find({
+					user: userId,
+				});
+				if (userGeneralReviews.length === 0) {
+					return res
+						.status(404)
+						.json(
+							`Seems like there are no general reviews from user: ${req.user.username}!`,
+						);
+				} else {
+					return res.status(200).json(userGeneralReviews);
+				}
+			} catch (error) {
+				console.error('❌ Error while finding user general reviews: ', error);
+				return res.status(500).json(`${error.message}`);
 			}
 		}
 	} catch (error) {
-		console.error('❌ Error while finding user general reviews: ', error);
+		console.error('❌ Error while finding user: ', error);
 		return res.status(500).json(`${error.message}`);
 	}
 });
@@ -518,62 +601,92 @@ module.exports.viewUserGeneralReview = asyncHandler(async (req, res) => {
 			return res.status(401).json('User not found!');
 		} else {
 			const { id } = req.params;
-			const generalReview = await GeneralReview.findById(id);
-			if (!generalReview) {
-				return res
-					.status(404)
-					.json(
-						`Seems like there is no general review with this ID for user: ${req.user.username}!`,
-					);
-			} else {
-				if (generalReview.user.toString() !== userId) {
+			try {
+				const generalReview = await GeneralReview.findById(id);
+				if (!generalReview) {
 					return res
-						.status(401)
-						.json('You are not authorized to view this general review!');
+						.status(404)
+						.json(
+							`Seems like there is no general review with this ID for user: ${req.user.username}!`,
+						);
+				} else {
+					if (generalReview.user.toString() !== userId) {
+						return res
+							.status(401)
+							.json('You are not authorized to view this general review!');
+					}
+					return res.status(200).json(generalReview);
 				}
-				return res.status(200).json(generalReview);
+			} catch (error) {
+				console.error('❌ Error while finding user general review: ', error);
+				return res.status(500).json(`${error.message}`);
 			}
 		}
 	} catch (error) {
-		console.error('❌ Error while finding general review: ', error);
+		console.error('❌ Error while finding user: ', error);
 		return res.status(500).json(`${error.message}`);
 	}
 });
 
 // Create User General Review
-module.exports.createGeneralReview = asyncHandler(async (req, res) => {
+module.exports.createUserGeneralReview = asyncHandler(async (req, res) => {
 	const { course_opinion, instructor_opinion, likes, dislikes } = req.body;
 
 	if (!course_opinion || !instructor_opinion || !likes || !dislikes) {
 		return res.status(400).json('Please fill in all the fields!');
 	}
 
-	// Get user using the id in the JWT
-	const userId = req.user.id;
-	const user = await User.findById(userId);
+	try {
+		const userId = req.user.id;
+		const user = await User.findById(userId);
 
-	if (!user) {
-		return res.status(401).json('User not found!');
-	} else {
-		try {
-			const generalReview = await GeneralReview.create({
-				course_opinion,
-				instructor_opinion,
-				likes,
-				dislikes,
-				user: userId,
-				status: 'new',
-			});
-			return res.status(201).json(generalReview);
-		} catch (error) {
-			console.error('❌ Error while creating general review: ', error);
-			return res.status(500).json(`${error.message}`);
+		if (!user) {
+			return res.status(401).json('User not found!');
+		} else {
+			try {
+				const generalReview = await GeneralReview.findOne({ user: userId });
+				if (generalReview) {
+					return res
+						.status(406)
+						.json(
+							`${req.user.username} has already submitted a general review for this semester !`,
+						);
+				} else {
+					try {
+						const newGeneralReview = await GeneralReview.create({
+							course_opinion,
+							instructor_opinion,
+							likes,
+							dislikes,
+							user: userId,
+							status: 'new',
+						});
+
+						return res.status(201).json(newGeneralReview);
+					} catch (error) {
+						console.error(
+							'❌ Error while creating user general review: ',
+							error,
+						);
+						return res.status(500).json(`${error.message}`);
+					}
+				}
+			} catch (error) {
+				console.error(
+					'❌ Error while checking if user has already submitted a general review for this semester: ',
+					error,
+				);
+				return res.status(500).json(`${error.message}`);
+			}
 		}
+	} catch (error) {
+		console.error('❌ Error while finding user: ', error);
+		return res.status(500).json(`${error.message}`);
 	}
 });
 
 // Update User General Review
-module.exports.updateGeneralReview = asyncHandler(async (req, res) => {
+module.exports.updateUserGeneralReview = asyncHandler(async (req, res) => {
 	const { course_opinion, instructor_opinion, likes, dislikes } = req.body;
 
 	if (!course_opinion || !instructor_opinion || !likes || !dislikes) {
@@ -588,38 +701,53 @@ module.exports.updateGeneralReview = asyncHandler(async (req, res) => {
 			return res.status(401).json('User not found!');
 		} else {
 			const { id } = req.params;
-			const generalReview = await GeneralReview.findById(id);
-			if (!generalReview) {
-				return res
-					.status(404)
-					.json(
-						`Seems like there is no general review with this ID for user: ${req.user.username}!`,
-					);
-			} else {
-				if (generalReview.user.toString() !== userId) {
+			try {
+				const generalReview = await GeneralReview.findById(id);
+				if (!generalReview) {
 					return res
-						.status(401)
-						.json('You are not authorized to view this general review!');
+						.status(404)
+						.json(
+							`Seems like there is no general review with this ID for user: ${req.user.username}!`,
+						);
 				} else {
-					const updatedGeneralReview = await GeneralReview.findByIdAndUpdate(
-						id,
-						{
-							...req.body.generalReview,
-						},
-						{ new: true },
-					);
-					return res.status(200).json(updatedGeneralReview);
+					if (generalReview.user.toString() !== userId) {
+						return res
+							.status(401)
+							.json('You are not authorized to view this general review!');
+					} else {
+						try {
+							const updatedGeneralReview =
+								await GeneralReview.findByIdAndUpdate(
+									id,
+									{
+										...req.body.generalReview,
+									},
+									{ user: userId },
+									{ new: true },
+								);
+							return res.status(200).json(updatedGeneralReview);
+						} catch (error) {
+							console.error(
+								'❌ Error while updating user general review: ',
+								error,
+							);
+							return res.status(500).json(`${error.message}`);
+						}
+					}
 				}
+			} catch (error) {
+				console.error('❌ Error while finding user general review: ', error);
+				return res.status(500).json(`${error.message}`);
 			}
 		}
 	} catch (error) {
-		console.error('❌ Error while finding general review: ', error);
+		console.error('❌ Error while finding user: ', error);
 		return res.status(500).json(`${error.message}`);
 	}
 });
 
 // Delete User General Review by ID
-module.exports.deleteGeneralReview = asyncHandler(async (req, res) => {
+module.exports.deleteUserGeneralReview = asyncHandler(async (req, res) => {
 	try {
 		const userId = req.user.id;
 		const user = await User.findById(userId);
@@ -628,31 +756,21 @@ module.exports.deleteGeneralReview = asyncHandler(async (req, res) => {
 			return res.status(401).json('User not found!');
 		} else {
 			const { id } = req.params;
-			const generalReview = await GeneralReview.findById(id);
-			if (!generalReview) {
-				return res
-					.status(404)
-					.json(
-						`Seems like there is no general review with this ID for user: ${req.user.username}!`,
-					);
-			} else {
-				if (generalReview.user.toString() !== userId) {
-					return res
-						.status(401)
-						.json('You are not authorized to view this general review!');
-				} else {
-					await GeneralReview.remove();
-					return res.status(200).json('General review deleted successfully!');
-				}
+			try {
+				await GeneralReview.findByIdAndDelete(id);
+				return res.status(200).json('General review deleted successfully!');
+			} catch (error) {
+				console.error('❌ Error while deleting user general review: ', error);
+				return res.status(500).json(`${error.message}`);
 			}
 		}
 	} catch (error) {
-		console.error('❌ Error while deleting general review: ', error);
+		console.error('❌ Error while finding user: ', error);
 		return res.status(500).json(`${error.message}`);
 	}
 });
 
-// Delete All General Reviews
+// Delete All General Reviews (ADMIN)
 module.exports.deleteGeneralReviews = asyncHandler(async (req, res) => {
 	try {
 		await GeneralReview.deleteMany({});

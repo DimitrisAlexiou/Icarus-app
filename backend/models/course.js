@@ -67,12 +67,10 @@ const courseSchema = new Schema(
 			type: Number,
 			required: true,
 		},
-		teaching: [
-			{
-				type: Schema.Types.ObjectId,
-				ref: 'Teaching',
-			},
-		],
+		teaching: {
+			type: Schema.Types.ObjectId,
+			ref: 'Teaching',
+		},
 	},
 	{
 		timestamps: true,
@@ -91,7 +89,7 @@ courseSchema.post('findOneAndDelete', async function (data) {
 
 courseSchema.post('findOneAndDelete', async function (data) {
 	if (data) {
-		await Teaching.deleteMany({
+		await Teaching.deleteOne({
 			_id: {
 				$in: data.teaching,
 			},

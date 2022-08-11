@@ -68,6 +68,20 @@ module.exports.courseSchema = Joi.object({
 	}).required(),
 });
 
+module.exports.teachingSchema = Joi.object({
+	teaching: Joi.object({
+		labWeight: Joi.number().min(0).required(),
+		theoryWeight: Joi.number().max(100).required(),
+		theoryGrade: Joi.number().min(0).required(),
+		labGrade: Joi.number().min(0).required(),
+		theoryGradeThreshold: Joi.number().min(4).required(),
+		labGradeThreshold: Joi.number().min(4).required(),
+		books: Joi.string()
+			.pattern(/^[A-Za-z ]+$/)
+			.required(),
+	}).required(),
+});
+
 module.exports.prerequisitesSchema = Joi.object({
 	prerequisites: Joi.object({
 		type: Joi.string().valid('hard', 'soft').required(),

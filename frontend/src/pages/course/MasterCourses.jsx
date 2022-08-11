@@ -9,11 +9,14 @@ import CourseItem from '../../components/course/CourseItem';
 import Notification from '../../components/boilerplate/Notification';
 import Spinner from '../../components/boilerplate/Spinner';
 
-export default function Courses() {
-	const { isAuthenticated } = useAuth0();
-	const { courses, isLoading, isSuccess } = useSelector(
-		(state) => state.courses,
-	);
+export default function MasterCourses() {
+	const { isAuthenticated, isLoading } = useAuth0();
+
+	const {
+		courses,
+		isLoading: courseIsLoading,
+		isSuccess,
+	} = useSelector((state) => state.courses);
 
 	const dispatch = useDispatch();
 
@@ -29,7 +32,7 @@ export default function Courses() {
 		dispatch(getCourses());
 	}, [dispatch]);
 
-	if (isLoading) {
+	if (isLoading || courseIsLoading) {
 		return <Spinner />;
 	}
 

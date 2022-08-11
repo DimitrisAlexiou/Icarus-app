@@ -12,6 +12,7 @@ const userRoute = require('./routes/user.routes');
 const teachingReviewRoute = require('./routes/teachingReview.routes');
 const instructorReviewRoute = require('./routes/instructorReview.routes');
 const generalReviewRoute = require('./routes/generalReview.routes');
+const adminRoute = require('./routes/admin.routes');
 
 //? PORT
 const PORT = process.env.PORT || 4000;
@@ -38,6 +39,7 @@ app.use('/api/user', userRoute);
 app.use('/api/review/teaching', teachingReviewRoute);
 app.use('/api/review/instructor', instructorReviewRoute);
 app.use('/api/review/general', generalReviewRoute);
+app.use('/api/admin', adminRoute);
 
 // app.get('/', async (req, res) => {
 // });

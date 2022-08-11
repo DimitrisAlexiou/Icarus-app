@@ -1,7 +1,8 @@
 const asyncHandler = require('express-async-handler');
 const User = require('../models/user');
 
-// View Users
+//? --------------------- * * USERS CRUD * * --------------------
+// View all Users
 module.exports.getUsers = asyncHandler(async (req, res) => {
 	try {
 		const users = await User.find({});
@@ -16,7 +17,7 @@ module.exports.getUsers = asyncHandler(async (req, res) => {
 	}
 });
 
-// View User
+// View User by ID
 module.exports.viewUser = asyncHandler(async (req, res) => {
 	try {
 		const { id } = req.params;

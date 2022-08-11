@@ -31,24 +31,24 @@ const {
 } = require('../middleware/validations');
 const { authenticate } = require('../middleware/authMiddleware');
 
-// @desc Get Users
-// @route GET /api/user
-// @access private ADMIN
+// @desc    Get Users
+// @route   GET /api/user
+// @access  Private ADMIN
 router.route('/').get(catchAsync(getUsers));
 
-// @desc Create User
-// @route POST /api/user
-// @access private ADMIN
+// @desc    Create User
+// @route   POST /api/user
+// @access  Private ADMIN
 router.route('/').post(authenticate, validateUser, catchAsync(createUser));
 
-// @desc Delete All Users
-// @route DELETE /api/user
-// @access private ADMIN
+// @desc    Delete All Users
+// @route   DELETE /api/user
+// @access  Private ADMIN
 router.route('/').delete(authenticate, catchAsync(deleteUsers));
 
-// @desc Get User Teaching|Instructor|General Reviews
-// @route GET /api/user/activity/reviews
-// @access private USER || ADMIN
+// @desc    Get User Teaching|Instructor|General Reviews
+// @route   GET /api/user/activity/reviews
+// @access  Private USER || ADMIN
 router
 	.route('/activity/reviews')
 	.get(
@@ -60,9 +60,9 @@ router
 		),
 	);
 
-// @desc Get User Teaching|Instructor|General Review by ID
-// @route GET /api/user/activity/reviews/:id
-// @access private USER || ADMIN
+// @desc    Get User Teaching|Instructor|General Review by ID
+// @route   GET /api/user/activity/reviews/:id
+// @access  Private USER || ADMIN
 router
 	.route('/activity/reviews/:id')
 	.get(
@@ -74,16 +74,16 @@ router
 		),
 	);
 
-// @desc Update User Teaching|Instructor|General Review by ID
-// @route PUT /api/user/activity/reviews/:id
-// @access private USER || ADMIN
+// @desc    Update User Teaching|Instructor|General Review by ID
+// @route   PUT /api/user/activity/reviews/:id
+// @access  Private USER || ADMIN
 router
 	.route('activity/reviews/:id')
 	.put(
 		authenticate,
 		validateTeachingReview,
 		validateInstructorReview,
-		validateInstructorReview,
+		validateGeneralReview,
 		catchAsync(
 			updateTeachingReview,
 			updateInstructorReview,
@@ -91,9 +91,9 @@ router
 		),
 	);
 
-// @desc Delete User Teaching|Instructor|General Review by ID
-// @route DELETE /api/user/activity/reviews/:id
-// @access private USER || ADMIN
+// @desc    Delete User Teaching|Instructor|General Review by ID
+// @route   DELETE /api/user/activity/reviews/:id
+// @access  Private USER || ADMIN
 router
 	.route('/activity/reviews/:id')
 	.delete(
@@ -105,19 +105,19 @@ router
 		),
 	);
 
-// @desc Get User by ID
-// @route GET /api/user/:id
-// @access private ADMIN
+// @desc    Get User by ID
+// @route   GET /api/user/:id
+// @access  Private ADMIN
 router.route('/:id').get(authenticate, catchAsync(viewUser));
 
-// @desc Update User by ID
-// @route PUT /api/user/:id
-// @access private ADMIN
+// @desc    Update User by ID
+// @route   PUT /api/user/:id
+// @access  Private ADMIN
 router.route('/:id').put(authenticate, validateUser, catchAsync(updateUser));
 
-// @desc Delete User by ID
-// @route DELETE /api/user/:id
-// @access private ADMIN
+// @desc    Delete User by ID
+// @route   DELETE /api/user/:id
+// @access  Private ADMIN
 router.route('/:id').delete(authenticate, catchAsync(deleteUser));
 
 module.exports = router;

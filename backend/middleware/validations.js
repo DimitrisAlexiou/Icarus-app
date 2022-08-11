@@ -1,5 +1,6 @@
 const {
 	courseSchema,
+	teachingSchema,
 	userSchema,
 	teachingReviewSchema,
 	instructorReviewSchema,
@@ -17,6 +18,16 @@ const ExpressError = require('../utils/ExpressError');
 
 const validateCourse = (req, res, next) => {
 	const { error } = courseSchema.validate(req.body.course);
+	if (error) {
+		const msg = error.details.map((el) => el.message).join(',');
+		throw new ExpressError(msg, 400);
+	} else {
+		next();
+	}
+};
+
+module.exports.validateTeaching = (req, res, next) => {
+	const { error } = teachingSchema.validate(req.body.teaching);
 	if (error) {
 		const msg = error.details.map((el) => el.message).join(',');
 		throw new ExpressError(msg, 400);

@@ -15,9 +15,13 @@ import Spinner from '../../components/boilerplate/Spinner';
 
 export default function TeachingReview() {
 	const { isAuthenticated, isLoading } = useAuth0();
-	const { isError, isSuccess, message } = useSelector(
-		(state) => state.teachingReview,
-	);
+	const {
+		teachingReview,
+		isError,
+		isSuccess,
+		isLoading: teachingReviewIsLoading,
+		message,
+	} = useSelector((state) => state.teachingReview);
 
 	const [teachingReviewData, setFormData] = useState({
 		clear_course_objectives: '',
@@ -71,7 +75,7 @@ export default function TeachingReview() {
 		dispatch(createTeachingReview(teachingReviewData));
 	};
 
-	if (isLoading) {
+	if (isLoading || teachingReviewIsLoading) {
 		return <Spinner />;
 	}
 

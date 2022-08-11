@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const prerequisitesSchema = new Schema({
 	type: {
 		type: String,
-		enum: ['hard', 'soft'],
+		enum: ['None', 'Hard', 'Soft'],
 		required: true,
 	},
 	course: {
