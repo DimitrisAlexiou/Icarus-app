@@ -1,22 +1,32 @@
 const {
+	userSchema,
 	courseSchema,
 	teachingSchema,
-	userSchema,
 	teachingReviewSchema,
 	instructorReviewSchema,
 	generalReviewSchema,
-	degreeRulesSchema,
 	semesterSchema,
+	vaccineReassessmentSchema,
+	assessmentDurationSchema,
+	reviewDurationSchema,
+	reviewStartSchema,
 	gradingDurationSchema,
-	vaccineReassessmentDurationSchema,
-	validateAssessmentDurationSchema,
-	validateReviewDurationSchema,
-	validateReviewStartSchema,
 	validateCyclesSchema,
+	degreeRulesSchema,
 } = require('../schemas');
-const ExpressError = require('../utils/ExpressError');
+const ExpressError = require('../utils/expressError');
 
-const validateCourse = (req, res, next) => {
+module.exports.validateUser = (req, res, next) => {
+	const { error } = userSchema.validate(req.body.user);
+	if (error) {
+		const msg = error.details.map((el) => el.message).join(',');
+		throw new ExpressError(msg, 400);
+	} else {
+		next();
+	}
+};
+
+module.exports.validateCourse = (req, res, next) => {
 	const { error } = courseSchema.validate(req.body.course);
 	if (error) {
 		const msg = error.details.map((el) => el.message).join(',');
@@ -36,17 +46,7 @@ module.exports.validateTeaching = (req, res, next) => {
 	}
 };
 
-const validateUser = (req, res, next) => {
-	const { error } = userSchema.validate(req.body.user);
-	if (error) {
-		const msg = error.details.map((el) => el.message).join(',');
-		throw new ExpressError(msg, 400);
-	} else {
-		next();
-	}
-};
-
-const validateTeachingReview = (req, res, next) => {
+module.exports.validateTeachingReview = (req, res, next) => {
 	const { error } = teachingReviewSchema.validate(req.body.teachingReview);
 	if (error) {
 		const msg = error.details.map((el) => el.message).join(',');
@@ -56,7 +56,7 @@ const validateTeachingReview = (req, res, next) => {
 	}
 };
 
-const validateInstructorReview = (req, res, next) => {
+module.exports.validateInstructorReview = (req, res, next) => {
 	const { error } = instructorReviewSchema.validate(req.body.instructorReview);
 	if (error) {
 		const msg = error.details.map((el) => el.message).join(',');
@@ -66,7 +66,7 @@ const validateInstructorReview = (req, res, next) => {
 	}
 };
 
-const validateGeneralReview = (req, res, next) => {
+module.exports.validateGeneralReview = (req, res, next) => {
 	const { error } = generalReviewSchema.validate(req.body.generalReview);
 	if (error) {
 		const msg = error.details.map((el) => el.message).join(',');
@@ -76,17 +76,7 @@ const validateGeneralReview = (req, res, next) => {
 	}
 };
 
-const validateDegreeRules = (req, res, next) => {
-	const { error } = degreeRulesSchema.validate(req.body.degreeRules);
-	if (error) {
-		const msg = error.details.map((el) => el.message).join(',');
-		throw new ExpressError(msg, 400);
-	} else {
-		next();
-	}
-};
-
-const validateSemester = (req, res, next) => {
+module.exports.validateSemester = (req, res, next) => {
 	const { error } = semesterSchema.validate(req.body.semester);
 	if (error) {
 		const msg = error.details.map((el) => el.message).join(',');
@@ -96,19 +86,9 @@ const validateSemester = (req, res, next) => {
 	}
 };
 
-const validateGradingDuration = (req, res, next) => {
-	const { error } = gradingDurationSchema.validate(req.body.gradingDuration);
-	if (error) {
-		const msg = error.details.map((el) => el.message).join(',');
-		throw new ExpressError(msg, 400);
-	} else {
-		next();
-	}
-};
-
-const validateVaccineReassessmentDuration = (req, res, next) => {
-	const { error } = vaccineReassessmentDurationSchema.validate(
-		req.body.vaccineReassessmentDuration,
+module.exports.validateVaccineReassessment = (req, res, next) => {
+	const { error } = vaccineReassessmentSchema.validate(
+		req.body.vaccineReassessment,
 	);
 	if (error) {
 		const msg = error.details.map((el) => el.message).join(',');
@@ -118,8 +98,8 @@ const validateVaccineReassessmentDuration = (req, res, next) => {
 	}
 };
 
-const validateAssessmentDuration = (req, res, next) => {
-	const { error } = validateAssessmentDurationSchema.validate(
+module.exports.validateAssessmentDuration = (req, res, next) => {
+	const { error } = assessmentDurationSchema.validate(
 		req.body.assessmentDuration,
 	);
 	if (error) {
@@ -130,10 +110,8 @@ const validateAssessmentDuration = (req, res, next) => {
 	}
 };
 
-const validateReviewDuration = (req, res, next) => {
-	const { error } = validateReviewDurationSchema.validate(
-		req.body.reviewDuration,
-	);
+module.exports.validateReviewDuration = (req, res, next) => {
+	const { error } = reviewDurationSchema.validate(req.body.reviewDuration);
 	if (error) {
 		const msg = error.details.map((el) => el.message).join(',');
 		throw new ExpressError(msg, 400);
@@ -142,8 +120,8 @@ const validateReviewDuration = (req, res, next) => {
 	}
 };
 
-const validateReviewStart = (req, res, next) => {
-	const { error } = validateReviewStartSchema.validate(req.body.reviewStart);
+module.exports.validateReviewStart = (req, res, next) => {
+	const { error } = reviewStartSchema.validate(req.body.reviewStart);
 	if (error) {
 		const msg = error.details.map((el) => el.message).join(',');
 		throw new ExpressError(msg, 400);
@@ -152,7 +130,17 @@ const validateReviewStart = (req, res, next) => {
 	}
 };
 
-const validateCycles = (req, res, next) => {
+module.exports.validateGradingDuration = (req, res, next) => {
+	const { error } = gradingDurationSchema.validate(req.body.gradingDuration);
+	if (error) {
+		const msg = error.details.map((el) => el.message).join(',');
+		throw new ExpressError(msg, 400);
+	} else {
+		next();
+	}
+};
+
+module.exports.validateCycles = (req, res, next) => {
 	const { error } = validateCyclesSchema.validate(req.body.cycles);
 	if (error) {
 		const msg = error.details.map((el) => el.message).join(',');
@@ -162,18 +150,12 @@ const validateCycles = (req, res, next) => {
 	}
 };
 
-module.exports = {
-	validateCourse,
-	validateUser,
-	validateTeachingReview,
-	validateInstructorReview,
-	validateGeneralReview,
-	validateDegreeRules,
-	validateSemester,
-	validateGradingDuration,
-	validateVaccineReassessmentDuration,
-	validateAssessmentDuration,
-	validateReviewDuration,
-	validateReviewStart,
-	validateCycles,
+module.exports.validateDegreeRules = (req, res, next) => {
+	const { error } = degreeRulesSchema.validate(req.body.degreeRules);
+	if (error) {
+		const msg = error.details.map((el) => el.message).join(',');
+		throw new ExpressError(msg, 400);
+	} else {
+		next();
+	}
 };

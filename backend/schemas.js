@@ -49,7 +49,7 @@ module.exports.courseSchema = Joi.object({
 			.required(),
 		type: Joi.string().valid('Undergraduate', 'Master', 'Mixed').required(),
 		description: Joi.string().required(),
-		// prerequisites: Joi.string().required(),
+		prerequisites: Joi.string().valid('None', 'Hard', 'Soft').required(),
 		semester: Joi.string().valid('Winter', 'Spring', 'Any').required(),
 		year: Joi.string().valid('1', '2', '3', '4', '5').required(),
 		isActive: Joi.boolean().default(false).required(),
@@ -68,6 +68,12 @@ module.exports.courseSchema = Joi.object({
 	}).required(),
 });
 
+module.exports.prerequisitesSchema = Joi.object({
+	prerequisites: Joi.object({
+		type: Joi.string().valid('None', 'Hard', 'Soft').required(),
+	}).required(),
+});
+
 module.exports.teachingSchema = Joi.object({
 	teaching: Joi.object({
 		labWeight: Joi.number().min(0).required(),
@@ -76,15 +82,7 @@ module.exports.teachingSchema = Joi.object({
 		labGrade: Joi.number().min(0).required(),
 		theoryGradeThreshold: Joi.number().min(4).required(),
 		labGradeThreshold: Joi.number().min(4).required(),
-		books: Joi.string()
-			.pattern(/^[A-Za-z ]+$/)
-			.required(),
-	}).required(),
-});
-
-module.exports.prerequisitesSchema = Joi.object({
-	prerequisites: Joi.object({
-		type: Joi.string().valid('hard', 'soft').required(),
+		books: Joi.string().required(),
 	}).required(),
 });
 
@@ -118,11 +116,58 @@ module.exports.generalReviewSchema = Joi.object({
 	}).required(),
 });
 
+module.exports.semesterSchema = Joi.object({
+	semester: Joi.object({
+		startDate: Joi.date().greater('now').required(),
+		endDate: Joi.date().greater(Joi.ref('startDate')).required(),
+	}),
+});
+
+module.exports.vaccineReassessmentSchema = Joi.object({
+	vaccineReassessment: Joi.object({
+		startDate: Joi.date().greater('now').required(),
+		endDate: Joi.date().greater(Joi.ref('startDate')).required(),
+	}),
+});
+
+module.exports.assessmentDurationSchema = Joi.object({
+	assessmentDuration: Joi.object({
+		startDate: Joi.date().greater('now').required(),
+		endDate: Joi.date().greater(Joi.ref('startDate')).required(),
+	}),
+});
+
+module.exports.reviewDurationSchema = Joi.object({
+	reviewDuration: Joi.object({
+		startDate: Joi.date().greater('now').required(),
+		endDate: Joi.date().greater(Joi.ref('startDate')).required(),
+	}),
+});
+
+module.exports.reviewStartSchema = Joi.object({
+	reviewStart: Joi.object({
+		init: Joi.number().min(1).required(),
+	}),
+});
+
+module.exports.gradingDurationSchema = Joi.object({
+	gradingDuration: Joi.object({
+		period: Joi.number().min(1).required(),
+	}),
+});
+
+module.exports.validateCyclesSchema = Joi.object({
+	cycles: Joi.object({
+		// number: Joi.number().min(1).required(),
+		cycles: Joi.string().required(),
+	}),
+});
+
 module.exports.degreeRulesSchema = Joi.object({
 	degreeRules: Joi.object({
 		cycles: Joi.number().min(1).required(),
-		courses: Joi.number().min(1).required(),
 		cycleCourses: Joi.number().min(1).required(),
+		courses: Joi.number().min(1).required(),
 		practice: Joi.boolean().default(false).required(),
 	}).required(),
 });

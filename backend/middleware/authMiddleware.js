@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const asyncHandler = require('express-async-handler');
 const User = require('../models/user');
 
-const authenticate = asyncHandler(async (req, res, next) => {
+module.exports.authenticate = asyncHandler(async (req, res, next) => {
 	let token;
 
 	if (
@@ -30,5 +30,3 @@ const authenticate = asyncHandler(async (req, res, next) => {
 		throw new Error('❌ Not authorized!');
 	}
 });
-
-module.exports = { authenticate };

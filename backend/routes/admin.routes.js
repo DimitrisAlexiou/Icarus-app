@@ -2,76 +2,77 @@ const express = require('express');
 const router = express.Router();
 const catchAsync = require('../utils/catchAsync');
 const {
-	createSemester,
-	createGradingDuration,
-	createVaccineReassessmentDuration,
-	createAssessmentDuration,
-	createReviewDuration,
-	createReviewStart,
-	createCycles,
-	createDegreeRules,
+	defineSemester,
+	defineVaccineReassessment,
+	defineAssessmentDuration,
+	defineReviewDuration,
+	defineReviewStart,
+	defineGradingDuration,
+	defineCycles,
+	defineDegreeRules,
 } = require('../controllers/admin');
 const {
 	validateSemester,
-	validateGradingDuration,
-	validateVaccineReassessmentDuration,
+	validateVaccineReassessment,
 	validateAssessmentDuration,
 	validateReviewDuration,
 	validateReviewStart,
+	validateGradingDuration,
 	validateCycles,
 	validateDegreeRules,
 } = require('../middleware/validations');
 const { authenticate } = require('../middleware/authMiddleware');
 
-// @desc    Create Semester
-// @route   POST /api/admin/semester/new
+// @desc    Define Semester
+// @route   POST /api/admin/configuration/semester
 // @access  Private
-router.route('/new').post(validateSemester, catchAsync(createSemester));
+router.route('/semester').post(validateSemester, catchAsync(defineSemester));
 
-// @desc    Create Grading Duration Window
-// @route   POST /api/admin/grading_duration/new
+// @desc    Define Vaccine/Reassessment Statement Duration Window
+// @route   POST /api/admin/configuration/vaccine_reassessment_duration
 // @access  Private
 router
-	.route('/new')
-	.post(validateGradingDuration, catchAsync(createGradingDuration));
+	.route('/vaccine_reassessment_duration')
+	.post(validateVaccineReassessment, catchAsync(defineVaccineReassessment));
 
-// @desc    Create Vaccine/Reassessment Statement Duration Window
-// @route   POST /api/admin/vaccine_reassessment_duration/new
+// @desc    Define Assessment Statement Duration Window
+// @route   POST /api/admin/configuration/assessment_duration
 // @access  Private
 router
-	.route('/new')
-	.post(
-		validateVaccineReassessmentDuration,
-		catchAsync(createVaccineReassessmentDuration),
-	);
+	.route('/assessment_duration')
+	.post(validateAssessmentDuration, catchAsync(defineAssessmentDuration));
 
-// @desc    Create Assessment Statement Duration Window
-// @route   POST /api/admin/assessment_duration/new
+// @desc    Define Review Duration Window
+// @route   POST /api/admin/configuration/review_duration
 // @access  Private
 router
-	.route('/new')
-	.post(validateAssessmentDuration, catchAsync(createAssessmentDuration));
+	.route('/review_duration')
+	.post(validateReviewDuration, catchAsync(defineReviewDuration));
 
-// @desc    Create Review Duration Window
-// @route   POST /api/admin/review_duration/new
+// @desc    Define Review Starting Date
+// @route   POST /api/admin/configuration/review_start
 // @access  Private
 router
-	.route('/new')
-	.post(validateReviewDuration, catchAsync(createReviewDuration));
+	.route('/review_start')
+	.post(validateReviewStart, catchAsync(defineReviewStart));
 
-// @desc    Create Review Starting Date
-// @route   POST /api/admin/review_start/new
+// @desc    Define Grading Duration Window
+// @route   POST /api/admin/configuration/grading_duration
 // @access  Private
-router.route('/new').post(validateReviewStart, catchAsync(createReviewStart));
+router
+	.route('/grading_duration')
+	.post(validateGradingDuration, catchAsync(defineGradingDuration));
 
-// @desc    Create List of Cycles
-// @route   POST /api/admin/cycles/new
+// @desc    Define List of Cycles
+// @route   POST /api/admin/configuration/cycles
 // @access  Private
-router.route('/new').post(validateCycles, catchAsync(createCycles));
+router.route('/cycles').post(validateCycles, catchAsync(defineCycles));
 
-// @desc    Create Degree Rules
-// @route   POST /api/admin/degree_rules/new
+// @desc    Define Degree Rules
+// @route   POST /api/admin/configuration/degree_rules
 // @access  Private
-router.route('/new').post(validateDegreeRules, catchAsync(createDegreeRules));
+router
+	.route('/degree_rules')
+	.post(validateDegreeRules, catchAsync(defineDegreeRules));
 
 module.exports = router;
