@@ -197,14 +197,14 @@ export const courseSlice = createSlice({
 				state.isLoading = false;
 				state.isError = action.payload.status === 'error';
 				state.message = action.payload.message;
-			})
-			.addCase(activateCourse.fulfilled, (state, action) => {
-				state.isLoading = false;
-				state.isSuccess = true;
-				state.courses.map((course) =>
-					course._id === action.payload._id ? (course.isActive = true) : course,
-				);
 			});
+		// .addCase(activateCourse.fulfilled, (state, action) => {
+		// 	state.isLoading = false;
+		// 	state.isSuccess = true;
+		// 	state.courses.map((course) =>
+		// 		course._id === action.payload._id ? (course.isActive = true) : course,
+		// 	);
+		// });
 		// .addCase(deleteCourse.fulfilled, (state, action) => {
 		//  state.isLoading = false;
 		//  state.isSuccess = true;

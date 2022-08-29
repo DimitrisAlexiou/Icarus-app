@@ -1,4 +1,4 @@
-import { Table, Button, ModalForm } from 'reactstrap';
+import { Table, Button, Modal } from 'reactstrap';
 
 const UsersDataTable = () => {
 	const users = this.props.users.map((user) => {
@@ -11,7 +11,7 @@ const UsersDataTable = () => {
 				<td>{user.username}</td>
 				<td>
 					<div style={{ width: '110px' }}>
-						<ModalForm
+						<Modal
 							buttonLabel="Edit"
 							user={user}
 							updateState={this.props.updateState}

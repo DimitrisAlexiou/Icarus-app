@@ -149,46 +149,46 @@ export const noteSlice = createSlice({
 				state.isLoading = false;
 				state.isError = true;
 				state.message = action.payload;
-			})
-			.addCase(createUserNote.pending, (state) => {
-				state.isLoading = true;
-			})
-			.addCase(createUserNote.fulfilled, (state) => {
-				state.isLoading = false;
-				state.isSuccess = true;
-			})
-			.addCase(createUserNote.rejected, (state, action) => {
-				state.isLoading = false;
-				state.isError = action.payload.status === 'error';
-				state.message = action.payload.message;
-			})
-			.addCase(updateUserNote.pending, (state) => {
-				state.isLoading = true;
-			})
-			.addCase(updateUserNote.fulfilled, (state, action) => {
-				state.isLoading = false;
-				state.isSuccess = true;
-				state.notes.map((note) =>
-					note._id === action.payload._id ? action.payload : note,
-				);
-			})
-			.addCase(updateUserNote.rejected, (state, action) => {
-				state.isLoading = false;
-				state.isError = action.payload.status === 'error';
-				state.message = action.payload.message;
-			})
-			.addCase(deleteUserNote.fulfilled, (state, action) => {
-				state.isLoading = false;
-				state.isSuccess = true;
-			})
-			.addCase(deleteUserNote.pending, (state) => {
-				state.isLoading = true;
-			})
-			.addCase(deleteUserNote.rejected, (state, action) => {
-				state.isLoading = false;
-				state.isError = action.payload.status === 'error';
-				state.message = action.payload.message;
 			});
+		// .addCase(createUserNote.pending, (state) => {
+		// 	state.isLoading = true;
+		// })
+		// .addCase(createUserNote.fulfilled, (state) => {
+		// 	state.isLoading = false;
+		// 	state.isSuccess = true;
+		// })
+		// .addCase(createUserNote.rejected, (state, action) => {
+		// 	state.isLoading = false;
+		// 	state.isError = action.payload.status === 'error';
+		// 	state.message = action.payload.message;
+		// });
+		// .addCase(updateUserNote.pending, (state) => {
+		// 	state.isLoading = true;
+		// })
+		// .addCase(updateUserNote.fulfilled, (state, action) => {
+		// 	state.isLoading = false;
+		// 	state.isSuccess = true;
+		// 	state.notes.map((note) =>
+		// 		note._id === action.payload._id ? action.payload : note,
+		// 	);
+		// })
+		// .addCase(updateUserNote.rejected, (state, action) => {
+		// 	state.isLoading = false;
+		// 	state.isError = action.payload.status === 'error';
+		// 	state.message = action.payload.message;
+		// });
+		// .addCase(deleteUserNote.fulfilled, (state, action) => {
+		// 	state.isLoading = false;
+		// 	state.isSuccess = true;
+		// })
+		// .addCase(deleteUserNote.pending, (state) => {
+		// 	state.isLoading = true;
+		// })
+		// .addCase(deleteUserNote.rejected, (state, action) => {
+		// 	state.isLoading = false;
+		// 	state.isError = action.payload.status === 'error';
+		// 	state.message = action.payload.message;
+		// });
 	},
 });
 

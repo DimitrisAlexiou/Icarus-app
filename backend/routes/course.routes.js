@@ -10,7 +10,10 @@ const {
 	deleteCourse,
 	deleteCourses,
 } = require('../controllers/course');
-const { validateCourse } = require('../middleware/validations');
+const {
+	validateCourse,
+	validateSemester,
+} = require('../middleware/validations');
 const { authenticate } = require('../middleware/authMiddleware');
 
 // @desc    Get Courses

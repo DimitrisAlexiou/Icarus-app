@@ -6,7 +6,7 @@ const AssessmentDuration = require('../models/assessmentDuration');
 const ReviewDuration = require('../models/reviewDuration');
 const ReviewStart = require('../models/reviewStart');
 const GradingDuration = require('../models/gradingDuration');
-const Cycles = require('../models/cycles').default;
+const Cycles = require('../models/cycles');
 const DegreeRules = require('../models/degreeRules');
 
 //? --------------------- * * ADMIN CRUD * * --------------------

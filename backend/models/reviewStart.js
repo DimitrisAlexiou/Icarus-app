@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const reviewStartDateSchema = new Schema(
 	{
-		init: {
+		start: {
 			type: Number,
 			required: true,
 		},
