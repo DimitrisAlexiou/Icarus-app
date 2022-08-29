@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const Note = require('./note');
+const Note = require('../note');
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema(
@@ -26,17 +26,22 @@ const userSchema = new Schema(
 			type: String,
 			required: true,
 		},
+		isActive: {
+			type: Boolean,
+			required: true,
+			default: false,
+		},
 		isAdmin: {
 			type: Boolean,
 			required: true,
 			default: false,
 		},
-		notes: [
-			{
-				type: Schema.Types.ObjectId,
-				ref: 'Note',
-			},
-		],
+		// notes: [
+		// 	{
+		// 		type: Schema.Types.ObjectId,
+		// 		ref: 'Note',
+		// 	},
+		// ],
 	},
 	{
 		timestamps: true,

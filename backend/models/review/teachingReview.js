@@ -3,11 +3,6 @@ const Schema = mongoose.Schema;
 
 const teachingReviewSchema = new Schema(
 	{
-		user: {
-			type: Schema.Types.ObjectId,
-			required: true,
-			ref: 'User',
-		},
 		clear_course_objectives: {
 			type: Number,
 			required: true,
@@ -31,6 +26,21 @@ const teachingReviewSchema = new Schema(
 		course_activities: {
 			type: Number,
 			required: true,
+		},
+		user: {
+			type: Schema.Types.ObjectId,
+			required: true,
+			ref: 'User',
+		},
+		teaching: {
+			type: Schema.Types.ObjectId,
+			required: true,
+			ref: 'Teaching',
+		},
+		semester: {
+			type: Schema.Types.ObjectId,
+			required: true,
+			ref: 'Semester',
 		},
 	},
 	{

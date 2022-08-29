@@ -3,11 +3,6 @@ const Schema = mongoose.Schema;
 
 const generalReviewSchema = new Schema(
 	{
-		user: {
-			type: Schema.Types.ObjectId,
-			required: true,
-			ref: 'User',
-		},
 		course_opinion: {
 			type: String,
 			required: true,
@@ -23,6 +18,21 @@ const generalReviewSchema = new Schema(
 		dislikes: {
 			type: String,
 			required: true,
+		},
+		user: {
+			type: Schema.Types.ObjectId,
+			required: true,
+			ref: 'User',
+		},
+		teaching: {
+			type: Schema.Types.ObjectId,
+			required: true,
+			ref: 'Teaching',
+		},
+		semester: {
+			type: Schema.Types.ObjectId,
+			required: true,
+			ref: 'Semester',
 		},
 	},
 	{

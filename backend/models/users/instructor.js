@@ -1,23 +1,19 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const noteSchema = new Schema(
+const instructorSchema = new Schema(
 	{
-		title: {
+		facultyType: {
 			type: String,
+			enum: ['DEP', 'EDIP', 'ETEP'],
 			required: true,
 		},
-		text: {
+		degree: {
 			type: String,
-			required: true,
+			enum: ['Assistant', 'Associate', 'Professor'],
 		},
-		postDate: {
-			type: Date,
-			default: Date.now,
-		},
-		file: {
-			data: Buffer,
-			contentType: String,
+		entranceYear: {
+			type: Number,
 		},
 		user: {
 			type: Schema.Types.ObjectId,
@@ -30,4 +26,4 @@ const noteSchema = new Schema(
 	},
 );
 
-module.exports = mongoose.model('Note', noteSchema);
+module.exports = mongoose.model('Instructor', instructorSchema);

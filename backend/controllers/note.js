@@ -1,6 +1,8 @@
 const asyncHandler = require('express-async-handler');
 const Note = require('../models/note');
-const User = require('../models/user');
+const User = require('../models/users/user');
+
+//TODO FIX THE REQ.USER.ID FOR FINDING USER WITH USER ID
 
 //? --------------------- * * NOTES CRUD * * --------------------
 // View all Notes (ADMIN)

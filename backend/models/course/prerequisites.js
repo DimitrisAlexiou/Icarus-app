@@ -7,10 +7,15 @@ const prerequisitesSchema = new Schema({
 		enum: ['None', 'Hard', 'Soft'],
 		required: true,
 	},
-	course: {
+	prerequisite: {
 		type: Schema.Types.ObjectId,
+		required: true,
 		ref: 'Course',
 	},
+	// course: {
+	// 	type: Schema.Types.ObjectId,
+	// 	ref: 'Course',
+	// },
 });
 
 module.exports = mongoose.model('Prerequisites', prerequisitesSchema);

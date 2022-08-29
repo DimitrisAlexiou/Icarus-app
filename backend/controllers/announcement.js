@@ -1,6 +1,8 @@
 const asyncHandler = require('express-async-handler');
 const Announcement = require('../models/announcement');
-const User = require('../models/user');
+const User = require('../models/users/user');
+
+//TODO FIX THE REQ.USER.ID FOR FINDING USER WITH USER ID
 
 //? --------------------- * * ANNOUNCEMENTS CRUD * * --------------------
 // View all Announcements (ADMIN)

@@ -27,6 +27,7 @@ const announcementSchema = new Schema(
 		},
 		user: {
 			type: Schema.Types.ObjectId,
+			required: true,
 			ref: 'User',
 		},
 	},

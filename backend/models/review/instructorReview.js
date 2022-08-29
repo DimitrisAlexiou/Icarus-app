@@ -3,11 +3,6 @@ const Schema = mongoose.Schema;
 
 const instructorReviewSchema = new Schema(
 	{
-		user: {
-			type: Schema.Types.ObjectId,
-			required: true,
-			ref: 'User',
-		},
 		good_organization: {
 			type: Number,
 			required: true,
@@ -27,6 +22,21 @@ const instructorReviewSchema = new Schema(
 		instructor_approachable: {
 			type: Number,
 			required: true,
+		},
+		user: {
+			type: Schema.Types.ObjectId,
+			required: true,
+			ref: 'User',
+		},
+		teaching: {
+			type: Schema.Types.ObjectId,
+			required: true,
+			ref: 'Teaching',
+		},
+		semester: {
+			type: Schema.Types.ObjectId,
+			required: true,
+			ref: 'Semester',
 		},
 	},
 	{

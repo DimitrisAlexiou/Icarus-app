@@ -40,7 +40,13 @@ const teachingSchema = new Schema({
 	],
 	course: {
 		type: Schema.Types.ObjectId,
+		required: true,
 		ref: 'Course',
+	},
+	semester: {
+		type: Schema.Types.ObjectId,
+		required: true,
+		ref: 'Semester',
 	},
 });
 

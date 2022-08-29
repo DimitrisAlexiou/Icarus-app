@@ -36,7 +36,7 @@ router.route('/new').post(validateCourse, catchAsync(createCourse));
 // @access  Private
 router
 	.route('/:id')
-	.post(validateCourse, validateSemester, catchAsync(activateCourse));
+	.put(validateCourse, validateSemester, catchAsync(activateCourse));
 
 // @desc    Get Course by ID
 // @route   GET /api/course/:id

@@ -59,6 +59,27 @@ export default function UndergraduateCourses() {
 									</div>
 								</div>
 								<div className="row d-flex justify-content-center">
+									{courses.map((course) =>
+										course.isObligatory === true ? (
+											<div className="col-sm-12 col-md-9 col-lg-9 col-xl-5 g-4 mb-3 mx-5">
+												<div className="col">
+													<h5 className="h5 mb-4 text-gray-600">
+														Obligatory Courses
+													</h5>
+													<CourseItem key={course._id} course={course} />
+												</div>
+											</div>
+										) : (
+											<div className="col-sm-12 col-md-9 col-lg-9 col-xl-5 g-4 mb-3 mx-5">
+												<div className="col">
+													<h5 className="h5 mb-4 text-gray-600">Cycles</h5>
+													<CycleCourseItem key={course._id} course={course} />
+												</div>
+											</div>
+										),
+									)}
+								</div>
+								{/* <div className="row d-flex justify-content-center">
 									<div className="col-sm-12 col-md-9 col-lg-9 col-xl-5 g-4 mb-3 mx-5">
 										<div className="col">
 											<h5 className="h5 mb-4 text-gray-600">
@@ -73,7 +94,7 @@ export default function UndergraduateCourses() {
 											<CycleCourseItem key={course._id} course={course} />
 										</div>
 									</div>
-								</div>
+								</div> */}
 							</div>
 						</div>
 					) : (

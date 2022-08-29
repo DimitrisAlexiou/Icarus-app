@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 
 const courseSchema = new Schema(
 	{
-		cid: {
+		courseId: {
 			type: String,
 			required: true,
 		},
@@ -28,8 +28,10 @@ const courseSchema = new Schema(
 			},
 		],
 		semester: {
-			type: String,
-			enum: ['Winter', 'Spring', 'Any'],
+			type: Schema.Types.ObjectId,
+			ref: 'Semester',
+			// type: String,
+			// enum: ['Winter', 'Spring', 'Any'],
 			required: true,
 		},
 		year: {
@@ -53,14 +55,16 @@ const courseSchema = new Schema(
 			default: false,
 		},
 		cycle: {
-			type: String,
-			enum: [
-				'Security',
-				'Software Engineering',
-				'Information Systems',
-				'Communication Systems',
-				'AI',
-			],
+			// type: String,
+			// enum: [
+			// 	'Security',
+			// 	'Software Engineering',
+			// 	'Information Systems',
+			// 	'Communication Systems',
+			// 	'AI',
+			// ],
+			type: Schema.Types.ObjectId,
+			ref: 'Cycles',
 			required: true,
 		},
 		ects: {

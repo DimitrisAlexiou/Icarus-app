@@ -1,6 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const Course = require('../models/course');
-const Teaching = require('../models/teaching');
+const Teaching = require('../models/course/teaching');
 
 //? --------------------- * * COURSES CRUD * * --------------------
 // View all Courses
@@ -53,16 +53,16 @@ module.exports.createCourse = asyncHandler(async (req, res) => {
 	} = req.body;
 
 	if (
-		cid === undefined ||
-		title === undefined ||
-		type === undefined ||
-		description === undefined ||
-		semester === undefined ||
-		year === undefined ||
-		cycle === undefined ||
-		ects === undefined ||
-		hasLab === undefined ||
-		isObligatory === undefined
+		!cid ||
+		!title ||
+		!type ||
+		!description ||
+		!semester ||
+		!year ||
+		!cycle ||
+		!ects ||
+		!hasLab ||
+		!isObligatory
 	) {
 		return res.status(400).json('Please fill in all the required fields!');
 	}
@@ -71,7 +71,7 @@ module.exports.createCourse = asyncHandler(async (req, res) => {
 		const course = await Course.findOne({ cid: cid });
 		if (course) {
 			return res
-				.status(400)
+				.status(409)
 				.json('Seems like a course with this ID already exists!');
 		} else {
 			const newCourse = await Course.create({
@@ -151,17 +151,17 @@ module.exports.updateCourse = asyncHandler(async (req, res) => {
 	} = req.body;
 
 	if (
-		cid === undefined ||
-		title === undefined ||
-		type === undefined ||
-		description === undefined ||
-		semester === undefined ||
-		year === undefined ||
-		isActive === undefined ||
-		hasLab === undefined ||
-		isObligatory === undefined ||
-		cycle === undefined ||
-		ects === undefined
+		!cid ||
+		!title ||
+		!type ||
+		!description ||
+		!semester ||
+		!year ||
+		!isActive ||
+		!hasLab ||
+		!isObligatory ||
+		!cycle ||
+		!ects
 	) {
 		return res.status(400).json('Please fill in all the required fields!');
 	}
