@@ -7,16 +7,14 @@ const ReviewStart = require('../models/admin/reviewStart');
 const GradingDuration = require('../models/admin/gradingDuration');
 const Cycles = require('../models/admin/cycles');
 const DegreeRules = require('../models/admin/degreeRules');
-const dateFormat = require('../utils/dateFormat');
+const { dateFormat } = require('../utils/dateFormat');
 
 //? --------------------- * * ADMIN SYSTEM CONFIGURATION CRUD * * --------------------
 // Define new Semester
 module.exports.defineSemester = asyncHandler(async (req, res) => {
-	const { startDate, endDate } = req.body;
-	if (!startDate || !endDate) {
-		return res
-			.status(400)
-			.json('Please provide the required starting and ending dates!');
+	const { type, startDate, endDate } = req.body;
+	if (!type || !startDate || !endDate) {
+		return res.status(400).json('Please provide the required fields!');
 	}
 	try {
 		const semester = await Semester.findOne({ startDate: startDate });
@@ -27,6 +25,7 @@ module.exports.defineSemester = asyncHandler(async (req, res) => {
 		} else {
 			try {
 				const newSemester = await Semester.create({
+					type,
 					startDate,
 					endDate,
 					status: 'new',
@@ -53,8 +52,10 @@ module.exports.viewCurrentSemester = asyncHandler(async (req, res) => {
 		if (semesters.length === 0) {
 			return res.status(404).json('Seems like there is no defined semester!');
 		} else {
-			if (semesters[0].startDate > dateFormat(new Date()))
-				return res.status(200).json(currentSemester);
+			return res.status(200).json(semesters);
+
+			// if (semesters[0].startDate > dateFormat(new Date()))
+			// 	return res.status(200).json(semesters);
 		}
 	} catch (error) {
 		console.error('❌ Error while finding current semester: ', error);
@@ -446,20 +447,20 @@ module.exports.defineCycles = asyncHandler(async (req, res) => {
 	// if (!number || !cycle) {
 	//      return res.status(400).json('Please provide the required fields to define cycles!');
 	//  }
-	const { newcycles } = req.body;
-	if (!newcycles) {
+	const { cycle } = req.body;
+	if (!cycle) {
 		return res
 			.status(400)
 			.json('Please provide the required fields to define cycles!');
 	}
 	try {
-		const cycles = await Cycles.findOne({ number: number });
+		const cycles = await Cycles.findOne({ cycle: cycle });
 		if (cycles) {
 			return res.status(400).json('Seems like cycles are already defined!');
 		} else {
 			try {
 				const newCycles = await Cycles.create({
-					newcycles,
+					cycle,
 					status: 'new',
 				});
 				return res.status(201).json(newCycles);

@@ -3,6 +3,7 @@ const router = express.Router();
 const catchAsync = require('../utils/catchAsync');
 const {
 	defineSemester,
+	viewCurrentSemester,
 	defineVaccineReassessment,
 	defineAssessmentDuration,
 	defineReviewDuration,
@@ -27,6 +28,11 @@ const { authenticate } = require('../middleware/authMiddleware');
 // @route   POST /api/admin/configuration/semester
 // @access  Private
 router.route('/semester').post(validateSemester, catchAsync(defineSemester));
+
+// @desc    View Semester
+// @route   POST /api/admin/configuration/semester
+// @access  Private
+router.route('/semester').get(catchAsync(viewCurrentSemester));
 
 // @desc    Define Vaccine/Reassessment Statement Duration Window
 // @route   POST /api/admin/configuration/vaccine_reassessment_duration

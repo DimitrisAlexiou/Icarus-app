@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken');
 const asyncHandler = require('express-async-handler');
 const User = require('../models/users/user');
-const jwt = require('jsonwebtoken');
 
 module.exports.generateToken = asyncHandler(async (id, req, res, next) => {
 	return jwt.sign({ id }, process.env.JWT_SECRET_KEY, {

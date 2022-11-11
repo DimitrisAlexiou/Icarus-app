@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Row, Col } from 'reactstrap';
 import { useAuth0 } from '@auth0/auth0-react';
 import { Formik, Form } from 'formik';
 import { CourseSchema } from '../../schemas/Course';
@@ -11,13 +12,13 @@ import SubmitButton from '../../components/buttons/SubmitButton';
 import Spinner from '../../components/boilerplate/Spinner';
 
 export default function NewCourse() {
-	const { isAuthenticated, isLoading } = useAuth0();
+	// const { isAuthenticated, isLoading } = useAuth0();
 	const initialValues = {
-		cid: '',
+		courseId: '',
 		title: '',
 		type: '',
 		description: '',
-		prerequisites: 'None',
+		prerequisites: '',
 		semester: '',
 		year: '',
 		cycle: '',
@@ -25,6 +26,7 @@ export default function NewCourse() {
 		hasLab: false,
 		isObligatory: false,
 		isActive: false,
+		teaching: null,
 	};
 
 	const navigate = useNavigate();
@@ -47,53 +49,53 @@ export default function NewCourse() {
 		}
 	};
 
-	if (isLoading) {
-		return <Spinner />;
-	}
+	// if (isLoading) {
+	// 	return <Spinner />;
+	// }
 
 	return (
-		isAuthenticated && (
-			<>
-				<Formik
-					initialValues={initialValues}
-					validationSchema={CourseSchema}
-					onSubmit={(formCourseData) => {
-						onSubmit(formCourseData);
-					}}
-					validateOnMount
-				>
-					<div id="content-wrapper" className="d-flex flex-column">
-						<div id="content">
-							<div>
-								<h1 className="h3 mb-5 text-gray-800 font-weight-bold">
-									Create new Course !
-								</h1>
-								<div className="row justify-content-center">
-									<div className="col-sm-12 col-md-11 col-lg-10 col-xl-8">
-										<div className="card shadow mb-4">
-											<div className="card-header py-3">
-												<h6 className="m-0 font-weight-bold text-primary">
-													Fill the form below to create a new course
-												</h6>
-											</div>
-											<div className="card-body">
-												<Form name="NewCourse">
-													<CourseForm initialValues={initialValues} />
+		// isAuthenticated && (
+		<>
+			<Formik
+				initialValues={initialValues}
+				validationSchema={CourseSchema}
+				onSubmit={(formCourseData) => {
+					onSubmit(formCourseData);
+				}}
+				validateOnMount
+			>
+				<div id="content-wrapper" className="d-flex flex-column">
+					<div id="content">
+						<div>
+							<h1 className="h3 mb-5 text-gray-800 font-weight-bold">
+								Create new Course !
+							</h1>
+							<div className="row justify-content-center">
+								<div className="col-sm-12 col-md-11 col-lg-10 col-xl-8">
+									<div className="card shadow mb-4">
+										<div className="card-header py-3">
+											<h6 className="m-0 font-weight-bold text-primary">
+												Fill the form below to create a new course
+											</h6>
+										</div>
+										<div className="card-body">
+											<Form name="NewCourse">
+												<CourseForm initialValues={initialValues} />
 
-													<div className="row">
-														<CancelButton url={'/course'} />
-														<SubmitButton message={'Create Course'} />
-													</div>
-												</Form>
-											</div>
+												<div className="row">
+													<CancelButton url={'/course'} />
+													<SubmitButton message={'Create Course'} />
+												</div>
+											</Form>
 										</div>
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
-				</Formik>
-			</>
-		)
+				</div>
+			</Formik>
+		</>
+		// )
 	);
 }

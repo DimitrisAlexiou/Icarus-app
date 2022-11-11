@@ -1,4 +1,4 @@
-export default function dateFormat(inputDate) {
+module.exports.dateFormat = (inputDate) => {
 	let date, month, year;
 
 	date = inputDate.getDate();
@@ -10,4 +10,4 @@ export default function dateFormat(inputDate) {
 	month = month.toString().padStart(2, '0');
 
 	return `${date}/${month}/${year}`;
-}
+};

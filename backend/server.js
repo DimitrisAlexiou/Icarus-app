@@ -39,7 +39,7 @@ app.use('/api/user', userRoute);
 app.use('/api/review/teaching', teachingReviewRoute);
 app.use('/api/review/instructor', instructorReviewRoute);
 app.use('/api/review/general', generalReviewRoute);
-app.use('/api/admin', adminRoute);
+app.use('/api/admin/configuration', adminRoute);
 
 // app.get('/', async (req, res) => {
 // });

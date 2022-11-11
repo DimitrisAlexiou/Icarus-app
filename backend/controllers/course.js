@@ -1,12 +1,15 @@
 const asyncHandler = require('express-async-handler');
-const Course = require('../models/course');
+const Course = require('../models/course/course');
+const Prerequisites = require('../models/course/prerequisites');
 const Teaching = require('../models/course/teaching');
 
 //? --------------------- * * COURSES CRUD * * --------------------
 // View all Courses
 module.exports.getCourses = asyncHandler(async (req, res) => {
 	try {
-		const courses = await Course.find({});
+		const courses = await Course.find({})
+			.populate({ path: 'semester' })
+			.populate({ path: 'cycle' });
 		if (courses.length === 0) {
 			return res.status(404).json('Seems like there are no courses!');
 		} else {
@@ -18,11 +21,39 @@ module.exports.getCourses = asyncHandler(async (req, res) => {
 	}
 });
 
+module.exports.getPrerequisites = asyncHandler(async (req, res) => {
+	try {
+		const prerequisites = await Prerequisites.find({}).populate({
+			path: 'course',
+		});
+		if (prerequisites.length === 0) {
+			return res.status(404).json('Seems like there are no prerequisites!');
+		} else {
+			return res.status(200).json(prerequisites);
+		}
+	} catch (error) {
+		console.error('❌ Error while finding prerequisites: ', error);
+		return res.status(500).json(`${error.message}`);
+	}
+});
+
 // View Course by ID
 module.exports.viewCourse = asyncHandler(async (req, res) => {
 	try {
 		const { id } = req.params;
-		const course = await Course.findById(id);
+		const course = await Course.findById(id)
+			.populate({
+				path: 'semester',
+			})
+			.populate({
+				path: 'cycle',
+			})
+			.populate({
+				path: 'prerequisites',
+				populate: {
+					path: 'course',
+				},
+			});
 		if (!course) {
 			return res
 				.status(404)
@@ -39,10 +70,12 @@ module.exports.viewCourse = asyncHandler(async (req, res) => {
 // Create new Course
 module.exports.createCourse = asyncHandler(async (req, res) => {
 	const {
-		cid,
+		courseId,
 		title,
 		type,
 		description,
+		hasPrerequisites,
+		prerequisites,
 		semester,
 		year,
 		cycle,
@@ -53,7 +86,7 @@ module.exports.createCourse = asyncHandler(async (req, res) => {
 	} = req.body;
 
 	if (
-		!cid ||
+		!courseId ||
 		!title ||
 		!type ||
 		!description ||
@@ -68,17 +101,19 @@ module.exports.createCourse = asyncHandler(async (req, res) => {
 	}
 
 	try {
-		const course = await Course.findOne({ cid: cid });
+		const course = await Course.findOne({ courseId: courseId });
 		if (course) {
 			return res
 				.status(409)
 				.json('Seems like a course with this ID already exists!');
 		} else {
 			const newCourse = await Course.create({
-				cid,
+				courseId,
 				title,
 				type,
 				description,
+				hasPrerequisites,
+				// prerequisites,
 				semester,
 				year,
 				isActive,
@@ -88,10 +123,59 @@ module.exports.createCourse = asyncHandler(async (req, res) => {
 				ects,
 				status: 'new',
 			});
+			// if (hasPrerequisites === true) {
+			// 	const coursePrerequisite = await Prerequisites.create({
+			// 		prerequisites,
+			// 		status: 'new',
+			// 	});
+			// 	prerequisites.prerequisite = newCourse._id;
+			// 	// prerequisites.prerequisiteType = prerequisites.prerequisiteType;
+			// 	newCourse.prerequisites.push(coursePrerequisite);
+			// 	await coursePrerequisite.save();
+			// 	await newCourse.save();
+			// }
+
 			return res.status(201).json(newCourse);
 		}
 	} catch (error) {
 		console.error('❌ Error while creating course: ', error);
+		return res.status(500).json(`${error.message}`);
+	}
+});
+
+// Define Course Prerequisites
+module.exports.defineCoursePrerequisites = asyncHandler(async (req, res) => {
+	const { prerequisiteType, prerequisite } = req.body;
+
+	if (!prerequisiteType || !prerequisite) {
+		return res.status(400).json('Please fill in all the required fields!');
+	}
+
+	try {
+		const { id } = req.params;
+		const course = await Course.findById(id);
+		if (!course) {
+			return res
+				.status(404)
+				.json('Seems like there is no course with this ID!');
+		} else {
+			try {
+				const coursePrerequisite = await Prerequisites.create({
+					prerequisiteType,
+					prerequisite,
+					course: course,
+					status: 'new',
+				});
+				// await course.prerequisites.push(coursePrerequisite);
+				// await course.save();
+				return res.status(200).json(coursePrerequisite);
+			} catch (error) {
+				console.error('❌ Error while defining course prerequisites: ', error);
+				return res.status(500).json(`${error.message}`);
+			}
+		}
+	} catch (error) {
+		console.error('❌ Error while finding course: ', error);
 		return res.status(500).json(`${error.message}`);
 	}
 });
@@ -114,11 +198,11 @@ module.exports.activateCourse = asyncHandler(async (req, res) => {
 					{ new: true },
 				);
 				try {
-					await Teaching.create({
+					const teaching = await Teaching.create({
 						course: course,
 						status: 'new',
 					});
-					return res.status(201).json(course);
+					return res.status(201).json(teaching);
 				} catch (error) {
 					console.error('❌ Error while creating course teaching: ', error);
 					return res.status(500).json(`${error.message}`);
@@ -137,7 +221,7 @@ module.exports.activateCourse = asyncHandler(async (req, res) => {
 // Update Course
 module.exports.updateCourse = asyncHandler(async (req, res) => {
 	const {
-		cid,
+		courseId,
 		title,
 		type,
 		description,
@@ -151,7 +235,7 @@ module.exports.updateCourse = asyncHandler(async (req, res) => {
 	} = req.body;
 
 	if (
-		!cid ||
+		!courseId ||
 		!title ||
 		!type ||
 		!description ||
@@ -207,6 +291,17 @@ module.exports.deleteCourses = asyncHandler(async (req, res) => {
 		return res.status(200).json('All courses deleted!');
 	} catch (error) {
 		console.error('❌ Error while deleting all courses: ', error);
+		return res.status(500).json(`${error.message}`);
+	}
+});
+
+// Delete all Course Prerequisites
+module.exports.deleteCoursePrerequisites = asyncHandler(async (req, res) => {
+	try {
+		await Prerequisites.deleteMany({});
+		return res.status(200).json('All course prerequisites deleted!');
+	} catch (error) {
+		console.error('❌ Error while deleting all course prerequisites: ', error);
 		return res.status(500).json(`${error.message}`);
 	}
 });

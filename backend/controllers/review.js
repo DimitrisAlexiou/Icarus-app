@@ -5,7 +5,7 @@ const GeneralReview = require('../models/review/generalReview');
 const User = require('../models/users/user');
 const Semester = require('../models/admin/semester');
 const ReviewDuration = require('../models/admin/reviewDuration');
-const Course = require('../models/course');
+const Course = require('../models/course/course');
 
 //TODO FIX THE REQ.USER.ID FOR FINDING USER WITH USERID
 //TODO FIXING REVIEWS ! ! !

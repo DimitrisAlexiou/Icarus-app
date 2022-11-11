@@ -14,6 +14,7 @@ import UndergraduateCourses from './pages/course/UndergraduateCourses';
 import MasterCourses from './pages/course/MasterCourses';
 import Course from './pages/course/Course';
 import NewCourse from './pages/course/NewCourse';
+import CoursePrerequisites from './pages/course/CoursePrerequisites';
 import CourseEdit from './pages/course/CourseEdit';
 import Reviews from './pages/review/Reviews';
 import TeachingReview from './pages/review/TeachingReview';
@@ -53,7 +54,7 @@ export default function App() {
 										path="/course/:courseId/edit"
 										element={<CourseEdit />}
 									/>
-									<Route path="/course/new" element={<NewCourse />} />
+									{/* <Route path="/course/new" element={<NewCourse />} /> */}
 									<Route path="/review/teaching" element={<TeachingReview />} />
 									<Route
 										path="/review/teaching/all"
@@ -82,6 +83,11 @@ export default function App() {
 										element={<MasterCourses />}
 									/>
 								</Route>
+								<Route
+									path="/course/:courseId/prerequisites"
+									element={<CoursePrerequisites />}
+								/>
+								<Route path="/course/new" element={<NewCourse />} />
 								<Route path="/review" element={<Reviews />} />
 								<Route path="/users" element={<Users />} />
 								<Route path="/professors" element={<Professors />} />

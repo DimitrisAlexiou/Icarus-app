@@ -1,5 +1,5 @@
 const asyncHandler = require('express-async-handler');
-const User = require('../models/user');
+const User = require('../models/users/user');
 
 //? --------------------- * * USERS CRUD * * --------------------
 // View all Users

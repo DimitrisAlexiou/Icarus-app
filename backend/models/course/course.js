@@ -21,6 +21,11 @@ const courseSchema = new Schema(
 		description: {
 			type: String,
 		},
+		hasPrerequisites: {
+			type: Boolean,
+			required: true,
+			default: false,
+		},
 		prerequisites: [
 			{
 				type: Schema.Types.ObjectId,
@@ -30,8 +35,6 @@ const courseSchema = new Schema(
 		semester: {
 			type: Schema.Types.ObjectId,
 			ref: 'Semester',
-			// type: String,
-			// enum: ['Winter', 'Spring', 'Any'],
 			required: true,
 		},
 		year: {
@@ -39,10 +42,14 @@ const courseSchema = new Schema(
 			enum: ['1', '2', '3', '4', '5'],
 			required: true,
 		},
-		isActive: {
-			type: Boolean,
+		cycle: {
+			type: Schema.Types.ObjectId,
+			ref: 'Cycles',
 			required: true,
-			default: false,
+		},
+		ects: {
+			type: Number,
+			required: true,
 		},
 		hasLab: {
 			type: Boolean,
@@ -54,26 +61,10 @@ const courseSchema = new Schema(
 			required: true,
 			default: false,
 		},
-		cycle: {
-			// type: String,
-			// enum: [
-			// 	'Security',
-			// 	'Software Engineering',
-			// 	'Information Systems',
-			// 	'Communication Systems',
-			// 	'AI',
-			// ],
-			type: Schema.Types.ObjectId,
-			ref: 'Cycles',
+		isActive: {
+			type: Boolean,
 			required: true,
-		},
-		ects: {
-			type: Number,
-			required: true,
-		},
-		teaching: {
-			type: Schema.Types.ObjectId,
-			ref: 'Teaching',
+			default: false,
 		},
 	},
 	{

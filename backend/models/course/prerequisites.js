@@ -2,20 +2,21 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const prerequisitesSchema = new Schema({
-	type: {
+	prerequisiteType: {
 		type: String,
-		enum: ['None', 'Hard', 'Soft'],
+		enum: ['Hard', 'Soft'],
 		required: true,
 	},
 	prerequisite: {
 		type: Schema.Types.ObjectId,
-		required: true,
+		// required: true,
 		ref: 'Course',
 	},
-	// course: {
-	// 	type: Schema.Types.ObjectId,
-	// 	ref: 'Course',
-	// },
+	course: {
+		type: Schema.Types.ObjectId,
+		// required: true,
+		ref: 'Course',
+	},
 });
 
 module.exports = mongoose.model('Prerequisites', prerequisitesSchema);

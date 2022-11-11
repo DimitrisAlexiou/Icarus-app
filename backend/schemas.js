@@ -39,7 +39,7 @@ module.exports.instructorSchema = Joi.object({
 
 module.exports.courseSchema = Joi.object({
 	course: Joi.object({
-		cid: Joi.string()
+		courseId: Joi.string()
 			.max(9)
 			.pattern(/^([3][2][1])\/[0-9][0-9][0-9][0-9][0-9]*$/)
 			.required(),
@@ -49,12 +49,10 @@ module.exports.courseSchema = Joi.object({
 			.required(),
 		type: Joi.string().valid('Undergraduate', 'Master', 'Mixed').required(),
 		description: Joi.string().required(),
-		prerequisites: Joi.string().valid('None', 'Hard', 'Soft').required(),
+		hasPrerequisites: Joi.boolean().default(false).required(),
+		// prerequisites: Joi.array().items().required(),
 		semester: Joi.string().valid('Winter', 'Spring', 'Any').required(),
 		year: Joi.string().valid('1', '2', '3', '4', '5').required(),
-		isActive: Joi.boolean().default(false).required(),
-		hasLab: Joi.boolean().required(),
-		isObligatory: Joi.boolean().required(),
 		cycle: Joi.string()
 			.valid(
 				'Security',
@@ -65,12 +63,15 @@ module.exports.courseSchema = Joi.object({
 			)
 			.required(),
 		ects: Joi.number().min(1).required(),
+		hasLab: Joi.boolean().required(),
+		isObligatory: Joi.boolean().required(),
+		isActive: Joi.boolean().default(false).required(),
 	}).required(),
 });
 
 module.exports.prerequisitesSchema = Joi.object({
 	prerequisites: Joi.object({
-		type: Joi.string().valid('None', 'Hard', 'Soft').required(),
+		type: Joi.string().valid('Hard', 'Soft').required(),
 	}).required(),
 });
 
@@ -118,6 +119,7 @@ module.exports.generalReviewSchema = Joi.object({
 
 module.exports.semesterSchema = Joi.object({
 	semester: Joi.object({
+		type: Joi.string().valid('Winter', 'Spring', 'Any').required(),
 		startDate: Joi.date().greater('now').required(),
 		endDate: Joi.date().greater(Joi.ref('startDate')).required(),
 	}),
@@ -159,7 +161,15 @@ module.exports.gradingDurationSchema = Joi.object({
 module.exports.validateCyclesSchema = Joi.object({
 	cycles: Joi.object({
 		// number: Joi.number().min(1).required(),
-		cycles: Joi.string().required(),
+		cycle: Joi.string()
+			.valid(
+				'Security',
+				'Software Engineering',
+				'Information Systems',
+				'Communication Systems',
+				'AI',
+			)
+			.required(),
 	}),
 });
 

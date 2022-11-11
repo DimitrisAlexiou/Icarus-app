@@ -13,6 +13,10 @@ const cyclesSchema = new Schema({
 		],
 		required: true,
 	},
+	semester: {
+		type: Schema.Types.ObjectId,
+		ref: 'Semester',
+	},
 });
 
 // const cyclesSchema = new Schema({
