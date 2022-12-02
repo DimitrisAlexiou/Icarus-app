@@ -3,12 +3,9 @@ const Course = require('../models/course');
 const connectDB = async () => {
 	mongoose.Promise = global.Promise;
 	mongoose
-		.connect(
-			'mongodb+srv://dalexiou:Trikala120299@@icarusapp.dwtc6.mongodb.net/icarus?retryWrites=true&w=majority',
-			{
-				useNewUrlParser: true,
-			},
-		)
+		.connect(process.env.MONGO_URI, {
+			useNewUrlParser: true,
+		})
 		.then(
 			() => {
 				console.log(`✔️   Database sucessfully connected . . .`.cyan.underline);

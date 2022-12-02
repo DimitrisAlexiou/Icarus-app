@@ -21,15 +21,13 @@ export const createCourse = createAsyncThunk(
 			return await courseService.createCourse(courseData);
 		} catch (error) {
 			const message =
-				(error.response &&
-					error.response.data &&
-					error.response.data.message) ||
+				(error.response && error.response.data && error.response.data.message) ||
 				error.message ||
 				error.toString();
 
 			return thunkAPI.rejectWithValue(message);
 		}
-	},
+	}
 );
 
 // Update Course
@@ -42,15 +40,13 @@ export const updateCourse = createAsyncThunk(
 			return await courseService.updateCourse(courseId, courseData);
 		} catch (error) {
 			const message =
-				(error.response &&
-					error.response.data &&
-					error.response.data.message) ||
+				(error.response && error.response.data && error.response.data.message) ||
 				error.message ||
 				error.toString();
 
 			return thunkAPI.rejectWithValue(message);
 		}
-	},
+	}
 );
 
 // Activate Course
@@ -63,37 +59,30 @@ export const activateCourse = createAsyncThunk(
 			return await courseService.activateCourse(courseId);
 		} catch (error) {
 			const message =
-				(error.response &&
-					error.response.data &&
-					error.response.data.message) ||
+				(error.response && error.response.data && error.response.data.message) ||
 				error.message ||
 				error.toString();
 
 			return thunkAPI.rejectWithValue(message);
 		}
-	},
+	}
 );
 
 // Get All Courses
-export const getCourses = createAsyncThunk(
-	`${BASE_URL}/api/course`,
-	async (_, thunkAPI) => {
-		try {
-			// const token = thunkAPI.getState().auth.user.token;
-			// return await courseService.getCourses(token);
-			return await courseService.getCourses();
-		} catch (error) {
-			const message =
-				(error.response &&
-					error.response.data &&
-					error.response.data.message) ||
-				error.message ||
-				error.toString();
+export const getCourses = createAsyncThunk(`${BASE_URL}/api/course`, async (_, thunkAPI) => {
+	try {
+		// const token = thunkAPI.getState().auth.user.token;
+		// return await courseService.getCourses(token);
+		return await courseService.getCourses();
+	} catch (error) {
+		const message =
+			(error.response && error.response.data && error.response.data.message) ||
+			error.message ||
+			error.toString();
 
-			return thunkAPI.rejectWithValue(message);
-		}
-	},
-);
+		return thunkAPI.rejectWithValue(message);
+	}
+});
 
 // Get Course
 export const getCourse = createAsyncThunk(
@@ -105,15 +94,13 @@ export const getCourse = createAsyncThunk(
 			return await courseService.getCourse(courseId);
 		} catch (error) {
 			const message =
-				(error.response &&
-					error.response.data &&
-					error.response.data.message) ||
+				(error.response && error.response.data && error.response.data.message) ||
 				error.message ||
 				error.toString();
 
 			return thunkAPI.rejectWithValue(message);
 		}
-	},
+	}
 );
 
 // Delete Course
@@ -126,15 +113,13 @@ export const deleteCourse = createAsyncThunk(
 			return await courseService.deleteCourse(courseId);
 		} catch (error) {
 			const message =
-				(error.response &&
-					error.response.data &&
-					error.response.data.message) ||
+				(error.response && error.response.data && error.response.data.message) ||
 				error.message ||
 				error.toString();
 
 			return thunkAPI.rejectWithValue(message);
 		}
-	},
+	}
 );
 
 export const courseSlice = createSlice({
@@ -190,7 +175,7 @@ export const courseSlice = createSlice({
 				state.isLoading = false;
 				state.isSuccess = true;
 				state.courses.map((course) =>
-					course._id === action.payload._id ? action.payload : course,
+					course._id === action.payload._id ? action.payload : course
 				);
 			})
 			.addCase(updateCourse.rejected, (state, action) => {

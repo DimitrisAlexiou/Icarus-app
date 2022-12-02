@@ -16,23 +16,15 @@ export default function Profile() {
 	return (
 		isAuthenticated && (
 			<>
-				<div id="content-wrapper" className="d-flex flex-column">
-					<div id="content">
-						<div className="container-fluid">
-							<h1 className="h3 mb-5 text-gray-800 font-weight-bold">
-								Profile
-							</h1>
-							<div className="container">
-								<div className="main-body">
-									<div className="row">
-										<ProfileCard1 user={user} />
-										<div className="col-lg-8">
-											{/* <ProfileCard2 user={user} /> */}
-										</div>
-									</div>
-									<ProfileCard3 user={user} />
-								</div>
+				<div className="container-fluid">
+					<h1 className="h3 mb-5 text-gray-800 font-weight-bold">Profile</h1>
+					<div className="container">
+						<div className="main-body">
+							<div className="row">
+								<ProfileCard1 user={user} />
+								<div className="col-lg-8">{/* <ProfileCard2 user={user} /> */}</div>
 							</div>
+							<ProfileCard3 user={user} />
 						</div>
 					</div>
 				</div>

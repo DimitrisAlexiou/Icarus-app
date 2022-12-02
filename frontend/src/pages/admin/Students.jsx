@@ -12,22 +12,16 @@ export default function Users() {
 	}
 
 	return (
-		isAuthenticated && (
-			<>
-				<div id="content-wrapper" className="d-flex flex-column">
-					<div id="content">
-						<div>
-							<h1 className="h3 mb-5 text-gray-800 font-weight-bold">
-								Students !
-							</h1>
+		// isAuthenticated && (
+		<>
+			<div>
+				<h1 className="h3 mb-5 text-gray-800 font-weight-bold">Students</h1>
 
-							<div className="row justify-content-center">
-								<div className="col-sm-12 col-md-11 col-lg-10 col-xl-8"></div>
-							</div>
-						</div>
-					</div>
+				<div className="row justify-content-center">
+					<div className="col-sm-12 col-md-11 col-lg-10 col-xl-8"></div>
 				</div>
-			</>
-		)
+			</div>
+		</>
+		// )
 	);
 }

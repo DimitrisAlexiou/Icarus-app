@@ -1,11 +1,11 @@
 import * as Yup from 'yup';
 
 export const CourseSchema = Yup.object().shape({
-	cid: Yup.string()
+	courseId: Yup.string()
 		.max(9, 'Course ID must be 8 digits or less !')
 		.matches(
 			/^([3][2][1])\/[0-9][0-9][0-9][0-9][0-9]*$/,
-			'Course ID must follow the pattern: 321/xxxx OR 321/xxxxx !',
+			'Course ID must follow the pattern: 321/xxxx OR 321/xxxxx !'
 		)
 		.required('Please provide a course ID !'),
 	title: Yup.string()
@@ -21,9 +21,7 @@ export const CourseSchema = Yup.object().shape({
 	semester: Yup.string()
 		.oneOf(['Winter', 'Spring', 'Any'])
 		.required('Please select the course semester !'),
-	year: Yup.string()
-		.oneOf(['1', '2', '3', '4', '5'])
-		.required('Please select the course year !'),
+	year: Yup.string().oneOf(['1', '2', '3', '4', '5']).required('Please select the course year !'),
 	cycle: Yup.string()
 		.oneOf([
 			'Security',

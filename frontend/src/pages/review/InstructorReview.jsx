@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useAuth0 } from '@auth0/auth0-react';
 import {
 	createInstructorReview,
-	reset,
+	resetInstructorReview,
 } from '../../features/reviews/instructorReviewSlice';
 import { Form } from 'reactstrap';
 import { Toast } from '../../constants/sweetAlertNotification';
@@ -58,10 +58,10 @@ export default function InstructorReview() {
 				text: message,
 				icon: 'success',
 			});
-			dispatch(reset());
+			dispatch(resetInstructorReview());
 			navigate('/review');
 		}
-		dispatch(reset());
+		dispatch(resetInstructorReview());
 	}, [dispatch, isError, isSuccess, message, navigate]);
 
 	const onSubmit = (e) => {
@@ -81,39 +81,36 @@ export default function InstructorReview() {
 	return (
 		isAuthenticated && (
 			<>
-				<div id="content-wrapper" className="d-flex flex-column">
-					<div id="content">
-						<div>
-							<h1 className="h3 mb-5 text-gray-800 font-weight-bold">
-								Instructor Review !
-							</h1>
-							<div className="row justify-content-center">
-								<div className="col-sm-12 col-md-10 col-lg-8 col-xl-6">
-									<div className="card shadow mb-4">
-										<div className="card-header py-3">
-											<h6 className="m-0 font-weight-bold text-primary">
-												Leave your review
-											</h6>
-										</div>
-										<div className="card-body">
-											<Form
-												className="user validated-form"
-												validated={validated}
-												onSubmit={onSubmit}
-												noValidate
-											>
-												<InstructorReviewForm
-													onChange={onChange}
-													instructorReviewData
-												/>
+				<div>
+					<h1 className="h3 mb-5 text-gray-800 font-weight-bold">Instructor Review !</h1>
+					<div className="row justify-content-center">
+						<div className="col-sm-12 col-md-10 col-lg-8 col-xl-6">
+							<div className="card shadow mb-4">
+								<div className="card-header py-3">
+									<h6 className="m-0 font-weight-bold text-primary">
+										Leave your review
+									</h6>
+								</div>
+								<div className="card-body">
+									<Form
+										className="user validated-form"
+										validated={validated}
+										onSubmit={onSubmit}
+										noValidate
+									>
+										<InstructorReviewForm
+											onChange={onChange}
+											instructorReviewData
+										/>
 
-												<div className="row">
-													<CancelButton url={'/review'} />
-													<SubmitButton message={'Review Instructor'} />
-												</div>
-											</Form>
+										<div className="row">
+											<CancelButton url={'/review'} />
+											<SubmitButton
+												message={'Review Instructor'}
+												disabled={instructorReviewIsLoading}
+											/>
 										</div>
-									</div>
+									</Form>
 								</div>
 							</div>
 						</div>

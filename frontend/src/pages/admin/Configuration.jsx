@@ -76,145 +76,145 @@ export default function Configuration() {
 	return (
 		isAuthenticated && (
 			<>
-				<div id="content-wrapper" className="d-flex flex-column">
-					<div id="content">
-						<div>
-							<h1 className="h3 mb-5 text-gray-800 font-weight-bold">
-								Admin Dashboard !
-							</h1>
+				<div>
+					<h1 className="h3 mb-5 text-gray-800 font-weight-bold">Admin Dashboard !</h1>
 
-							<div className="row justify-content-center">
-								<div className="col-sm-12 col-md-11 col-lg-10 col-xl-8">
-									<Badge color="info">Semester</Badge>
-									<DatePicker />
-								</div>
-								<div className="col-sm-12 col-md-11 col-lg-10 col-xl-8">
-									<Badge color="info">Grading Duration Window</Badge>
-									<DatePicker />
-								</div>
-							</div>
+					<div className="row justify-content-center">
+						<div className="col-sm-12 col-md-11 col-lg-10 col-xl-8">
+							<Badge color="info">Semester</Badge>
+							<DatePicker />
+						</div>
+						<div className="col-sm-12 col-md-11 col-lg-10 col-xl-8">
+							<Badge color="info">Grading Duration Window</Badge>
+							<DatePicker />
+						</div>
+					</div>
 
-							<div className="row justify-content-center">
-								<div className="col-sm-12 col-md-11 col-lg-10 col-xl-8">
-									<Badge color="info">Vaccine/Reassessment Statement</Badge>
-									<DatePicker />
-								</div>
-								<div className="col-sm-12 col-md-11 col-lg-10 col-xl-8">
-									<Badge color="info">Assessment Statement</Badge>
-									<DatePicker />
-								</div>
-							</div>
+					<div className="row justify-content-center">
+						<div className="col-sm-12 col-md-11 col-lg-10 col-xl-8">
+							<Badge color="info">Vaccine/Reassessment Statement</Badge>
+							<DatePicker />
+						</div>
+						<div className="col-sm-12 col-md-11 col-lg-10 col-xl-8">
+							<Badge color="info">Assessment Statement</Badge>
+							<DatePicker />
+						</div>
+					</div>
 
-							<div className="row justify-content-center">
-								<div className="col-sm-12 col-md-11 col-lg-10 col-xl-8">
-									<Badge color="info">Review Duration</Badge>
-									<DatePicker />
-								</div>
-								<div className="col-sm-12 col-md-11 col-lg-10 col-xl-8">
-									<Badge color="info">Review Start</Badge>
-									<DatePicker />
-								</div>
-							</div>
+					<div className="row justify-content-center">
+						<div className="col-sm-12 col-md-11 col-lg-10 col-xl-8">
+							<Badge color="info">Review Duration</Badge>
+							<DatePicker />
+						</div>
+						<div className="col-sm-12 col-md-11 col-lg-10 col-xl-8">
+							<Badge color="info">Review Start</Badge>
+							<DatePicker />
+						</div>
+					</div>
 
-							<div className="row justify-content-center">
-								<div className="col-sm-12 col-md-11 col-lg-10 col-xl-8">
-									<Badge color="info">List of Cycles</Badge>
-									<Formik
-										initialValues={initialCyclesValues}
-										validationSchema={CyclesSchema}
-										onSubmit={(CyclesData) => {
-											CyclesSubmit(CyclesData);
-										}}
-									>
-										{({ values }) => (
-											<Form>
-												<FieldArray name="cycles">
-													{({ insert, remove, push }) => (
-														<div classsName="row">
-															{values.cycles.length > 0 &&
-																values.cycles.map((cycle, index) => (
-																	<Row key={index}>
-																		<Col md="6">
-																			<FormGroup
-																				className="form-floating mb-3"
-																				floating
-																			>
-																				<Field
-																					type="text"
-																					className="form-control"
-																					name={`cycles.${index}.type`}
-																				/>
-																				<Label
-																					for={`cycles.${index}.type`}
-																					className="text-gray-600"
-																				>
-																					Type
-																				</Label>
-																				<ErrorMessage
-																					name={`cycles.${index}.type`}
-																					component={FormErrorMessage}
-																				/>
-																			</FormGroup>
-																		</Col>
-																		<Col md="6">
-																			<Button onClick={() => remove(index)}>
-																				-
-																			</Button>
-																		</Col>
-																	</Row>
-																))}
-															<Button onClick={() => push({ type: '' })}>
-																Add Cycle
-															</Button>
-														</div>
-													)}
-												</FieldArray>
-
-												<SubmitButton message={'Define cycles'} />
-											</Form>
-										)}
-									</Formik>
-								</div>
-							</div>
-
+					<div className="row justify-content-center">
+						<div className="col-sm-12 col-md-11 col-lg-10 col-xl-8">
+							<Badge color="info">List of Cycles</Badge>
 							<Formik
-								initialValues={initialDegreeRulesValues}
-								validationSchema={DegreeRulesSchema}
-								onSubmit={(degreeRulesData) => {
-									degreeRulesSubmit(degreeRulesData);
+								initialValues={initialCyclesValues}
+								validationSchema={CyclesSchema}
+								onSubmit={(CyclesData) => {
+									CyclesSubmit(CyclesData);
 								}}
-								validateOnMount
 							>
-								<div className="row justify-content-center">
-									<div className="col-sm-12 col-md-11 col-lg-10 col-xl-8">
-										<Badge color="info">Rules for Degree</Badge>
+								{({ values }) => (
+									<Form>
+										<FieldArray name="cycles">
+											{({ insert, remove, push }) => (
+												<div classsName="row">
+													{values.cycles.length > 0 &&
+														values.cycles.map((cycle, index) => (
+															<Row key={index}>
+																<Col md="6">
+																	<FormGroup
+																		className="form-floating mb-3"
+																		floating
+																	>
+																		<Field
+																			type="text"
+																			className="form-control"
+																			name={`cycles.${index}.type`}
+																		/>
+																		<Label
+																			for={`cycles.${index}.type`}
+																			className="text-gray-600"
+																		>
+																			Type
+																		</Label>
+																		<ErrorMessage
+																			name={`cycles.${index}.type`}
+																			component={
+																				FormErrorMessage
+																			}
+																		/>
+																	</FormGroup>
+																</Col>
+																<Col md="6">
+																	<Button
+																		onClick={() =>
+																			remove(index)
+																		}
+																	>
+																		-
+																	</Button>
+																</Col>
+															</Row>
+														))}
+													<Button onClick={() => push({ type: '' })}>
+														Add Cycle
+													</Button>
+												</div>
+											)}
+										</FieldArray>
 
-										<div className="card shadow mb-4">
-											<div className="card-header py-3">
-												<h6 className="m-0 font-weight-bold text-primary">
-													Fill the form below to assign degree rules
-												</h6>
-											</div>
-
-											<div className="card-body">
-												<Form>
-													<DegreeRulesForm
-														initialValues={initialDegreeRulesValues}
-													/>
-
-													<div className="row">
-														{/* <CancelButton url={'/course'} /> */}
-
-														<SubmitButton message={'Assign Rules'} />
-													</div>
-												</Form>
-											</div>
-										</div>
-									</div>
-								</div>
+										<SubmitButton message={'Define cycles'} />
+									</Form>
+								)}
 							</Formik>
 						</div>
 					</div>
+
+					<Formik
+						initialValues={initialDegreeRulesValues}
+						validationSchema={DegreeRulesSchema}
+						onSubmit={(degreeRulesData) => {
+							degreeRulesSubmit(degreeRulesData);
+						}}
+						validateOnMount
+					>
+						<div className="row justify-content-center">
+							<div className="col-sm-12 col-md-11 col-lg-10 col-xl-8">
+								<Badge color="info">Rules for Degree</Badge>
+
+								<div className="card shadow mb-4">
+									<div className="card-header py-3">
+										<h6 className="m-0 font-weight-bold text-primary">
+											Fill the form below to assign degree rules
+										</h6>
+									</div>
+
+									<div className="card-body">
+										<Form>
+											<DegreeRulesForm
+												initialValues={initialDegreeRulesValues}
+											/>
+
+											<div className="row">
+												{/* <CancelButton url={'/course'} /> */}
+
+												<SubmitButton message={'Assign Rules'} />
+											</div>
+										</Form>
+									</div>
+								</div>
+							</div>
+						</div>
+					</Formik>
 				</div>
 			</>
 		)

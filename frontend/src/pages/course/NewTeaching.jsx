@@ -80,33 +80,32 @@ export default function NewTeaching() {
 					}}
 					validateOnMount
 				>
-					<div id="content-wrapper" className="d-flex flex-column">
-						<div id="content">
-							<div>
-								<h1 className="h3 mb-5 text-gray-800 font-weight-bold">
-									Create new Teaching for the {course.title} course !
-								</h1>
+					<div>
+						<h1 className="h3 mb-5 text-gray-800 font-weight-bold">
+							Create new Teaching for the {course.title} course !
+						</h1>
 
-								<div className="row justify-content-center">
-									<div className="col-sm-12 col-md-11 col-lg-10 col-xl-8">
-										<div className="card shadow mb-4">
-											<div className="card-header py-3">
-												<h6 className="m-0 font-weight-bold text-primary">
-													Fill the form below to create a new teaching for the
-													course
-												</h6>
-											</div>
-											<div className="card-body">
-												<Form name="newCourse">
-													<TeachingForm initialValues={initialValues} />
+						<div className="row justify-content-center">
+							<div className="col-sm-12 col-md-11 col-lg-10 col-xl-8">
+								<div className="card shadow mb-4">
+									<div className="card-header py-3">
+										<h6 className="m-0 font-weight-bold text-primary">
+											Fill the form below to create a new teaching for the
+											course
+										</h6>
+									</div>
+									<div className="card-body">
+										<Form name="newCourse">
+											<TeachingForm initialValues={initialValues} />
 
-													<div className="row">
-														<CancelButton url={'/course/' + courseId} />
-														<SubmitButton message={'Create Teaching'} />
-													</div>
-												</Form>
+											<div className="row">
+												<CancelButton url={'/course/' + courseId} />
+												<SubmitButton
+													message={'Create Teaching'}
+													disabled={isLoading}
+												/>
 											</div>
-										</div>
+										</Form>
 									</div>
 								</div>
 							</div>

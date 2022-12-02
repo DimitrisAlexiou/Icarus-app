@@ -85,49 +85,47 @@ export default function CourseEdit() {
 					}}
 					validateOnMount
 				>
-					<div id="content-wrapper" className="d-flex flex-column">
-						<div id="content">
-							<div>
-								<h1 className="h3 mb-5 text-gray-800 font-weight-bold">
-									Update {course.title} Course
-								</h1>
-								<div className="row justify-content-center">
-									<div className="col-sm-12 col-md-10 col-lg-8 col-xl-6">
-										<div className="card shadow mb-4">
-											<div className="card-header py-3">
-												<div className="row">
-													<div className="col-6">
-														<h6 className="m-0 font-weight-bold text-primary">
-															Course Information
-														</h6>
-													</div>
-												</div>
+					<div>
+						<h1 className="h3 mb-5 text-gray-800 font-weight-bold">
+							Update {course.title} Course
+						</h1>
+						<div className="row justify-content-center">
+							<div className="col-sm-12 col-md-10 col-lg-8 col-xl-6">
+								<div className="card shadow mb-4">
+									<div className="card-header py-3">
+										<div className="row">
+											<div className="col-6">
+												<h6 className="m-0 font-weight-bold text-primary">
+													Course Information
+												</h6>
 											</div>
-											<div className="card-body">
-												<Form name="editCourse">
-													<Row>
-														<Col md="4">
-															<FormGroup
-																className="form-floating mb-3"
-																floating
-															>
-																<Field
-																	type="text"
-																	className="form-control"
-																	name="cid"
-																	value={course.cid}
-																/>
-																<Label for="cid" className="text-gray-600">
-																	Course ID
-																</Label>
-																<ErrorMessage
-																	name="cid"
-																	component={FormErrorMessage}
-																/>
-															</FormGroup>
-														</Col>
+										</div>
+									</div>
+									<div className="card-body">
+										<Form name="editCourse">
+											<Row>
+												<Col md="4">
+													<FormGroup
+														className="form-floating mb-3"
+														floating
+													>
+														<Field
+															type="text"
+															className="form-control"
+															name="cid"
+															value={course.cid}
+														/>
+														<Label for="cid" className="text-gray-600">
+															Course ID
+														</Label>
+														<ErrorMessage
+															name="cid"
+															component={FormErrorMessage}
+														/>
+													</FormGroup>
+												</Col>
 
-														{/* <Col md="8">
+												{/* <Col md="8">
                                                     <FormGroup className="form-floating mb-3" floating>
                                                         <Field
                                                             type="text"
@@ -144,8 +142,8 @@ export default function CourseEdit() {
                                                         />
                                                     </FormGroup>
                                                 </Col> */}
-													</Row>
-													{/* <FormGroup className="form-floating mb-3" floating>
+											</Row>
+											{/* <FormGroup className="form-floating mb-3" floating>
                                                 <Field as="select" className="form-control" name="type">
                                                     <option default>Select course type</option>
                                                     <option value={'Undergraduate'}>Undergraduate</option>
@@ -293,13 +291,14 @@ export default function CourseEdit() {
                                                 </Col>
                                             </Row> */}
 
-													<div className="row">
-														<CancelButton url={`/course/${courseId}`} />
-														<SubmitButton message={'Update Course'} />
-													</div>
-												</Form>
+											<div className="row">
+												<CancelButton url={`/course/${courseId}`} />
+												<SubmitButton
+													message={'Update Course'}
+													disabled={isLoading}
+												/>
 											</div>
-										</div>
+										</Form>
 									</div>
 								</div>
 							</div>

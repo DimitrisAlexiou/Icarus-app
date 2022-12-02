@@ -1,4 +1,6 @@
-export default function CourseCard({ course }) {
+import PropTypes from 'prop-types';
+
+const CourseCard = ({ course }) => {
 	return (
 		<>
 			<div className="form-group row">
@@ -6,7 +8,7 @@ export default function CourseCard({ course }) {
 					<label>
 						<b>Course ID</b>
 					</label>
-					<p style={{ textAlign: 'justify' }}>{course.cid}</p>
+					<p style={{ textAlign: 'justify' }}>{course.courseId}</p>
 					<hr />
 				</div>
 				<div className="col-sm-6">
@@ -92,4 +94,34 @@ export default function CourseCard({ course }) {
 			</div>
 		</>
 	);
-}
+};
+
+CourseCard.propTypes = {
+	courseId: PropTypes.string.isRequired,
+	title: PropTypes.string.isRequired,
+	type: PropTypes.string.isRequired,
+	description: PropTypes.string.isRequired,
+	semester: PropTypes.object.isRequired,
+	year: PropTypes.string.isRequired,
+	cycle: PropTypes.object.isRequired,
+	ects: PropTypes.number.isRequired,
+	isActive: PropTypes.bool.isRequired,
+	hasLab: PropTypes.bool.isRequired,
+	isObligatory: PropTypes.bool.isRequired,
+};
+
+CourseCard.defaultProps = {
+	courseId: 'Course ID is missing',
+	title: 'Course title is missing',
+	type: 'Course type is missing',
+	description: 'Course description is missing',
+	semester: 'Course semester is missing',
+	year: 'Course year is missing',
+	cycle: 'Course cycle is missing',
+	ects: 'Course ECTS is missing',
+	isActive: 'Course active status is missing',
+	hasLab: 'Course lab status is missing',
+	isObligatory: 'Course obligation status is missing',
+};
+
+export default CourseCard;

@@ -17,7 +17,8 @@ export default function UndergraduateCourses() {
 	// const { isAuthenticated, isLoading } = useAuth0();
 	const {
 		courses,
-		isLoading: courseIsLoading,
+		// isLoading: courseIsLoading,
+		isLoading,
 		isSuccess,
 	} = useSelector((state) => state.courses);
 
@@ -91,7 +92,8 @@ export default function UndergraduateCourses() {
 	// if (isLoading || courseIsLoading) {
 	// 	return <Spinner />;
 	// }
-	if (courseIsLoading) {
+	// if (courseIsLoading) {
+	if (isLoading) {
 		return <Spinner />;
 	}
 
@@ -106,111 +108,112 @@ export default function UndergraduateCourses() {
 				}}
 				validateOnMount
 			>
-				<div id="content-wrapper" className="d-flex flex-column">
-					<div id="content">
-						<div>
-							<h1 className="h3 mb-5 text-gray-800 font-weight-bold">
-								Define Course Prerequisites !
-							</h1>
-							<div className="row justify-content-center">
-								<div className="col-sm-12 col-md-11 col-lg-10 col-xl-8">
-									<div className="card shadow mb-4">
-										<div className="card-header py-3">
-											<h6 className="m-0 font-weight-bold text-primary">
-												Fill the form below to define course prerequisites
-											</h6>
-										</div>
-										<div className="card-body">
-											<Form name="CoursePrerequisites">
-												<Button
-													color="info"
-													className="mb-3"
-													onClick={() => handleAddPrerequisite()}
-												>
-													Add Prerequisite
-												</Button>
-												<Row className="mb-3">
-													{prerequisites.map((field, index) => (
-														<>
-															<Col md="3">
-																<FormGroup
-																	className="form-floating mb-3"
-																	floating
-																>
-																	<Field
-																		as="select"
-																		className="form-control"
-																		name="prerequisite"
+				<div>
+					<h1 className="h3 mb-5 text-gray-800 font-weight-bold">
+						Define Course Prerequisites !
+					</h1>
+					<div className="row justify-content-center">
+						<div className="col-sm-12 col-md-11 col-lg-10 col-xl-8">
+							<div className="card shadow mb-4">
+								<div className="card-header py-3">
+									<h6 className="m-0 font-weight-bold text-primary">
+										Fill the form below to define course prerequisites
+									</h6>
+								</div>
+								<div className="card-body">
+									<Form name="CoursePrerequisites">
+										<Button
+											color="info"
+											className="mb-3"
+											onClick={() => handleAddPrerequisite()}
+										>
+											Add Prerequisite
+										</Button>
+										<Row className="mb-3">
+											{prerequisites.map((field, index) => (
+												<>
+													<Col md="3">
+														<FormGroup
+															className="form-floating mb-3"
+															floating
+														>
+															<Field
+																as="select"
+																className="form-control"
+																name="prerequisite"
+															>
+																<option default>
+																	Select prerequisite
+																</option>
+																{courses.map((course) => (
+																	<option
+																		key={course._id}
+																		value={course.title}
 																	>
-																		<option default>Select prerequisite</option>
-																		{courses.map((course) => (
-																			<option
-																				key={course._id}
-																				value={course.title}
-																			>
-																				{course.title}
-																			</option>
-																		))}
-																	</Field>
-																	<Label
-																		for="prerequisite"
-																		className="text-gray-600"
-																	>
-																		Prerequisite {index + 1}
-																	</Label>
-																	<ErrorMessage
-																		name="prerequisite"
-																		component={FormErrorMessage}
-																	/>
-																</FormGroup>
-															</Col>
-															<Col md="2">
-																<FormGroup
-																	className="form-floating mb-3"
-																	floating
-																>
-																	<Field
-																		as="select"
-																		className="form-control"
-																		name="prerequisiteType"
-																	>
-																		<option default>Select type</option>
-																		<option value={'Hard'}>Hard</option>
-																		<option value={'Soft'}>Soft</option>
-																	</Field>
-																	<Label
-																		for="prerequisiteType"
-																		className="text-gray-600"
-																	>
-																		Prerequisite Type
-																	</Label>
-																	<ErrorMessage
-																		name="prerequisiteType"
-																		component={FormErrorMessage}
-																	/>
-																</FormGroup>
-															</Col>
-															<Col md="1">
-																<Button
-																	variant="secondary"
-																	onClick={() =>
-																		handleRemovePrerequisite(index)
-																	}
-																>
-																	X
-																</Button>
-															</Col>
-														</>
-													))}
-												</Row>
+																		{course.title}
+																	</option>
+																))}
+															</Field>
+															<Label
+																for="prerequisite"
+																className="text-gray-600"
+															>
+																Prerequisite {index + 1}
+															</Label>
+															<ErrorMessage
+																name="prerequisite"
+																component={FormErrorMessage}
+															/>
+														</FormGroup>
+													</Col>
+													<Col md="2">
+														<FormGroup
+															className="form-floating mb-3"
+															floating
+														>
+															<Field
+																as="select"
+																className="form-control"
+																name="prerequisiteType"
+															>
+																<option default>Select type</option>
+																<option value={'Hard'}>Hard</option>
+																<option value={'Soft'}>Soft</option>
+															</Field>
+															<Label
+																for="prerequisiteType"
+																className="text-gray-600"
+															>
+																Prerequisite Type
+															</Label>
+															<ErrorMessage
+																name="prerequisiteType"
+																component={FormErrorMessage}
+															/>
+														</FormGroup>
+													</Col>
+													<Col md="1">
+														<Button
+															variant="secondary"
+															onClick={() =>
+																handleRemovePrerequisite(index)
+															}
+														>
+															X
+														</Button>
+													</Col>
+												</>
+											))}
+										</Row>
 
-												<div className="row">
-													<CancelButton url={'/course'} />
-													<SubmitButton message={'Define Prerequuisite'} />
-												</div>
-											</Form>
+										<div className="row">
+											<CancelButton url={'/course'} />
+											<SubmitButton
+												message={'Define Prerequuisite'}
+												disabled={isLoading}
+											/>
 										</div>
-									</div>
+									</Form>
 								</div>
 							</div>
 						</div>

@@ -4,17 +4,14 @@ import { Auth0Provider } from '@auth0/auth0-react';
 import { getConfig } from './config';
 import { store } from './app/store';
 import { Provider } from 'react-redux';
+import { AppProvider } from './context';
 import * as serviceWorker from './serviceWorker';
 import history from './utils/history';
 import App from './App';
 import './index.css';
 
 const onRedirectCallback = (appState) => {
-	history.push(
-		appState && appState.returnTo
-			? appState.returnTo
-			: window.location.pathname,
-	);
+	history.push(appState && appState.returnTo ? appState.returnTo : window.location.pathname);
 };
 
 const config = getConfig();
@@ -29,13 +26,15 @@ const providerConfig = {
 
 ReactDOM.render(
 	<React.StrictMode>
-		<Provider store={store}>
-			<Auth0Provider {...providerConfig}>
-				<App />
-			</Auth0Provider>
-		</Provider>
+		<AppProvider>
+			<Provider store={store}>
+				<Auth0Provider {...providerConfig}>
+					<App />
+				</Auth0Provider>
+			</Provider>
+		</AppProvider>
 	</React.StrictMode>,
-	document.getElementById('root'),
+	document.getElementById('root')
 );
 
 // If you want your app to work offline and load faster, you can change

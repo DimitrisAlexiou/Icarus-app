@@ -18,19 +18,17 @@ export const createInstructorReview = createAsyncThunk(
 			const token = thunkAPI.getState().auth.user.token;
 			return await instructorReviewService.createInstructorReview(
 				instructorReviewData,
-				token,
+				token
 			);
 		} catch (error) {
 			const message =
-				(error.response &&
-					error.response.data &&
-					error.response.data.message) ||
+				(error.response && error.response.data && error.response.data.message) ||
 				error.message ||
 				error.toString();
 
 			return thunkAPI.rejectWithValue(message);
 		}
-	},
+	}
 );
 
 // Get All Instructor Reviews
@@ -42,22 +40,20 @@ export const getInstructorReviews = createAsyncThunk(
 			return await instructorReviewService.getInstructorReviews(token);
 		} catch (error) {
 			const message =
-				(error.response &&
-					error.response.data &&
-					error.response.data.message) ||
+				(error.response && error.response.data && error.response.data.message) ||
 				error.message ||
 				error.toString();
 
 			return thunkAPI.rejectWithValue(message);
 		}
-	},
+	}
 );
 
 export const instructorReviewSlice = createSlice({
 	name: 'instructorReview',
 	initialState,
 	reducers: {
-		reset: (state) => initialState,
+		resetInstructorReview: (state) => (state.instructorReview = {}),
 	},
 	extraReducers: (builder) => {
 		builder
@@ -89,5 +85,6 @@ export const instructorReviewSlice = createSlice({
 	},
 });
 
-export const { reset } = instructorReviewSlice.actions;
+// export const { reset } = instructorReviewSlice.actions;
+export const { resetInstructorReview } = instructorReviewSlice.actions;
 export default instructorReviewSlice.reducer;
