@@ -1,8 +1,10 @@
+import { Col, Row } from 'reactstrap';
+
 export default function ProfileCard3({ user }) {
 	return (
 		<>
-			<div className="row">
-				<div className="col-sm-12">
+			<Row>
+				<Col>
 					<div className="profile_card">
 						<div className="card-body">
 							<h5 className="d-flex align-items-center mb-3">User Status</h5>
@@ -63,8 +65,8 @@ export default function ProfileCard3({ user }) {
 							</div>
 						</div>
 					</div>
-				</div>
-			</div>
+				</Col>
+			</Row>
 		</>
 	);
 }

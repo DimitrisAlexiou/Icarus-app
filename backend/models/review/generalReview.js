@@ -19,25 +19,20 @@ const generalReviewSchema = new Schema(
 			type: String,
 			required: true,
 		},
-		user: {
-			type: Schema.Types.ObjectId,
-			required: true,
-			ref: 'User',
-		},
-		teaching: {
-			type: Schema.Types.ObjectId,
-			required: true,
-			ref: 'Teaching',
-		},
-		semester: {
-			type: Schema.Types.ObjectId,
-			required: true,
-			ref: 'Semester',
-		},
+		// user: {
+		// 	type: Schema.Types.ObjectId,
+		// 	required: true,
+		// 	ref: 'User',
+		// },
+		// teaching: {
+		// 	type: Schema.Types.ObjectId,
+		// 	required: true,
+		// 	ref: 'Teaching',
+		// },
 	},
 	{
 		timestamps: true,
-	},
+	}
 );
 
 module.exports = mongoose.model('GeneralReview', generalReviewSchema);

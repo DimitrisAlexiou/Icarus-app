@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { extractErrorMessage } from '../../utils/redux/errorMessage';
 import instructorReviewService from './instructorReviewService';
 
 const initialState = {
@@ -21,12 +22,7 @@ export const createInstructorReview = createAsyncThunk(
 				token
 			);
 		} catch (error) {
-			const message =
-				(error.response && error.response.data && error.response.data.message) ||
-				error.message ||
-				error.toString();
-
-			return thunkAPI.rejectWithValue(message);
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
 	}
 );
@@ -39,12 +35,7 @@ export const getInstructorReviews = createAsyncThunk(
 			const token = thunkAPI.getState().auth.user.token;
 			return await instructorReviewService.getInstructorReviews(token);
 		} catch (error) {
-			const message =
-				(error.response && error.response.data && error.response.data.message) ||
-				error.message ||
-				error.toString();
-
-			return thunkAPI.rejectWithValue(message);
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
 	}
 );
@@ -53,7 +44,7 @@ export const instructorReviewSlice = createSlice({
 	name: 'instructorReview',
 	initialState,
 	reducers: {
-		resetInstructorReview: (state) => (state.instructorReview = {}),
+		reset: (state) => initialState,
 	},
 	extraReducers: (builder) => {
 		builder
@@ -86,5 +77,5 @@ export const instructorReviewSlice = createSlice({
 });
 
 // export const { reset } = instructorReviewSlice.actions;
-export const { resetInstructorReview } = instructorReviewSlice.actions;
+export const { reset } = instructorReviewSlice.actions;
 export default instructorReviewSlice.reducer;

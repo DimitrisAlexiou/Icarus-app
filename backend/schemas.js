@@ -2,41 +2,46 @@ const Joi = require('joi');
 
 module.exports.userSchema = Joi.object({
 	user: Joi.object({
-		name: Joi.string().required(),
-		surname: Joi.string().required(),
+		name: Joi.string()
+			.max(40)
+			.pattern(new RegExp(/^[A-Za-z]+$/))
+			.required(),
+		surname: Joi.string()
+			.max(40)
+			.pattern(new RegExp(/^[A-Za-z]+$/))
+			.required(),
+		username: Joi.string()
+			.pattern(new RegExp(/^icsd[0-9]{5}$/))
+			.required(),
 		email: Joi.string()
 			.email({ minDomainSegments: 2, tlds: { allow: ['com', 'net', 'gr'] } })
 			.required(),
-		username: Joi.string().alphanum().min(10).max(30).required(),
+		password: Joi.string()
+			.min(8)
+			.pattern(
+				new RegExp('^(?=.*d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z])(?=.*[!@#$%^&*]).{8,}$')
+			)
+			.required(),
 	}).required(),
 });
 
 module.exports.studentSchema = Joi.object({
 	student: Joi.object({
 		sid: Joi.string().required(),
-		entranceYear: Joi.number()
-			.min(1980)
-			.max(new Date().getFullYear())
-			.required(),
-		studentType: Joi.string()
-			.valid('Undergraduate', 'Master', 'PhD')
-			.required(),
+		entranceYear: Joi.number().min(1980).max(new Date().getFullYear()).required(),
+		studentType: Joi.string().valid('Undergraduate', 'Master', 'PhD').required(),
 	}).required(),
 });
 
 module.exports.instructorSchema = Joi.object({
 	instructor: Joi.object({
 		facultyType: Joi.string().valid('DEP', 'EDIP', 'ETEP').required(),
-		degree: Joi.string()
-			.valid('Assistant', 'Associate', 'Professor')
-			.required(),
-		entranceYear: Joi.number()
-			.min(1980)
-			.max(new Date().getFullYear())
-			.required(),
+		degree: Joi.string().valid('Assistant', 'Associate', 'Professor').required(),
+		entranceYear: Joi.number().min(1980).max(new Date().getFullYear()).required(),
 	}).required(),
 });
 
+// TODO: add PREREQUISITES
 module.exports.courseSchema = Joi.object({
 	course: Joi.object({
 		courseId: Joi.string()
@@ -48,10 +53,12 @@ module.exports.courseSchema = Joi.object({
 			.pattern(/^[A-Za-z ]+$/)
 			.required(),
 		type: Joi.string().valid('Undergraduate', 'Master', 'Mixed').required(),
-		description: Joi.string().required(),
+		isObligatory: Joi.boolean().default(true).required(),
 		hasPrerequisites: Joi.boolean().default(false).required(),
-		// prerequisites: Joi.array().items().required(),
+		hasLab: Joi.boolean().default(false).required(),
+		description: Joi.string(),
 		semester: Joi.string().valid('Winter', 'Spring', 'Any').required(),
+		ects: Joi.number().min(1).required(),
 		year: Joi.string().valid('1', '2', '3', '4', '5').required(),
 		cycle: Joi.string()
 			.valid(
@@ -59,12 +66,10 @@ module.exports.courseSchema = Joi.object({
 				'Software Engineering',
 				'Information Systems',
 				'Communication Systems',
-				'AI',
+				'AI'
 			)
 			.required(),
-		ects: Joi.number().min(1).required(),
-		hasLab: Joi.boolean().required(),
-		isObligatory: Joi.boolean().required(),
+		prerequisites: Joi.array().items().required(),
 		isActive: Joi.boolean().default(false).required(),
 	}).required(),
 });
@@ -160,14 +165,13 @@ module.exports.gradingDurationSchema = Joi.object({
 
 module.exports.validateCyclesSchema = Joi.object({
 	cycles: Joi.object({
-		// number: Joi.number().min(1).required(),
-		cycle: Joi.string()
+		name: Joi.string()
 			.valid(
 				'Security',
 				'Software Engineering',
 				'Information Systems',
 				'Communication Systems',
-				'AI',
+				'AI'
 			)
 			.required(),
 	}),

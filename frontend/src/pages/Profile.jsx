@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useState, useEffect } from 'react';
+import { Row } from 'reactstrap';
 import ProfileCard1 from '../components/user/ProfileCard1';
 import ProfileCard2 from '../components/user/ProfileCard2';
 import ProfileCard3 from '../components/user/ProfileCard3';
@@ -16,16 +17,15 @@ export default function Profile() {
 	return (
 		isAuthenticated && (
 			<>
-				<div className="container-fluid">
-					<h1 className="h3 mb-5 text-gray-800 font-weight-bold">Profile</h1>
-					<div className="container">
-						<div className="main-body">
-							<div className="row">
-								<ProfileCard1 user={user} />
-								<div className="col-lg-8">{/* <ProfileCard2 user={user} /> */}</div>
-							</div>
-							<ProfileCard3 user={user} />
-						</div>
+				<h1 className="h3 mb-5 text-gray-800 font-weight-bold">Profile</h1>
+
+				<div className="container">
+					<div className="main-body">
+						<Row>
+							<ProfileCard1 user={user} />
+							<div className="col-lg-8">{/* <ProfileCard2 user={user} /> */}</div>
+						</Row>
+						<ProfileCard3 user={user} />
 					</div>
 				</div>
 			</>

@@ -1,9 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import { toggleSidebar } from '../../features/sidebarSlice';
-import { useGlobalContext } from '../../context';
-import { useAuth0 } from '@auth0/auth0-react';
 import {
 	Dropdown,
 	DropdownToggle,
@@ -15,49 +11,19 @@ import {
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { FaStudiovinari } from 'react-icons/fa';
-import {
-	faUnlock,
-	faIdCard,
-	faUniversity,
-	faWrench,
-	faBarsStaggered,
-} from '@fortawesome/free-solid-svg-icons';
+import { faUniversity, faWrench, faBarsStaggered } from '@fortawesome/free-solid-svg-icons';
 import dataLinks from '../../utils/NavigationLinks';
 import '../../App.css';
 
 export default function Sidebar() {
-	const { user, isAuthenticated } = useAuth0();
-
-	// const [isSidebarOpen] = useSelector((store) => store.sidebar);
-	// const dispatch = useDispatch();
-
-	// const sidebarToggle = () => {
-	// 	dispatch(toggleSidebar());
-	// };
-
 	const [isOpen, setIsOpen] = useState(false);
 	const [dropdownOpen, setDropdownOpen] = useState(false);
-
 	const toggle = () => setDropdownOpen((prevState) => !prevState);
-	const Handletoggle = () => {
-		setIsOpen(!isOpen);
-	};
 
 	return (
 		// isAuthenticated && (
 		<>
-			{/* <Nav
-				className={
-					isSidebarOpen
-						? 'navbar-nav bg-gradient-primary sidebar sidebar-dark accordion shadow'
-						: 'navbar-nav bg-gradient-primary sidebar sidebar-dark accordion shadow accordionSidebar'
-				}
-				// id="accordionSidebar"
-			> */}
-			<Nav
-				className="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion shadow"
-				id="accordionSidebar"
-			>
+			<Nav className="navbar-nav bg-gradient-primary sidebar sidebar-dark shadow">
 				<NavLink
 					className="sidebar-brand d-flex align-items-center justify-content-center"
 					to="/"
@@ -84,46 +50,43 @@ export default function Sidebar() {
 
 				<NavItem className="nav-item">
 					<Dropdown variant="muted" isOpen={dropdownOpen} toggle={toggle}>
-						<DropdownToggle className="nav-link collapsed" color="null">
+						<DropdownToggle className="nav-link" color="null">
 							<FontAwesomeIcon icon={faWrench} />
 							<span className="ml-2">Utilities</span>
 						</DropdownToggle>
-						<DropdownMenu className="collapse">
-							<div className="bg-white collapse-inner rounded dropdown-list dropdown-menu-right animated--grow-in">
-								<h6 className="collapse-header">Utilities :</h6>
-								<DropdownItem className="dropdown-item d-flex animated--grow-in text-gray-600">
-									<NavLink
-										to="course/new"
-										style={{ textDecoration: 'none', color: 'inherit' }}
-									>
-										Add Course
-									</NavLink>
-								</DropdownItem>
-								<DropdownItem className="dropdown-item d-flex animated--grow-in text-gray-600">
-									<NavLink
-										to="courses/assign"
-										style={{ textDecoration: 'none', color: 'inherit' }}
-									>
-										Assign Course
-									</NavLink>
-								</DropdownItem>
-								<DropdownItem className="dropdown-item d-flex animated--grow-in text-gray-600">
-									<NavLink
-										to="subjectGrading"
-										style={{ textDecoration: 'none', color: 'inherit' }}
-									>
-										Grade Course
-									</NavLink>
-								</DropdownItem>
-								<DropdownItem className="dropdown-item d-flex animated--grow-in text-gray-600">
-									<NavLink
-										to="subjectStatement"
-										style={{ textDecoration: 'none', color: 'inherit' }}
-									>
-										Statement
-									</NavLink>
-								</DropdownItem>
-							</div>
+						<DropdownMenu className="collapse dropdown-list dropdown-menu-right">
+							<DropdownItem className="dropdown-item d-flex animated--grow-in text-gray-600">
+								<NavLink
+									to="course/new"
+									style={{ textDecoration: 'none', color: 'inherit' }}
+								>
+									Add Course
+								</NavLink>
+							</DropdownItem>
+							<DropdownItem className="dropdown-item d-flex animated--grow-in text-gray-600">
+								<NavLink
+									to="courses/assign"
+									style={{ textDecoration: 'none', color: 'inherit' }}
+								>
+									Assign Course
+								</NavLink>
+							</DropdownItem>
+							<DropdownItem className="dropdown-item d-flex animated--grow-in text-gray-600">
+								<NavLink
+									to="subjectGrading"
+									style={{ textDecoration: 'none', color: 'inherit' }}
+								>
+									Grade Course
+								</NavLink>
+							</DropdownItem>
+							<DropdownItem className="dropdown-item d-flex animated--grow-in text-gray-600">
+								<NavLink
+									to="subjectStatement"
+									style={{ textDecoration: 'none', color: 'inherit' }}
+								>
+									Statement
+								</NavLink>
+							</DropdownItem>
 						</DropdownMenu>
 					</Dropdown>
 				</NavItem>
@@ -145,40 +108,16 @@ export default function Sidebar() {
 
 				<hr className="sidebar-divider" />
 
-				<NavItem className="nav-item">
-					<NavLink className="nav-link" to="/auth/register">
-						<FontAwesomeIcon icon={faIdCard} />
-						<span className="ml-2">Register</span>
-					</NavLink>
-				</NavItem>
-
-				<NavItem className="nav-item">
-					<NavLink className="nav-link" to="/auth/login">
-						<FontAwesomeIcon icon={faUnlock} />
-						<span className="ml-2">Login</span>
-					</NavLink>
-				</NavItem>
-
-				<hr className="sidebar-divider" />
-
-				{/* <div class="text-center d-none d-md-inline">
-					<button class="rounded-circle border-0" ></button>
-				</div> */}
-
-				<div className="nav-item text-center d-none d-md-inline">
+				<NavItem className="nav-item text-center">
 					<Button
-						id="sidebarToggleTop"
-						className="rounded-circle border-0"
+						className="rounded-circle"
 						color="null"
-						// sidebarToggle={sidebarToggle}
-						// onClick={openSidebar}
+						onClick={() => setIsOpen(!isOpen)}
 					>
 						<FontAwesomeIcon icon={faBarsStaggered} />
 					</Button>
-				</div>
+				</NavItem>
 			</Nav>
-			{/* </asside> */}
-			{/* </div> */}
 		</>
 		// )
 	);

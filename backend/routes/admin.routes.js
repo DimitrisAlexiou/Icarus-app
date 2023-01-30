@@ -10,6 +10,7 @@ const {
 	defineReviewStart,
 	defineGradingDuration,
 	defineCycles,
+	viewCycles,
 	defineDegreeRules,
 } = require('../controllers/admin');
 const {
@@ -22,7 +23,7 @@ const {
 	validateCycles,
 	validateDegreeRules,
 } = require('../middleware/validations');
-const { authenticate } = require('../middleware/authMiddleware');
+const { authorize } = require('../middleware/authMiddleware');
 
 // @desc    Define Semester
 // @route   POST /api/admin/configuration/semester
@@ -30,7 +31,7 @@ const { authenticate } = require('../middleware/authMiddleware');
 router.route('/semester').post(validateSemester, catchAsync(defineSemester));
 
 // @desc    View Semester
-// @route   POST /api/admin/configuration/semester
+// @route   GET /api/admin/configuration/semester
 // @access  Private
 router.route('/semester').get(catchAsync(viewCurrentSemester));
 
@@ -51,34 +52,31 @@ router
 // @desc    Define Review Duration Window
 // @route   POST /api/admin/configuration/review_duration
 // @access  Private
-router
-	.route('/review_duration')
-	.post(validateReviewDuration, catchAsync(defineReviewDuration));
+router.route('/review_duration').post(validateReviewDuration, catchAsync(defineReviewDuration));
 
 // @desc    Define Review Starting Date
 // @route   POST /api/admin/configuration/review_start
 // @access  Private
-router
-	.route('/review_start')
-	.post(validateReviewStart, catchAsync(defineReviewStart));
+router.route('/review_start').post(validateReviewStart, catchAsync(defineReviewStart));
 
 // @desc    Define Grading Duration Window
 // @route   POST /api/admin/configuration/grading_duration
 // @access  Private
-router
-	.route('/grading_duration')
-	.post(validateGradingDuration, catchAsync(defineGradingDuration));
+router.route('/grading_duration').post(validateGradingDuration, catchAsync(defineGradingDuration));
 
 // @desc    Define List of Cycles
 // @route   POST /api/admin/configuration/cycles
 // @access  Private
 router.route('/cycles').post(validateCycles, catchAsync(defineCycles));
 
+// @desc    View Cycles
+// @route   GET /api/admin/configuration/cycles
+// @access  Private
+router.route('/cycles').get(catchAsync(viewCycles));
+
 // @desc    Define Degree Rules
 // @route   POST /api/admin/configuration/degree_rules
 // @access  Private
-router
-	.route('/degree_rules')
-	.post(validateDegreeRules, catchAsync(defineDegreeRules));
+router.route('/degree_rules').post(validateDegreeRules, catchAsync(defineDegreeRules));
 
 module.exports = router;

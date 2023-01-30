@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { Row } from 'reactstrap';
 
 export default function Forbidden() {
 	return (
@@ -11,7 +12,7 @@ export default function Forbidden() {
 				<p className="text-gray-500 mb-0">
 					It looks like you found a glitch in the matrix...
 				</p>
-				<div className="row justify-content-center">
+				<Row className="justify-content-center">
 					{/* <img
 								className="notauthorized"
 								src="undraw_not_authorized.svg"
@@ -22,7 +23,7 @@ export default function Forbidden() {
 							Seems like you are not authorized to access this page !
 						</p>
 					</div>
-				</div>
+				</Row>
 				<Link to="/" style={{ textDecoration: 'none' }}>
 					Back to Reality
 				</Link>

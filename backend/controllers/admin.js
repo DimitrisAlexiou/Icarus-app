@@ -19,9 +19,7 @@ module.exports.defineSemester = asyncHandler(async (req, res) => {
 	try {
 		const semester = await Semester.findOne({ startDate: startDate });
 		if (semester) {
-			return res
-				.status(400)
-				.json('Seems like this semester is already defined!');
+			return res.status(400).json('Seems like this semester is already defined!');
 		} else {
 			try {
 				const newSemester = await Semester.create({
@@ -37,10 +35,7 @@ module.exports.defineSemester = asyncHandler(async (req, res) => {
 			}
 		}
 	} catch (error) {
-		console.error(
-			'❌ Error while checking if semester already defined: ',
-			error,
-		);
+		console.error('❌ Error while checking if semester already defined: ', error);
 		return res.status(500).json(`${error.message}`);
 	}
 });
@@ -67,9 +62,7 @@ module.exports.viewCurrentSemester = asyncHandler(async (req, res) => {
 module.exports.updateCurrentSemester = asyncHandler(async (req, res) => {
 	const { startDate, endDate } = req.body;
 	if (!startDate || !endDate) {
-		return res
-			.status(400)
-			.json('Please provide the required starting and ending dates!');
+		return res.status(400).json('Please provide the required starting and ending dates!');
 	}
 	try {
 		const semester = await Semester.find({});
@@ -82,7 +75,7 @@ module.exports.updateCurrentSemester = asyncHandler(async (req, res) => {
 					{
 						...req.body.semester,
 					},
-					{ new: true },
+					{ new: true }
 				);
 				return res.status(200).json(updatedSemester);
 			} catch (error) {
@@ -111,9 +104,7 @@ module.exports.deleteCurrentSemester = asyncHandler(async (req, res) => {
 module.exports.defineVaccineReassessment = asyncHandler(async (req, res) => {
 	const { startDate, endDate } = req.body;
 	if (!startDate || !endDate) {
-		return res
-			.status(400)
-			.json('Please provide the required starting and ending dates!');
+		return res.status(400).json('Please provide the required starting and ending dates!');
 	}
 	try {
 		const vaccineReassessment = await VaccineReassessment.findOne({
@@ -122,9 +113,7 @@ module.exports.defineVaccineReassessment = asyncHandler(async (req, res) => {
 		if (vaccineReassessment) {
 			return res
 				.status(400)
-				.json(
-					'Seems like vaccine/reassessment statement duration is already defined!',
-				);
+				.json('Seems like vaccine/reassessment statement duration is already defined!');
 		} else {
 			try {
 				const newVaccineReassessment = await VaccineReassessment.create({
@@ -136,7 +125,7 @@ module.exports.defineVaccineReassessment = asyncHandler(async (req, res) => {
 			} catch (error) {
 				console.error(
 					'❌ Error while defining vaccine/reassessment statement duration: ',
-					error,
+					error
 				);
 				return res.status(500).json(`${error.message}`);
 			}
@@ -144,7 +133,7 @@ module.exports.defineVaccineReassessment = asyncHandler(async (req, res) => {
 	} catch (error) {
 		console.error(
 			'❌ Error while checking if vaccine/reassessment statement duration already defined: ',
-			error,
+			error
 		);
 		return res.status(500).json(`${error.message}`);
 	}
@@ -157,17 +146,12 @@ module.exports.viewVaccineReassessment = asyncHandler(async (req, res) => {
 		if (vaccineReassessment.length === 0) {
 			return res
 				.status(404)
-				.json(
-					'Seems like there is no vaccine/reassessment statement duration defined!',
-				);
+				.json('Seems like there is no vaccine/reassessment statement duration defined!');
 		} else {
 			return res.status(200).json(vaccineReassessment);
 		}
 	} catch (error) {
-		console.error(
-			'❌ Error while finding vaccine/reassessment statement duration: ',
-			error,
-		);
+		console.error('❌ Error while finding vaccine/reassessment statement duration: ', error);
 		return res.status(500).json(`${error.message}`);
 	}
 });
@@ -176,18 +160,14 @@ module.exports.viewVaccineReassessment = asyncHandler(async (req, res) => {
 module.exports.updateVaccineReassessment = asyncHandler(async (req, res) => {
 	const { startDate, endDate } = req.body;
 	if (!startDate || !endDate) {
-		return res
-			.status(400)
-			.json('Please provide the required starting and ending dates!');
+		return res.status(400).json('Please provide the required starting and ending dates!');
 	}
 	try {
 		const vaccineReassessment = await VaccineReassessment.find({});
 		if (!vaccineReassessment) {
 			return res
 				.status(404)
-				.json(
-					'Seems like there is no vaccine/reassessment statement duration defined!',
-				);
+				.json('Seems like there is no vaccine/reassessment statement duration defined!');
 		} else {
 			try {
 				const updatedVaccineReassessment = await VaccineReassessment.updateOne(
@@ -195,22 +175,19 @@ module.exports.updateVaccineReassessment = asyncHandler(async (req, res) => {
 					{
 						...req.body.vaccineReassessment,
 					},
-					{ new: true },
+					{ new: true }
 				);
 				return res.status(200).json(updatedVaccineReassessment);
 			} catch (error) {
 				console.error(
 					'❌ Error while updating vaccine/reassessment statement duration: ',
-					error,
+					error
 				);
 				return res.status(500).json(`${error.message}`);
 			}
 		}
 	} catch (error) {
-		console.error(
-			'❌ Error while finding vaccine/reassessment statement duration: ',
-			error,
-		);
+		console.error('❌ Error while finding vaccine/reassessment statement duration: ', error);
 		return res.status(500).json(`${error.message}`);
 	}
 });
@@ -219,14 +196,9 @@ module.exports.updateVaccineReassessment = asyncHandler(async (req, res) => {
 module.exports.deleteVaccineReassessment = asyncHandler(async (req, res) => {
 	try {
 		await VaccineReassessment.deleteOne({});
-		return res
-			.status(200)
-			.json('Vaccine/Reassessment Statement duration deleted!');
+		return res.status(200).json('Vaccine/Reassessment Statement duration deleted!');
 	} catch (error) {
-		console.error(
-			'❌ Error while deleting Vaccine/Reassessment Statement duration: ',
-			error,
-		);
+		console.error('❌ Error while deleting Vaccine/Reassessment Statement duration: ', error);
 		return res.status(500).json(`${error.message}`);
 	}
 });
@@ -235,9 +207,7 @@ module.exports.deleteVaccineReassessment = asyncHandler(async (req, res) => {
 module.exports.defineAssessmentDuration = asyncHandler(async (req, res) => {
 	const { startDate, endDate } = req.body;
 	if (!startDate || !endDate) {
-		return res
-			.status(400)
-			.json('Please provide the required starting and ending dates!');
+		return res.status(400).json('Please provide the required starting and ending dates!');
 	}
 	try {
 		const assessmentDuration = await AssessmentDuration.findOne({
@@ -256,17 +226,14 @@ module.exports.defineAssessmentDuration = asyncHandler(async (req, res) => {
 				});
 				return res.status(201).json(newAssessmentDuration);
 			} catch (error) {
-				console.error(
-					'❌ Error while defining assessment statement duration: ',
-					error,
-				);
+				console.error('❌ Error while defining assessment statement duration: ', error);
 				return res.status(500).json(`${error.message}`);
 			}
 		}
 	} catch (error) {
 		console.error(
 			'❌ Error while checking if assessment statement duration already defined: ',
-			error,
+			error
 		);
 		return res.status(500).json(`${error.message}`);
 	}
@@ -276,18 +243,14 @@ module.exports.defineAssessmentDuration = asyncHandler(async (req, res) => {
 module.exports.defineReviewDuration = asyncHandler(async (req, res) => {
 	const { startDate, endDate } = req.body;
 	if (!startDate || !endDate) {
-		return res
-			.status(400)
-			.json('Please provide the required starting and ending dates!');
+		return res.status(400).json('Please provide the required starting and ending dates!');
 	}
 	try {
 		const reviewDuration = await ReviewDuration.findOne({
 			startDate: startDate,
 		});
 		if (reviewDuration) {
-			return res
-				.status(400)
-				.json('Seems like review statement duration is already defined!');
+			return res.status(400).json('Seems like review statement duration is already defined!');
 		} else {
 			try {
 				const newReviewDuration = await ReviewDuration.create({
@@ -297,17 +260,14 @@ module.exports.defineReviewDuration = asyncHandler(async (req, res) => {
 				});
 				return res.status(201).json(newReviewDuration);
 			} catch (error) {
-				console.error(
-					'❌ Error while defining review statement duration: ',
-					error,
-				);
+				console.error('❌ Error while defining review statement duration: ', error);
 				return res.status(500).json(`${error.message}`);
 			}
 		}
 	} catch (error) {
 		console.error(
 			'❌ Error while checking if review statement duration already defined: ',
-			error,
+			error
 		);
 		return res.status(500).json(`${error.message}`);
 	}
@@ -334,9 +294,7 @@ module.exports.viewReviewStatement = asyncHandler(async (req, res) => {
 module.exports.updateReviewStatement = asyncHandler(async (req, res) => {
 	const { startDate, endDate } = req.body;
 	if (!startDate || !endDate) {
-		return res
-			.status(400)
-			.json('Please provide the required starting and ending dates!');
+		return res.status(400).json('Please provide the required starting and ending dates!');
 	}
 	try {
 		const reviewStatement = await ReviewDuration.find({});
@@ -351,7 +309,7 @@ module.exports.updateReviewStatement = asyncHandler(async (req, res) => {
 					{
 						...req.body.reviewStatement,
 					},
-					{ new: true },
+					{ new: true }
 				);
 				return res.status(200).json(updatedSemester);
 			} catch (error) {
@@ -360,10 +318,7 @@ module.exports.updateReviewStatement = asyncHandler(async (req, res) => {
 			}
 		}
 	} catch (error) {
-		console.error(
-			'❌ Error while finding review statement duration window: ',
-			error,
-		);
+		console.error('❌ Error while finding review statement duration window: ', error);
 		return res.status(500).json(`${error.message}`);
 	}
 });
@@ -377,9 +332,7 @@ module.exports.defineReviewStart = asyncHandler(async (req, res) => {
 	try {
 		const reviewStart = await ReviewStart.findOne({ init: init });
 		if (reviewStart) {
-			return res
-				.status(400)
-				.json('Seems like review initial time is already defined!');
+			return res.status(400).json('Seems like review initial time is already defined!');
 		} else {
 			try {
 				const newReviewStart = await ReviewStart.create({
@@ -393,10 +346,7 @@ module.exports.defineReviewStart = asyncHandler(async (req, res) => {
 			}
 		}
 	} catch (error) {
-		console.error(
-			'❌ Error while checking if review initial time already defined: ',
-			error,
-		);
+		console.error('❌ Error while checking if review initial time already defined: ', error);
 		return res.status(500).json(`${error.message}`);
 	}
 });
@@ -405,18 +355,14 @@ module.exports.defineReviewStart = asyncHandler(async (req, res) => {
 module.exports.defineGradingDuration = asyncHandler(async (req, res) => {
 	const { duration } = req.body;
 	if (!duration) {
-		return res
-			.status(400)
-			.json('Please provide the required grading duration period!');
+		return res.status(400).json('Please provide the required grading duration period!');
 	}
 	try {
 		const gradingDuration = await GradingDuration.findOne({
 			duration: duration,
 		});
 		if (gradingDuration) {
-			return res
-				.status(400)
-				.json('Seems like grading duration period is already defined!');
+			return res.status(400).json('Seems like grading duration period is already defined!');
 		} else {
 			try {
 				const newGradingDuration = await GradingDuration.create({
@@ -425,17 +371,14 @@ module.exports.defineGradingDuration = asyncHandler(async (req, res) => {
 				});
 				return res.status(201).json(newGradingDuration);
 			} catch (error) {
-				console.error(
-					'❌ Error while defining grading duration period: ',
-					error,
-				);
+				console.error('❌ Error while defining grading duration period: ', error);
 				return res.status(500).json(`${error.message}`);
 			}
 		}
 	} catch (error) {
 		console.error(
 			'❌ Error while checking if grading duration period already defined: ',
-			error,
+			error
 		);
 		return res.status(500).json(`${error.message}`);
 	}
@@ -449,12 +392,10 @@ module.exports.defineCycles = asyncHandler(async (req, res) => {
 	//  }
 	const { cycle } = req.body;
 	if (!cycle) {
-		return res
-			.status(400)
-			.json('Please provide the required fields to define cycles!');
+		return res.status(400).json('Please provide the required fields to define cycles!');
 	}
 	try {
-		const cycles = await Cycles.findOne({ cycle: cycle });
+		const cycles = await Cycles.findOne({ name: cycle });
 		if (cycles) {
 			return res.status(400).json('Seems like cycles are already defined!');
 		} else {
@@ -475,6 +416,21 @@ module.exports.defineCycles = asyncHandler(async (req, res) => {
 	}
 });
 
+// View Cycles
+module.exports.viewCycles = asyncHandler(async (req, res) => {
+	try {
+		const cycles = await Cycles.find({});
+		if (cycles.length === 0) {
+			return res.status(404).json('Seems like there are no defined cycles!');
+		} else {
+			return res.status(200).json(cycles);
+		}
+	} catch (error) {
+		console.error('❌ Error while finding current cycles: ', error);
+		return res.status(500).json(`${error.message}`);
+	}
+});
+
 // Define Degree Rules
 module.exports.defineDegreeRules = asyncHandler(async (req, res) => {
 	const { cycles, cycleCourses, courses, practice } = req.body;
@@ -484,9 +440,7 @@ module.exports.defineDegreeRules = asyncHandler(async (req, res) => {
 	try {
 		const degreeRules = await DegreeRules.find({});
 		if (degreeRules) {
-			return res
-				.status(400)
-				.json('Seems like degree rules are already defined!');
+			return res.status(400).json('Seems like degree rules are already defined!');
 		} else {
 			try {
 				const newDegreeRules = await DegreeRules.create({
@@ -503,10 +457,7 @@ module.exports.defineDegreeRules = asyncHandler(async (req, res) => {
 			}
 		}
 	} catch (error) {
-		console.error(
-			'❌ Error while checking if degree rules already defined: ',
-			error,
-		);
+		console.error('❌ Error while checking if degree rules already defined: ', error);
 		return res.status(500).json(`${error.message}`);
 	}
 });

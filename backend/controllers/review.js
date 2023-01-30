@@ -43,7 +43,7 @@ module.exports.getUserTeachingReviews = asyncHandler(async (req, res) => {
 					return res
 						.status(404)
 						.json(
-							`Seems like there are no teaching reviews from user: ${user.username}!`,
+							`Seems like there are no teaching reviews from user: ${user.username}!`
 						);
 				} else {
 					return res.status(200).json(userTeachingReviews);
@@ -78,7 +78,7 @@ module.exports.viewUserTeachingReview = asyncHandler(async (req, res) => {
 					return res
 						.status(404)
 						.json(
-							`Seems like there is no teaching review with this ID for user: ${user.username}!`,
+							`Seems like there is no teaching review with this ID for user: ${user.username}!`
 						);
 				} else {
 					if (teachingReview.user.toString() !== userId) {
@@ -155,27 +155,28 @@ module.exports.createUserTeachingReview = asyncHandler(async (req, res) => {
 											return res
 												.status(406)
 												.json(
-													`${user.username} has already submitted a teaching review for this semester !`,
+													`${user.username} has already submitted a teaching review for this semester !`
 												);
 										} else {
 											try {
-												const newTeachingReview = await TeachingReview.create({
-													clear_course_objectives,
-													course_material,
-													course_comprehension,
-													examination_method,
-													course_difficulty,
-													course_activities,
-													user: userId,
-													teaching: teachingId,
-													semester: semester,
-													status: 'new',
-												});
+												const newTeachingReview =
+													await TeachingReview.create({
+														clear_course_objectives,
+														course_material,
+														course_comprehension,
+														examination_method,
+														course_difficulty,
+														course_activities,
+														user: userId,
+														teaching: teachingId,
+														semester: semester,
+														status: 'new',
+													});
 												return res.status(201).json(newTeachingReview);
 											} catch (error) {
 												console.error(
 													'❌ Error while creating user teaching review: ',
-													error,
+													error
 												);
 												return res.status(500).json(`${error.message}`);
 											}
@@ -183,7 +184,7 @@ module.exports.createUserTeachingReview = asyncHandler(async (req, res) => {
 									} catch (error) {
 										console.error(
 											'❌ Error while checking if user has already submitted a teaching review for this semester: ',
-											error,
+											error
 										);
 										return res.status(500).json(`${error.message}`);
 									}
@@ -191,7 +192,7 @@ module.exports.createUserTeachingReview = asyncHandler(async (req, res) => {
 							} catch (error) {
 								console.error(
 									'❌ Error while finding review duration period: ',
-									error,
+									error
 								);
 								return res.status(500).json(`${error.message}`);
 							}
@@ -199,7 +200,7 @@ module.exports.createUserTeachingReview = asyncHandler(async (req, res) => {
 					} catch (error) {
 						console.error(
 							'❌ Error while checking if semester has been defined: ',
-							error,
+							error
 						);
 						return res.status(500).json(`${error.message}`);
 					}
@@ -254,7 +255,7 @@ module.exports.updateUserTeachingReview = asyncHandler(async (req, res) => {
 					return res
 						.status(404)
 						.json(
-							`Seems like there is no teaching review with this ID for user: ${user.username}!`,
+							`Seems like there is no teaching review with this ID for user: ${user.username}!`
 						);
 				} else {
 					if (teachingReview.user.toString() !== userId) {
@@ -276,22 +277,19 @@ module.exports.updateUserTeachingReview = asyncHandler(async (req, res) => {
 											{
 												...req.body.teachingReview,
 											},
-											{ new: true },
+											{ new: true }
 										);
 									return res.status(200).json(updatedTeachingReview);
 								} catch (error) {
 									console.error(
 										'❌ Error while updating user teaching review: ',
-										error,
+										error
 									);
 									return res.status(500).json(`${error.message}`);
 								}
 							}
 						} catch (error) {
-							console.error(
-								'❌ Error while finding review duration period: ',
-								error,
-							);
+							console.error('❌ Error while finding review duration period: ', error);
 							return res.status(500).json(`${error.message}`);
 						}
 					}
@@ -352,9 +350,7 @@ module.exports.getInstructorReviews = asyncHandler(async (req, res) => {
 	try {
 		const instructorReviews = await InstructorReview.find({});
 		if (instructorReviews.length === 0) {
-			return res
-				.status(404)
-				.json('Seems like there are no instructor reviews!');
+			return res.status(404).json('Seems like there are no instructor reviews!');
 		} else {
 			return res.status(200).json(instructorReviews);
 		}
@@ -381,7 +377,7 @@ module.exports.getUserInstructorReviews = asyncHandler(async (req, res) => {
 					return res
 						.status(404)
 						.json(
-							`Seems like there are no instructor reviews from user: ${req.user.username}!`,
+							`Seems like there are no instructor reviews from user: ${req.user.username}!`
 						);
 				} else {
 					return res.status(200).json(userInstructorReviews);
@@ -413,7 +409,7 @@ module.exports.viewUserInstructorReview = asyncHandler(async (req, res) => {
 					return res
 						.status(404)
 						.json(
-							`Seems like there is no instructor review with this ID for user: ${req.user.username}!`,
+							`Seems like there is no instructor review with this ID for user: ${req.user.username}!`
 						);
 				} else {
 					if (instructorReview.user.toString() !== userId) {
@@ -469,7 +465,7 @@ module.exports.createUserInstructorReview = asyncHandler(async (req, res) => {
 					return res
 						.status(406)
 						.json(
-							`${req.user.username} has already submitted an instructor review for this semester !`,
+							`${req.user.username} has already submitted an instructor review for this semester !`
 						);
 				} else {
 					try {
@@ -484,17 +480,14 @@ module.exports.createUserInstructorReview = asyncHandler(async (req, res) => {
 						});
 						return res.status(201).json(newInstructorReview);
 					} catch (error) {
-						console.error(
-							'❌ Error while creating user instructor review: ',
-							error,
-						);
+						console.error('❌ Error while creating user instructor review: ', error);
 						return res.status(500).json(`${error.message}`);
 					}
 				}
 			} catch (error) {
 				console.error(
 					'❌ Error while checking if user has already submitted an instructor review for this semester: ',
-					error,
+					error
 				);
 				return res.status(500).json(`${error.message}`);
 			}
@@ -539,7 +532,7 @@ module.exports.updateUserInstructorReview = asyncHandler(async (req, res) => {
 					return res
 						.status(404)
 						.json(
-							`Seems like there is no instructor review with this ID for user: ${req.user.username}!`,
+							`Seems like there is no instructor review with this ID for user: ${req.user.username}!`
 						);
 				} else {
 					if (instructorReview.user.toString() !== userId) {
@@ -555,13 +548,13 @@ module.exports.updateUserInstructorReview = asyncHandler(async (req, res) => {
 										...req.body.instructorReview,
 									},
 									{ user: userId },
-									{ new: true },
+									{ new: true }
 								);
 							return res.status(200).json(updatedInstructorReview);
 						} catch (error) {
 							console.error(
 								'❌ Error while updating user instructor review: ',
-								error,
+								error
 							);
 							return res.status(500).json(`${error.message}`);
 						}
@@ -593,10 +586,7 @@ module.exports.deleteUserInstructorReview = asyncHandler(async (req, res) => {
 				await InstructorReview.findByIdAndDelete(id);
 				return res.status(200).json('Instructor review deleted successfully!');
 			} catch (error) {
-				console.error(
-					'❌ Error while deleting user instructor review: ',
-					error,
-				);
+				console.error('❌ Error while deleting user instructor review: ', error);
 				return res.status(500).json(`${error.message}`);
 			}
 		}
@@ -650,7 +640,7 @@ module.exports.getUserGeneralReviews = asyncHandler(async (req, res) => {
 					return res
 						.status(404)
 						.json(
-							`Seems like there are no general reviews from user: ${req.user.username}!`,
+							`Seems like there are no general reviews from user: ${req.user.username}!`
 						);
 				} else {
 					return res.status(200).json(userGeneralReviews);
@@ -682,7 +672,7 @@ module.exports.viewUserGeneralReview = asyncHandler(async (req, res) => {
 					return res
 						.status(404)
 						.json(
-							`Seems like there is no general review with this ID for user: ${req.user.username}!`,
+							`Seems like there is no general review with this ID for user: ${req.user.username}!`
 						);
 				} else {
 					if (generalReview.user.toString() !== userId) {
@@ -704,7 +694,63 @@ module.exports.viewUserGeneralReview = asyncHandler(async (req, res) => {
 });
 
 // Create User General Review
-module.exports.createUserGeneralReview = asyncHandler(async (req, res) => {
+// module.exports.createUserGeneralReview = asyncHandler(async (req, res) => {
+// 	const { course_opinion, instructor_opinion, likes, dislikes } = req.body;
+
+// 	if (!course_opinion || !instructor_opinion || !likes || !dislikes) {
+// 		return res.status(400).json('Please fill in all the fields!');
+// 	}
+
+// 	try {
+// 		const userId = req.user.id;
+// 		const user = await User.findById(userId);
+
+// 		if (!user) {
+// 			return res.status(401).json('User not found!');
+// 		} else {
+// 			try {
+// 				const generalReview = await GeneralReview.findOne({ user: userId });
+// 				if (generalReview) {
+// 					return res
+// 						.status(406)
+// 						.json(
+// 							`${req.user.username} has already submitted a general review for this semester !`,
+// 						);
+// 				} else {
+// 					try {
+// 						const newGeneralReview = await GeneralReview.create({
+// 							course_opinion,
+// 							instructor_opinion,
+// 							likes,
+// 							dislikes,
+// 							user: userId,
+// 							status: 'new',
+// 						});
+
+// 						return res.status(201).json(newGeneralReview);
+// 					} catch (error) {
+// 						console.error(
+// 							'❌ Error while creating user general review: ',
+// 							error,
+// 						);
+// 						return res.status(500).json(`${error.message}`);
+// 					}
+// 				}
+// 			} catch (error) {
+// 				console.error(
+// 					'❌ Error while checking if user has already submitted a general review for this semester: ',
+// 					error,
+// 				);
+// 				return res.status(500).json(`${error.message}`);
+// 			}
+// 		}
+// 	} catch (error) {
+// 		console.error('❌ Error while finding user: ', error);
+// 		return res.status(500).json(`${error.message}`);
+// 	}
+// });
+
+module.exports.createGeneralReview = asyncHandler(async (req, res) => {
 	const { course_opinion, instructor_opinion, likes, dislikes } = req.body;
 
 	if (!course_opinion || !instructor_opinion || !likes || !dislikes) {
@@ -712,50 +758,17 @@ module.exports.createUserGeneralReview = asyncHandler(async (req, res) => {
 	}
 
 	try {
-		const userId = req.user.id;
-		const user = await User.findById(userId);
+		const newGeneralReview = await GeneralReview.create({
+			course_opinion,
+			instructor_opinion,
+			likes,
+			dislikes,
+			status: 'new',
+		});
 
-		if (!user) {
-			return res.status(401).json('User not found!');
-		} else {
-			try {
-				const generalReview = await GeneralReview.findOne({ user: userId });
-				if (generalReview) {
-					return res
-						.status(406)
-						.json(
-							`${req.user.username} has already submitted a general review for this semester !`,
-						);
-				} else {
-					try {
-						const newGeneralReview = await GeneralReview.create({
-							course_opinion,
-							instructor_opinion,
-							likes,
-							dislikes,
-							user: userId,
-							status: 'new',
-						});
-
-						return res.status(201).json(newGeneralReview);
-					} catch (error) {
-						console.error(
-							'❌ Error while creating user general review: ',
-							error,
-						);
-						return res.status(500).json(`${error.message}`);
-					}
-				}
-			} catch (error) {
-				console.error(
-					'❌ Error while checking if user has already submitted a general review for this semester: ',
-					error,
-				);
-				return res.status(500).json(`${error.message}`);
-			}
-		}
+		return res.status(201).json(newGeneralReview);
 	} catch (error) {
-		console.error('❌ Error while finding user: ', error);
+		console.error('❌ Error while creating general review: ', error);
 		return res.status(500).json(`${error.message}`);
 	}
 });
@@ -782,7 +795,7 @@ module.exports.updateUserGeneralReview = asyncHandler(async (req, res) => {
 					return res
 						.status(404)
 						.json(
-							`Seems like there is no general review with this ID for user: ${req.user.username}!`,
+							`Seems like there is no general review with this ID for user: ${req.user.username}!`
 						);
 				} else {
 					if (generalReview.user.toString() !== userId) {
@@ -791,21 +804,17 @@ module.exports.updateUserGeneralReview = asyncHandler(async (req, res) => {
 							.json('You are not authorized to view this general review!');
 					} else {
 						try {
-							const updatedGeneralReview =
-								await GeneralReview.findByIdAndUpdate(
-									id,
-									{
-										...req.body.generalReview,
-									},
-									{ user: userId },
-									{ new: true },
-								);
+							const updatedGeneralReview = await GeneralReview.findByIdAndUpdate(
+								id,
+								{
+									...req.body.generalReview,
+								},
+								{ user: userId },
+								{ new: true }
+							);
 							return res.status(200).json(updatedGeneralReview);
 						} catch (error) {
-							console.error(
-								'❌ Error while updating user general review: ',
-								error,
-							);
+							console.error('❌ Error while updating user general review: ', error);
 							return res.status(500).json(`${error.message}`);
 						}
 					}

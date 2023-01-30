@@ -1,4 +1,4 @@
-import { FormGroup, Label } from 'reactstrap';
+import { FormGroup, Label, Row } from 'reactstrap';
 import { Field, ErrorMessage } from 'formik';
 import FormErrorMessage from '../FormErrorMessage';
 
@@ -27,9 +27,9 @@ const NoteForm = ({ initialValues }) => {
 				<ErrorMessage name="text" component={FormErrorMessage} />
 			</FormGroup>
 
-			{/* <div className="row">
+			{/* <Row>
                 <SubmitButton message={'Post Note'} />
-            </div> */}
+            </Row> */}
 		</>
 	);
 };

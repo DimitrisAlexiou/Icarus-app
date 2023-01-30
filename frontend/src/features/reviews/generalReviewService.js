@@ -1,17 +1,18 @@
 import axios from 'axios';
-
+import { API_URL_REVIEW, headers } from '../../constants/config';
+const GENERAL = `${API_URL_REVIEW}/general`;
 const API_URL = '/api/review/general';
 
 // Create General Review
-const createGeneralReview = async (generalReviewData, token) => {
+// const createGeneralReview = async (data, token) => {
+const createGeneralReview = async (data) => {
 	const config = {
 		headers: {
-			'Content-Type': 'application/json',
-			Authorization: `Bearer ${token}`,
+			headers,
 		},
 	};
 
-	const response = await axios.post(API_URL, generalReviewData, config);
+	const response = await axios.post(GENERAL, data, config);
 
 	return response.data;
 };

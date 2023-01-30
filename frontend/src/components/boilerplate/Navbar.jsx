@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
 	Nav,
 	NavItem,
@@ -7,19 +7,15 @@ import {
 	DropdownToggle,
 	DropdownMenu,
 	DropdownItem,
-	Modal,
-	ModalHeader,
-	ModalBody,
-	ModalFooter,
 } from 'reactstrap';
-import { useNavigate, NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { useGlobalContext } from '../../context';
-import { useAuth0 } from '@auth0/auth0-react';
-import { logoutUser } from '../../features/auth/userSlice';
+import { logout } from '../../features/auth/authSlice';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
 	faUnlock,
+	faIdCard,
 	faGraduationCap,
 	faUser,
 	faCogs,
@@ -35,52 +31,28 @@ import img from '../../assets/images/undraw_profile.svg';
 import '../../App.css';
 
 export default function NavBar() {
-	// const { loginWithRedirect, user, logout } = useAuth0();
-	const { user } = useSelector((store) => store.user);
+	const { user } = useSelector((store) => store.auth);
 	const dispatch = useDispatch();
 
 	const { openSidebar } = useGlobalContext();
 
-	// NOTIFICATIONS NAV
-	// const [isOpen, setIsOpen] = useState(false);
-	// const [dropdownOpen, setDropdownOpen] = useState(false);
-
-	// const toggle = () => setDropdownOpen((prevState) => !prevState);
-	// const Handletoggle = () => {
-	// 	setIsOpen(!isOpen);
-	// };
-
-	// USER NAV
-	const [isOpenUser, setIsOpenUser] = useState(false);
 	const [dropdownOpenUser, setDropdownOpenUser] = useState(false);
-
 	const toggleUser = () => setDropdownOpenUser((prevState) => !prevState);
-	// const HandletoggleUser = () => {
-	// 	setIsOpenUser(!isOpenUser);
-	// };
 
-	// LOGOUT MODAL
 	const [showLogout, setShowLogout] = useState(false);
-
-	// const toggleLogout = () => setModal((prevState) => !prevState);
-	const handleClose = () => setShowLogout(!showLogout);
-
-	// const toggleLogout = () => setShow(true);
 
 	return (
 		<>
 			<Nav className="d-flex navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow sticky-top">
-				<NavItem className="nav-item mx-1">
-					<div className="text-center d-none d-md-inline">
-						<Button
-							id="sidebarToggleTop"
-							className="rounded-circle border-0"
-							color="null"
-							// onClick={openSidebar}
-						>
-							<FontAwesomeIcon icon={faBarsStaggered} />
-						</Button>
-					</div>
+				<NavItem className="nav-item mx-1 text-center d-none d-md-inline">
+					<Button
+						id="sidebarToggleTop"
+						className="rounded-circle border-0"
+						color="null"
+						// onClick={openSidebar}
+					>
+						<FontAwesomeIcon icon={faBarsStaggered} />
+					</Button>
 				</NavItem>
 
 				<NavItem className="nav-item mx-3">
@@ -97,35 +69,36 @@ export default function NavBar() {
 					</a>
 				</NavItem>
 
-				<div className="navbar-nav ml-auto">
+				<NavItem className="navbar-nav ml-auto">
 					<NavItem className="nav-item mx-1">
 						<div className="nav-link" id="clock">
 							<Clock format={'HH:mm:ss'} ticking={true} />
 						</div>
 					</NavItem>
 
+					{user ? null : (
+						<>
+							<NavItem className="nav-item mx-1">
+								<NavLink className="nav-link" to="/auth/register">
+									<FontAwesomeIcon icon={faIdCard} />
+									<span className="ml-2">Register</span>
+								</NavLink>
+							</NavItem>
+
+							<NavItem className="nav-item  mx-1">
+								<NavLink className="nav-link" to="/auth/login">
+									<FontAwesomeIcon icon={faUnlock} />
+									<span className="ml-2">Login</span>
+								</NavLink>
+							</NavItem>
+						</>
+					)}
+
 					<NavItem className="nav-item mx-1">
-						<Button
-							className="nav-link"
-							color="null"
-							// onClick={() => loginWithRedirect()}
-						>
-							<FontAwesomeIcon icon={faUnlock} />
-							<div className="nav-link">Login</div>
-						</Button>
+						{user ? <NotificationsNavItem /> : null}
 					</NavItem>
 
-					{/* <NavItem className="nav-item mx-1">
-						<NotificationsNavItem />
-					</NavItem> */}
-					{/* <NavItem className="nav-item mx-1">
-						{user ? <NotificationsNavItem /> : null}
-					</NavItem> */}
-
-					{/* <NavItem className="nav-item mx-1">
-						<MessagesNavItem />
-					</NavItem> */}
-					{/* <NavItem className="nav-item mx-1">{user ? <MessagesNavItem /> : null}</NavItem> */}
+					<NavItem className="nav-item mx-1">{user ? <MessagesNavItem /> : null}</NavItem>
 
 					<NavItem className="nav-item mx-1">
 						{user ? (
@@ -178,27 +151,30 @@ export default function NavBar() {
 										</DropdownItem>
 										<DropdownItem divider />
 										<DropdownItem className="dropdown-item d-flex align-items-center">
-											<div
-												type="button"
-												onClick={
-													() => dispatch(logoutUser())
-													// logout({ returnTo: window.location.origin })
-													// setShowLogout(!showLogout)
-													// <LogoutModal />
-												}
-											>
+											<NavItem onClick={() => dispatch(logout())}>
+												<i className="mr-2 text-gray-400">
+													<FontAwesomeIcon icon={faSignOut} />
+												</i>
+												Logout
+											</NavItem>
+										</DropdownItem>
+										{/* <DropdownItem className="dropdown-item d-flex align-items-center">
+											<div type="button" onClick={() => setShowLogout(true)}>
 												<i className="mr-2 text-gray-400">
 													<FontAwesomeIcon icon={faSignOut} />
 												</i>
 												Logout
 											</div>
-										</DropdownItem>
+										</DropdownItem> */}
+										{/* {showLogout && (
+											<LogoutModal setShowLogout={setShowLogout} />
+										)} */}
 									</DropdownMenu>
 								</Dropdown>
 							</>
 						) : null}
 					</NavItem>
-				</div>
+				</NavItem>
 			</Nav>
 		</>
 	);

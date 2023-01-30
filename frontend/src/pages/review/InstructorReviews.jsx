@@ -1,11 +1,10 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import {
-	getInstructorReviews,
-	resetInstructorReview,
-} from '../../features/reviews/instructorReviewSlice';
+import { Col, Row } from 'reactstrap';
+import { getInstructorReviews, reset } from '../../features/reviews/instructorReviewSlice';
 import InstructorReviewItem from '../../components/review/InstructorReviewItem';
 import Spinner from '../../components/boilerplate/Spinner';
+import BreadcrumbNav from '../../components/boilerplate/Breadcrumb';
 
 export default function InstructorReviews() {
 	const { instructorReview, isLoading, isSuccess } = useSelector(
@@ -17,7 +16,7 @@ export default function InstructorReviews() {
 	useEffect(() => {
 		return () => {
 			if (isSuccess) {
-				dispatch(resetInstructorReview());
+				dispatch(reset());
 			}
 		};
 	}, [dispatch, isSuccess]);
@@ -32,24 +31,22 @@ export default function InstructorReviews() {
 
 	return (
 		<>
-			<div>
-				<div>
-					<h1 className="h3 mb-5 text-gray-800 font-weight-bold">Instructor Reviews !</h1>
-				</div>
+			<BreadcrumbNav link={'/review'} header={'Reviews'} active={'Instructor Reviews'} />
 
-				<div className="row">
-					<div className="col-sm-12 col-md-6 col-lg-4 g-4 mb-3">
-						<div className="col">
-							{instructorReview.map((instructorReview) => (
-								<InstructorReviewItem
-									key={instructorReview._id}
-									instructorReview={instructorReview}
-								/>
-							))}
-						</div>
-					</div>
+			<h1 className="h3 mb-5 text-gray-800 font-weight-bold">Instructor Reviews !</h1>
+
+			<Row>
+				<div className="col-sm-12 col-md-6 col-lg-4 g-4 mb-3">
+					<Col>
+						{instructorReview.map((instructorReview) => (
+							<InstructorReviewItem
+								key={instructorReview._id}
+								instructorReview={instructorReview}
+							/>
+						))}
+					</Col>
 				</div>
-			</div>
+			</Row>
 		</>
 	);
 }

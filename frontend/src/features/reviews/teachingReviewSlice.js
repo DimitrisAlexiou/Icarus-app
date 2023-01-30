@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { extractErrorMessage } from '../../utils/redux/errorMessage';
 import teachingReviewService from './teachingReviewService';
 
 const initialState = {
@@ -10,30 +11,37 @@ const initialState = {
 	message: '',
 };
 
-// Create Teaching Review
+// Create Teaching Review for Course (User Teaching)
 export const createTeachingReview = createAsyncThunk(
-	'api/review/teaching',
-	async (teachingReviewData, thunkAPI) => {
+	'api/review/teaching/:teachingId',
+	async ({ teachingReviewData, teachingId }, thunkAPI) => {
 		try {
 			const token = thunkAPI.getState().auth.user.token;
 			return await teachingReviewService.createTeachingReview(
 				teachingReviewData,
-				token,
+				teachingId,
+				token
 			);
 		} catch (error) {
-			const message =
-				(error.response &&
-					error.response.data &&
-					error.response.data.message) ||
-				error.message ||
-				error.toString();
-
-			return thunkAPI.rejectWithValue(message);
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
-	},
+	}
 );
 
-// Get All Teaching Reviews
+// Get User Teaching Reviews
+export const getUserTeachingReviews = createAsyncThunk(
+	'/api/review/teaching',
+	async (_, thunkAPI) => {
+		try {
+			const token = thunkAPI.getState().auth.user.token;
+			return await teachingReviewService.getUserTeachingReviews(token);
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
+	}
+);
+
+// Get all Teaching Reviews
 export const getTeachingReviews = createAsyncThunk(
 	'/api/review/teaching/all',
 	async (_, thunkAPI) => {
@@ -41,16 +49,9 @@ export const getTeachingReviews = createAsyncThunk(
 			const token = thunkAPI.getState().auth.user.token;
 			return await teachingReviewService.getTeachingReviews(token);
 		} catch (error) {
-			const message =
-				(error.response &&
-					error.response.data &&
-					error.response.data.message) ||
-				error.message ||
-				error.toString();
-
-			return thunkAPI.rejectWithValue(message);
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
-	},
+	}
 );
 
 export const teachingReviewSlice = createSlice({
@@ -69,6 +70,19 @@ export const teachingReviewSlice = createSlice({
 				state.isSuccess = true;
 			})
 			.addCase(createTeachingReview.rejected, (state, action) => {
+				state.isLoading = false;
+				state.isError = true;
+				state.message = action.payload;
+			})
+			.addCase(getUserTeachingReviews.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(getUserTeachingReviews.fulfilled, (state, action) => {
+				state.isLoading = false;
+				state.isSuccess = true;
+				state.teachingReviews = action.payload;
+			})
+			.addCase(getUserTeachingReviews.rejected, (state, action) => {
 				state.isLoading = false;
 				state.isError = true;
 				state.message = action.payload;

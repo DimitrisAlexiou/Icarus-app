@@ -7,25 +7,21 @@ const {
 	deleteTeachingReviews,
 } = require('../controllers/review');
 const { validateTeachingReview } = require('../middleware/validations');
-const { authenticate } = require('../middleware/authMiddleware');
+const { authorize } = require('../middleware/authMiddleware');
 
 // @desc    Create Teaching Review
 // @route   POST /api/review/teaching
 // @access  Private USER || ADMIN
-router
-	.route('/')
-	.post(authenticate, validateTeachingReview, catchAsync(createTeachingReview));
+router.route('/').post(authorize, validateTeachingReview, catchAsync(createTeachingReview));
 
 // @desc    Get All Teaching Reviews
 // @route   GET /api/review/teaching/all
 // @access  Private ADMIN || INSTRUCTOR
-router.route('/all').get(authenticate, catchAsync(getTeachingReviews));
+router.route('/all').get(authorize, catchAsync(getTeachingReviews));
 
 // @desc    Delete All Teaching Reviews
 // @route   DELETE /api/review/teaching/all/delete
 // @access  Private ADMIN
-router
-	.route('/all/delete')
-	.delete(authenticate, catchAsync(deleteTeachingReviews));
+router.route('/all/delete').delete(authorize, catchAsync(deleteTeachingReviews));
 
 module.exports = router;

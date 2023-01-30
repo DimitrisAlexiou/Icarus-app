@@ -5,11 +5,13 @@ import { faBook } from '@fortawesome/free-solid-svg-icons';
 import UndergraduateCourseNotification from '../boilerplate/UndergraduateCourseNotification';
 
 export default function CourseItem({ course }) {
-	return course.isObligatory === true ? (
+	const isAdmin = true;
+	// return course.isObligatory === true ? (
+	return (
 		<>
-			<div className="card border-left-sky-blue-crayola">
+			<div className="card border-left-sky-blue-crayola mb-4">
 				<div className="card-header py-3">
-					<Row className="col-sm-14 ">
+					<Row className="col-sm-14">
 						<Col>
 							<h5 className="text-cerulean-crayola">{course.title}</h5>
 						</Col>
@@ -25,7 +27,7 @@ export default function CourseItem({ course }) {
 							)}
 						</Col>
 						<Col className="col-md-4 col-lg-4 col-xl-4 d-flex justify-content-end py-1">
-							<h6 className="text-light-cornflower-blue">{course.cid}</h6>
+							<h6 className="text-light-cornflower-blue">{course.courseId}</h6>
 						</Col>
 					</Row>
 				</div>
@@ -47,22 +49,44 @@ export default function CourseItem({ course }) {
 					>
 						{course.description}
 					</p>
-					<div>
-						<Link
-							to={`/course/${course._id}`}
-							type="button"
-							className="btn btn-light btn-small"
-						>
-							Learn about
-						</Link>
-					</div>
+					<Link
+						to={`/course/${course._id}`}
+						type="button"
+						className="btn btn-light btn-small"
+					>
+						Learn about
+					</Link>
 				</div>
+				{isAdmin && course.prerequisites === null ? (
+					<div
+						className="card-footer text-warning"
+						style={{
+							textAlign: 'justify',
+							fontWeight: '600',
+							fontSize: 12,
+						}}
+					>
+						Prerequisite course/s has not yet been assigned!
+					</div>
+				) : (
+					<div
+						className="card-footer text-success"
+						style={{
+							textAlign: 'justify',
+							fontWeight: '600',
+							fontSize: 12,
+						}}
+					>
+						Prerequisite course/s has been assigned!
+					</div>
+				)}
 			</div>
 		</>
-	) : (
-		<UndergraduateCourseNotification
-			icon={<FontAwesomeIcon icon={faBook} />}
-			message={'There are no obligatory courses available right now !'}
-		/>
 	);
+	// : (
+	// 	<UndergraduateCourseNotification
+	// 		icon={<FontAwesomeIcon icon={faBook} />}
+	// 		message={'There are no obligatory courses available right now !'}
+	// 	/>
+	// );
 }

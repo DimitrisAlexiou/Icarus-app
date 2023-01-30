@@ -1,15 +1,35 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { FormGroup, Label, Row, Col, Button } from 'reactstrap';
 import { Field, ErrorMessage } from 'formik';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import FormErrorMessage from '../FormErrorMessage';
 
-const RegisterForm = () => {
+export default function RegisterForm() {
 	const [showPassword, setShowPassword] = useState(false);
 
 	return (
 		<>
+			<Row>
+				<Col md="5">
+					<FormGroup className="form-floating mb-3" floating>
+						<Field type="text" className="form-control" name="name" />
+						<Label for="name" className="text-gray-600">
+							Name
+						</Label>
+						<ErrorMessage name="name" component={FormErrorMessage} />
+					</FormGroup>
+				</Col>
+				<Col md="7">
+					<FormGroup className="form-floating mb-3" floating>
+						<Field type="text" className="form-control" name="surname" />
+						<Label for="surname" className="text-gray-600">
+							Surname
+						</Label>
+						<ErrorMessage name="surname" component={FormErrorMessage} />
+					</FormGroup>
+				</Col>
+			</Row>
 			<Row>
 				<Col md="5">
 					<FormGroup className="form-floating mb-3" floating>
@@ -44,19 +64,21 @@ const RegisterForm = () => {
 						<ErrorMessage name="password" component={FormErrorMessage} />
 					</FormGroup>
 				</Col>
-				<Col md="2">
-					<div className="mt-2 mb-3 d-flex justify-content-center">
-						<Button className="nav-link" color="null">
-							<FontAwesomeIcon
-								icon={faEyeSlash}
-								onClick={() => setShowPassword((prevState) => !prevState)}
-							/>
-						</Button>
-					</div>
+				<Col md="2" className="mt-2 mb-3 d-flex justify-content-center">
+					<Button type="button" className="nav-link" color="null">
+						<FontAwesomeIcon
+							icon={faEyeSlash}
+							onClick={() => setShowPassword(!showPassword)}
+						/>
+					</Button>
 				</Col>
 				<Col md="5">
 					<FormGroup className="form-group mb-3" floating>
-						<Field type="password" className="form-control" name="confirmPassword" />
+						<Field
+							type={showPassword ? 'text' : 'password'}
+							className="form-control"
+							name="confirmPassword"
+						/>
 						<Label for="confirmPassword" className="text-gray-600">
 							Confirm Password
 						</Label>
@@ -66,6 +88,4 @@ const RegisterForm = () => {
 			</Row>
 		</>
 	);
-};
-
-export default RegisterForm;
+}

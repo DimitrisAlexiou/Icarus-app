@@ -1,6 +1,8 @@
-export default function Spinner() {
+import { Spinner } from 'reactstrap';
+
+export default function Loading() {
 	return (
-		<Spinner color="primary" type="grow">
+		<Spinner color="dark" type="grow" className="loadingSpinner">
 			Loading...
 		</Spinner>
 	);

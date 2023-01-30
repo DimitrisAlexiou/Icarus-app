@@ -1,9 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth0 } from '@auth0/auth0-react';
-import { Badge } from 'reactstrap';
+import { Badge, Col, Row } from 'reactstrap';
 import { Formik, Form } from 'formik';
-import { DegreeRulesSchema } from '../../schemas/DegreeRules';
+import { DegreeRulesSchema } from '../../schemas/admin/DegreeRules';
 import { Toast } from '../../constants/sweetAlertNotification';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserTie, faBook, faUserGraduate, faUsers } from '@fortawesome/free-solid-svg-icons';
@@ -50,176 +50,168 @@ export default function AdminDashboard() {
 	return (
 		isAuthenticated && (
 			<>
-				<div>
-					<h1 className="h3 mb-5 text-gray-800 font-weight-bold">Admin Dashboard !</h1>
+				<h1 className="h3 mb-5 text-gray-800 font-weight-bold">Admin Dashboard !</h1>
 
-					<div class="row">
-						<div class="col-xl-3 col-md-6 mb-4">
-							<div class="card border-left-primary shadow h-100 py-2">
-								<div class="card-body">
-									<div class="row no-gutters align-items-center">
-										<div class="col mr-2">
-											<div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-												Professors
-											</div>
-											<div class="h5 mb-0 font-weight-bold text-gray-800">
-												<p id="professors"></p>
-												17
-											</div>
+				<Row>
+					<div class="col-xl-3 col-md-6 mb-4">
+						<div class="card border-left-primary shadow h-100 py-2">
+							<div class="card-body">
+								<Row class="no-gutters align-items-center">
+									<Col class="mr-2">
+										<div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+											Professors
 										</div>
-										<div class="col-auto">
-											<i class="fas fa-2x text-gray-300">
-												<FontAwesomeIcon icon={faUserTie} />
-											</i>
+										<div class="h5 mb-0 font-weight-bold text-gray-800">
+											<p id="professors"></p>
+											17
 										</div>
+									</Col>
+									<div class="col-auto">
+										<i class="fas fa-2x text-gray-300">
+											<FontAwesomeIcon icon={faUserTie} />
+										</i>
 									</div>
-								</div>
-							</div>
-						</div>
-
-						<div class="col-xl-3 col-md-6 mb-4">
-							<div class="card border-left-success shadow h-100 py-2">
-								<div class="card-body">
-									<div class="row no-gutters align-items-center">
-										<div class="col mr-2">
-											<div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-												Courses
-											</div>
-											<div class="h5 mb-0 font-weight-bold text-gray-800">
-												30
-											</div>
-										</div>
-										<div class="col-auto">
-											<i class="fas fa-2x text-gray-300">
-												<FontAwesomeIcon icon={faBook} />
-											</i>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<div class="col-xl-3 col-md-6 mb-4">
-							<div class="card border-left-info shadow h-100 py-2">
-								<div class="card-body">
-									<div class="row no-gutters align-items-center">
-										<div class="col mr-2">
-											<div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-												Students
-											</div>
-											<div class="h5 mb-0 font-weight-bold text-gray-800">
-												3
-											</div>
-										</div>
-										<div class="col-auto">
-											<i class="fas fa-2x text-gray-300">
-												<FontAwesomeIcon icon={faUserGraduate} />
-											</i>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<div class="col-xl-3 col-md-6 mb-4">
-							<div class="card border-left-dark shadow h-100 py-2">
-								<div class="card-body">
-									<div class="row no-gutters align-items-center">
-										<div class="col mr-2">
-											<div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-												Users
-											</div>
-											<div class="h5 mb-0 font-weight-bold text-gray-800">
-												24
-											</div>
-										</div>
-										<div class="col-auto">
-											<i class="far fa-2x text-gray-300">
-												<FontAwesomeIcon icon={faUsers} />
-											</i>
-										</div>
-									</div>
-								</div>
+								</Row>
 							</div>
 						</div>
 					</div>
 
-					<div className="row justify-content-center">
-						<div className="col-sm-12 col-md-11 col-lg-10 col-xl-8">
-							<Badge color="info">Semester</Badge>
-							<DatePicker />
-						</div>
-						<div className="col-sm-12 col-md-11 col-lg-10 col-xl-8">
-							<Badge color="info">Grading Duration Window</Badge>
-							<DatePicker />
-						</div>
-					</div>
-
-					<div className="row justify-content-center">
-						<div className="col-sm-12 col-md-11 col-lg-10 col-xl-8">
-							<Badge color="info">Vaccine/Reassessment Statement</Badge>
-							<DatePicker />
-						</div>
-						<div className="col-sm-12 col-md-11 col-lg-10 col-xl-8">
-							<Badge color="info">Assessment Statement</Badge>
-							<DatePicker />
-						</div>
-					</div>
-
-					<div className="row justify-content-center">
-						<div className="col-sm-12 col-md-11 col-lg-10 col-xl-8">
-							<Badge color="info">Review Duration</Badge>
-							<DatePicker />
-						</div>
-						<div className="col-sm-12 col-md-11 col-lg-10 col-xl-8">
-							<Badge color="info">Review Start</Badge>
-							<DatePicker />
-						</div>
-					</div>
-
-					<div className="row justify-content-center">
-						<div className="col-sm-12 col-md-11 col-lg-10 col-xl-8">
-							<Badge color="info">List of Cycles</Badge>
-						</div>
-					</div>
-
-					<Formik
-						initialValues={initialValues}
-						validationSchema={DegreeRulesSchema}
-						onSubmit={(degreeRulesData) => {
-							onSubmit(degreeRulesData);
-						}}
-						validateOnMount
-					>
-						<div className="row justify-content-center">
-							<div className="col-sm-12 col-md-11 col-lg-10 col-xl-8">
-								<Badge color="info">Rules for Degree</Badge>
-								<div className="card shadow mb-4">
-									<div className="card-header py-3">
-										<h6 className="m-0 font-weight-bold text-primary">
-											Fill the form below to assign degree rules
-										</h6>
+					<div class="col-xl-3 col-md-6 mb-4">
+						<div class="card border-left-success shadow h-100 py-2">
+							<div class="card-body">
+								<Row class="no-gutters align-items-center">
+									<Col class="mr-2">
+										<div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+											Courses
+										</div>
+										<div class="h5 mb-0 font-weight-bold text-gray-800">30</div>
+									</Col>
+									<div class="col-auto">
+										<i class="fas fa-2x text-gray-300">
+											<FontAwesomeIcon icon={faBook} />
+										</i>
 									</div>
-									<div className="card-body">
-										<Form>
-											<DegreeRulesForm initialValues={initialValues} />
-
-											<div className="row">
-												{/* <CancelButton url={'/course'} /> */}
-												<SubmitButton message={'Assign Rules'} />
-											</div>
-										</Form>
-									</div>
-								</div>
+								</Row>
 							</div>
 						</div>
-					</Formik>
-					<div className="row justify-content-center">
-						<div className="col-sm-12 col-md-11 col-lg-10 col-xl-8">
-							<CoursesDataTable />
+					</div>
+
+					<div class="col-xl-3 col-md-6 mb-4">
+						<div class="card border-left-info shadow h-100 py-2">
+							<div class="card-body">
+								<Row class="no-gutters align-items-center">
+									<Col class="mr-2">
+										<div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+											Students
+										</div>
+										<div class="h5 mb-0 font-weight-bold text-gray-800">3</div>
+									</Col>
+									<div class="col-auto">
+										<i class="fas fa-2x text-gray-300">
+											<FontAwesomeIcon icon={faUserGraduate} />
+										</i>
+									</div>
+								</Row>
+							</div>
 						</div>
 					</div>
-				</div>
+
+					<div class="col-xl-3 col-md-6 mb-4">
+						<div class="card border-left-dark shadow h-100 py-2">
+							<div class="card-body">
+								<Row class="no-gutters align-items-center">
+									<Col class="mr-2">
+										<div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+											Users
+										</div>
+										<div class="h5 mb-0 font-weight-bold text-gray-800">24</div>
+									</Col>
+									<div class="col-auto">
+										<i class="far fa-2x text-gray-300">
+											<FontAwesomeIcon icon={faUsers} />
+										</i>
+									</div>
+								</Row>
+							</div>
+						</div>
+					</div>
+				</Row>
+
+				<Row className="justify-content-center">
+					<div className="col-sm-12 col-md-11 col-lg-10 col-xl-8">
+						<Badge color="info">Semester</Badge>
+						<DatePicker />
+					</div>
+					<div className="col-sm-12 col-md-11 col-lg-10 col-xl-8">
+						<Badge color="info">Grading Duration Window</Badge>
+						<DatePicker />
+					</div>
+				</Row>
+
+				<Row className="justify-content-center">
+					<div className="col-sm-12 col-md-11 col-lg-10 col-xl-8">
+						<Badge color="info">Vaccine/Reassessment Statement</Badge>
+						<DatePicker />
+					</div>
+					<div className="col-sm-12 col-md-11 col-lg-10 col-xl-8">
+						<Badge color="info">Assessment Statement</Badge>
+						<DatePicker />
+					</div>
+				</Row>
+
+				<Row className="justify-content-center">
+					<div className="col-sm-12 col-md-11 col-lg-10 col-xl-8">
+						<Badge color="info">Review Duration</Badge>
+						<DatePicker />
+					</div>
+					<div className="col-sm-12 col-md-11 col-lg-10 col-xl-8">
+						<Badge color="info">Review Start</Badge>
+						<DatePicker />
+					</div>
+				</Row>
+
+				<Row className="justify-content-center">
+					<div className="col-sm-12 col-md-11 col-lg-10 col-xl-8">
+						<Badge color="info">List of Cycles</Badge>
+					</div>
+				</Row>
+
+				<Row className="justify-content-center">
+					<div className="col-sm-12 col-md-11 col-lg-10 col-xl-8">
+						<Badge color="info">Rules for Degree</Badge>
+						<div className="card shadow mb-4">
+							<div className="card-header py-3">
+								<h6 className="m-0 font-weight-bold text-primary">
+									Fill the form below to assign degree rules
+								</h6>
+							</div>
+							<div className="card-body">
+								<Formik
+									initialValues={initialValues}
+									validationSchema={DegreeRulesSchema}
+									onSubmit={(degreeRulesData) => {
+										onSubmit(degreeRulesData);
+									}}
+									validateOnMount
+								>
+									<Form>
+										<DegreeRulesForm initialValues={initialValues} />
+
+										<Row>
+											{/* <CancelButton url={'/course'} /> */}
+											<SubmitButton message={'Assign Rules'} />
+										</Row>
+									</Form>
+								</Formik>
+							</div>
+						</div>
+					</div>
+				</Row>
+				<Row className="justify-content-center">
+					<div className="col-sm-12 col-md-11 col-lg-10 col-xl-8">
+						<CoursesDataTable />
+					</div>
+				</Row>
 			</>
 		)
 	);

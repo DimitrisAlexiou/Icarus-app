@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const cyclesSchema = new Schema({
-	cycle: {
+	name: {
 		type: String,
 		enum: [
 			'Security',
@@ -13,10 +13,10 @@ const cyclesSchema = new Schema({
 		],
 		required: true,
 	},
-	semester: {
-		type: Schema.Types.ObjectId,
-		ref: 'Semester',
-	},
+	// semester: {
+	// 	type: Schema.Types.ObjectId,
+	// 	ref: 'Semester',
+	// },
 });
 
 // const cyclesSchema = new Schema({

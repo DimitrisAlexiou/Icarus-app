@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { API_URL_COURSE } from '../../constants/config';
+import { extractErrorMessage } from '../../utils/redux/errorMessage';
 import courseService from './courseService';
-import { BASE_URL } from '../../constants/config';
 
 const initialState = {
 	courses: [],
@@ -12,112 +13,79 @@ const initialState = {
 };
 
 // Create Course
-export const createCourse = createAsyncThunk(
-	`${BASE_URL}/api/course/new`,
-	async (courseData, thunkAPI) => {
-		try {
-			// const token = thunkAPI.getState().auth.user.token;
-			// return await courseService.createCourse(courseData, token);
-			return await courseService.createCourse(courseData);
-		} catch (error) {
-			const message =
-				(error.response && error.response.data && error.response.data.message) ||
-				error.message ||
-				error.toString();
-
-			return thunkAPI.rejectWithValue(message);
-		}
+export const createCourse = createAsyncThunk(`${API_URL_COURSE}/new`, async (data, thunkAPI) => {
+	try {
+		// const token = thunkAPI.getState().auth.user.token;
+		// return await courseService.createCourse(data, token);
+		return await courseService.createCourse(data);
+	} catch (error) {
+		return thunkAPI.rejectWithValue(extractErrorMessage(error));
 	}
-);
+});
 
 // Update Course
 export const updateCourse = createAsyncThunk(
-	`${BASE_URL}/api/course/:courseId/edit`,
+	`${API_URL_COURSE}/:courseId/edit`,
 	async (courseId, courseData, thunkAPI) => {
 		try {
 			// const token = thunkAPI.getState().auth.user.token;
 			// return await courseService.updateCourse(courseData, token);
 			return await courseService.updateCourse(courseId, courseData);
 		} catch (error) {
-			const message =
-				(error.response && error.response.data && error.response.data.message) ||
-				error.message ||
-				error.toString();
-
-			return thunkAPI.rejectWithValue(message);
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
 	}
 );
 
 // Activate Course
 export const activateCourse = createAsyncThunk(
-	`${BASE_URL}/api/course/:courseId`,
+	`${API_URL_COURSE}/:courseId`,
 	async (courseId, thunkAPI) => {
 		try {
 			// const token = thunkAPI.getState().auth.user.token;
 			// return await courseService.createCourse(courseData, token);
 			return await courseService.activateCourse(courseId);
 		} catch (error) {
-			const message =
-				(error.response && error.response.data && error.response.data.message) ||
-				error.message ||
-				error.toString();
-
-			return thunkAPI.rejectWithValue(message);
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
 	}
 );
 
-// Get All Courses
-export const getCourses = createAsyncThunk(`${BASE_URL}/api/course`, async (_, thunkAPI) => {
+// Get all Courses
+export const getCourses = createAsyncThunk(API_URL_COURSE, async (_, thunkAPI) => {
 	try {
 		// const token = thunkAPI.getState().auth.user.token;
 		// return await courseService.getCourses(token);
 		return await courseService.getCourses();
 	} catch (error) {
-		const message =
-			(error.response && error.response.data && error.response.data.message) ||
-			error.message ||
-			error.toString();
-
-		return thunkAPI.rejectWithValue(message);
+		return thunkAPI.rejectWithValue(extractErrorMessage(error));
 	}
 });
 
 // Get Course
 export const getCourse = createAsyncThunk(
-	`${BASE_URL}/api/course/:courseId`,
+	`${API_URL_COURSE}/:courseId`,
 	async (courseId, thunkAPI) => {
 		try {
 			// const token = thunkAPI.getState().auth.user.token;
 			// return await courseService.getCourse(token);
 			return await courseService.getCourse(courseId);
 		} catch (error) {
-			const message =
-				(error.response && error.response.data && error.response.data.message) ||
-				error.message ||
-				error.toString();
-
-			return thunkAPI.rejectWithValue(message);
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
 	}
 );
 
 // Delete Course
 export const deleteCourse = createAsyncThunk(
-	`${BASE_URL}/api/course/:courseId`,
+	`${API_URL_COURSE}/:courseId`,
 	async (courseId, thunkAPI) => {
 		try {
 			// const token = thunkAPI.getState().auth.user.token;
 			// return await courseService.deleteCourse(courseData, token);
 			return await courseService.deleteCourse(courseId);
 		} catch (error) {
-			const message =
-				(error.response && error.response.data && error.response.data.message) ||
-				error.message ||
-				error.toString();
-
-			return thunkAPI.rejectWithValue(message);
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
 	}
 );
@@ -126,7 +94,7 @@ export const courseSlice = createSlice({
 	name: 'course',
 	initialState,
 	reducers: {
-		reset: (state) => initialState,
+		reset: () => initialState,
 	},
 	extraReducers: (builder) => {
 		builder
@@ -139,8 +107,10 @@ export const courseSlice = createSlice({
 			})
 			.addCase(createCourse.rejected, (state, action) => {
 				state.isLoading = false;
-				state.isError = action.payload.status === 'error';
-				state.message = action.payload.message;
+				state.isError = true;
+				state.message = action.payload;
+				// state.isError = action.payload.status === 'error';
+				// state.message = action.payload.message;
 			})
 			.addCase(getCourses.pending, (state) => {
 				state.isLoading = true;

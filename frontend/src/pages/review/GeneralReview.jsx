@@ -1,11 +1,10 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { useAuth0 } from '@auth0/auth0-react';
+import { Row } from 'reactstrap';
 import { Formik, Form } from 'formik';
 import { createGeneralReview, reset } from '../../features/reviews/generalReviewSlice';
-import generalReviewService from '../../features/reviews/generalReviewService';
-import { GeneralReviewSchema } from '../../schemas/GeneralReviewSchema';
+import { GeneralReviewSchema } from '../../schemas/review/GeneralReview';
 import { Toast } from '../../constants/sweetAlertNotification';
 import GeneralReviewForm from '../../components/review/GeneralReviewForm';
 import CancelButton from '../../components/buttons/CancelButton';
@@ -13,14 +12,7 @@ import SubmitButton from '../../components/buttons/SubmitButton';
 import Spinner from '../../components/boilerplate/Spinner';
 
 export default function GeneralReview() {
-	const { isAuthenticated, isLoading } = useAuth0();
-	const {
-		generalReview,
-		isError,
-		isSuccess,
-		isLoading: generalReviewIsLoading,
-		message,
-	} = useSelector((state) => state.generalReview);
+	const { isError, isSuccess, isLoading, message } = useSelector((state) => state.generalReview);
 
 	const initialValues = {
 		course_opinion: '',
@@ -34,17 +26,15 @@ export default function GeneralReview() {
 	useEffect(() => {
 		if (isError) {
 			Toast.fire({
-				animation: 'true',
-				title: 'Error!',
+				title: 'Error while creating general review!',
 				text: message,
 				icon: 'error',
 			});
 		}
 		if (isSuccess) {
 			Toast.fire({
-				animation: 'true',
 				title: 'Success!',
-				text: message,
+				text: 'Review posted successfully!',
 				icon: 'success',
 			});
 			dispatch(reset());
@@ -53,73 +43,48 @@ export default function GeneralReview() {
 		dispatch(reset());
 	}, [dispatch, isError, isSuccess, message, navigate]);
 
-	// const onSubmit = (generalReviewData) => {
-	// 	dispatch(createGeneralReview(generalReviewData));
-	// };
-
-	const onSubmit = async (generalReviewData) => {
-		try {
-			await generalReviewService.createGeneralReview(generalReviewData);
-			Toast.fire({
-				title: 'Success',
-				text: 'Review posted successfully!',
-				icon: 'success',
-			});
-			navigate('/review');
-		} catch (error) {
-			Toast.fire({
-				title: 'Error while posting review!',
-				text: error.response.data,
-				icon: 'error',
-			});
-		}
+	const onSubmit = (data) => {
+		dispatch(createGeneralReview(data));
 	};
 
-	if (isLoading || generalReviewIsLoading) {
+	if (isLoading) {
 		return <Spinner />;
 	}
 
 	return (
-		isAuthenticated && (
-			<>
-				<Formik
-					initialValues={initialValues}
-					validationSchema={GeneralReviewSchema}
-					onSubmit={(generalReviewData) => {
-						onSubmit(generalReviewData);
-					}}
-					validateOnMount
-				>
-					<div>
-						<h1 className="h3 mb-5 text-gray-800 font-weight-bold">General Review !</h1>
+		// isAuthenticated && (
+		<>
+			<h1 className="h3 mb-5 text-gray-800 font-weight-bold">General Review !</h1>
 
-						<div className="row justify-content-center">
-							<div className="col-sm-12 col-md-10 col-lg-8 col-xl-6">
-								<div className="card shadow mb-4">
-									<div className="card-header py-3">
-										<h6 className="m-0 font-weight-bold text-primary">
-											Leave your review
-										</h6>
-									</div>
-									<div className="card-body">
-										<Form>
-											<GeneralReviewForm initialValues={initialValues} />
+			<Row className="justify-content-center">
+				<div className="col-sm-12 col-md-10 col-lg-8 col-xl-8">
+					<div className="card shadow mb-4">
+						<div className="card-header py-3">
+							<h6 className="m-0 font-weight-bold text-primary">Leave your review</h6>
+						</div>
+						<div className="card-body">
+							<Formik
+								initialValues={initialValues}
+								validationSchema={GeneralReviewSchema}
+								onSubmit={(data) => {
+									onSubmit(data);
+								}}
+								validateOnMount
+							>
+								<Form>
+									<GeneralReviewForm />
 
-											<div className="row">
-												<CancelButton url={'/review'} />
-												<SubmitButton
-													message={'Review'}
-													disabled={generalReviewIsLoading}
-												/>
-											</div>
-										</Form>
-									</div>
-								</div>
-							</div>
+									<Row>
+										<CancelButton url={'/review'} />
+										<SubmitButton message={'Review'} disabled={isLoading} />
+									</Row>
+								</Form>
+							</Formik>
 						</div>
 					</div>
-				</Formik>
-			</>
-		)
+				</div>
+			</Row>
+		</>
+		// )
 	);
 }

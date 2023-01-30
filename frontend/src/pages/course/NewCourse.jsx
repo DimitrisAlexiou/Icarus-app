@@ -1,78 +1,58 @@
-import React from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { Button } from 'reactstrap';
+import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useAuth0 } from '@auth0/auth0-react';
+import { useNavigate, Link } from 'react-router-dom';
+import { Row, Col, Button } from 'reactstrap';
 import { Formik, Form } from 'formik';
-import { CourseSchema } from '../../schemas/Course';
+import { CourseSchema } from '../../schemas/course/Course';
 import { Toast } from '../../constants/sweetAlertNotification';
-import courseService from '../../features/courses/courseService';
+import { createCourse, getCourses, reset } from '../../features/courses/courseSlice';
+import { getCycles } from '../../features/admin/cyclesSlice';
 import CourseForm from '../../components/course/CourseForm';
 import SubmitButton from '../../components/buttons/SubmitButton';
 import Spinner from '../../components/boilerplate/Spinner';
 
 export default function NewCourse() {
-	// const { isAuthenticated, isLoading } = useAuth0();
+	const { courses, isLoading, isError, message } = useSelector((state) => state.courses);
+	const { cycles, isLoading: cyclesIsLoading } = useSelector((state) => state.cycles);
 
-	const initialValues = {
-		courseId: '',
-		title: '',
-		type: '',
-		description: '',
-		prerequisites: '',
-		semester: '',
-		year: '',
-		cycle: '',
-		ects: 0,
-		hasPrerequisites: false,
-		hasLab: false,
-		isObligatory: true,
-		isActive: false,
-		teaching: null,
-	};
-
-	const navigate = useNavigate();
 	const dispatch = useDispatch();
+	const navigate = useNavigate();
 
-	const onSubmit = async (formCourseData) => {
-		formCourseData.preventDefault();
-		try {
-			await courseService.createCourse(formCourseData);
+	useEffect(() => {
+		if (isError) {
 			Toast.fire({
-				title: 'Success',
-				text: 'Course created successfully!',
-				icon: 'success',
-			});
-			navigate('/course');
-		} catch (error) {
-			Toast.fire({
-				title: 'Error while creating course!',
-				text: error.response.data,
+				title: 'Something went wrong!',
+				text: message,
 				icon: 'error',
 			});
 		}
-	};
+		dispatch(reset());
+	}, [dispatch, isError, message]);
 
-	// if (isLoading) {
-	// 	return <Spinner />;
-	// }
+	useEffect(() => {
+		dispatch(getCourses());
+		dispatch(getCycles());
+	}, [dispatch]);
+
+	if (isLoading || cyclesIsLoading) {
+		return <Spinner />;
+	}
 
 	return (
-		// isAuthenticated && (
 		<>
-			<div className="row mb-3">
-				<div className="col-6">
-					<h1 className="h3 mb-4 text-gray-800 font-weight-bold">Create new Course !</h1>
-				</div>
-				<div className="col-6 mb-4 px-3 d-flex justify-content-end">
+			<Row className="mb-5">
+				<Col md="6">
+					<h1 className="h3 text-gray-800 font-weight-bold">Create new Course !</h1>
+				</Col>
+				<Col className="px-3 d-flex justify-content-end">
 					<Link to="/course" className="btn btn-orange btn-small align-self-center">
 						Cancel
 					</Link>
-				</div>
-			</div>
+				</Col>
+			</Row>
 
-			<div className="row justify-content-center">
-				<div className="col-sm-12 col-md-11 col-lg-10 col-xl-9">
+			<Row className="justify-content-center">
+				<Col>
 					<div className="card shadow mb-4">
 						<div className="card-header py-3">
 							<h6 className="m-0 font-weight-bold text-primary">
@@ -81,56 +61,79 @@ export default function NewCourse() {
 						</div>
 						<div className="card-body">
 							<Formik
-								initialValues={initialValues}
+								initialValues={{
+									courseId: '',
+									title: '',
+									type: '',
+									isObligatory: true,
+									hasPrerequisites: false,
+									hasLab: false,
+									description: '',
+									semester: '',
+									ects: 0,
+									year: '',
+									cycle: '',
+									prerequisites: [],
+								}}
 								validationSchema={CourseSchema}
-								onSubmit={(formCourseData) => {
-									onSubmit(formCourseData);
+								onSubmit={(values, { setSubmitting }) => {
+									const course = {
+										course: {
+											courseId: values.courseId,
+											title: values.title,
+											type: values.type,
+											isObligatory: values.isObligatory,
+											hasPrerequisites: values.hasPrerequisites,
+											hasLab: values.hasLab,
+											description: values.description,
+											semester: values.semester,
+											ects: values.ects,
+											year: values.year,
+											cycle: values.cycle,
+											prerequisites: values.prerequisites,
+										},
+									};
+									dispatch(createCourse(course));
+									Toast.fire({
+										title: 'Success',
+										text: 'Course created successfully!',
+										icon: 'success',
+									});
+									navigate('/course');
+									setSubmitting(false);
 								}}
 								validateOnMount
 							>
-								{(props) => {
-									const {
-										values,
-										dirty,
-										isSubmitting,
-										handleChange,
-										handleSubmit,
-										handleReset,
-										setFieldValue,
-									} = props;
-									return (
-										<Form name="NewCourse">
-											<CourseForm
-												initialValues={initialValues}
-												handleChange={handleChange}
-												values={values}
-												setFieldValue={setFieldValue}
-												handleReset={handleReset}
-											/>
+								{({ isSubmitting, dirty, values, handleReset, setFieldValue }) => (
+									<Form>
+										<CourseForm
+											courses={courses}
+											cycles={cycles}
+											values={values}
+											setFieldValue={setFieldValue}
+										/>
 
-											<div className="row">
-												<div className="col-6 mb-3 d-flex justify-content-start">
-													<Button
-														onClick={handleReset}
-														disabled={!dirty || isSubmitting}
-													>
-														Clear
-													</Button>
-												</div>
-												<SubmitButton
-													message={'Create Course'}
-													disabled={isSubmitting}
-												/>
-											</div>
-										</Form>
-									);
-								}}
+										<Row>
+											<Col>
+												<Button
+													onClick={handleReset}
+													disabled={!dirty || isSubmitting}
+												>
+													Clear
+												</Button>
+											</Col>
+											<SubmitButton
+												message={'Create Course'}
+												disabled={isSubmitting}
+											/>
+										</Row>
+									</Form>
+								)}
 							</Formik>
 						</div>
 					</div>
-				</div>
-			</div>
+				</Col>
+			</Row>
 		</>
-		// )
 	);
 }

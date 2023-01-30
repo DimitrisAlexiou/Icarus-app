@@ -1,12 +1,12 @@
-import { Button } from 'reactstrap';
+import { Button, Row } from 'reactstrap';
 
 const SignUpInButton = ({ message, icon }) => {
 	return (
 		<Button className="mb-2" color="null" type="submit">
-			<div className="row nav-link">
+			<Row className="nav-link">
 				{icon}
 				{message}
-			</div>
+			</Row>
 		</Button>
 	);
 };

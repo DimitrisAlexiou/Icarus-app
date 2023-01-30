@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { FormGroup, Label, Row, Col, Button } from 'reactstrap';
 import { Field, ErrorMessage } from 'formik';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import FormErrorMessage from '../FormErrorMessage';
 
-const LoginForm = () => {
+export default function LoginForm() {
 	const [showPassword, setShowPassword] = useState(false);
 
 	return (
@@ -16,13 +16,6 @@ const LoginForm = () => {
 					Username
 				</Label>
 				<ErrorMessage name="username" component={FormErrorMessage} />
-			</FormGroup>
-			<FormGroup className="form-group mb-3" floating>
-				<Field type="email" className="form-control" name="email" />
-				<Label for="email" className="text-gray-600">
-					Email
-				</Label>
-				<ErrorMessage name="email" component={FormErrorMessage} />
 			</FormGroup>
 			<Row>
 				<Col md="10">
@@ -38,19 +31,15 @@ const LoginForm = () => {
 						<ErrorMessage name="password" component={FormErrorMessage} />
 					</FormGroup>
 				</Col>
-				<Col md="2">
-					<div className="mt-2 mb-3 d-flex justify-content-center">
-						<Button className="nav-link" color="null">
-							<FontAwesomeIcon
-								icon={faEyeSlash}
-								onClick={() => setShowPassword((prevState) => !prevState)}
-							/>
-						</Button>
-					</div>
+				<Col md="2" className="mt-2 mb-3 d-flex justify-content-center">
+					<Button type="button" className="nav-link" color="null">
+						<FontAwesomeIcon
+							icon={faEyeSlash}
+							onClick={() => setShowPassword(!showPassword)}
+						/>
+					</Button>
 				</Col>
 			</Row>
 		</>
 	);
-};
-
-export default LoginForm;
+}

@@ -1,16 +1,16 @@
 import axios from 'axios';
-import { BASE_URL, headers } from '../../constants/config';
-const API_URL_NEW_COURSE = `${BASE_URL}/api/course/new`;
-const API_URL_COURSES = `${BASE_URL}/api/course`;
-const API_URL_COURSE = `${BASE_URL}/api/course/`;
-const API_URL_TEACHING = `${BASE_URL}/api/course/:courseId/teaching`;
+import { API_URL_COURSE, headers } from '../../constants/config';
+const NEW_COURSE = `${API_URL_COURSE}/new`;
+const COURSE = `${API_URL_COURSE}/`;
+const TEACHING = `${API_URL_COURSE}/:courseId/teaching`;
 
 // Create Course
-const createCourse = async (courseData, token) => {
+const createCourse = async (values) => {
 	const config = {
 		headers: { headers },
 	};
-	return await axios.post(API_URL_NEW_COURSE, courseData, config);
+	const response = await axios.post(NEW_COURSE, values, config);
+	return response.data;
 };
 
 // Update Course
@@ -19,11 +19,7 @@ const updateCourse = async (courseId, courseData, token) => {
 		headers: { headers },
 	};
 
-	const response = await axios.put(
-		API_URL_COURSE + courseId + '/edit',
-		courseData,
-		config,
-	);
+	const response = await axios.put(COURSE + courseId + '/edit', courseData, config);
 
 	return response.data;
 };
@@ -34,11 +30,7 @@ const activateCourse = async (courseId, token) => {
 		headers: { headers },
 	};
 
-	const response = await axios.put(
-		API_URL_COURSE + courseId,
-		{ isActive: true },
-		config,
-	);
+	const response = await axios.put(COURSE + courseId, { isActive: true }, config);
 
 	return response.data;
 };
@@ -49,7 +41,7 @@ const deleteCourse = async (courseId, token) => {
 		headers: { headers },
 	};
 
-	return await axios.delete(API_URL_COURSE + courseId, config);
+	return await axios.delete(COURSE + courseId, config);
 };
 
 // Get Courses
@@ -59,7 +51,7 @@ const getCourses = async () => {
 		headers: { headers },
 	};
 
-	const response = await axios.get(API_URL_COURSES, config);
+	const response = await axios.get(API_URL_COURSE, config);
 
 	return response.data;
 };
@@ -71,7 +63,7 @@ const getCourse = async (courseId) => {
 		headers: { headers },
 	};
 
-	const response = await axios.get(API_URL_COURSE + courseId, config);
+	const response = await axios.get(COURSE + courseId, config);
 
 	return response.data;
 };
@@ -83,7 +75,7 @@ const createTeaching = async (teachingData, token) => {
 	};
 
 	// return await axios.post(API_URL_COURSE + courseId + '/teaching', teachingData, config);
-	return await axios.post(API_URL_TEACHING, teachingData, config);
+	return await axios.post(TEACHING, teachingData, config);
 };
 
 const courseService = {

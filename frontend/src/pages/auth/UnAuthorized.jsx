@@ -1,6 +1,6 @@
 import { useAuth0 } from '@auth0/auth0-react';
 import { Link } from 'react-router-dom';
-import { Button } from 'reactstrap';
+import { Button, Row } from 'reactstrap';
 
 export default function Unauthorized() {
 	const { loginWithRedirect } = useAuth0();
@@ -14,7 +14,7 @@ export default function Unauthorized() {
 				<p className="text-gray-500 mb-0">
 					It looks like you found a glitch in the matrix...
 				</p>
-				<div className="row justify-content-center">
+				<Row className="justify-content-center">
 					{/* <img
 								className="notauthorized"
 								src="undraw_not_authorized.svg"
@@ -29,7 +29,7 @@ export default function Unauthorized() {
 							Please log in to access !
 						</Button>
 					</div>
-				</div>
+				</Row>
 				<Link to="/" style={{ textDecoration: 'none' }}>
 					Back to Reality
 				</Link>

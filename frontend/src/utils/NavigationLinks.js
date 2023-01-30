@@ -6,6 +6,7 @@ import {
 	faUsers,
 	faWrench,
 	faBarsProgress,
+	faFolderTree,
 } from '@fortawesome/free-solid-svg-icons';
 
 const dataLinks = [
@@ -38,6 +39,12 @@ const dataLinks = [
 		text: 'Users',
 		path: '/users',
 		icon: <FontAwesomeIcon icon={faUsers} />,
+	},
+	{
+		id: 6,
+		text: 'Portfolio',
+		path: '/portfolio',
+		icon: <FontAwesomeIcon icon={faFolderTree} />,
 	},
 ];
 // {

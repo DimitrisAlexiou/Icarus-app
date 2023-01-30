@@ -13,11 +13,8 @@ const {
 	defineCoursePrerequisites,
 	deleteCoursePrerequisites,
 } = require('../controllers/course');
-const {
-	validateCourse,
-	validateSemester,
-} = require('../middleware/validations');
-const { authenticate } = require('../middleware/authMiddleware');
+const { validateCourse, validateSemester } = require('../middleware/validations');
+const { authorize } = require('../middleware/authMiddleware');
 
 // @desc    Get Courses
 // @route   GET /api/course
@@ -39,9 +36,7 @@ router.route('/new').post(validateCourse, catchAsync(createCourse));
 // @desc    Activate Course
 // @route   PUT /api/course/:id
 // @access  Private
-router
-	.route('/:id')
-	.put(validateCourse, validateSemester, catchAsync(activateCourse));
+router.route('/:id').put(validateCourse, validateSemester, catchAsync(activateCourse));
 
 // @desc    Get Course by ID
 // @route   GET /api/course/:id
@@ -58,6 +53,6 @@ router.route('/:id').delete(catchAsync(deleteCourse));
 // @access  Private
 router.route('/:id/edit').put(validateCourse, catchAsync(updateCourse));
 
-router.route('/:id/prerequisites').post(catchAsync(defineCoursePrerequisites));
+// router.route('/:id/prerequisites').post(catchAsync(defineCoursePrerequisites));
 
 module.exports = router;

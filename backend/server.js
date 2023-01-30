@@ -13,6 +13,7 @@ const teachingReviewRoute = require('./routes/teachingReview.routes');
 const instructorReviewRoute = require('./routes/instructorReview.routes');
 const generalReviewRoute = require('./routes/generalReview.routes');
 const adminRoute = require('./routes/admin.routes');
+const authRoute = require('./routes/auth/auth.routes');
 
 //? PORT
 const PORT = process.env.PORT || 4000;
@@ -26,7 +27,7 @@ const app = express();
 app.use(express.json());
 app.use(
 	express.urlencoded({
-		extended: true,
+		extended: false,
 	})
 );
 app.use(cors());
@@ -35,6 +36,7 @@ app.use(errorHandler);
 // app.use(helmet({ contentSecurityPolicy: false }));
 
 //? ROUTES
+app.use('/api/auth', authRoute);
 app.use('/api/course', courseRoute);
 app.use('/api/user', userRoute);
 app.use('/api/review/teaching', teachingReviewRoute);

@@ -10,7 +10,7 @@ const {
 	deleteUserNotes,
 } = require('../controllers/note');
 const { validateNote } = require('../middleware/validations');
-const { authenticate } = require('../middleware/authMiddleware');
+const { authorize } = require('../middleware/authMiddleware');
 
 // @desc    Get User Notes
 // @route   GET /api/note

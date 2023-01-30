@@ -1,4 +1,5 @@
 const asyncHandler = require('express-async-handler');
+const Cycles = require('../models/admin/cycles');
 const Course = require('../models/course/course');
 const Prerequisites = require('../models/course/prerequisites');
 const Teaching = require('../models/course/teaching');
@@ -55,9 +56,7 @@ module.exports.viewCourse = asyncHandler(async (req, res) => {
 				},
 			});
 		if (!course) {
-			return res
-				.status(404)
-				.json('Seems like there is no course with this ID!');
+			return res.status(404).json('Seems like there is no course with this ID!');
 		} else {
 			return res.status(200).json(course);
 		}
@@ -73,72 +72,48 @@ module.exports.createCourse = asyncHandler(async (req, res) => {
 		courseId,
 		title,
 		type,
-		description,
+		isObligatory,
 		hasPrerequisites,
-		prerequisites,
+		hasLab,
+		description,
 		semester,
+		ects,
 		year,
 		cycle,
-		ects,
-		hasLab,
-		isObligatory,
+		prerequisites,
 		isActive,
 	} = req.body;
 
-	if (
-		!courseId ||
-		!title ||
-		!type ||
-		!description ||
-		!semester ||
-		!year ||
-		!cycle ||
-		!ects ||
-		!hasLab ||
-		!isObligatory
-	) {
+	if (!courseId || !title || !type || !semester || !ects || !year) {
 		return res.status(400).json('Please fill in all the required fields!');
 	}
 
 	try {
 		const course = await Course.findOne({ courseId: courseId });
 		if (course) {
-			return res
-				.status(409)
-				.json('Seems like a course with this ID already exists!');
+			return res.status(409).json('Seems like a course with this ID already exists!');
 		} else {
 			const newCourse = await Course.create({
 				courseId,
 				title,
 				type,
-				description,
-				hasPrerequisites,
-				// prerequisites,
-				semester,
-				year,
-				isActive,
-				hasLab,
 				isObligatory,
-				cycle,
+				hasPrerequisites,
+				hasLab,
+				description,
+				semester,
 				ects,
+				year,
+				cycle,
+				prerequisites,
+				isActive,
 				status: 'new',
 			});
-			// if (hasPrerequisites === true) {
-			// 	const coursePrerequisite = await Prerequisites.create({
-			// 		prerequisites,
-			// 		status: 'new',
-			// 	});
-			// 	prerequisites.prerequisite = newCourse._id;
-			// 	// prerequisites.prerequisiteType = prerequisites.prerequisiteType;
-			// 	newCourse.prerequisites.push(coursePrerequisite);
-			// 	await coursePrerequisite.save();
-			// 	await newCourse.save();
-			// }
 
 			return res.status(201).json(newCourse);
 		}
 	} catch (error) {
-		console.error('❌ Error while creating course: ', error);
+		console.error('❌ Error while finding course: ', error);
 		return res.status(500).json(`${error.message}`);
 	}
 });
@@ -155,9 +130,7 @@ module.exports.defineCoursePrerequisites = asyncHandler(async (req, res) => {
 		const { id } = req.params;
 		const course = await Course.findById(id);
 		if (!course) {
-			return res
-				.status(404)
-				.json('Seems like there is no course with this ID!');
+			return res.status(404).json('Seems like there is no course with this ID!');
 		} else {
 			try {
 				const coursePrerequisite = await Prerequisites.create({
@@ -187,16 +160,10 @@ module.exports.activateCourse = asyncHandler(async (req, res) => {
 		const course = await Course.findById(id);
 
 		if (!course) {
-			return res
-				.status(404)
-				.json('Seems like there is no course with this ID!');
+			return res.status(404).json('Seems like there is no course with this ID!');
 		} else {
 			try {
-				await Course.findByIdAndUpdate(
-					id,
-					{ ...req.body.course },
-					{ new: true },
-				);
+				await Course.findByIdAndUpdate(id, { ...req.body.course }, { new: true });
 				try {
 					const teaching = await Teaching.create({
 						course: course,
@@ -255,14 +222,12 @@ module.exports.updateCourse = asyncHandler(async (req, res) => {
 		const course = await Course.findById(id);
 
 		if (!course) {
-			return res
-				.status(404)
-				.json('Seems like there is no course with this ID!');
+			return res.status(404).json('Seems like there is no course with this ID!');
 		} else {
 			const updatedCourse = await Course.findByIdAndUpdate(
 				id,
 				{ ...req.body.course },
-				{ new: true },
+				{ new: true }
 			);
 			return res.status(200).json(updatedCourse);
 		}

@@ -2,11 +2,9 @@ import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { Formik, Form } from 'formik';
-import { useAuth0 } from '@auth0/auth0-react';
-import { updateCourse, reset } from '../../features/courses/courseSlice';
+import { getCourse, updateCourse, reset } from '../../features/courses/courseSlice';
 import { Toast } from '../../constants/sweetAlertNotification';
-import { CourseSchema } from '../../schemas/Course';
-// import courseService from '../../features/courses/courseService';
+import { CourseSchema } from '../../schemas/course/Course';
 import { FormGroup, Label, Row, Col } from 'reactstrap';
 import { Field, ErrorMessage } from 'formik';
 import FormErrorMessage from '../../components/FormErrorMessage';
@@ -16,19 +14,24 @@ import SubmitButton from '../../components/buttons/SubmitButton';
 import Spinner from '../../components/boilerplate/Spinner';
 
 export default function CourseEdit() {
-	const { isAuthenticated, isLoading } = useAuth0();
-
-	const {
-		course,
-		isSuccess,
-		isError,
-		isLoading: courseIsLoading,
-		message,
-	} = useSelector((state) => state.courses);
+	const { course, isError, isSuccess, isLoading, message } = useSelector(
+		(state) => state.courses
+	);
 
 	const { courseId } = useParams();
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
+
+	useEffect(() => {
+		if (isError) {
+			Toast.fire({
+				title: 'Something went wrong!',
+				text: message,
+				icon: 'error',
+			});
+		}
+		dispatch(getCourse(courseId));
+	}, [dispatch, isError, message, courseId]);
 
 	// useEffect(() => {
 	//  if (isError) {
@@ -71,61 +74,54 @@ export default function CourseEdit() {
 		navigate('/course/' + courseId);
 	};
 
-	if (isLoading || courseIsLoading) {
+	if (isLoading) {
 		return <Spinner />;
 	}
 
 	return (
-		isAuthenticated && (
-			<>
-				<Formik
-					validationSchema={CourseSchema}
-					onSubmit={(formCourseData) => {
-						onSubmit(formCourseData);
-					}}
-					validateOnMount
-				>
-					<div>
-						<h1 className="h3 mb-5 text-gray-800 font-weight-bold">
-							Update {course.title} Course
-						</h1>
-						<div className="row justify-content-center">
-							<div className="col-sm-12 col-md-10 col-lg-8 col-xl-6">
-								<div className="card shadow mb-4">
-									<div className="card-header py-3">
-										<div className="row">
-											<div className="col-6">
-												<h6 className="m-0 font-weight-bold text-primary">
-													Course Information
-												</h6>
-											</div>
-										</div>
-									</div>
-									<div className="card-body">
-										<Form name="editCourse">
-											<Row>
-												<Col md="4">
-													<FormGroup
-														className="form-floating mb-3"
-														floating
-													>
-														<Field
-															type="text"
-															className="form-control"
-															name="cid"
-															value={course.cid}
-														/>
-														<Label for="cid" className="text-gray-600">
-															Course ID
-														</Label>
-														<ErrorMessage
-															name="cid"
-															component={FormErrorMessage}
-														/>
-													</FormGroup>
-												</Col>
+		// isAuthenticated && (
+		<>
+			<h1 className="h3 mb-5 text-gray-800 font-weight-bold">Update {course.title} Course</h1>
 
-												{/* <Col md="8">
+			<Row className="justify-content-center">
+				<div className="col-sm-12 col-md-10 col-lg-8 col-xl-6">
+					<div className="card shadow mb-4">
+						<div className="card-header py-3">
+							<Row>
+								<h6 className="m-0 font-weight-bold text-primary">
+									Course Information
+								</h6>
+							</Row>
+						</div>
+						<div className="card-body">
+							<Formik
+								validationSchema={CourseSchema}
+								onSubmit={(formCourseData) => {
+									onSubmit(formCourseData);
+								}}
+								validateOnMount
+							>
+								<Form name="editCourse">
+									<Row>
+										<Col md="4">
+											<FormGroup className="form-floating mb-3" floating>
+												<Field
+													type="text"
+													className="form-control"
+													name="cid"
+													value={course.courseId}
+												/>
+												<Label for="cid" className="text-gray-600">
+													Course ID
+												</Label>
+												<ErrorMessage
+													name="cid"
+													component={FormErrorMessage}
+												/>
+											</FormGroup>
+										</Col>
+
+										{/* <Col md="8">
                                                     <FormGroup className="form-floating mb-3" floating>
                                                         <Field
                                                             type="text"
@@ -142,8 +138,8 @@ export default function CourseEdit() {
                                                         />
                                                     </FormGroup>
                                                 </Col> */}
-											</Row>
-											{/* <FormGroup className="form-floating mb-3" floating>
+									</Row>
+									{/* <FormGroup className="form-floating mb-3" floating>
                                                 <Field as="select" className="form-control" name="type">
                                                     <option default>Select course type</option>
                                                     <option value={'Undergraduate'}>Undergraduate</option>
@@ -291,21 +287,20 @@ export default function CourseEdit() {
                                                 </Col>
                                             </Row> */}
 
-											<div className="row">
-												<CancelButton url={`/course/${courseId}`} />
-												<SubmitButton
-													message={'Update Course'}
-													disabled={isLoading}
-												/>
-											</div>
-										</Form>
-									</div>
-								</div>
-							</div>
+									<Row>
+										<CancelButton url={`/course/${courseId}`} />
+										<SubmitButton
+											message={'Update Course'}
+											disabled={isLoading}
+										/>
+									</Row>
+								</Form>
+							</Formik>
 						</div>
 					</div>
-				</Formik>
-			</>
-		)
+				</div>
+			</Row>
+		</>
+		// )
 	);
 }

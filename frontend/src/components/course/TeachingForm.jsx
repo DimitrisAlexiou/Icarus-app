@@ -9,26 +9,16 @@ const TeachingForm = ({ initialValues }) => {
 			<Row>
 				<Col md="6">
 					<FormGroup className="form-floating mb-3" floating>
-						<Field
-							type="number"
-							min="0"
-							className="form-control"
-							name="labWeight"
-						/>
+						<Field type="number" min="0" className="form-control" name="labWeight" />
 						<Label for="labWeight" className="text-gray-600">
 							Lab Weight
 						</Label>
 						<ErrorMessage name="labWeight" component={FormErrorMessage} />
 					</FormGroup>
 				</Col>
-				<Col md="6">
+				<Col>
 					<FormGroup className="form-floating mb-3" floating>
-						<Field
-							type="number"
-							min="0"
-							className="form-control"
-							name="theoryWeight"
-						/>
+						<Field type="number" min="0" className="form-control" name="theoryWeight" />
 						<Label for="theoryWeight" className="text-gray-600">
 							Theory Weight
 						</Label>
@@ -40,26 +30,16 @@ const TeachingForm = ({ initialValues }) => {
 			<Row>
 				<Col md="6">
 					<FormGroup className="form-floating mb-3" floating>
-						<Field
-							type="number"
-							min="0"
-							className="form-control"
-							name="theoryGrade"
-						/>
+						<Field type="number" min="0" className="form-control" name="theoryGrade" />
 						<Label for="theoryGrade" className="text-gray-600">
 							Theory Grade
 						</Label>
 						<ErrorMessage name="theoryGrade" component={FormErrorMessage} />
 					</FormGroup>
 				</Col>
-				<Col md="6">
+				<Col>
 					<FormGroup className="form-floating mb-3" floating>
-						<Field
-							type="number"
-							min="0"
-							className="form-control"
-							name="labGrade"
-						/>
+						<Field type="number" min="0" className="form-control" name="labGrade" />
 						<Label for="labGrade" className="text-gray-600">
 							Lab Grade
 						</Label>
@@ -80,13 +60,10 @@ const TeachingForm = ({ initialValues }) => {
 						<Label for="theoryGradeThreshold" className="text-gray-600">
 							Theory Grade Threshold
 						</Label>
-						<ErrorMessage
-							name="theoryGradeThreshold"
-							component={FormErrorMessage}
-						/>
+						<ErrorMessage name="theoryGradeThreshold" component={FormErrorMessage} />
 					</FormGroup>
 				</Col>
-				<Col md="6">
+				<Col>
 					<FormGroup className="form-floating mb-3" floating>
 						<Field
 							type="number"
@@ -97,10 +74,7 @@ const TeachingForm = ({ initialValues }) => {
 						<Label for="labGradeThreshold" className="text-gray-600">
 							Lab Grade Threshold
 						</Label>
-						<ErrorMessage
-							name="labGradeThreshold"
-							component={FormErrorMessage}
-						/>
+						<ErrorMessage name="labGradeThreshold" component={FormErrorMessage} />
 					</FormGroup>
 				</Col>
 			</Row>

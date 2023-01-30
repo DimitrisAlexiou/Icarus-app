@@ -45,6 +45,7 @@ const courseSchema = new Schema(
 		cycle: {
 			type: Schema.Types.ObjectId,
 			ref: 'Cycles',
+			default: null,
 			required: true,
 		},
 		ects: {
@@ -59,7 +60,7 @@ const courseSchema = new Schema(
 		isObligatory: {
 			type: Boolean,
 			required: true,
-			default: false,
+			default: true,
 		},
 		isActive: {
 			type: Boolean,
@@ -69,7 +70,7 @@ const courseSchema = new Schema(
 	},
 	{
 		timestamps: true,
-	},
+	}
 );
 
 courseSchema.post('findOneAndDelete', async function (data) {

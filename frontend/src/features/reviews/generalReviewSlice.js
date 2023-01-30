@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { extractErrorMessage } from '../../utils/redux/errorMessage';
 import generalReviewService from './generalReviewService';
 
 const initialState = {
@@ -13,24 +14,15 @@ const initialState = {
 // Create General Review
 export const createGeneralReview = createAsyncThunk(
 	'api/review/general',
-	async (generalReviewData, thunkAPI) => {
+	async (data, thunkAPI) => {
 		try {
-			const token = thunkAPI.getState().auth.user.token;
-			return await generalReviewService.createGeneralReview(
-				generalReviewData,
-				token,
-			);
+			// const token = thunkAPI.getState().auth.user.token;
+			// return await generalReviewService.createGeneralReview(data, token);
+			return await generalReviewService.createGeneralReview(data);
 		} catch (error) {
-			const message =
-				(error.response &&
-					error.response.data &&
-					error.response.data.message) ||
-				error.message ||
-				error.toString();
-
-			return thunkAPI.rejectWithValue(message);
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
-	},
+	}
 );
 
 // Get All General Reviews
@@ -41,23 +33,16 @@ export const getGeneralReviews = createAsyncThunk(
 			const token = thunkAPI.getState().auth.user.token;
 			return await generalReviewService.getGeneralReviews(token);
 		} catch (error) {
-			const message =
-				(error.response &&
-					error.response.data &&
-					error.response.data.message) ||
-				error.message ||
-				error.toString();
-
-			return thunkAPI.rejectWithValue(message);
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
-	},
+	}
 );
 
 export const generalReviewSlice = createSlice({
 	name: 'generalReview',
 	initialState,
 	reducers: {
-		reset: (state) => initialState,
+		reset: () => initialState,
 	},
 	extraReducers: (builder) => {
 		builder

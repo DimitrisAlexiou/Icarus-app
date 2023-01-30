@@ -29,7 +29,7 @@ const {
 	validateInstructorReview,
 	validateGeneralReview,
 } = require('../middleware/validations');
-const { authenticate } = require('../middleware/authMiddleware');
+const { authorize } = require('../middleware/authMiddleware');
 
 // @desc    Get Users
 // @route   GET /api/user
@@ -39,12 +39,12 @@ router.route('/').get(catchAsync(getUsers));
 // @desc    Create User
 // @route   POST /api/user
 // @access  Private ADMIN
-router.route('/').post(authenticate, validateUser, catchAsync(createUser));
+router.route('/').post(authorize, validateUser, catchAsync(createUser));
 
 // @desc    Delete All Users
 // @route   DELETE /api/user
 // @access  Private ADMIN
-router.route('/').delete(authenticate, catchAsync(deleteUsers));
+router.route('/').delete(authorize, catchAsync(deleteUsers));
 
 // @desc    Get User Teaching|Instructor|General Reviews
 // @route   GET /api/user/activity/reviews
@@ -52,12 +52,8 @@ router.route('/').delete(authenticate, catchAsync(deleteUsers));
 router
 	.route('/activity/reviews')
 	.get(
-		authenticate,
-		catchAsync(
-			getUserTeachingReviews,
-			getUserInstructorReviews,
-			getUserGeneralReviews,
-		),
+		authorize,
+		catchAsync(getUserTeachingReviews, getUserInstructorReviews, getUserGeneralReviews)
 	);
 
 // @desc    Get User Teaching|Instructor|General Review by ID
@@ -66,12 +62,8 @@ router
 router
 	.route('/activity/reviews/:id')
 	.get(
-		authenticate,
-		catchAsync(
-			viewUserTeachingReview,
-			viewUserInstructorReview,
-			viewUserGeneralReview,
-		),
+		authorize,
+		catchAsync(viewUserTeachingReview, viewUserInstructorReview, viewUserGeneralReview)
 	);
 
 // @desc    Update User Teaching|Instructor|General Review by ID
@@ -80,15 +72,11 @@ router
 router
 	.route('activity/reviews/:id')
 	.put(
-		authenticate,
+		authorize,
 		validateTeachingReview,
 		validateInstructorReview,
 		validateGeneralReview,
-		catchAsync(
-			updateTeachingReview,
-			updateInstructorReview,
-			updateGeneralReview,
-		),
+		catchAsync(updateTeachingReview, updateInstructorReview, updateGeneralReview)
 	);
 
 // @desc    Delete User Teaching|Instructor|General Review by ID
@@ -97,27 +85,23 @@ router
 router
 	.route('/activity/reviews/:id')
 	.delete(
-		authenticate,
-		catchAsync(
-			deleteTeachingReview,
-			deleteInstructorReview,
-			deleteGeneralReview,
-		),
+		authorize,
+		catchAsync(deleteTeachingReview, deleteInstructorReview, deleteGeneralReview)
 	);
 
 // @desc    Get User by ID
 // @route   GET /api/user/:id
 // @access  Private ADMIN
-router.route('/:id').get(authenticate, catchAsync(viewUser));
+router.route('/:id').get(authorize, catchAsync(viewUser));
 
 // @desc    Update User by ID
 // @route   PUT /api/user/:id
 // @access  Private ADMIN
-router.route('/:id').put(authenticate, validateUser, catchAsync(updateUser));
+router.route('/:id').put(authorize, validateUser, catchAsync(updateUser));
 
 // @desc    Delete User by ID
 // @route   DELETE /api/user/:id
 // @access  Private ADMIN
-router.route('/:id').delete(authenticate, catchAsync(deleteUser));
+router.route('/:id').delete(authorize, catchAsync(deleteUser));
 
 module.exports = router;

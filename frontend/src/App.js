@@ -3,9 +3,10 @@ import { useGlobalContext } from './context';
 import SharedLayout from './components/boilerplate/SharedLayout';
 import ProtectedRoute from './components/ProtectedRoute';
 import { Dashboard, LandingPage, NotFound, Profile } from './pages/index';
+import Portfolio from './pages/user/Portfolio';
 import Courses from './pages/course/Courses';
-import UndergraduateCourses from './pages/course/UndergraduateCourses';
-import MasterCourses from './pages/course/MasterCourses';
+import Undergraduate from './pages/course/Undergraduate';
+import Master from './pages/course/Master';
 import Course from './pages/course/Course';
 import NewCourse from './pages/course/NewCourse';
 import CoursePrerequisites from './pages/course/CoursePrerequisites';
@@ -40,29 +41,27 @@ export default function App() {
 					<Route path="*" element={<NotFound />} />
 					<Route path="/" element={<SharedLayout />}>
 						<Route index element={<Dashboard />} />
-						<Route element={<ProtectedRoute />}>
-							<Route path="/profile" element={<Profile />} />
-							<Route path="/course/:courseId" element={<Course />} />
-							<Route path="/course/:courseId/edit" element={<CourseEdit />} />
-							{/* <Route path="/course/new" element={<NewCourse />} /> */}
-							<Route path="/review/teaching" element={<TeachingReview />} />
-							<Route path="/review/teaching/all" element={<TeachingReviews />} />
-							<Route path="/review/instructor" element={<InstructorReview />} />
-							<Route path="/review/instructor/all" element={<InstructorReviews />} />
-							<Route path="/review/general" element={<GeneralReview />} />
-							<Route path="/review/general/all" element={<GeneralReviews />} />
-							{/* <Route path="/course" element={<Courses />} /> */}
-							<Route
-								path="/course/undergraduate/all"
-								element={<UndergraduateCourses />}
-							/>
-							<Route path="/course/master/all" element={<MasterCourses />} />
-						</Route>
+						{/* <Route element={<ProtectedRoute />}> */}
+						<Route path="/profile" element={<Profile />} />
+						<Route path="/course/:courseId" element={<Course />} />
+						<Route path="/course/:courseId/edit" element={<CourseEdit />} />
+						{/* <Route path="/course/new" element={<NewCourse />} /> */}
+						<Route path="/review/teaching" element={<TeachingReview />} />
+						<Route path="/review/teaching/all" element={<TeachingReviews />} />
+						<Route path="/review/instructor" element={<InstructorReview />} />
+						<Route path="/review/instructor/all" element={<InstructorReviews />} />
+						<Route path="/review/general" element={<GeneralReview />} />
+						<Route path="/review/general/all" element={<GeneralReviews />} />
+						{/* <Route path="/course" element={<Courses />} /> */}
+						<Route path="/course/undergraduate" element={<Undergraduate />} />
+						<Route path="/course/master" element={<Master />} />
+						{/* </Route> */}
 						<Route
 							path="/course/:courseId/prerequisites"
 							element={<CoursePrerequisites />}
 						/>
 						<Route path="/course" element={<Courses />} />
+						<Route path="/portfolio" element={<Portfolio />} />
 						<Route path="/course/new" element={<NewCourse />} />
 						<Route path="/review" element={<Reviews />} />
 						<Route path="/users" element={<Users />} />

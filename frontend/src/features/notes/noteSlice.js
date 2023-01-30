@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import noteService from './noteService';
 import { BASE_URL } from '../../constants/config';
+import { extractErrorMessage } from '../../utils/redux/errorMessage';
+import noteService from './noteService';
 
 const initialState = {
 	notes: [],
@@ -12,25 +13,15 @@ const initialState = {
 };
 
 // Get all User Notes
-export const getUserNotes = createAsyncThunk(
-	`${BASE_URL}/api/note`,
-	async (_, thunkAPI) => {
-		try {
-			// const token = thunkAPI.getState().auth.user.token;
-			// return await noteService.getUserNotes(token);
-			return await noteService.getUserNotes();
-		} catch (error) {
-			const message =
-				(error.response &&
-					error.response.data &&
-					error.response.data.message) ||
-				error.message ||
-				error.toString();
-
-			return thunkAPI.rejectWithValue(message);
-		}
-	},
-);
+export const getUserNotes = createAsyncThunk(`${BASE_URL}/api/note`, async (_, thunkAPI) => {
+	try {
+		// const token = thunkAPI.getState().auth.user.token;
+		// return await noteService.getUserNotes(token);
+		return await noteService.getUserNotes();
+	} catch (error) {
+		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+	}
+});
 
 // Get User Note
 export const getUserNote = createAsyncThunk(
@@ -41,16 +32,9 @@ export const getUserNote = createAsyncThunk(
 			// return await noteService.getUserNote(token);
 			return await noteService.getUserNote(noteId);
 		} catch (error) {
-			const message =
-				(error.response &&
-					error.response.data &&
-					error.response.data.message) ||
-				error.message ||
-				error.toString();
-
-			return thunkAPI.rejectWithValue(message);
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
-	},
+	}
 );
 
 // Create User Note
@@ -62,16 +46,9 @@ export const createUserNote = createAsyncThunk(
 			// return await noteService.createUserNote(noteData, token);
 			return await noteService.createUserNote(noteData);
 		} catch (error) {
-			const message =
-				(error.response &&
-					error.response.data &&
-					error.response.data.message) ||
-				error.message ||
-				error.toString();
-
-			return thunkAPI.rejectWithValue(message);
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
-	},
+	}
 );
 
 // Update User Note
@@ -83,16 +60,9 @@ export const updateUserNote = createAsyncThunk(
 			// return await noteService.updateUserNote(noteData, token);
 			return await noteService.updateUserNote(noteId, noteData);
 		} catch (error) {
-			const message =
-				(error.response &&
-					error.response.data &&
-					error.response.data.message) ||
-				error.message ||
-				error.toString();
-
-			return thunkAPI.rejectWithValue(message);
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
-	},
+	}
 );
 
 // Delete User Note
@@ -104,16 +74,9 @@ export const deleteUserNote = createAsyncThunk(
 			// return await noteService.deleteUserNote(noteData, token);
 			return await noteService.deleteUserNote(noteId);
 		} catch (error) {
-			const message =
-				(error.response &&
-					error.response.data &&
-					error.response.data.message) ||
-				error.message ||
-				error.toString();
-
-			return thunkAPI.rejectWithValue(message);
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
-	},
+	}
 );
 
 export const noteSlice = createSlice({

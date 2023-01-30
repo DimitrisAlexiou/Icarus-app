@@ -1,16 +1,10 @@
-import { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useState } from 'react';
 import { FormGroup, Label, Row, Col, Button, Tooltip } from 'reactstrap';
 import { Field, ErrorMessage } from 'formik';
 import { FormCheckbox } from '../FormCheckbox';
-import { getCourses, reset } from '../../features/courses/courseSlice';
 import FormErrorMessage from '../FormErrorMessage';
-import Spinner from '../../components/boilerplate/Spinner';
 
-const CourseForm = ({ initialValues, handleChange, values, setFieldValue }) => {
-	// export default function CourseForm() {
-	const { courses, courseIsLoading, isSuccess } = useSelector((state) => state.courses);
-
+export default function CourseForm({ courses, cycles, values, setFieldValue }) {
 	const courseYear = (type) => {
 		return new Promise((resolve, reject) => {
 			switch (type) {
@@ -55,7 +49,7 @@ const CourseForm = ({ initialValues, handleChange, values, setFieldValue }) => {
 	};
 
 	const [hasPrerequisites, setHasPrerequisites] = useState(false);
-	const [prerequisites, setPrerequisites] = useState([{ title: '' }]);
+	const [prerequisites, setPrerequisites] = useState([]);
 	const [isObligatory, setIsObligatory] = useState(true);
 
 	const handlePrerequisites = () => {
@@ -65,7 +59,8 @@ const CourseForm = ({ initialValues, handleChange, values, setFieldValue }) => {
 	const handleAddPrerequisite = () => {
 		const values = [...prerequisites];
 		values.push({
-			title: '',
+			prerequisite: '',
+			prerequisiteType: '',
 		});
 		setPrerequisites(values);
 	};
@@ -76,35 +71,9 @@ const CourseForm = ({ initialValues, handleChange, values, setFieldValue }) => {
 		setPrerequisites(values);
 	};
 
-	const handleInputChange = (index, event) => {
-		const values = [...prerequisites];
-		const updatedValue = event.target.name;
-		values[index][updatedValue] = event.target.value;
-
-		setPrerequisites(values);
-	};
-
 	const handleIsObligatory = () => {
 		setIsObligatory(!isObligatory);
 	};
-
-	const dispatch = useDispatch();
-
-	useEffect(() => {
-		return () => {
-			if (isSuccess) {
-				dispatch(reset());
-			}
-		};
-	}, [dispatch, isSuccess]);
-
-	useEffect(() => {
-		dispatch(getCourses());
-	}, [dispatch]);
-
-	if (courseIsLoading) {
-		return <Spinner />;
-	}
 
 	return (
 		<>
@@ -149,7 +118,6 @@ const CourseForm = ({ initialValues, handleChange, values, setFieldValue }) => {
 							onChange={async (e) => {
 								const { value } = e.target;
 								const _years = await courseYear(value);
-								console.log(_years);
 								setFieldValue('type', value);
 								setFieldValue('year', '');
 								setFieldValue('years', _years);
@@ -170,6 +138,7 @@ const CourseForm = ({ initialValues, handleChange, values, setFieldValue }) => {
 					<FormGroup className="mx-1 mb-3 mt-3" check>
 						<Field
 							name="isObligatory"
+							id="isObligatory"
 							component={FormCheckbox}
 							onClick={handleIsObligatory}
 							defaultChecked
@@ -183,6 +152,7 @@ const CourseForm = ({ initialValues, handleChange, values, setFieldValue }) => {
 					<FormGroup className="mx-1 mb-3 mt-3" check>
 						<Field
 							name="hasPrerequisites"
+							id="hasPrerequisites"
 							component={FormCheckbox}
 							onClick={handlePrerequisites}
 						/>
@@ -193,7 +163,7 @@ const CourseForm = ({ initialValues, handleChange, values, setFieldValue }) => {
 				</Col>
 				<Col md="2">
 					<FormGroup className="mx-1 mb-3 mt-3" check>
-						<Field name="hasLab" component={FormCheckbox} />
+						<Field name="hasLab" id="hasLab" component={FormCheckbox} />
 						<Label for="hasLab" className="text-gray-500">
 							Lab
 						</Label>
@@ -207,6 +177,7 @@ const CourseForm = ({ initialValues, handleChange, values, setFieldValue }) => {
 					className="form-control"
 					style={{ height: '180px', text_align: 'justify' }}
 					name="description"
+					id="description"
 				/>
 				<Label for="description" className="text-gray-600">
 					Course Description
@@ -217,7 +188,7 @@ const CourseForm = ({ initialValues, handleChange, values, setFieldValue }) => {
 			<Row>
 				<Col md="6">
 					<FormGroup className="form-floating mb-3" floating>
-						<Field as="select" className="form-control" name="semester">
+						<Field as="select" className="form-control" name="semester" id="semester">
 							<option default>Select course semester</option>
 							<option value={'Winter'}>Winter</option>
 							<option value={'Spring'}>Spring</option>
@@ -231,7 +202,13 @@ const CourseForm = ({ initialValues, handleChange, values, setFieldValue }) => {
 				</Col>
 				<Col md="6">
 					<FormGroup className="form-floating mb-3" floating>
-						<Field type="number" min="0" className="form-control" name="ects" />
+						<Field
+							type="number"
+							min="0"
+							className="form-control"
+							name="ects"
+							id="ects"
+						/>
 						<Label for="ects" className="text-gray-600">
 							Course ECTS
 						</Label>
@@ -249,7 +226,6 @@ const CourseForm = ({ initialValues, handleChange, values, setFieldValue }) => {
 							name="year"
 							id="year"
 							value={values.year}
-							onChange={handleChange}
 						>
 							<option default>Select course year</option>
 							{values.years &&
@@ -277,25 +253,13 @@ const CourseForm = ({ initialValues, handleChange, values, setFieldValue }) => {
 					{!isObligatory && (
 						<>
 							<FormGroup className="form-floating mb-3" floating>
-								<Field
-									as="select"
-									min="1"
-									max="5"
-									className="form-control"
-									name="cycle"
-								>
+								<Field as="select" className="form-control" name="cycle" id="cycle">
 									<option default>Select course cycle</option>
-									<option value={'Security'}>Security</option>
-									<option value={'Software Engineering'}>
-										Software Engineering
-									</option>
-									<option value={'Information Systems'}>
-										Information Systems
-									</option>
-									<option value={'Communication Systems'}>
-										Communication Systems
-									</option>
-									<option value={'AI'}>AI</option>
+									{cycles.map((cycle) => (
+										<option key={cycle._id} value={cycle.cycle}>
+											{cycle.cycle}
+										</option>
+									))}
 								</Field>
 								<Label for="cycle" className="text-gray-600">
 									Course Cycle
@@ -316,47 +280,55 @@ const CourseForm = ({ initialValues, handleChange, values, setFieldValue }) => {
 						{prerequisites.map((field, index) => (
 							<>
 								<Col md="3">
-									<FormGroup className="form-floating mb-3" floating>
+									<FormGroup className="form-floating" floating>
 										<Field
 											as="select"
 											className="form-control"
-											name="prerequisites"
+											name={`prerequisites[${index}].prerequisite`}
 										>
 											<option default>Select prerequisite</option>
 											{courses.map((course) => (
-												<option value={course.title}>{course.title}</option>
+												<option key={course._id} value={course.title}>
+													{course.title}
+												</option>
 											))}
 										</Field>
-										<Label for="prerequisites" className="text-gray-600">
+										<Label
+											for={`prerequisites[${index}].prerequisite`}
+											className="text-gray-600"
+										>
 											Prerequisite {index + 1}
 										</Label>
 										<ErrorMessage
-											name="prerequisites"
+											name={`prerequisites[${index}].prerequisite`}
 											component={FormErrorMessage}
 										/>
 									</FormGroup>
 								</Col>
 								<Col md="2">
-									<FormGroup className="form-floating mb-3" floating>
+									<FormGroup className="form-floating" floating>
 										<Field
 											as="select"
 											className="form-control"
-											name="prerequisiteType"
+											name={`prerequisites[${index}].prerequisiteType`}
 										>
 											<option default>Select type</option>
 											<option value={'Hard'}>Hard</option>
 											<option value={'Soft'}>Soft</option>
 										</Field>
-										<Label for="prerequisiteType" className="text-gray-600">
+										<Label
+											for={`prerequisites[${index}].prerequisiteType`}
+											className="text-gray-600"
+										>
 											Prerequisite Type
 										</Label>
 										<ErrorMessage
-											name="prerequisiteType"
+											name={`prerequisites[${index}].prerequisiteType`}
 											component={FormErrorMessage}
 										/>
 									</FormGroup>
 								</Col>
-								<Col md="1" className="mb-3">
+								<Col className="mb-3" md="1">
 									<Button
 										variant="secondary"
 										onClick={() => handleRemovePrerequisite(index)}
@@ -371,6 +343,4 @@ const CourseForm = ({ initialValues, handleChange, values, setFieldValue }) => {
 			)}
 		</>
 	);
-};
-
-export default CourseForm;
+}

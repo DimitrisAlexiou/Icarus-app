@@ -1,36 +1,19 @@
 const asyncHandler = require('express-async-handler');
 const bcrypt = require('bcryptjs');
-const passport = require('passport');
-const localStrategy = require('passport-local').Strategy;
 const User = require('../../models/users/user');
 const { generateToken } = require('../../middleware/authMiddleware');
 
-// Register User
-module.exports.registerUser = asyncHandler(async (req, res) => {
-	const { name, surname, username, email, password, confirmPassword } =
-		req.body;
+module.exports.register = asyncHandler(async (req, res) => {
+	const { name, surname, username, email, password } = req.body.user;
 
-	if (
-		!name ||
-		!surname ||
-		!username ||
-		!email ||
-		!password ||
-		!confirmPassword
-	) {
+	if (!name || !surname || !username || !email || !password) {
 		return res.status(400).json('Please fill in all the required fields!');
-	}
-
-	if (password !== confirmPassword) {
-		return res.status(400).json('Provided passwords do not match!');
 	}
 
 	try {
 		const userExists = await User.findOne({ email: email });
 		if (userExists) {
-			return res
-				.status(400)
-				.json('Seems like a user with this email already exists!');
+			return res.status(400).json('Seems like a user with this email already exists!');
 		} else {
 			try {
 				const usernameTaken = await User.findOne({ username: username });
@@ -48,9 +31,11 @@ module.exports.registerUser = asyncHandler(async (req, res) => {
 							password: hashedPassword,
 							status: 'new',
 						});
-						return res
-							.status(201)
-							.json({ user, token: generateToken(user._id) });
+						if (user) {
+							return res.status(201).json({ user, token: generateToken(user._id) });
+						} else {
+							return res.status(400).json('Invalid user data');
+						}
 					} catch (error) {
 						console.error('❌ Error while creating user: ', error);
 						return res.status(500).json(`${error.message}`);

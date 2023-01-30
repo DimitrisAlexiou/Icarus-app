@@ -33,15 +33,10 @@ const instructorReviewSchema = new Schema(
 			required: true,
 			ref: 'Teaching',
 		},
-		semester: {
-			type: Schema.Types.ObjectId,
-			required: true,
-			ref: 'Semester',
-		},
 	},
 	{
 		timestamps: true,
-	},
+	}
 );
 
 module.exports = mongoose.model('InstructorReview', instructorReviewSchema);
