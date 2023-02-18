@@ -40,21 +40,24 @@ export default function Login() {
 
 	return (
 		<>
-			<div class="bg-gradient-primary">
-				<div class="container">
-					<Row class="justify-content-center">
-						<div className="col-xl-12 col-lg-12 col-md-12 col-sm-12">
-							<div class="card o-hidden border-0 shadow-lg my-5">
-								<div class="card-body p-0">
+			<div className="bg-gradient-primary">
+				<div className="container">
+					<Row className="justify-content-center">
+						<Col xl="12" lg="12" md="12" sm="12">
+							<div className="card o-hidden border-0 shadow-lg my-5">
+								<div className="card-body p-0">
 									<Row>
-										<div class="col-lg-6 d-none d-lg-block bg-password-image"></div>
-										<div class="col-lg-6">
-											<div class="p-5">
-												<div class="text-center">
-													<h1 class="h4 text-gray-900 mb-2">
+										<Col
+											lg="6"
+											className="d-none d-lg-block bg-password-image"
+										></Col>
+										<Col lg="6">
+											<div className="p-5">
+												<div className="text-center">
+													<h1 className="h4 text-gray-900 mb-2">
 														Forgot Your Password?
 													</h1>
-													<p class="mb-4">
+													<p className="mb-4">
 														We get it, stuff happens. Just enter your
 														email address below and we'll send you a
 														link to reset your password!
@@ -68,13 +71,13 @@ export default function Login() {
 													// }}
 													validateOnMount
 												>
-													<Form class="ForgotPassword">
-														{/* <div class="form-group">
-                                                        <input type="email" class="form-control form-control-user"
+													<Form className="ForgotPassword">
+														{/* <div className="form-group">
+                                                        <input type="email" className="form-control form-control-user"
                                                             id="exampleInputEmail" aria-describedby="emailHelp"
                                                             placeholder="Enter Email Address...">
                                                     </div>
-                                                    <a href="login.html" class="btn btn-primary btn-user btn-block">
+                                                    <a href="login.html" className="btn btn-primary btn-user btn-block">
 													Reset Password
 												</a> */}
 													</Form>
@@ -101,11 +104,11 @@ export default function Login() {
 													</Col>
 												</Row>
 											</div>
-										</div>
+										</Col>
 									</Row>
 								</div>
 							</div>
-						</div>
+						</Col>
 						<div className="text-center">
 							<Link
 								to="/"

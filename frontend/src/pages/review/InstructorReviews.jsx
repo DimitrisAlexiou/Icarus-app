@@ -33,19 +33,17 @@ export default function InstructorReviews() {
 		<>
 			<BreadcrumbNav link={'/review'} header={'Reviews'} active={'Instructor Reviews'} />
 
-			<h1 className="h3 mb-5 text-gray-800 font-weight-bold">Instructor Reviews !</h1>
+			<h1 className="h3 mb-5 text-gray-800 font-weight-bold">Instructor Reviews</h1>
 
 			<Row>
-				<div className="col-sm-12 col-md-6 col-lg-4 g-4 mb-3">
-					<Col>
-						{instructorReview.map((instructorReview) => (
-							<InstructorReviewItem
-								key={instructorReview._id}
-								instructorReview={instructorReview}
-							/>
-						))}
-					</Col>
-				</div>
+				<Col sm="12" md="6" lg="4" className="g-4 mb-3">
+					{instructorReview.map((instructorReview) => (
+						<InstructorReviewItem
+							key={instructorReview._id}
+							instructorReview={instructorReview}
+						/>
+					))}
+				</Col>
 			</Row>
 		</>
 	);

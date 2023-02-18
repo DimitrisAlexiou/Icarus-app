@@ -20,10 +20,6 @@ const cyclesSchema = new Schema({
 });
 
 // const cyclesSchema = new Schema({
-// 	// number: {
-// 	//     type: Number,
-// 	//     required: true,
-// 	// },
 // 	cycles: [
 // 		{
 // 			type: String,

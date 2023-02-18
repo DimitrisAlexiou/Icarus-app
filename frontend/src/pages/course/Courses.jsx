@@ -1,21 +1,12 @@
-import { useAuth0 } from '@auth0/auth0-react';
 import { Link } from 'react-router-dom';
 import { Card, CardText, CardTitle, Row, Col } from 'reactstrap';
-import Spinner from '../../components/boilerplate/Spinner';
 
 export default function Courses() {
-	// const { isAuthenticated, isLoading } = useAuth0();
-
-	// if (isLoading) {
-	// 	return <Spinner />;
-	// }
-
 	return (
-		// isAuthenticated && (
 		<>
 			<Row className="mb-5">
 				<Col>
-					<h1 className="h3 text-gray-800 font-weight-bold">Courses !</h1>
+					<h1 className="h3 text-gray-800 font-weight-bold">Courses</h1>
 				</Col>
 				<Col className="px-3 d-flex justify-content-end">
 					<Link
@@ -56,6 +47,5 @@ export default function Courses() {
 				</Col>
 			</Row>
 		</>
-		// )
 	);
 }

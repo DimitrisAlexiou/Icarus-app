@@ -4,30 +4,28 @@ const NEW_COURSE = `${API_URL_COURSE}/new`;
 const COURSE = `${API_URL_COURSE}/`;
 const TEACHING = `${API_URL_COURSE}/:courseId/teaching`;
 
-// Create Course
-const createCourse = async (values) => {
+const createCourse = async (data, token) => {
 	const config = {
-		headers: { headers },
+		headers: { headers, Authorization: `Bearer ${token}` },
 	};
-	const response = await axios.post(NEW_COURSE, values, config);
-	return response.data;
-};
-
-// Update Course
-const updateCourse = async (courseId, courseData, token) => {
-	const config = {
-		headers: { headers },
-	};
-
-	const response = await axios.put(COURSE + courseId + '/edit', courseData, config);
+	const response = await axios.post(NEW_COURSE, data, config);
 
 	return response.data;
 };
 
-// Activate Course
+const updateCourse = async (courseId, data, token) => {
+	const config = {
+		headers: { headers, Authorization: `Bearer ${token}` },
+	};
+
+	const response = await axios.put(COURSE + courseId + '/edit', data, config);
+
+	return response.data;
+};
+
 const activateCourse = async (courseId, token) => {
 	const config = {
-		headers: { headers },
+		headers: { headers, Authorization: `Bearer ${token}` },
 	};
 
 	const response = await axios.put(COURSE + courseId, { isActive: true }, config);
@@ -35,20 +33,19 @@ const activateCourse = async (courseId, token) => {
 	return response.data;
 };
 
-// Delete Course
 const deleteCourse = async (courseId, token) => {
 	const config = {
-		headers: { headers },
+		headers: { headers, Authorization: `Bearer ${token}` },
 	};
 
-	return await axios.delete(COURSE + courseId, config);
+	const response = await axios.delete(COURSE + courseId, config);
+
+	return response.data;
 };
 
-// Get Courses
-// const getCourses = async (token) => {
-const getCourses = async () => {
+const getCourses = async (token) => {
 	const config = {
-		headers: { headers },
+		headers: { headers, Authorization: `Bearer ${token}` },
 	};
 
 	const response = await axios.get(API_URL_COURSE, config);
@@ -56,11 +53,9 @@ const getCourses = async () => {
 	return response.data;
 };
 
-// Get Course
-// const getCourse = async (courseId, token) => {
-const getCourse = async (courseId) => {
+const getCourse = async (courseId, token) => {
 	const config = {
-		headers: { headers },
+		headers: { headers, Authorization: `Bearer ${token}` },
 	};
 
 	const response = await axios.get(COURSE + courseId, config);
@@ -68,14 +63,15 @@ const getCourse = async (courseId) => {
 	return response.data;
 };
 
-// Create Teaching
-const createTeaching = async (teachingData, token) => {
+const createTeaching = async (data, token) => {
 	const config = {
-		headers: { headers },
+		headers: { headers, Authorization: `Bearer ${token}` },
 	};
 
-	// return await axios.post(API_URL_COURSE + courseId + '/teaching', teachingData, config);
-	return await axios.post(TEACHING, teachingData, config);
+	// const response = await axios.post(API_URL_COURSE + courseId + '/teaching', teachingData, config);
+	const response = await axios.post(TEACHING, data, config);
+
+	return response.data;
 };
 
 const courseService = {

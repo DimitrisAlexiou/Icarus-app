@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { useAuth0 } from '@auth0/auth0-react';
-import { Row } from 'reactstrap';
+import { Row, Col } from 'reactstrap';
 import { Formik, Form } from 'formik';
 import { TeachingSchema } from '../../schemas/course/Teaching';
 import { Toast } from '../../constants/sweetAlertNotification';
@@ -14,24 +13,7 @@ import SubmitButton from '../../components/buttons/SubmitButton';
 import Spinner from '../../components/boilerplate/Spinner';
 
 export default function NewTeaching() {
-	const { isAuthenticated, isLoading } = useAuth0();
-
-	const {
-		course,
-		isError,
-		isLoading: courseIsLoading,
-		message,
-	} = useSelector((state) => state.courses);
-
-	const initialValues = {
-		labWeight: 0,
-		theoryWeight: 0,
-		theoryGrade: 0,
-		labGrade: 0,
-		theoryGradeThreshold: 0,
-		labGradeThreshold: 0,
-		books: [],
-	};
+	const { course, isError, isLoading, message } = useSelector((state) => state.courses);
 
 	const { courseId } = useParams();
 	const navigate = useNavigate();
@@ -66,51 +48,62 @@ export default function NewTeaching() {
 		dispatch(getCourse(courseId));
 	}, [dispatch, isError, message, courseId]);
 
-	if (isLoading || courseIsLoading) {
+	if (isLoading) {
 		return <Spinner />;
 	}
 
 	return (
-		isAuthenticated && (
-			<>
-				<h1 className="h3 mb-5 text-gray-800 font-weight-bold">
-					Create new Teaching for the {course.title} course !
-				</h1>
+		<>
+			<h1 className="h3 mb-5 text-gray-800 font-weight-bold">
+				Create new Teaching for the {course.title} course !
+			</h1>
 
-				<Row className="justify-content-center">
-					<div className="col-sm-12 col-md-11 col-lg-10 col-xl-8">
-						<div className="card shadow mb-4">
-							<div className="card-header py-3">
-								<h6 className="m-0 font-weight-bold text-primary">
-									Fill the form below to create a new teaching for the course
-								</h6>
-							</div>
-							<div className="card-body">
-								<Formik
-									initialValues={initialValues}
-									validationSchema={TeachingSchema}
-									onSubmit={(formTeachingData) => {
-										onSubmit(formTeachingData);
-									}}
-									validateOnMount
-								>
-									<Form name="newCourse">
-										<TeachingForm initialValues={initialValues} />
+			<Row className="justify-content-center">
+				<Col sm="12" md="11" lg="10" xl="8">
+					<div className="card shadow mb-4">
+						<div className="card-header py-3">
+							<h6 className="m-0 font-weight-bold text-primary">
+								Fill the form below to create a new teaching for the course
+							</h6>
+						</div>
+						<div className="card-body">
+							<Formik
+								initialValues={{
+									labWeight: 0,
+									theoryWeight: 0,
+									theoryGrade: 0,
+									labGrade: 0,
+									theoryGradeThreshold: 0,
+									labGradeThreshold: 0,
+									books: [],
+								}}
+								validationSchema={TeachingSchema}
+								onSubmit={(formTeachingData) => {
+									onSubmit(formTeachingData);
+								}}
+								validateOnMount
+							>
+								<Form>
+									<TeachingForm />
 
-										<Row>
+									<Row>
+										<Col>
 											<CancelButton url={'/course/' + courseId} />
+										</Col>
+										<Col className="text-right px-0">
 											<SubmitButton
+												color={'primary'}
 												message={'Create Teaching'}
 												disabled={isLoading}
 											/>
-										</Row>
-									</Form>
-								</Formik>
-							</div>
+										</Col>
+									</Row>
+								</Form>
+							</Formik>
 						</div>
 					</div>
-				</Row>
-			</>
-		)
+				</Col>
+			</Row>
+		</>
 	);
 }

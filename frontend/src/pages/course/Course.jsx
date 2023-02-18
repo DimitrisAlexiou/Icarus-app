@@ -20,23 +20,23 @@ export default function Course() {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
-	const deleteCourse = async () => {
-		try {
-			await courseService.deleteCourse(courseId);
-			Toast.fire({
-				title: 'Success',
-				text: 'Course deleted successfully!',
-				icon: 'success',
-			});
-			navigate('/course');
-		} catch (error) {
-			Toast.fire({
-				title: 'Error while deleting course!',
-				text: error.response.data,
-				icon: 'error',
-			});
-		}
-	};
+	// const deleteCourse = async () => {
+	// 	try {
+	// 		await courseService.deleteCourse(courseId);
+	// 		Toast.fire({
+	// 			title: 'Success',
+	// 			text: 'Course deleted successfully!',
+	// 			icon: 'success',
+	// 		});
+	// 		navigate('/course');
+	// 	} catch (error) {
+	// 		Toast.fire({
+	// 			title: 'Error while deleting course!',
+	// 			text: error.response.data,
+	// 			icon: 'error',
+	// 		});
+	// 	}
+	// };
 
 	const activateCourse = async () => {
 		try {
@@ -67,7 +67,7 @@ export default function Course() {
 	useEffect(() => {
 		if (isError) {
 			Toast.fire({
-				title: 'Error !',
+				title: 'Something went wrong !',
 				text: isError.response.data,
 				icon: 'error',
 			});
@@ -75,15 +75,15 @@ export default function Course() {
 		dispatch(getCourse(courseId));
 	}, [dispatch, isError, message, courseId]);
 
-	// const deleteCourse = () => {
-	//  dispatch(deleteCourse(courseId));
-	//  Toast.fire({
-	//      title: 'Success',
-	//      text: 'Course deleted successfully!',
-	//      icon: 'success',
-	//  });
-	//  navigate('/course');
-	// };
+	const deleteCourse = () => {
+		dispatch(deleteCourse(courseId));
+		Toast.fire({
+			title: 'Success',
+			text: 'Course deleted successfully!',
+			icon: 'success',
+		});
+		navigate('/course');
+	};
 
 	if (isLoading) {
 		return <Spinner />;
@@ -94,16 +94,16 @@ export default function Course() {
 			<h1 className="h3 mb-5 text-gray-800 font-weight-bold">{course.title}</h1>
 
 			<Row className="justify-content-center">
-				<div className="col-sm-12 col-md-10 col-lg-8 col-xl-8">
+				<Col xs="12" sm="12" md="12" lg="10" xl="10">
 					<div className="card shadow mb-4">
 						<div className="card-header py-3">
 							<Row>
-								<Col md="6">
+								<Col md="6" className="mb-3">
 									<h6 className="m-0 font-weight-bold text-primary">
 										Course Information
 									</h6>
 								</Col>
-								<Col md="2">
+								<Col className="mb-2" xs="12" sm="12" md="12" lg="2" xl="2">
 									<Button
 										className="btn btn-light btn-small"
 										style={{ fontWeight: 500, fontSize: 15 }}
@@ -112,7 +112,7 @@ export default function Course() {
 										<FontAwesomeIcon icon={faCheck} /> Activate
 									</Button>
 								</Col>
-								<Col md="2">
+								<Col className="mb-2" xs="12" sm="12" md="12" lg="2" xl="2">
 									<Link
 										to={`/course/${course._id}/edit`}
 										className="btn btn-light btn-small"
@@ -121,7 +121,7 @@ export default function Course() {
 										<FontAwesomeIcon icon={faEdit} /> Update
 									</Link>
 								</Col>
-								<Col md="2">
+								<Col className="mb-2" xs="12" sm="12" md="12" lg="2" xl="2">
 									<Button
 										className="btn btn-light btn-small"
 										style={{ fontWeight: 500, fontSize: 15 }}
@@ -137,7 +137,7 @@ export default function Course() {
 							<BackButton url={'/course/undergraduate'} />
 						</div>
 					</div>
-				</div>
+				</Col>
 			</Row>
 		</>
 	);

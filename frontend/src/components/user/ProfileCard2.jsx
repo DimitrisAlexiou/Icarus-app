@@ -39,11 +39,7 @@ export default function ProfileCard2({ user }) {
 							<ErrorMessage name="surname" component={FormErrorMessage} />
 						</FormGroup>
 						<FormGroup className="form-floating mb-3" floating>
-							<Field
-								type="text"
-								className="form-control"
-								name="admissionYear"
-							/>
+							<Field type="text" className="form-control" name="admissionYear" />
 							<Label for="admissionYear" className="text-gray-600">
 								Admission Year
 							</Label>
@@ -64,9 +60,9 @@ export default function ProfileCard2({ user }) {
 							</Label>
 							<ErrorMessage name="description" component={FormErrorMessage} />
 						</FormGroup>
-						<div className="form-group row">
+						<Row className="form-group">
 							<SubmitButton message={'Update Profile'} />
-						</div>
+						</Row>
 					</Form>
 				</div>
 			</div>

@@ -13,7 +13,7 @@ export default function GeneralReviewForm() {
 					name="course_opinion"
 				/>
 				<Label for="course_opinion" className="text-gray-600">
-					Opinion about the course
+					What is your opinion about the course?
 				</Label>
 				<ErrorMessage name="course_opinion" component={FormErrorMessage} />
 			</FormGroup>
@@ -26,7 +26,7 @@ export default function GeneralReviewForm() {
 					name="instructor_opinion"
 				/>
 				<Label for="instructor_opinion" className="text-gray-600">
-					Opinion about the instructor(s)
+					What is your opinion about the instructor(s)?
 				</Label>
 				<ErrorMessage name="instructor_opinion" component={FormErrorMessage} />
 			</FormGroup>
@@ -39,7 +39,7 @@ export default function GeneralReviewForm() {
 					name="likes"
 				/>
 				<Label for="likes" className="text-gray-600">
-					Likes
+					What did you liked about this course?
 				</Label>
 				<ErrorMessage name="likes" component={FormErrorMessage} />
 			</FormGroup>
@@ -52,7 +52,7 @@ export default function GeneralReviewForm() {
 					name="dislikes"
 				/>
 				<Label for="dislikes" className="text-gray-600">
-					Dislikes
+					What did you disliked about this course?
 				</Label>
 				<ErrorMessage name="dislikes" component={FormErrorMessage} />
 			</FormGroup>

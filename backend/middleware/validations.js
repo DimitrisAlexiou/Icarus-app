@@ -1,5 +1,7 @@
 const {
 	userSchema,
+	// studentSchema,
+	// instructorSchema,
 	courseSchema,
 	teachingSchema,
 	teachingReviewSchema,
@@ -17,7 +19,7 @@ const {
 const ExpressError = require('../utils/expressError');
 
 module.exports.validateUser = (req, res, next) => {
-	const { error } = userSchema.validate(req.body);
+	const { error } = userSchema.validate(req.body.user);
 	if (error) {
 		console.error('❌ Error while validating user schema ---> ', error);
 		const msg = error.details.map((el) => el.message).join(',');
@@ -26,6 +28,28 @@ module.exports.validateUser = (req, res, next) => {
 		next();
 	}
 };
+
+// module.exports.validateStudent = (req, res, next) => {
+// 	const { error } = studentSchema.validate(req.body.student);
+// 	if (error) {
+// 		console.error('❌ Error while validating student schema ---> ', error);
+// 		const msg = error.details.map((el) => el.message).join(',');
+// 		throw new ExpressError(msg, 400);
+// 	} else {
+// 		next();
+// 	}
+// };
+
+// module.exports.validateInstructor = (req, res, next) => {
+// 	const { error } = instructorSchema.validate(req.body.instructor);
+// 	if (error) {
+// 		console.error('❌ Error while validating instructor schema ---> ', error);
+// 		const msg = error.details.map((el) => el.message).join(',');
+// 		throw new ExpressError(msg, 400);
+// 	} else {
+// 		next();
+// 	}
+// };
 
 module.exports.validateCourse = (req, res, next) => {
 	const { error } = courseSchema.validate(req.body.course);
@@ -83,7 +107,7 @@ module.exports.validateGeneralReview = (req, res, next) => {
 };
 
 module.exports.validateSemester = (req, res, next) => {
-	const { error } = semesterSchema.validate(req.body.semester);
+	const { error } = semesterSchema.validate(req.body);
 	if (error) {
 		console.error('❌ Error while validating semester schema ---> ', error);
 		const msg = error.details.map((el) => el.message).join(',');

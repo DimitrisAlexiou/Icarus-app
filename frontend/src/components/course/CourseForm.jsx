@@ -4,7 +4,7 @@ import { Field, ErrorMessage } from 'formik';
 import { FormCheckbox } from '../FormCheckbox';
 import FormErrorMessage from '../FormErrorMessage';
 
-export default function CourseForm({ courses, cycles, values, setFieldValue }) {
+export default function CourseForm({ courses, cycles, semester, values, setFieldValue }) {
 	const courseYear = (type) => {
 		return new Promise((resolve, reject) => {
 			switch (type) {
@@ -188,11 +188,13 @@ export default function CourseForm({ courses, cycles, values, setFieldValue }) {
 			<Row>
 				<Col md="6">
 					<FormGroup className="form-floating mb-3" floating>
-						<Field as="select" className="form-control" name="semester" id="semester">
+						<Field as="select" className="form-control" name="semester">
 							<option default>Select course semester</option>
-							<option value={'Winter'}>Winter</option>
-							<option value={'Spring'}>Spring</option>
-							<option value={'Any'}>Any</option>
+							{/* {semester.map((semester) => (
+								<option key={semester._id} value={semester.type}>
+									{semester.type}
+								</option>
+							))} */}
 						</Field>
 						<Label for="semester" className="text-gray-600">
 							Course Semester

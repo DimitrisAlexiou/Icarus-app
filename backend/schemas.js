@@ -22,22 +22,23 @@ module.exports.userSchema = Joi.object({
 				new RegExp('^(?=.*d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z])(?=.*[!@#$%^&*]).{8,}$')
 			)
 			.required(),
+		type: Joi.string().valid('Student', 'Instructor').required(),
 	}).required(),
 });
 
 module.exports.studentSchema = Joi.object({
 	student: Joi.object({
-		sid: Joi.string().required(),
-		entranceYear: Joi.number().min(1980).max(new Date().getFullYear()).required(),
+		studentId: Joi.string().required(),
 		studentType: Joi.string().valid('Undergraduate', 'Master', 'PhD').required(),
+		entranceYear: Joi.number().min(1980).max(new Date().getFullYear()).required(),
 	}).required(),
 });
 
 module.exports.instructorSchema = Joi.object({
 	instructor: Joi.object({
 		facultyType: Joi.string().valid('DEP', 'EDIP', 'ETEP').required(),
-		degree: Joi.string().valid('Assistant', 'Associate', 'Professor').required(),
-		entranceYear: Joi.number().min(1980).max(new Date().getFullYear()).required(),
+		degree: Joi.string().valid('Assistant', 'Associate', 'Professor'),
+		instructorEntranceYear: Joi.number().min(1980).max(new Date().getFullYear()),
 	}).required(),
 });
 

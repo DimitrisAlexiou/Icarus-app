@@ -10,10 +10,12 @@ const instructorSchema = new Schema(
 		},
 		degree: {
 			type: String,
-			enum: ['Assistant', 'Associate', 'Professor'],
+			enum: ['Assistant', 'Associate', 'Professor', '', undefined],
 		},
-		entranceYear: {
+		instructorEntranceYear: {
 			type: Number,
+			min: 1980,
+			max: new Date().getFullYear(),
 		},
 		user: {
 			type: Schema.Types.ObjectId,
@@ -23,7 +25,7 @@ const instructorSchema = new Schema(
 	},
 	{
 		timestamps: true,
-	},
+	}
 );
 
 module.exports = mongoose.model('Instructor', instructorSchema);

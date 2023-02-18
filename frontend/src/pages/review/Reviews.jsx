@@ -4,7 +4,7 @@ import { Button, Card, CardText, CardTitle, Row, Col } from 'reactstrap';
 export default function Reviews() {
 	return (
 		<>
-			<h1 className="h3 mb-5 text-gray-800 font-weight-bold">Reviews !</h1>
+			<h1 className="h3 mb-5 text-gray-800 font-weight-bold">Reviews</h1>
 
 			<Row className="justify-content-center">
 				<Col md="7" lg="4" className="mb-3">

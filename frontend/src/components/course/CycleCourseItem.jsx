@@ -9,11 +9,11 @@ export default function ObligatoryCourseItem({ course }) {
 		<>
 			<div className="card border-left-sky-blue-crayola">
 				<div className="card-header py-3">
-					<Row className="col-sm-14 ">
+					<Row className="col-sm-14">
 						<Col>
 							<h5 className="text-cerulean-crayola">{course.title}</h5>
 						</Col>
-						<Col className="col-md-3 col-lg-1 col-xl-1">
+						<Col md="3" lg="1" xl="1">
 							{course.isActive === true ? (
 								<Badge color="info" pill>
 									Active
@@ -24,7 +24,7 @@ export default function ObligatoryCourseItem({ course }) {
 								</Badge>
 							)}
 						</Col>
-						<Col className="col-md-4 col-lg-4 col-xl-4 d-flex justify-content-end py-1">
+						<Col md="4" lg="4" xl="4" className="d-flex justify-content-end py-1">
 							<h6 className="text-light-cornflower-blue">{course.cid}</h6>
 						</Col>
 					</Row>

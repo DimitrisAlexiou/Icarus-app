@@ -7,15 +7,15 @@ const studentSchema = new Schema(
 			type: String,
 			required: true,
 		},
-		entranceYear: {
-			type: Number,
-			min: 4,
-			max: 4,
-			required: true,
-		},
 		studentType: {
 			type: String,
 			enum: ['Undergraduate', 'Master', 'PhD'],
+			required: true,
+		},
+		entranceYear: {
+			type: Number,
+			min: 1980,
+			max: new Date().getFullYear(),
 			required: true,
 		},
 		user: {
@@ -26,7 +26,7 @@ const studentSchema = new Schema(
 	},
 	{
 		timestamps: true,
-	},
+	}
 );
 
 module.exports = mongoose.model('Student', studentSchema);

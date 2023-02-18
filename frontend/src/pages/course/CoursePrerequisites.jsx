@@ -87,13 +87,12 @@ export default function CoursePrerequisites() {
 	}
 
 	return (
-		// isAuthenticated && (
 		<>
 			<h1 className="h3 mb-5 text-gray-800 font-weight-bold">
 				Define Course Prerequisites !
 			</h1>
 			<Row className="justify-content-center">
-				<div className="col-sm-12 col-md-11 col-lg-10 col-xl-8">
+				<Col sm="12" md="11" lg="10" xl="8">
 					<div className="card shadow mb-4">
 						<div className="card-header py-3">
 							<h6 className="m-0 font-weight-bold text-primary">
@@ -195,19 +194,23 @@ export default function CoursePrerequisites() {
 									</Row>
 
 									<Row>
-										<CancelButton url={'/course'} />
-										<SubmitButton
-											message={'Define Prerequuisite'}
-											disabled={isLoading}
-										/>
+										<Col>
+											<CancelButton url={'/course'} />
+										</Col>
+										<Col className="text-right px-0">
+											<SubmitButton
+												color={'primary'}
+												message={'Define Prerequisite'}
+												disabled={isLoading}
+											/>
+										</Col>
 									</Row>
 								</Form>
 							</Formik>
 						</div>
 					</div>
-				</div>
+				</Col>
 			</Row>
 		</>
 	);
-	// );
 }

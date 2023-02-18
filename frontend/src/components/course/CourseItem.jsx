@@ -11,11 +11,11 @@ export default function CourseItem({ course }) {
 		<>
 			<div className="card border-left-sky-blue-crayola mb-4">
 				<div className="card-header py-3">
-					<Row className="col-sm-14">
-						<Col>
+					<Row>
+						<Col xs="12" sm="6" md="6" lg="6" xl="6">
 							<h5 className="text-cerulean-crayola">{course.title}</h5>
 						</Col>
-						<Col className="col-md-3 col-lg-1 col-xl-1">
+						<Col xs="12" sm="4" md="3" lg="4" xl="4">
 							{course.isActive === true ? (
 								<Badge color="info" pill>
 									Active
@@ -26,7 +26,14 @@ export default function CourseItem({ course }) {
 								</Badge>
 							)}
 						</Col>
-						<Col className="col-md-4 col-lg-4 col-xl-4 d-flex justify-content-end py-1">
+						<Col
+							xs="12"
+							sm="2"
+							md="3"
+							lg="2"
+							xl="2"
+							className="d-flex justify-content-end py-1"
+						>
 							<h6 className="text-light-cornflower-blue">{course.courseId}</h6>
 						</Col>
 					</Row>

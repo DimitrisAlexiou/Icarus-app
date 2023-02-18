@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const catchAsync = require('../utils/catchAsync');
 const {
 	getCourses,
 	viewCourse,
@@ -16,43 +15,32 @@ const {
 const { validateCourse, validateSemester } = require('../middleware/validations');
 const { authorize } = require('../middleware/authMiddleware');
 
-// @desc    Get Courses
-// @route   GET /api/course
+// @desc    Get Courses / DELETE Courses
+// @route   GET/DELETE /api/course
 // @access  Private
-router.route('/').get(catchAsync(getCourses));
-router.route('/prerequisites').get(catchAsync(getPrerequisites));
-
-// @desc    Delete All Courses
-// @route   DELETE /api/course
-// @access  Private
-router.route('/').delete(catchAsync(deleteCourses));
-router.route('/prerequisites').delete(catchAsync(deleteCoursePrerequisites));
+router.route('/').get(authorize, getCourses).delete(authorize, deleteCourses);
 
 // @desc    Create Course
 // @route   POST /api/course/new
 // @access  Private
-router.route('/new').post(validateCourse, catchAsync(createCourse));
+router.route('/new').post(validateCourse, createCourse);
 
-// @desc    Activate Course
-// @route   PUT /api/course/:id
+// @desc    Get Course by ID / Delete Course by ID / Activate Course
+// @route   GET/DELETE/PUT /api/course/:id
 // @access  Private
-router.route('/:id').put(validateCourse, validateSemester, catchAsync(activateCourse));
-
-// @desc    Get Course by ID
-// @route   GET /api/course/:id
-// @access  Private
-router.route('/:id').get(catchAsync(viewCourse));
-
-// @desc    Delete Course by ID
-// @route   DELETE /api/course/:id
-// @access  Private
-router.route('/:id').delete(catchAsync(deleteCourse));
+router
+	.route('/:id')
+	.get(authorize, viewCourse)
+	.delete(authorize, deleteCourse)
+	.put(authorize, validateCourse, validateSemester, activateCourse);
 
 // @desc    Update Course by ID
 // @route   PUT /api/course/:id/edit
 // @access  Private
-router.route('/:id/edit').put(validateCourse, catchAsync(updateCourse));
+router.route('/:id/edit').put(validateCourse, updateCourse);
 
-// router.route('/:id/prerequisites').post(catchAsync(defineCoursePrerequisites));
+// router.route('/:id/prerequisites').post(defineCoursePrerequisites);
+// router.route('/prerequisites').get(getPrerequisites);
+// router.route('/prerequisites').delete(deleteCoursePrerequisites);
 
 module.exports = router;

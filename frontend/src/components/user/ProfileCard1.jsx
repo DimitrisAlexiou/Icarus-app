@@ -1,10 +1,11 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Col } from 'reactstrap';
 import { faIdBadge } from '@fortawesome/free-solid-svg-icons';
 
 export default function ProfileCard1({ user }) {
 	return (
 		<>
-			<div className="col-lg-4">
+			<Col lg="4">
 				<div className="profile_card">
 					<div className="card-body">
 						<div className="d-flex flex-column align-items-center text-center">
@@ -34,7 +35,7 @@ export default function ProfileCard1({ user }) {
 						</ul>
 					</div>
 				</div>
-			</div>
+			</Col>
 		</>
 	);
 }

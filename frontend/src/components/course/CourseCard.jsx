@@ -1,11 +1,23 @@
-import PropTypes from 'prop-types';
+import { useState, useEffect } from 'react';
 import { Row, Col } from 'reactstrap';
 
 const CourseCard = ({ course }) => {
+	const [cycle, setCycle] = useState(null);
+	const [semester, setSemester] = useState(null);
+
+	useEffect(() => {
+		if (course.cycle) {
+			setCycle(course.cycle.cycle);
+		}
+		if (course.semester) {
+			setSemester(course.semester.type);
+		}
+	}, [course.cycle, course.semester]);
+
 	return (
 		<>
 			<Row className="mb-3">
-				<Col md="6">
+				<Col xl="6" lg="6" md="12" sm="12" xs="12">
 					<label>
 						<b>Course ID</b>
 					</label>
@@ -21,7 +33,7 @@ const CourseCard = ({ course }) => {
 				</Col>
 			</Row>
 			<Row className="mb-3">
-				<Col md="6">
+				<Col xl="6" lg="6" md="12" sm="12" xs="12">
 					<label>
 						<b>Course Type</b>
 					</label>
@@ -32,12 +44,12 @@ const CourseCard = ({ course }) => {
 					<label>
 						<b>Course Semester</b>
 					</label>
-					{/* <p style={{ textAlign: 'justify' }}>{course.semester.type}</p> */}
+					<p style={{ textAlign: 'justify' }}>{semester ? semester : 'not available'}</p>
 					<hr />
 				</Col>
 			</Row>
 			<Row className="mb-3">
-				<Col md="6">
+				<Col xl="6" lg="6" md="12" sm="12" xs="12">
 					<label>
 						<b>Course Year</b>
 					</label>
@@ -48,7 +60,7 @@ const CourseCard = ({ course }) => {
 					<label>
 						<b>Course Cycle</b>
 					</label>
-					{/* <p style={{ textAlign: 'justify' }}>{course.cycle.cycle}</p> */}
+					<p style={{ textAlign: 'justify' }}>{cycle ? cycle : 'course is obligatory'}</p>
 					<hr />
 				</Col>
 			</Row>
@@ -71,7 +83,7 @@ const CourseCard = ({ course }) => {
 				</Col>
 			</Row>
 			<Row className="mb-3">
-				<Col md="6">
+				<Col xl="6" lg="6" md="12" sm="12" xs="12">
 					<label>
 						<b>Course ECTS</b>
 					</label>
@@ -87,7 +99,7 @@ const CourseCard = ({ course }) => {
 				</Col>
 			</Row>
 			<Row className="mb-3">
-				<Col md="6">
+				<Col xl="6" lg="6" md="12" sm="12" xs="12">
 					<label>
 						<b>Course Lab</b>
 					</label>
@@ -107,33 +119,5 @@ const CourseCard = ({ course }) => {
 		</>
 	);
 };
-
-// CourseCard.propTypes = {
-// 	courseId: PropTypes.string.isRequired,
-// 	title: PropTypes.string.isRequired,
-// 	type: PropTypes.string.isRequired,
-// 	description: PropTypes.string.isRequired,
-// 	semester: PropTypes.object.isRequired,
-// 	year: PropTypes.string.isRequired,
-// 	cycle: PropTypes.object.isRequired,
-// 	ects: PropTypes.number.isRequired,
-// 	isActive: PropTypes.bool.isRequired,
-// 	hasLab: PropTypes.bool.isRequired,
-// 	isObligatory: PropTypes.bool.isRequired,
-// };
-
-// CourseCard.defaultProps = {
-// 	courseId: 'Course ID is missing',
-// 	title: 'Course title is missing',
-// 	type: 'Course type is missing',
-// 	description: 'Course description is missing',
-// 	semester: 'Course semester is missing',
-// 	year: 'Course year is missing',
-// 	cycle: 'Course cycle is missing',
-// 	ects: 'Course ECTS is missing',
-// 	isActive: 'Course active status is missing',
-// 	hasLab: 'Course lab status is missing',
-// 	isObligatory: 'Course obligation status is missing',
-// };
 
 export default CourseCard;

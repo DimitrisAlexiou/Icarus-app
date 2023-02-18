@@ -1,8 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { useGlobalContext } from './context';
+import { useEffect } from 'react';
+import { Dashboard, LandingPage, NotFound, Profile } from './pages/index';
 import SharedLayout from './components/boilerplate/SharedLayout';
 import ProtectedRoute from './components/ProtectedRoute';
-import { Dashboard, LandingPage, NotFound, Profile } from './pages/index';
 import Portfolio from './pages/user/Portfolio';
 import Courses from './pages/course/Courses';
 import Undergraduate from './pages/course/Undergraduate';
@@ -26,10 +26,16 @@ import Login from './pages/auth/Login';
 import ForgotPassword from './pages/auth/ForgotPassword';
 import Unauthorized from './pages/auth/UnAuthorized';
 import Forbidden from './pages/auth/Forbidden';
+import Configuration from './pages/admin/Configuration';
 import history from './utils/history';
+import trackHistory from './utils/historyTracker.js';
 import './App.css';
 
 export default function App() {
+	useEffect(() => {
+		trackHistory();
+	}, []);
+
 	return (
 		<>
 			<Router history={history}>
@@ -41,7 +47,14 @@ export default function App() {
 					<Route path="*" element={<NotFound />} />
 					<Route path="/" element={<SharedLayout />}>
 						<Route index element={<Dashboard />} />
-						{/* <Route element={<ProtectedRoute />}> */}
+						<Route
+							path="/course/undergraduate"
+							element={
+								<ProtectedRoute>
+									<Undergraduate />
+								</ProtectedRoute>
+							}
+						/>
 						<Route path="/profile" element={<Profile />} />
 						<Route path="/course/:courseId" element={<Course />} />
 						<Route path="/course/:courseId/edit" element={<CourseEdit />} />
@@ -53,9 +66,7 @@ export default function App() {
 						<Route path="/review/general" element={<GeneralReview />} />
 						<Route path="/review/general/all" element={<GeneralReviews />} />
 						{/* <Route path="/course" element={<Courses />} /> */}
-						<Route path="/course/undergraduate" element={<Undergraduate />} />
 						<Route path="/course/master" element={<Master />} />
-						{/* </Route> */}
 						<Route
 							path="/course/:courseId/prerequisites"
 							element={<CoursePrerequisites />}
@@ -69,6 +80,7 @@ export default function App() {
 						<Route path="/students" element={<Students />} />
 						<Route path="/unauthorized" element={<Unauthorized />} />
 						<Route path="/forbidden" element={<Forbidden />} />
+						<Route path="/admin/configuration" element={<Configuration />} />
 					</Route>
 				</Routes>
 			</Router>

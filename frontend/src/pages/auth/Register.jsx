@@ -3,9 +3,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import { Button, Row, Col } from 'reactstrap';
 import { Formik, Form } from 'formik';
-import { UserSchema } from '../../schemas/users/User';
+import { UserSchema } from '../../schemas/auth/User';
 import { Toast } from '../../constants/sweetAlertNotification';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGoogle, faGithub } from '@fortawesome/free-brands-svg-icons';
 import { register, reset } from '../../features/auth/authSlice';
 import RegisterForm from '../../components/auth/RegisterForm';
@@ -55,12 +54,16 @@ export default function Register() {
 			<div className="bg-gradient-primary">
 				<div className="container">
 					<Row className="justify-content-center">
-						<div className="col-xl-12 col-lg-12 col-md-12 col-sm-12">
+						<Col xl="12" lg="12" md="12" sm="12">
 							<div className="card o-hidden border-0 shadow-lg my-5">
 								<div className="card-body p-0">
 									<Row>
-										<div className="col-lg-5 d-none d-lg-block bg-register-image"></div>
-										<div className="col-lg-7">
+										{/* <Col
+											lg="5"
+											className="d-none d-lg-block bg-register-image"
+										></Col> */}
+										{/* <Col lg="7"> */}
+										<Col>
 											<div className="p-5">
 												<div className="text-center">
 													<h1 className="h4 text-gray-900 mb-4 justify-content-center">
@@ -75,20 +78,46 @@ export default function Register() {
 														email: '',
 														password: '',
 														confirmPassword: '',
+														type: '',
+														studentId: '',
+														studentType: '',
+														entranceYear: '',
+														facultyType: '',
+														degree: '',
+														instructorEntranceYear: '',
 													}}
 													validationSchema={UserSchema}
 													onSubmit={(values, { setSubmitting }) => {
-														const user = {
-															user: {
+														if (values.type === 'Student') {
+															const user = {
 																name: values.name,
 																surname: values.surname,
 																username: values.username,
 																email: values.email,
 																password: values.password,
-															},
-														};
-														dispatch(register(user));
-														setSubmitting(false);
+																type: values.type,
+																studentId: values.studentId,
+																studentType: values.studentType,
+																entranceYear: values.entranceYear,
+															};
+															dispatch(register(user));
+															setSubmitting(false);
+														} else if (values.type === 'Instructor') {
+															const user = {
+																name: values.name,
+																surname: values.surname,
+																username: values.username,
+																email: values.email,
+																password: values.password,
+																type: values.type,
+																facultyType: values.facultyType,
+																degree: values.degree,
+																instructorEntranceYear:
+																	values.instructorEntranceYear,
+															};
+															dispatch(register(user));
+															setSubmitting(false);
+														}
 													}}
 													validateOnMount
 												>
@@ -97,7 +126,7 @@ export default function Register() {
 															<RegisterForm />
 
 															<Row>
-																<Col>
+																<Col md="6" sm="6" xs="6">
 																	<Button
 																		onClick={handleReset}
 																		disabled={
@@ -107,30 +136,33 @@ export default function Register() {
 																		Clear
 																	</Button>
 																</Col>
-																<SubmitButton
-																	message={'Register'}
-																	disabled={isSubmitting}
-																/>
+																<Col className="text-right px-0">
+																	<SubmitButton
+																		color={'primary'}
+																		message={'Register'}
+																		disabled={isSubmitting}
+																	/>
+																</Col>
 															</Row>
 														</Form>
 													)}
 												</Formik>
 
 												<hr />
-												<div className="d-flex justify-content-center">
-													<SignUpInButton
-														icon={''}
-														message={'Continue with '}
-													/>
-													<FontAwesomeIcon icon={faGoogle} />
-												</div>
-												<div className="d-flex justify-content-center">
-													<SignUpInButton
-														icon={''}
-														message={'Continue with '}
-													/>
-													<FontAwesomeIcon icon={faGithub} />
-												</div>
+												<Row>
+													<Col md="6" sm="12" xs="12">
+														<SignUpInButton
+															message={'Continue with'}
+															icon={faGoogle}
+														/>
+													</Col>
+													<Col className="text-right px-4">
+														<SignUpInButton
+															message={'Continue with'}
+															icon={faGithub}
+														/>
+													</Col>
+												</Row>
 												<hr />
 												<div className="d-flex justify-content-center">
 													<Link
@@ -144,11 +176,11 @@ export default function Register() {
 													</Link>
 												</div>
 											</div>
-										</div>
+										</Col>
 									</Row>
 								</div>
 							</div>
-						</div>
+						</Col>
 						<div className="text-center">
 							<Link
 								to="/"

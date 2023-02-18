@@ -1,12 +1,12 @@
-import { Button } from 'reactstrap';
+import { Button, Col } from 'reactstrap';
 
-const SubmitButton = ({ message }) => {
+const SubmitButton = ({ color, message }) => {
 	return (
-		<div className="col-sm-6 mb-3 mb-sm-0">
-			<Button type="submit" color="primary">
+		<Col>
+			<Button type="submit" color={color}>
 				{message}
 			</Button>
-		</div>
+		</Col>
 	);
 };
 

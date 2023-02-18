@@ -1,15 +1,26 @@
 import { Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import Dashboard from '../pages/Dashboard';
-import Spinner from '../components/boilerplate/Spinner';
+import { useEffect } from 'react';
 
-export default function ProtectedRoute() {
-	const { user, isLoading } = useSelector((store) => store.user);
+export default function ProtectedRoute({ children, history }) {
+	const { user } = useSelector((state) => state.auth);
 
-	if (isLoading) {
-		return <Spinner />;
-	}
+	// useEffect(() => {
+	// 	// Check for an error message indicating that the JWT token is expired
+	// 	const error = localStorage.getItem('error');
+	// 	if (error === 'Invalid Token') {
+	// 		// Remove the error message from local storage
+	// 		localStorage.removeItem('error');
 
-	// return isAuthenticated === true ? <Dashboard /> : <Navigate to="/unauthorized" />;
-	return user === true ? <Dashboard /> : <Navigate to="/unauthorized" />;
+	// 		// Clear the user information
+	// 		localStorage.removeItem('user');
+
+	// 		// Redirect the user to the unauthorized page
+	// 		history.push('/unauthorized');
+	// 	}
+	// }, [history]);
+
+	if (user) return children;
+
+	return <Navigate to="/unauthorized" />;
 }

@@ -8,8 +8,11 @@ import {
 import { extractErrorMessage } from '../../utils/redux/errorMessage';
 import authService from './authService';
 
+const user = JSON.parse(localStorage.getItem('user'));
+
 const initialState = {
-	user: getUserFromLocalStorage(),
+	user: user ? user : null,
+	// user: getUserFromLocalStorage(),
 	isError: false,
 	isSuccess: false,
 	isLoading: false,
@@ -56,7 +59,7 @@ export const authSlice = createSlice({
 				state.isLoading = false;
 				state.isSuccess = true;
 				state.user = action.payload;
-				addUserToLocalStorage(state.user);
+				// addUserToLocalStorage(state.user);
 			})
 			.addCase(register.rejected, (state, action) => {
 				state.isLoading = false;
@@ -71,7 +74,7 @@ export const authSlice = createSlice({
 				state.isLoading = false;
 				state.isSuccess = true;
 				state.user = action.payload;
-				addUserToLocalStorage(state.user);
+				// addUserToLocalStorage(state.user);
 			})
 			.addCase(login.rejected, (state, action) => {
 				state.isLoading = false;

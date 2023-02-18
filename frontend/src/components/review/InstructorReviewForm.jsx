@@ -1,96 +1,110 @@
-import { FormGroup, FormFeedback, Input, Label } from 'reactstrap';
+import { FormGroup, Label, Row } from 'reactstrap';
+import { Field, ErrorMessage } from 'formik';
+import RangeSlider from 'react-bootstrap-range-slider';
+import FormErrorMessage from '../FormErrorMessage';
 
-export default function InstructorReviewForm({ onChange, data }) {
+export default function InstructorReviewForm() {
 	return (
 		<>
-			<FormGroup className="form-floating mb-3" floating>
-				<Input
-					type="range"
-					min="1"
-					max="5"
-					className="form-control form-range"
-					id="good_organization"
-					name="good_organization"
-					value={data.good_organization}
-					onChange={onChange}
-					required
-				/>
-				<Label for="good_organization" className="text-gray-600">
-					Good organization of presentation material
-				</Label>
-				<FormFeedback type="invalid">Please give your feedback!</FormFeedback>
+			<FormGroup className="form-floating mb-3 mt-2" floating>
+				<Row>
+					<Field className="form-control" name="good_organization">
+						{({ field, form }) => (
+							<RangeSlider
+								step={1}
+								min={1}
+								max={5}
+								value={field.value}
+								onChange={(e) => form.setFieldValue(field.name, e.target.value)}
+								tooltipPlacement="top"
+							/>
+						)}
+					</Field>
+					<Label for="good_organization" className="text-gray-600 mt-2">
+						Good organization of presentation material
+					</Label>
+				</Row>
+				<ErrorMessage name="good_organization" component={FormErrorMessage} />
 			</FormGroup>
-
 			<FormGroup className="form-floating mb-3" floating>
-				<Input
-					type="range"
-					min="1"
-					max="5"
-					className="form-control form-range"
-					id="clear_comprehensive_answers"
-					name="clear_comprehensive_answers"
-					value={data.clear_comprehensive_answers}
-					onChange={onChange}
-					required
-				/>
-				<Label for="clear_comprehensive_answers" className="text-gray-600">
-					Clear and comprehensive answers/exemplifications/examples
-				</Label>
-				<FormFeedback type="invalid">Please give your feedback!</FormFeedback>
+				<Row>
+					<Field className="form-control" name="clear_comprehensive_answers">
+						{({ field, form }) => (
+							<RangeSlider
+								step={1}
+								min={1}
+								max={5}
+								value={field.value}
+								onChange={(e) => form.setFieldValue(field.name, e.target.value)}
+								tooltipPlacement="top"
+							/>
+						)}
+					</Field>
+					<Label for="clear_comprehensive_answers" className="text-gray-600 mt-2">
+						Clear and comprehensive answers/exemplifications/examples
+					</Label>
+				</Row>
+				<ErrorMessage name="clear_comprehensive_answers" component={FormErrorMessage} />
 			</FormGroup>
-
 			<FormGroup className="form-floating mb-3" floating>
-				<Input
-					type="range"
-					min="1"
-					max="5"
-					className="form-control form-range"
-					id="student_participation"
-					name="student_participation"
-					value={data.student_participation}
-					onChange={onChange}
-					required
-				/>
-				<Label for="student_participation" className="text-gray-600">
-					Active student participation encouragement
-				</Label>
-				<FormFeedback type="invalid">Please give your feedback!</FormFeedback>
+				<Row>
+					<Field className="form-control" name="student_participation">
+						{({ field, form }) => (
+							<RangeSlider
+								step={1}
+								min={1}
+								max={5}
+								value={field.value}
+								onChange={(e) => form.setFieldValue(field.name, e.target.value)}
+								tooltipPlacement="top"
+							/>
+						)}
+					</Field>
+					<Label for="student_participation" className="text-gray-600 mt-2">
+						Active student participation encouragement
+					</Label>
+				</Row>
+				<ErrorMessage name="student_participation" component={FormErrorMessage} />
 			</FormGroup>
-
 			<FormGroup className="form-floating mb-3" floating>
-				<Input
-					type="range"
-					min="1"
-					max="5"
-					className="form-control form-range"
-					id="course_consistency"
-					name="course_consistency"
-					value={data.course_consistency}
-					onChange={onChange}
-					required
-				/>
-				<Label for="course_consistency" className="text-gray-600">
-					Consistency in course obligations
-				</Label>
-				<FormFeedback type="invalid">Please give your feedback!</FormFeedback>
+				<Row>
+					<Field className="form-control" name="course_consistency">
+						{({ field, form }) => (
+							<RangeSlider
+								step={1}
+								min={1}
+								max={5}
+								value={field.value}
+								onChange={(e) => form.setFieldValue(field.name, e.target.value)}
+								tooltipPlacement="top"
+							/>
+						)}
+					</Field>
+					<Label for="course_consistency" className="text-gray-600 mt-2">
+						Consistency in course obligations
+					</Label>
+				</Row>
+				<ErrorMessage name="course_consistency" component={FormErrorMessage} />
 			</FormGroup>
-
 			<FormGroup className="form-floating mb-3" floating>
-				<Input
-					type="range"
-					min="1"
-					max="5"
-					className="form-control form-range"
-					id="instructor_approachable"
-					name="instructor_approachable"
-					value={data.instructor_approachable}
-					onChange={onChange}
-					required
-				/>
-				<Label for="instructor_approachable" className="text-gray-600">
-					Instructor was approachable in general
-				</Label>
-				<FormFeedback type="invalid">Please give your feedback!</FormFeedback>
+				<Row>
+					<Field className="form-control" name="instructor_approachable">
+						{({ field, form }) => (
+							<RangeSlider
+								step={1}
+								min={1}
+								max={5}
+								value={field.value}
+								onChange={(e) => form.setFieldValue(field.name, e.target.value)}
+								tooltipPlacement="top"
+							/>
+						)}
+					</Field>
+					<Label for="instructor_approachable" className="text-gray-600 mt-2">
+						Approachability of the Instructor
+					</Label>
+				</Row>
+				<ErrorMessage name="instructor_approachable" component={FormErrorMessage} />
 			</FormGroup>
 		</>
 	);

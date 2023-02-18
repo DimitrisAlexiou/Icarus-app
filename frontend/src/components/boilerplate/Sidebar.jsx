@@ -21,7 +21,6 @@ export default function Sidebar() {
 	const toggle = () => setDropdownOpen((prevState) => !prevState);
 
 	return (
-		// isAuthenticated && (
 		<>
 			<Nav className="navbar-nav bg-gradient-primary sidebar sidebar-dark shadow">
 				<NavLink
@@ -119,6 +118,5 @@ export default function Sidebar() {
 				</NavItem>
 			</Nav>
 		</>
-		// )
 	);
 }

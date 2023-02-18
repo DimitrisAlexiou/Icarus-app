@@ -10,7 +10,6 @@ import {
 } from 'reactstrap';
 import { NavLink } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { useGlobalContext } from '../../context';
 import { logout } from '../../features/auth/authSlice';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -34,8 +33,6 @@ export default function NavBar() {
 	const { user } = useSelector((store) => store.auth);
 	const dispatch = useDispatch();
 
-	const { openSidebar } = useGlobalContext();
-
 	const [dropdownOpenUser, setDropdownOpenUser] = useState(false);
 	const toggleUser = () => setDropdownOpenUser((prevState) => !prevState);
 
@@ -43,7 +40,10 @@ export default function NavBar() {
 
 	return (
 		<>
-			<Nav className="d-flex navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow sticky-top">
+			<Nav
+				fixed="top"
+				className="d-flex navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow sticky-top"
+			>
 				<NavItem className="nav-item mx-1 text-center d-none d-md-inline">
 					<Button
 						id="sidebarToggleTop"
@@ -62,18 +62,14 @@ export default function NavBar() {
 						className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"
 						rel="noreferrer"
 					>
-						<i className="text-white-50">
-							<FontAwesomeIcon icon={faGraduationCap} />
-						</i>
+						<FontAwesomeIcon className="text-white-50" icon={faGraduationCap} />
 						<span className="ml-1">ICSD Webpage</span>
 					</a>
 				</NavItem>
 
 				<NavItem className="navbar-nav ml-auto">
 					<NavItem className="nav-item mx-1">
-						<div className="nav-link" id="clock">
-							<Clock format={'HH:mm:ss'} ticking={true} />
-						</div>
+						<Clock className="nav-link" format={'HH:mm:ss'} ticking={true} />
 					</NavItem>
 
 					{user ? null : (
@@ -119,50 +115,61 @@ export default function NavBar() {
 										<DropdownItem className="dropdown-item d-flex align-items-center">
 											<NavLink
 												to="profile"
-												style={{ textDecoration: 'none', color: 'inherit' }}
+												style={{
+													textDecoration: 'none',
+													color: 'inherit',
+												}}
 											>
-												<i className="fa-sm fa-fw mr-2 text-gray-400">
-													<FontAwesomeIcon icon={faUser} />
-												</i>
+												<FontAwesomeIcon
+													className="fa-sm fa-fw mr-2 text-gray-400"
+													icon={faUser}
+												/>
 												Profile
 											</NavLink>
 										</DropdownItem>
 										<DropdownItem className="dropdown-item d-flex align-items-center">
 											<NavLink
 												to="settings"
-												style={{ textDecoration: 'none', color: 'inherit' }}
+												style={{
+													textDecoration: 'none',
+													color: 'inherit',
+												}}
 											>
-												<i className="fa-sm fa-fw mr-2 text-gray-400">
-													<FontAwesomeIcon icon={faCogs} />
-												</i>
+												<FontAwesomeIcon
+													className="fa-sm fa-fw mr-2 text-gray-400"
+													icon={faCogs}
+												/>
 												Settings
 											</NavLink>
 										</DropdownItem>
 										<DropdownItem className="dropdown-item d-flex align-items-center">
 											<NavLink
 												to="activity"
-												style={{ textDecoration: 'none', color: 'inherit' }}
+												style={{
+													textDecoration: 'none',
+													color: 'inherit',
+												}}
 											>
-												<i className="fa-sm fa-fw mr-2 text-gray-400">
-													<FontAwesomeIcon icon={faList} />
-												</i>
+												<FontAwesomeIcon
+													className="fa-sm fa-fw mr-2 text-gray-400"
+													icon={faList}
+												/>
 												Activity Log
 											</NavLink>
 										</DropdownItem>
 										<DropdownItem divider />
 										<DropdownItem className="dropdown-item d-flex align-items-center">
 											<NavItem onClick={() => dispatch(logout())}>
-												<i className="mr-2 text-gray-400">
-													<FontAwesomeIcon icon={faSignOut} />
-												</i>
+												<FontAwesomeIcon
+													className="mr-2 text-gray-400"
+													icon={faSignOut}
+												/>
 												Logout
 											</NavItem>
 										</DropdownItem>
 										{/* <DropdownItem className="dropdown-item d-flex align-items-center">
 											<div type="button" onClick={() => setShowLogout(true)}>
-												<i className="mr-2 text-gray-400">
-													<FontAwesomeIcon icon={faSignOut} />
-												</i>
+													<FontAwesomeIcon className="mr-2 text-gray-400"> icon={faSignOut} />
 												Logout
 											</div>
 										</DropdownItem> */}

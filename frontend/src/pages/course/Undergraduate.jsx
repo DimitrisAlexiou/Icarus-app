@@ -1,40 +1,72 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getCourses, reset } from '../../features/courses/courseSlice';
-import CourseItem from '../../components/course/CourseItem';
-import { Link } from 'react-router-dom';
+import { getCycles } from '../../features/admin/cyclesSlice';
+import { Toast } from '../../constants/sweetAlertNotification';
 import { Col } from 'reactstrap';
+import CourseItem from '../../components/course/CourseItem';
+import Spinner from '../../components/boilerplate/Spinner';
+import BreadcrumbNav from '../../components/boilerplate/Breadcrumb';
+import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBook } from '@fortawesome/free-solid-svg-icons';
 import CycleCourseItem from '../../components/course/CycleCourseItem';
 import Notification from '../../components/boilerplate/Notification';
-import Spinner from '../../components/boilerplate/Spinner';
-import BreadcrumbNav from '../../components/boilerplate/Breadcrumb';
 
 export default function UndergraduateCourses() {
-	const { courses, isLoading } = useSelector((state) => state.courses);
+	const {
+		courses,
+		isLoading,
+		isError,
+		message: courseMessage,
+	} = useSelector((state) => state.courses);
+	const {
+		cycles,
+		isLoading: cyclesIsLoading,
+		isError: cyclesIsError,
+		message: cyclesMessage,
+	} = useSelector((state) => state.cycles);
 
 	const dispatch = useDispatch();
 
 	useEffect(() => {
+		if (isError) {
+			Toast.fire({
+				title: 'Something went wrong!',
+				text: courseMessage,
+				icon: 'error',
+			});
+		}
+		if (cyclesIsError) {
+			Toast.fire({
+				title: 'Something went wrong!',
+				text: cyclesMessage,
+				icon: 'error',
+			});
+		}
+		dispatch(reset());
+	}, [dispatch, isError, cyclesIsError, courseMessage, cyclesMessage]);
+
+	useEffect(() => {
 		dispatch(getCourses());
+		dispatch(getCycles());
 	}, [dispatch]);
 
-	if (isLoading) {
+	if (isLoading || cyclesIsLoading) {
 		return <Spinner />;
 	}
 
 	return (
 		<>
 			<BreadcrumbNav link={'/course'} header={'Courses'} active={'Obligatory Courses'} />
-			<div className="col-sm-12 col-md-9 col-lg-9 col-xl-5 g-4 mb-3 mx-5">
+			<Col xs="12" sm="12" md="11" lg="10" xl="6" className="g-4 mb-3 mx-5">
 				<h1 className="h3 mb-5 text-gray-800 font-weight-bold">Obligatory Courses</h1>
 				{courses.map(
 					(course) => (
 						// course.isObligatory === true ? (
 						// course.hasPrerequisites === true ? (
 
-						<CourseItem key={course._id} course={course} />
+						<CourseItem key={course._id} course={course} cycles={cycles} />
 					)
 					// ) : (
 					// null
@@ -48,7 +80,7 @@ export default function UndergraduateCourses() {
 					// 	/>
 					// )
 				)}
-			</div>
+			</Col>
 		</>
 
 		// course.type === 'Undergraduate' ? (

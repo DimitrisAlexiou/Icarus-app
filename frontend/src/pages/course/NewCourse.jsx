@@ -7,6 +7,7 @@ import { CourseSchema } from '../../schemas/course/Course';
 import { Toast } from '../../constants/sweetAlertNotification';
 import { createCourse, getCourses, reset } from '../../features/courses/courseSlice';
 import { getCycles } from '../../features/admin/cyclesSlice';
+import { getSemester } from '../../features/admin/semesterSlice';
 import CourseForm from '../../components/course/CourseForm';
 import SubmitButton from '../../components/buttons/SubmitButton';
 import Spinner from '../../components/boilerplate/Spinner';
@@ -14,6 +15,7 @@ import Spinner from '../../components/boilerplate/Spinner';
 export default function NewCourse() {
 	const { courses, isLoading, isError, message } = useSelector((state) => state.courses);
 	const { cycles, isLoading: cyclesIsLoading } = useSelector((state) => state.cycles);
+	// const { semester, isLoading: semesterIsLoading } = useSelector((state) => state.semester);
 
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -32,6 +34,7 @@ export default function NewCourse() {
 	useEffect(() => {
 		dispatch(getCourses());
 		dispatch(getCycles());
+		// dispatch(getSemester());
 	}, [dispatch]);
 
 	if (isLoading || cyclesIsLoading) {
@@ -41,10 +44,10 @@ export default function NewCourse() {
 	return (
 		<>
 			<Row className="mb-5">
-				<Col md="6">
+				<Col sm="6" xs="6" md="6">
 					<h1 className="h3 text-gray-800 font-weight-bold">Create new Course !</h1>
 				</Col>
-				<Col className="px-3 d-flex justify-content-end">
+				<Col className="d-flex justify-content-end">
 					<Link to="/course" className="btn btn-orange btn-small align-self-center">
 						Cancel
 					</Link>
@@ -78,20 +81,18 @@ export default function NewCourse() {
 								validationSchema={CourseSchema}
 								onSubmit={(values, { setSubmitting }) => {
 									const course = {
-										course: {
-											courseId: values.courseId,
-											title: values.title,
-											type: values.type,
-											isObligatory: values.isObligatory,
-											hasPrerequisites: values.hasPrerequisites,
-											hasLab: values.hasLab,
-											description: values.description,
-											semester: values.semester,
-											ects: values.ects,
-											year: values.year,
-											cycle: values.cycle,
-											prerequisites: values.prerequisites,
-										},
+										courseId: values.courseId,
+										title: values.title,
+										type: values.type,
+										isObligatory: values.isObligatory,
+										hasPrerequisites: values.hasPrerequisites,
+										hasLab: values.hasLab,
+										description: values.description,
+										semester: values.semester,
+										ects: values.ects,
+										year: values.year,
+										cycle: values.cycle,
+										prerequisites: values.prerequisites,
 									};
 									dispatch(createCourse(course));
 									Toast.fire({
@@ -109,12 +110,13 @@ export default function NewCourse() {
 										<CourseForm
 											courses={courses}
 											cycles={cycles}
+											// semesters={semester}
 											values={values}
 											setFieldValue={setFieldValue}
 										/>
 
 										<Row>
-											<Col>
+											<Col className="mb-3">
 												<Button
 													onClick={handleReset}
 													disabled={!dirty || isSubmitting}
@@ -122,10 +124,13 @@ export default function NewCourse() {
 													Clear
 												</Button>
 											</Col>
-											<SubmitButton
-												message={'Create Course'}
-												disabled={isSubmitting}
-											/>
+											<Col className="text-right px-0">
+												<SubmitButton
+													color={'primary'}
+													message={'Create Course'}
+													disabled={isSubmitting}
+												/>
+											</Col>
 										</Row>
 									</Form>
 								)}

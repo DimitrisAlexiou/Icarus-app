@@ -1,11 +1,13 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { Form, Row } from 'reactstrap';
+import { Row, Col, Button } from 'reactstrap';
 import { createInstructorReview, reset } from '../../features/reviews/instructorReviewSlice';
+import { Formik, Form } from 'formik';
+import { InstructorReviewSchema } from '../../schemas/review/InstructorReview';
 import { Toast } from '../../constants/sweetAlertNotification';
 import InstructorReviewForm from '../../components/review/InstructorReviewForm';
-import CancelButton from '../../components/buttons/CancelButton';
+import BreadcrumbNav from '../../components/boilerplate/Breadcrumb';
 import SubmitButton from '../../components/buttons/SubmitButton';
 import Spinner from '../../components/boilerplate/Spinner';
 
@@ -14,92 +16,97 @@ export default function InstructorReview() {
 		(state) => state.instructorReview
 	);
 
-	const [data, setFormData] = useState({
-		good_organization: '',
-		clear_comprehensive_answers: '',
-		student_participation: '',
-		course_consistency: '',
-		instructor_approachable: '',
-	});
-
-	const [validated, setValidated] = useState(false);
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
-
-	const onChange = (e) => {
-		setFormData((prevState) => ({
-			...prevState,
-			[e.target.name]: e.target.value,
-		}));
-	};
 
 	useEffect(() => {
 		if (isError) {
 			Toast.fire({
-				title: 'Error!',
+				title: 'Something went wrong!',
 				text: message,
 				icon: 'error',
 			});
 		}
 		if (isSuccess) {
 			Toast.fire({
-				title: 'Success!',
-				text: message,
+				title: 'Success',
+				text: 'Review submitted successfully!',
 				icon: 'success',
 			});
-			dispatch(reset());
 			navigate('/review');
 		}
 		dispatch(reset());
 	}, [dispatch, isError, isSuccess, message, navigate]);
-
-	const onSubmit = (e) => {
-		const form = e.target;
-		if (form.checkValidity() === false) {
-			e.preventDefault();
-			e.stopPropagation();
-		}
-		setValidated(true);
-		dispatch(createInstructorReview(data));
-	};
 
 	if (isLoading) {
 		return <Spinner />;
 	}
 
 	return (
-		// isAuthenticated && (
 		<>
-			<h1 className="h3 mb-5 text-gray-800 font-weight-bold">Instructor Review !</h1>
+			<BreadcrumbNav link={'/review'} header={'Reviews'} active={'Instructor Review'} />
+
+			<h1 className="h3 mb-5 text-gray-800 font-weight-bold">Instructor Review</h1>
 
 			<Row className="justify-content-center">
-				<div className="col-sm-12 col-md-10 col-lg-8 col-xl-8">
+				<Col sm="12" md="10" lg="8" xl="8">
 					<div className="card shadow mb-4">
 						<div className="card-header py-3">
 							<h6 className="m-0 font-weight-bold text-primary">Leave your review</h6>
 						</div>
 						<div className="card-body">
-							<Form
-								className="user validated-form"
-								validated={validated}
-								onSubmit={onSubmit}
-								noValidate
+							<Formik
+								initialValues={{
+									good_organization: 1,
+									clear_comprehensive_answers: 1,
+									student_participation: 1,
+									course_consistency: 1,
+									instructor_approachable: 1,
+								}}
+								validationSchema={InstructorReviewSchema}
+								onSubmit={(values, { setSubmitting }) => {
+									const instructorReview = {
+										good_organization: values.good_organization,
+										clear_comprehensive_answers:
+											values.clear_comprehensive_answers,
+										student_participation: values.student_participation,
+										course_consistency: values.course_consistency,
+										instructor_approachable: values.instructor_approachable,
+									};
+									console.log(instructorReview);
+									dispatch(createInstructorReview(instructorReview));
+									setSubmitting(false);
+								}}
+								validateOnMount
 							>
-								<InstructorReviewForm onChange={onChange} data />
+								{({ isSubmitting, dirty, handleReset }) => (
+									<Form>
+										<InstructorReviewForm />
 
-								<Row>
-									<CancelButton url={'/review'} />
-									<SubmitButton
-										message={'Review Instructor'}
-										disabled={isLoading}
-									/>
-								</Row>
-							</Form>
+										<Row className="mt-4">
+											<Col md="6" sm="6" xs="6">
+												<Button
+													onClick={handleReset}
+													disabled={!dirty || isSubmitting}
+												>
+													Clear
+												</Button>
+											</Col>
+											<Col className="text-right px-0">
+												<SubmitButton
+													color={'primary'}
+													message={'Review'}
+													disabled={isSubmitting}
+												/>
+											</Col>
+										</Row>
+									</Form>
+								)}
+							</Formik>
 						</div>
 					</div>
-				</div>
+				</Col>
 			</Row>
 		</>
-		// )
 	);
 }

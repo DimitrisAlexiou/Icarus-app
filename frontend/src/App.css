@@ -2543,6 +2543,18 @@ fieldset:disabled a.btn {
 	border-color: #fb8500;
 }
 
+.btn-red {
+	color: #fff;
+	background-color: #ff2727db;
+	border-color: #ff2727db;
+}
+
+.btn-red:hover {
+	color: #fff;
+	background-color: #ff2727;
+	border-color: #ff2727;
+}
+
 .btn-navy-blue {
 	color: #fff;
 	background-color: #03045e;
@@ -11929,4 +11941,32 @@ body.sidebar-toggled footer.sticky-footer {
 
 #courseIdTooltip > .tooltip-arrow {
 	border-top: 5px solid #36b9cc;
+}
+
+.notauthorized {
+	width: 300px;
+	height: 200px;
+}
+
+.slider-track {
+	height: 8px;
+	width: 100%;
+	background-color: #ddd;
+	border-radius: 4px;
+	position: relative;
+}
+
+.slider-thumb {
+	height: 24px;
+	width: 24px;
+	border-radius: 50%;
+	background-color: #007bff;
+	position: absolute;
+	top: -8px;
+	cursor: grab;
+	box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.slider-thumb:active {
+	cursor: grabbing;
 }

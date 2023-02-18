@@ -18,7 +18,7 @@ export default function LoginForm() {
 				<ErrorMessage name="username" component={FormErrorMessage} />
 			</FormGroup>
 			<Row>
-				<Col md="10">
+				<Col md="10" sm="10" xs="10">
 					<FormGroup className="form-group mb-3" floating>
 						<Field
 							type={showPassword ? 'text' : 'password'}
@@ -31,7 +31,7 @@ export default function LoginForm() {
 						<ErrorMessage name="password" component={FormErrorMessage} />
 					</FormGroup>
 				</Col>
-				<Col md="2" className="mt-2 mb-3 d-flex justify-content-center">
+				<Col md="2" sm="2" xs="2" className="mt-2 mb-3 d-flex justify-content-center">
 					<Button type="button" className="nav-link" color="null">
 						<FontAwesomeIcon
 							icon={faEyeSlash}

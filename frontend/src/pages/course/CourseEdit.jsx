@@ -79,12 +79,11 @@ export default function CourseEdit() {
 	}
 
 	return (
-		// isAuthenticated && (
 		<>
 			<h1 className="h3 mb-5 text-gray-800 font-weight-bold">Update {course.title} Course</h1>
 
 			<Row className="justify-content-center">
-				<div className="col-sm-12 col-md-10 col-lg-8 col-xl-6">
+				<Col sm="12" md="10" lg="8" xl="6">
 					<div className="card shadow mb-4">
 						<div className="card-header py-3">
 							<Row>
@@ -288,19 +287,23 @@ export default function CourseEdit() {
                                             </Row> */}
 
 									<Row>
-										<CancelButton url={`/course/${courseId}`} />
-										<SubmitButton
-											message={'Update Course'}
-											disabled={isLoading}
-										/>
+										<Col>
+											<CancelButton url={`/course/${courseId}`} />
+										</Col>
+										<Col className="text-right px-0">
+											<SubmitButton
+												color={'primary'}
+												message={'Update Course'}
+												disabled={isLoading}
+											/>
+										</Col>
 									</Row>
 								</Form>
 							</Formik>
 						</div>
 					</div>
-				</div>
+				</Col>
 			</Row>
 		</>
-		// )
 	);
 }

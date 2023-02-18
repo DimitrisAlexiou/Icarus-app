@@ -1,30 +1,49 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth0 } from '@auth0/auth0-react';
-import { Row } from 'reactstrap';
+import { useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { Button, Col, Row } from 'reactstrap';
+import { getUsers, reset } from '../../features/admin/userSlice';
 import UsersDataTable from '../../components/admin/UsersDataTable';
 import Spinner from '../../components/boilerplate/Spinner';
 
 export default function Users() {
-	const { isAuthenticated, isLoading } = useAuth0();
+	const { users, isLoading } = useSelector((state) => state.users);
+	const dispatch = useDispatch();
 
-	const navigate = useNavigate();
+	useEffect(() => {
+		dispatch(getUsers());
+		dispatch(reset());
+	}, [dispatch]);
 
 	if (isLoading) {
 		return <Spinner />;
 	}
 
 	return (
-		// isAuthenticated && (
 		<>
-			<h1 className="h3 mb-5 text-gray-800 font-weight-bold">Users</h1>
+			<Row className="mb-5">
+				<Col>
+					<h1 className="h3 text-gray-800 font-weight-bold">Users</h1>
+				</Col>
+				<Col className="d-flex justify-content-end">
+					<Link to="/user" className="btn btn-orange btn-small align-self-center">
+						Add User
+					</Link>
+				</Col>
+			</Row>
+			<Row>
+				<Col className="d-flex justify-content-end mb-3">
+					<Button className="btn btn-red btn-small align-self-center" color="null">
+						Delete Users
+					</Button>
+				</Col>
+			</Row>
 
 			<Row className="justify-content-center">
-				<div className="col-sm-12 col-md-11 col-lg-10 col-xl-8">
-					{/* <UsersDataTable /> */}
-				</div>
+				<Col xs="12" sm="12" md="12" lg="12" xl="12">
+					<UsersDataTable users={users} />
+				</Col>
 			</Row>
 		</>
-		// )
 	);
 }

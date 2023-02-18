@@ -1,7 +1,7 @@
 import { FormGroup, Label, Row, Col } from 'reactstrap';
 import { Field, ErrorMessage } from 'formik';
-import { FormCheckbox } from '../FormCheckbox';
-import FormErrorMessage from '../FormErrorMessage';
+import { FormCheckbox } from '../components/FormCheckbox';
+import FormErrorMessage from '../components/FormErrorMessage';
 
 export default function DegreeRulesForm() {
 	return (
@@ -16,7 +16,6 @@ export default function DegreeRulesForm() {
 						<ErrorMessage name="cycles" component={FormErrorMessage} />
 					</FormGroup>
 				</Col>
-
 				<Col>
 					<FormGroup className="form-floating mb-3" floating>
 						<Field type="number" min="0" className="form-control" name="courses" />
@@ -27,18 +26,16 @@ export default function DegreeRulesForm() {
 					</FormGroup>
 				</Col>
 			</Row>
-
 			<Row>
-				<Col md="6">
+				<Col md="7">
 					<FormGroup className="form-floating mb-3" floating>
 						<Field type="number" min="0" className="form-control" name="cycleCourses" />
 						<Label for="cycleCourses" className="text-gray-600">
-							Passed courses for cycle completion
+							Passed courses for Cycle completion
 						</Label>
 						<ErrorMessage name="cycleCourses" component={FormErrorMessage} />
 					</FormGroup>
 				</Col>
-
 				<Col>
 					<FormGroup className="mx-1 mb-3" check>
 						<Field name="practice" component={FormCheckbox} />

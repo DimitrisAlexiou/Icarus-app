@@ -1,34 +1,33 @@
-import { useAuth0 } from '@auth0/auth0-react';
 import { Link } from 'react-router-dom';
-import { Button, Row } from 'reactstrap';
+import { Col, Row } from 'reactstrap';
 
 export default function Unauthorized() {
-	const { loginWithRedirect } = useAuth0();
-
 	return (
 		<div className="container-fluid">
 			<div className="text-center">
-				<div className="error mx-auto" data-text="401">
+				<div className="error mx-auto  mb-2" data-text="401">
 					401
 				</div>
-				<p className="text-gray-500 mb-0">
+				<p className="text-gray-500 mb-3">
 					It looks like you found a glitch in the matrix...
 				</p>
-				<Row className="justify-content-center">
-					{/* <img
-								className="notauthorized"
-								src="undraw_not_authorized.svg"
-								alt="Unauthorized"
-							/>  */}
-					<div className="col-lg-4">
-						<Button
-							className="nav-link text-gray-600 mb-0"
-							color="null"
-							onClick={() => loginWithRedirect()}
+				<Row className="justify-content-center mb-4">
+					<img
+						className="notauthorized"
+						src="undraw_not_authorized.svg"
+						alt="Unauthorized"
+					/>
+					<Col md="4">
+						<Link
+							to="/auth/login"
+							style={{
+								textDecoration: 'none',
+								textAlign: 'center',
+							}}
 						>
 							Please log in to access !
-						</Button>
-					</div>
+						</Link>
+					</Col>
 				</Row>
 				<Link to="/" style={{ textDecoration: 'none' }}>
 					Back to Reality

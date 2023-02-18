@@ -1,19 +1,19 @@
+require('colors');
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const dotenv = require('dotenv').config();
-const colors = require('colors');
 const mongoSanitize = require('express-mongo-sanitize');
 // const helmet = require('helmet');
 const connectDB = require('./database/db');
-const { errorHandler } = require('./middleware/errorHandler');
 const ExpressError = require('./utils/ExpressError');
 const courseRoute = require('./routes/course.routes');
 const userRoute = require('./routes/user.routes');
-const teachingReviewRoute = require('./routes/teachingReview.routes');
-const instructorReviewRoute = require('./routes/instructorReview.routes');
-const generalReviewRoute = require('./routes/generalReview.routes');
+const teachingReviewRoute = require('./routes/review/teachingReview.routes');
+const instructorReviewRoute = require('./routes/review/instructorReview.routes');
+const generalReviewRoute = require('./routes/review/generalReview.routes');
 const adminRoute = require('./routes/admin.routes');
 const authRoute = require('./routes/auth/auth.routes');
+const { errorHandler } = require('./middleware/errorHandler');
 
 //? PORT
 const PORT = process.env.PORT || 4000;
@@ -43,14 +43,7 @@ app.use('/api/review/teaching', teachingReviewRoute);
 app.use('/api/review/instructor', instructorReviewRoute);
 app.use('/api/review/general', generalReviewRoute);
 app.use('/api/admin/configuration', adminRoute);
-
-// app.get('/', async (req, res) => {
-// });
-
-// 404 Error
-// app.use((req, res, next) => {
-// 	next(createError(404));
-// });
+app.use('/api/admin', adminRoute);
 
 app.all('*', (req, res, next) => {
 	next(new ExpressError('Page Not Found', 404));

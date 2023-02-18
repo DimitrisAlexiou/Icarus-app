@@ -1,38 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Auth0Provider } from '@auth0/auth0-react';
-import { getConfig } from './config';
 import { store } from './app/store';
 import { Provider } from 'react-redux';
-import { AppProvider } from './context';
-import * as serviceWorker from './serviceWorker';
-import history from './utils/history';
 import App from './App';
+import * as serviceWorker from './serviceWorker';
 import './index.css';
-
-const onRedirectCallback = (appState) => {
-	history.push(appState && appState.returnTo ? appState.returnTo : window.location.pathname);
-};
-
-const config = getConfig();
-
-const providerConfig = {
-	domain: config.domain,
-	clientId: config.clientId,
-	...(config.audience ? { audience: config.audience } : null),
-	redirectUri: 'http://localhost:3000/course',
-	onRedirectCallback,
-};
+import 'react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css';
 
 ReactDOM.render(
 	<React.StrictMode>
-		<AppProvider>
-			<Provider store={store}>
-				<Auth0Provider {...providerConfig}>
-					<App />
-				</Auth0Provider>
-			</Provider>
-		</AppProvider>
+		<Provider store={store}>
+			<App />
+		</Provider>
 	</React.StrictMode>,
 	document.getElementById('root')
 );

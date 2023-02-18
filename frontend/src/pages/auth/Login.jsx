@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, Link } from 'react-router-dom';
 import { Row, Col, Button } from 'reactstrap';
 import { Formik, Form } from 'formik';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { LoginSchema } from '../../schemas/auth/Login';
 import { faGoogle, faGithub } from '@fortawesome/free-brands-svg-icons';
 import { Toast } from '../../constants/sweetAlertNotification';
 import { login, reset } from '../../features/auth/authSlice';
@@ -37,7 +37,7 @@ export default function Login() {
 		if (isSuccess) {
 			Toast.fire({
 				title: 'Success',
-				text: `Welcome Back ${user.name}`,
+				text: `Welcome Back ${user.user.name}`,
 				icon: 'success',
 			});
 			navigate('/');
@@ -55,12 +55,16 @@ export default function Login() {
 			<div className="bg-gradient-primary">
 				<div className="container">
 					<Row className="justify-content-center">
-						<div className="col-xl-10 col-lg-12 col-md-9">
+						<Col xl="10" lg="12" md="10" sm="12" xs="12">
 							<div className="card o-hidden border-0 shadow-lg my-5">
 								<div className="card-body p-0">
 									<Row>
-										<div className="col-lg-6 d-none d-lg-block bg-login-image"></div>
-										<div className="col-lg-6">
+										<Col
+											lg="6"
+											xl="4"
+											className="d-none d-lg-block bg-login-image"
+										></Col>
+										<Col lg="6" xl="8">
 											<div className="p-5">
 												<div className="text-center">
 													<h1 className="h4 text-gray-900 mb-4 justify-content-center">
@@ -72,12 +76,11 @@ export default function Login() {
 														username: '',
 														password: '',
 													}}
+													validationSchema={LoginSchema}
 													onSubmit={(values, { setSubmitting }) => {
 														const user = {
-															user: {
-																username: values.username,
-																password: values.password,
-															},
+															username: values.username,
+															password: values.password,
 														};
 														dispatch(login(user));
 														setSubmitting(false);
@@ -89,7 +92,7 @@ export default function Login() {
 															<LoginForm />
 
 															<Row>
-																<Col>
+																<Col md="6" sm="6" xs="6">
 																	<Button
 																		onClick={handleReset}
 																		disabled={
@@ -99,33 +102,36 @@ export default function Login() {
 																		Clear
 																	</Button>
 																</Col>
-																<SubmitButton
-																	message={'Login'}
-																	disabled={isSubmitting}
-																/>
+																<Col className="text-right px-0">
+																	<SubmitButton
+																		color={'primary'}
+																		message={'Login'}
+																		disabled={isSubmitting}
+																	/>
+																</Col>
 															</Row>
 														</Form>
 													)}
 												</Formik>
 
 												<hr />
-												<div className="d-flex justify-content-center">
-													<SignUpInButton
-														icon={''}
-														message={'Continue with '}
-													/>
-													<FontAwesomeIcon icon={faGoogle} />
-												</div>
-												<div className="d-flex justify-content-center">
-													<SignUpInButton
-														icon={''}
-														message={'Continue with '}
-													/>
-													<FontAwesomeIcon icon={faGithub} />
-												</div>
-												<hr />
 												<Row>
-													<Col md="6">
+													<Col md="6" sm="12" xs="12">
+														<SignUpInButton
+															message={'Continue with'}
+															icon={faGoogle}
+														/>
+													</Col>
+													<Col className="text-right px-4">
+														<SignUpInButton
+															message={'Continue with'}
+															icon={faGithub}
+														/>
+													</Col>
+												</Row>
+												<hr />
+												<Row className="d-flex justify-content-center">
+													<Col md="6" sm="6" xs="6">
 														<Link
 															to="/auth/forgot-password"
 															style={{ textDecoration: 'none' }}
@@ -145,11 +151,11 @@ export default function Login() {
 													</Col>
 												</Row>
 											</div>
-										</div>
+										</Col>
 									</Row>
 								</div>
 							</div>
-						</div>
+						</Col>
 						<div className="text-center">
 							<Link
 								to="/"
