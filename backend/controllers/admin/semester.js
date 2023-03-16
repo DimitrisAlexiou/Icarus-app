@@ -2,20 +2,23 @@ const asyncHandler = require('express-async-handler');
 const Semester = require('../../models/admin/semester');
 
 module.exports.defineSemester = asyncHandler(async (req, res) => {
-	const { type, startDate, endDate } = req.body.semester;
+	const { type, grading, startDate, endDate } = req.body;
 
-	if (!type || !startDate || !endDate) {
-		return res.status(400).json('Please provide the required fields!');
+	if (!type || !grading || !startDate || !endDate) {
+		return res.status(400).json({ message: 'Please provide the required fields!' });
 	}
 
 	try {
 		const semesterExists = await Semester.findOne({ type: type });
 		if (semesterExists) {
-			return res.status(409).json(`Seems like the ${type} semester is already defined!`);
+			return res
+				.status(409)
+				.json({ message: `Seems like the ${type} semester is already defined!` });
 		} else {
 			try {
 				const semester = await Semester.create({
 					type,
+					grading,
 					startDate,
 					endDate,
 					status: 'new',
@@ -23,38 +26,34 @@ module.exports.defineSemester = asyncHandler(async (req, res) => {
 				return res.status(201).json(semester);
 			} catch (error) {
 				console.error('❌ Error while defining semester: ', error);
-				return res.status(500).json(`${error.message}`);
+				return res.status(500).json({
+					message: 'Something went wrong, unfortunately the semester did not defined!',
+				});
 			}
 		}
 	} catch (error) {
 		console.error('❌ Error while checking if semester already defined: ', error);
-		return res.status(500).json(`${error.message}`);
+		return res.status(500).json({ message: 'Something went wrong, try again later!' });
 	}
 });
 
-module.exports.getSemester = asyncHandler(async (req, res) => {
+module.exports.getSemester = asyncHandler(async (_, res) => {
 	try {
-		// const currentDate = new Date();
-		// if (currentDate >= new Date(startDate) && currentDate <= new Date(endDate)) {
-		// 	return res.status(200).json({ type: 'winter' });
-		// } else if (
-		// 	currentDate >= new Date(springStartDate) &&
-		// 	currentDate <= new Date(springEndDate)
-		// ) {
-		// 	return res.status(200).json({ type: 'spring' });
-		// } else {
-		// 	return res.status(200).json({ type: 'any' });
-		// }
-
-		const semester = await Semester.findOne({ startDate: new Date() });
+		const currentDate = new Date();
+		const semester = await Semester.findOne({
+			startDate: { $lte: currentDate },
+			endDate: { $gte: currentDate },
+		});
 		if (!semester) {
-			return res.status(404).json('Seems like there is no such defined semester!');
+			return res
+				.status(404)
+				.json({ message: 'Seems like there is no defined semester for this period!' });
 		} else {
 			return res.status(200).json(semester);
 		}
 	} catch (error) {
-		console.error('❌ Error while finding defined semester: ', error);
-		return res.status(500).json(`${error.message}`);
+		console.error('❌ Error while finding current semester: ', error);
+		return res.status(500).json({ message: 'Something went wrong, try again later!' });
 	}
 });
 
@@ -62,62 +61,74 @@ module.exports.getSemesters = asyncHandler(async (_, res) => {
 	try {
 		const semesters = await Semester.find({});
 		if (semesters.length === 0) {
-			return res.status(404).json('Seems like there is no defined semester!');
+			return res.status(404).json({ message: 'Seems like there are no defined semesters!' });
 		} else {
 			return res.status(200).json(semesters);
 		}
 	} catch (error) {
 		console.error('❌ Error while finding existing semesters: ', error);
-		return res.status(500).json(`${error.message}`);
+		return res.status(500).json({ message: 'Something went wrong, try again later!' });
 	}
 });
 
-module.exports.updateCurrentSemester = asyncHandler(async (req, res) => {
-	const { startDate, endDate } = req.body;
-	if (!startDate || !endDate) {
-		return res.status(400).json('Please provide the required starting and ending dates!');
+module.exports.updateSemester = asyncHandler(async (req, res) => {
+	const { grading, startDate, endDate } = req.body;
+
+	if (!grading || !startDate || !endDate) {
+		return res.status(400).json({ message: 'Please provide the required fields!' });
 	}
+
 	try {
-		const semester = await Semester.find({});
+		const { id } = req.params;
+		const semester = await Semester.findById(id);
 		if (!semester) {
-			return res.status(404).json('Seems like there is no defined semester!');
+			return res
+				.status(404)
+				.json({ message: 'Seems like there is no defined semester for this period!' });
 		} else {
 			try {
-				const updatedSemester = await Semester.updateOne(
-					{},
+				const updatedSemester = await Semester.findByIdAndUpdate(
+					id,
 					{
-						...req.body.semester,
+						...req.body,
 					},
 					{ new: true }
 				);
 				return res.status(200).json(updatedSemester);
 			} catch (error) {
 				console.error('❌ Error while updating current semester: ', error);
-				return res.status(500).json(`${error.message}`);
+				return res.status(500).json({
+					message: 'Something went wrong, unfortunately the semester did not updated!',
+				});
 			}
 		}
 	} catch (error) {
 		console.error('❌ Error while finding current semester: ', error);
-		return res.status(500).json(`${error.message}`);
+		return res.status(500).json({ message: 'Something went wrong, try again later!' });
 	}
 });
 
-module.exports.deleteSemester = asyncHandler(async (_, res) => {
+module.exports.deleteSemester = asyncHandler(async (req, res) => {
 	try {
-		await Semester.deleteOne({});
-		return res.status(200).json('Defined semester deleted!');
+		const { id } = req.params;
+		await Semester.findByIdAndDelete(id);
+		return res.status(200).json({ message: 'Current semester deleted!' });
 	} catch (error) {
-		console.error('❌ Error while deleting defined semester: ', error);
-		return res.status(500).json(`${error.message}`);
+		console.error('❌ Error while deleting current semester: ', error);
+		return res.status(500).json({
+			message: 'Something went wrong, unfortuantely the current semester did not deleted!',
+		});
 	}
 });
 
 module.exports.deleteSemesters = asyncHandler(async (_, res) => {
 	try {
 		await Semester.deleteMany({});
-		return res.status(200).json('Defined semesters deleted!');
+		return res.status(200).json({ message: 'Defined semesters deleted!' });
 	} catch (error) {
 		console.error('❌ Error while deleting defined semesters: ', error);
-		return res.status(500).json(`${error.message}`);
+		return res.status(500).json({
+			message: 'Something went wrong, unfortunately defined semesters did not deleted!',
+		});
 	}
 });

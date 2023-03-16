@@ -6,6 +6,7 @@ const API_URL_ADMIN = 'http://localhost:5000/api/admin/configuration';
 const API_URL_USERS = 'http://localhost:5000/api/admin/users';
 const API_URL_COURSE = 'http://localhost:5000/api/course';
 const API_URL_REVIEW = 'http://localhost:5000/api/review';
+const API_URL_USER = 'http://localhost:5000/api/user/profile';
 const headers = {
 	'Content-Type': 'application/json',
 	// Authorization: `Bearer ${token}`,
@@ -20,5 +21,6 @@ export {
 	API_URL_USERS,
 	API_URL_COURSE,
 	API_URL_REVIEW,
+	API_URL_USER,
 	headers,
 };

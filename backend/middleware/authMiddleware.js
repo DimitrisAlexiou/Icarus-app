@@ -8,7 +8,7 @@ module.exports.generateToken = (id) => {
 		{ id },
 		process.env.JWT_SECRET_KEY,
 		{
-			expiresIn: 72,
+			expiresIn: 72000,
 			// expiresIn: process.env.JWT_EXPIRES,
 		},
 		{ algorithm: 'HS512' }
@@ -55,10 +55,11 @@ module.exports.authorize = asyncHandler(async (req, res, next) => {
 			next();
 		} catch (error) {
 			if (error instanceof jwt.TokenExpiredError) {
-				console.error('❌ TokenExpiredError ---> '.red.bold, error);
+				console.error('❌ TokenExpiredError: '.red.bold, error);
+				// req.session.destroy();
 				return res.status(401).json({ message: 'Token has expired. Please log in again.' });
 			}
-			console.error('❌ Error while authorizing user ---> '.red.bold, error);
+			console.error('❌ Error while authorizing user: '.red.bold, error);
 			res.status(401).json({ message: 'Unauthorized access. Please log in first.' });
 			throw new ExpressError('❌ Not authorized!', 401);
 		}

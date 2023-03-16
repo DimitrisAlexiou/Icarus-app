@@ -5,7 +5,6 @@ import { faBook } from '@fortawesome/free-solid-svg-icons';
 import UndergraduateCourseNotification from '../boilerplate/UndergraduateCourseNotification';
 
 export default function CourseItem({ course }) {
-	const isAdmin = true;
 	// return course.isObligatory === true ? (
 	return (
 		<>
@@ -56,24 +55,20 @@ export default function CourseItem({ course }) {
 					>
 						{course.description}
 					</p>
-					<Link
-						to={`/course/${course._id}`}
-						type="button"
-						className="btn btn-light btn-small"
-					>
+					<Link to={`/course/${course._id}`} type="button" className="btn btn-light">
 						Learn about
 					</Link>
 				</div>
-				{isAdmin && course.prerequisites === null ? (
+				{course.hasPrerequisites ? (
 					<div
-						className="card-footer text-warning"
+						className="card-footer text-info"
 						style={{
 							textAlign: 'justify',
 							fontWeight: '600',
 							fontSize: 12,
 						}}
 					>
-						Prerequisite course/s has not yet been assigned!
+						Course has prerequisites!
 					</div>
 				) : (
 					<div
@@ -84,7 +79,7 @@ export default function CourseItem({ course }) {
 							fontSize: 12,
 						}}
 					>
-						Prerequisite course/s has been assigned!
+						Course doesn't have prerequisites!
 					</div>
 				)}
 			</div>

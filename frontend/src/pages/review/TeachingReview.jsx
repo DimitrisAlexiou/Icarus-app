@@ -2,13 +2,12 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { createTeachingReview, reset } from '../../features/reviews/teachingReviewSlice';
-import { Formik, Form } from 'formik';
-import { Row, Col, Button } from 'reactstrap';
+import { Formik } from 'formik';
+import { Row, Col } from 'reactstrap';
 import { TeachingReviewSchema } from '../../schemas/review/TeachingReview';
 import { Toast } from '../../constants/sweetAlertNotification';
 import TeachingReviewForm from '../../components/review/TeachingReviewForm';
 import BreadcrumbNav from '../../components/boilerplate/Breadcrumb';
-import SubmitButton from '../../components/buttons/SubmitButton';
 import Spinner from '../../components/boilerplate/Spinner';
 
 export default function TeachingReview() {
@@ -42,11 +41,18 @@ export default function TeachingReview() {
 
 	return (
 		<>
-			<BreadcrumbNav link={'/review'} header={'Reviews'} active={'Teaching Review'} />
+			<BreadcrumbNav
+				className="animated--grow-in"
+				link={'/review'}
+				header={'Reviews'}
+				active={'Teaching Review'}
+			/>
 
-			<h1 className="h3 mb-5 text-gray-800 font-weight-bold">Teaching Review</h1>
+			<h1 className="h3 mb-5 text-gray-800 font-weight-bold animated--grow-in">
+				Teaching Review
+			</h1>
 
-			<Row className="justify-content-center">
+			<Row className="justify-content-center animated--grow-in">
 				<Col sm="12" md="10" lg="8" xl="8">
 					<div className="card shadow mb-4">
 						<div className="card-header py-3">
@@ -79,27 +85,11 @@ export default function TeachingReview() {
 								validateOnMount
 							>
 								{({ isSubmitting, dirty, handleReset }) => (
-									<Form>
-										<TeachingReviewForm />
-
-										<Row className="mt-4">
-											<Col md="6" sm="6" xs="6">
-												<Button
-													onClick={handleReset}
-													disabled={!dirty || isSubmitting}
-												>
-													Clear
-												</Button>
-											</Col>
-											<Col className="text-right px-0">
-												<SubmitButton
-													color={'primary'}
-													message={'Review'}
-													disabled={isSubmitting}
-												/>
-											</Col>
-										</Row>
-									</Form>
+									<TeachingReviewForm
+										isSubmitting={isSubmitting}
+										dirty={dirty}
+										handleReset={handleReset}
+									/>
 								)}
 							</Formik>
 						</div>

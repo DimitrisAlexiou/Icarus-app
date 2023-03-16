@@ -55,7 +55,7 @@ export default function Register() {
 				<div className="container">
 					<Row className="justify-content-center">
 						<Col xl="12" lg="12" md="12" sm="12">
-							<div className="card o-hidden border-0 shadow-lg my-5">
+							<div className="card o-hidden border-0 shadow-lg my-5 animated--grow-in">
 								<div className="card-body p-0">
 									<Row>
 										{/* <Col

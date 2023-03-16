@@ -1,7 +1,7 @@
 import { Breadcrumb, BreadcrumbItem } from 'reactstrap';
 import { Link } from 'react-router-dom';
 
-export default function BreadcrumbNav({ link, header, active }) {
+export default function BreadcrumbNav({ link, header, headerNext, active }) {
 	return (
 		<Breadcrumb tag="nav">
 			<BreadcrumbItem>

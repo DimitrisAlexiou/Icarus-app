@@ -7,9 +7,17 @@ import {
 	faWrench,
 	faBarsProgress,
 	faFolderTree,
+	faUnlock,
+	faIdCard,
+	faGraduationCap,
+	faUser,
+	faCogs,
+	faList,
+	faSignOut,
+	faBarsStaggered,
 } from '@fortawesome/free-solid-svg-icons';
 
-const dataLinks = [
+export const sidebarLinks = [
 	{
 		id: 1,
 		text: 'Courses',
@@ -47,17 +55,39 @@ const dataLinks = [
 		icon: <FontAwesomeIcon icon={faFolderTree} />,
 	},
 ];
-// {
-// 	id: 6,
-// 	text: 'Register',
-// 	path: '/auth/register',
-// 	icon: <FontAwesomeIcon icon={faIdCard} />,
-// },
-// {
-// 	id: 7,
-// 	text: 'Login',
-// 	path: '/auth/login',
-// 	icon: <FontAwesomeIcon icon={faUnlock} />,
-// },
 
-export default dataLinks;
+export const navbarLinks = [
+	{
+		id: 1,
+		text: 'Profile',
+		path: '/user/profile',
+		icon: <FontAwesomeIcon className="fa-sm fa-fw mr-2 text-gray-400" icon={faUser} />,
+	},
+	{
+		id: 2,
+		text: 'Settings',
+		path: '/user/settings',
+		icon: <FontAwesomeIcon className="fa-sm fa-fw mr-2 text-gray-400" icon={faCogs} />,
+	},
+	{
+		id: 3,
+		text: 'Activity Log',
+		path: '/user/activity',
+		icon: <FontAwesomeIcon className="fa-sm fa-fw mr-2 text-gray-400" icon={faList} />,
+	},
+];
+
+export const sidebarAdminLinks = [
+	{
+		id: 1,
+		text: 'Dashboard',
+		path: '/admin/dashboard',
+		icon: <FontAwesomeIcon className="fa-sm fa-fw mr-2 text-gray-400" icon={faUser} />,
+	},
+	{
+		id: 2,
+		text: 'Configuration',
+		path: '/admin/configuration',
+		icon: <FontAwesomeIcon className="fa-sm fa-fw mr-2 text-gray-400" icon={faCogs} />,
+	},
+];

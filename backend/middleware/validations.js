@@ -1,19 +1,14 @@
 const {
 	userSchema,
-	// studentSchema,
-	// instructorSchema,
 	courseSchema,
 	teachingSchema,
 	teachingReviewSchema,
 	instructorReviewSchema,
 	generalReviewSchema,
 	semesterSchema,
-	vaccineReassessmentSchema,
-	assessmentDurationSchema,
-	reviewDurationSchema,
-	reviewStartSchema,
-	gradingDurationSchema,
-	validateCyclesSchema,
+	assessmentSchema,
+	reviewSchema,
+	cyclesSchema,
 	degreeRulesSchema,
 } = require('../schemas');
 const ExpressError = require('../utils/expressError');
@@ -28,28 +23,6 @@ module.exports.validateUser = (req, res, next) => {
 		next();
 	}
 };
-
-// module.exports.validateStudent = (req, res, next) => {
-// 	const { error } = studentSchema.validate(req.body.student);
-// 	if (error) {
-// 		console.error('❌ Error while validating student schema ---> ', error);
-// 		const msg = error.details.map((el) => el.message).join(',');
-// 		throw new ExpressError(msg, 400);
-// 	} else {
-// 		next();
-// 	}
-// };
-
-// module.exports.validateInstructor = (req, res, next) => {
-// 	const { error } = instructorSchema.validate(req.body.instructor);
-// 	if (error) {
-// 		console.error('❌ Error while validating instructor schema ---> ', error);
-// 		const msg = error.details.map((el) => el.message).join(',');
-// 		throw new ExpressError(msg, 400);
-// 	} else {
-// 		next();
-// 	}
-// };
 
 module.exports.validateCourse = (req, res, next) => {
 	const { error } = courseSchema.validate(req.body.course);
@@ -107,7 +80,7 @@ module.exports.validateGeneralReview = (req, res, next) => {
 };
 
 module.exports.validateSemester = (req, res, next) => {
-	const { error } = semesterSchema.validate(req.body);
+	const { error } = semesterSchema.validate(req.body.semester);
 	if (error) {
 		console.error('❌ Error while validating semester schema ---> ', error);
 		const msg = error.details.map((el) => el.message).join(',');
@@ -117,10 +90,13 @@ module.exports.validateSemester = (req, res, next) => {
 	}
 };
 
-module.exports.validateVaccineReassessment = (req, res, next) => {
-	const { error } = vaccineReassessmentSchema.validate(req.body.vaccineReassessment);
+module.exports.validateAssessment = (req, res, next) => {
+	const { error } = assessmentSchema.validate(req.body.assessment);
 	if (error) {
-		console.error('❌ Error while validating vaccine reassessment schema ---> ', error);
+		console.error(
+			'❌ Error while validating assessment statement duration period schema ---> ',
+			error
+		);
 		const msg = error.details.map((el) => el.message).join(',');
 		throw new ExpressError(msg, 400);
 	} else {
@@ -128,43 +104,10 @@ module.exports.validateVaccineReassessment = (req, res, next) => {
 	}
 };
 
-module.exports.validateAssessmentDuration = (req, res, next) => {
-	const { error } = assessmentDurationSchema.validate(req.body.assessmentDuration);
+module.exports.validateReview = (req, res, next) => {
+	const { error } = reviewSchema.validate(req.body.review);
 	if (error) {
-		console.error('❌ Error while validating assessment duration schema ---> ', error);
-		const msg = error.details.map((el) => el.message).join(',');
-		throw new ExpressError(msg, 400);
-	} else {
-		next();
-	}
-};
-
-module.exports.validateReviewDuration = (req, res, next) => {
-	const { error } = reviewDurationSchema.validate(req.body.reviewDuration);
-	if (error) {
-		console.error('❌ Error while validating review duration schema ---> ', error);
-		const msg = error.details.map((el) => el.message).join(',');
-		throw new ExpressError(msg, 400);
-	} else {
-		next();
-	}
-};
-
-module.exports.validateReviewStart = (req, res, next) => {
-	const { error } = reviewStartSchema.validate(req.body.reviewStart);
-	if (error) {
-		console.error('❌ Error while validating review start schema ---> ', error);
-		const msg = error.details.map((el) => el.message).join(',');
-		throw new ExpressError(msg, 400);
-	} else {
-		next();
-	}
-};
-
-module.exports.validateGradingDuration = (req, res, next) => {
-	const { error } = gradingDurationSchema.validate(req.body.gradingDuration);
-	if (error) {
-		console.error('❌ Error while validating grading duration schema ---> ', error);
+		console.error('❌ Error while validating review configuration schema ---> ', error);
 		const msg = error.details.map((el) => el.message).join(',');
 		throw new ExpressError(msg, 400);
 	} else {
@@ -173,7 +116,7 @@ module.exports.validateGradingDuration = (req, res, next) => {
 };
 
 module.exports.validateCycles = (req, res, next) => {
-	const { error } = validateCyclesSchema.validate(req.body.cycles);
+	const { error } = cyclesSchema.validate(req.body.cycles);
 	if (error) {
 		console.error('❌ Error while validating cycles schema ---> ', error);
 		const msg = error.details.map((el) => el.message).join(',');

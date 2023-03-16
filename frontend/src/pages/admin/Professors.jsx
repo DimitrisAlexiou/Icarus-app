@@ -12,9 +12,9 @@ export default function Users() {
 
 	return (
 		<>
-			<h1 className="h3 mb-5 text-gray-800 font-weight-bold">Professors</h1>
+			<h1 className="h3 mb-5 text-gray-800 font-weight-bold animated--grow-in">Professors</h1>
 
-			<Row className="justify-content-center">
+			<Row className="justify-content-center animated--grow-in">
 				<Col sm="12" md="11" lg="10" xl="8"></Col>
 			</Row>
 		</>

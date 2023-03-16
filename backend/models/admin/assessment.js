@@ -1,14 +1,18 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const vaccineReassessmentSchema = new Schema(
+const assessmentSchema = new Schema(
 	{
-		startDate: {
+		period: {
+			type: Number,
+			required: true,
+		},
+		vaccineStartDate: {
 			type: Date,
 			default: Date.now,
 			required: true,
 		},
-		endDate: {
+		vaccineEndDate: {
 			type: Date,
 			default: Date.now,
 			required: true,
@@ -16,10 +20,7 @@ const vaccineReassessmentSchema = new Schema(
 	},
 	{
 		timestamps: true,
-	},
+	}
 );
 
-module.exports = mongoose.model(
-	'VaccineReassessment',
-	vaccineReassessmentSchema,
-);
+module.exports = mongoose.model('Assessment', assessmentSchema);

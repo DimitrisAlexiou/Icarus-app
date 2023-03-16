@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const catchAsync = require('../utils/catchAsync');
 const {
 	getUserNotes,
 	viewUserNote,
@@ -15,31 +14,31 @@ const { authorize } = require('../middleware/authMiddleware');
 // @desc    Get User Notes
 // @route   GET /api/note
 // @access  Private
-router.route('/').get(catchAsync(getUserNotes));
+router.route('/').get(getUserNotes);
 
 // @desc    Create User Note
 // @route   POST /api/note
 // @access  Private
-router.route('/').post(validateNote, catchAsync(createUserNote));
+router.route('/').post(validateNote, createUserNote);
 
 // @desc    Delete all User Notes
 // @route   DELETE /api/note
 // @access  Private
-router.route('/').delete(catchAsync(deleteUserNotes));
+router.route('/').delete(deleteUserNotes);
 
 // @desc    Get User Note by ID
 // @route   GET /api/note/:id
 // @access  Private
-router.route('/:id').get(catchAsync(viewUserNote));
+router.route('/:id').get(viewUserNote);
 
 // @desc    Update User Note by ID
 // @route   PUT /api/note/:id
 // @access  Private
-router.route('/:id').put(validateNote, catchAsync(updateUserNote));
+router.route('/:id').put(validateNote, updateUserNote);
 
 // @desc    Delete User Note by ID
 // @route   DELETE /api/note/:id
 // @access  Private
-router.route('/:id').delete(catchAsync(deleteUserNote));
+router.route('/:id').delete(deleteUserNote);
 
 module.exports = router;

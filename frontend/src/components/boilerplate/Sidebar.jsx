@@ -12,7 +12,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { FaStudiovinari } from 'react-icons/fa';
 import { faUniversity, faWrench, faBarsStaggered } from '@fortawesome/free-solid-svg-icons';
-import dataLinks from '../../utils/NavigationLinks';
+import { sidebarLinks } from '../../utils/NavigationLinks';
 import '../../App.css';
 
 export default function Sidebar() {
@@ -94,8 +94,8 @@ export default function Sidebar() {
 				<div className="sidebar-heading">Data</div>
 
 				<NavItem className="nav-item">
-					{dataLinks.map((dataLink) => {
-						const { id, text, path, icon } = dataLink;
+					{sidebarLinks.map((sidebarLink) => {
+						const { id, text, path, icon } = sidebarLink;
 						return (
 							<NavLink className="nav-link" to={path} key={id}>
 								{icon}

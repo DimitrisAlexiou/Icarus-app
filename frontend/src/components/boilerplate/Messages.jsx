@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
@@ -8,29 +8,16 @@ import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import Spinner from './Spinner';
 import '../../App.css';
 
-export default function MessagesNavItem() {
-	const [isOpenMessages, setIsOpenMessages] = useState(false);
-	const [dropdownOpenMessages, setDropdownOpenMessages] = useState(false);
-
-	const toggleMessages = () => setDropdownOpenMessages((prevState) => !prevState);
-
-	// const HandletoggleMessages = () => {
-	// 	setIsOpenMessages(!isOpenMessages);
-	// };
-
+export default function Messages() {
 	// const { messages, isLoading, isSuccess } = useSelector(
 	// 	(state) => state.messages,
 	// );
 
-	const dispatch = useDispatch();
+	const [dropdownOpen, setDropdownOpen] = useState(false);
 
-	// useEffect(() => {
-	// 	return () => {
-	// 		if (isSuccess) {
-	// 			dispatch(reset());
-	// 		}
-	// 	};
-	// }, [dispatch, isSuccess]);
+	const toggle = () => setDropdownOpen((prevState) => !prevState);
+
+	const dispatch = useDispatch();
 
 	// useEffect(() => {
 	// 	dispatch(getMessages());
@@ -67,20 +54,15 @@ export default function MessagesNavItem() {
 
 	return (
 		<>
-			<Dropdown variant="muted" isOpen={dropdownOpenMessages} toggle={toggleMessages}>
-				<DropdownToggle className="nav-link collapsed" color="null">
+			<Dropdown isOpen={dropdownOpen} toggle={toggle}>
+				<DropdownToggle className="nav-link" color="null">
 					<FontAwesomeIcon icon={faEnvelope} />
 					<span className="badge badge-danger badge-counter my-4">
 						{/* {messages.count()} */}7
 					</span>
 				</DropdownToggle>
-
-				<DropdownMenu
-					className="rounded dropdown-list animated--grow-in"
-					style={{ margin: 0 }}
-				>
+				<DropdownMenu className="rounded dropdown-list">
 					<h6 className="dropdown-header">Message Center</h6>
-
 					<DropdownItem className="dropdown-item d-flex align-items-center animated--grow-in">
 						<div className="dropdown-list-image mr-3">
 							<img
@@ -98,14 +80,9 @@ export default function MessagesNavItem() {
 							<div className="small text-gray-500">Jae Chun · 1d</div>
 						</div>
 					</DropdownItem>
-
 					<DropdownItem className="dropdown-item d-flex align-items-center animated--grow-in">
 						<div className="dropdown-list-image mr-3">
-							<img
-								className="rounded-circle"
-								// src="../public/undraw_profile_3.svg"
-								alt="..."
-							/>
+							<img className="rounded-circle" src="" alt="..." />
 							<div className="status-indicator bg-warning"></div>
 						</div>
 						<div>
@@ -116,14 +93,9 @@ export default function MessagesNavItem() {
 							<div className="small text-gray-500">Morgan Alvarez · 2d</div>
 						</div>
 					</DropdownItem>
-
 					<DropdownItem className="dropdown-item d-flex align-items-center animated--grow-in">
 						<div className="dropdown-list-image mr-3">
-							<img
-								className="rounded-circle"
-								src="https://source.unsplash.com/Mv9hjnEUHR4/60x60"
-								alt="..."
-							/>
+							<img className="rounded-circle" src="" alt="..." />
 							<div className="status-indicator bg-success"></div>
 						</div>
 						<div>
@@ -134,9 +106,14 @@ export default function MessagesNavItem() {
 							<div className="small text-gray-500">Chicken the Dog · 2w</div>
 						</div>
 					</DropdownItem>
-
 					<DropdownItem className="dropdown-item text-center  animated--grow-in small text-gray-500">
-						<Link to={'/messages'} type="button" className="btn btn-light btn-small">
+						<Link
+							to={'/messages'}
+							style={{
+								textDecoration: 'none',
+								color: 'inherit',
+							}}
+						>
 							Read More Messages
 						</Link>
 					</DropdownItem>

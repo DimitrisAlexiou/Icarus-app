@@ -7,7 +7,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Toast } from '../../constants/sweetAlertNotification';
 // import loginService from '../../features/auth/loginService';
 import LoginForm from '../../components/auth/LoginForm';
-import CancelButton from '../../components/buttons/CancelButton';
 import SubmitButton from '../../components/buttons/SubmitButton';
 import SignUpInButton from '../../components/buttons/SignUpInButton';
 
@@ -44,7 +43,7 @@ export default function Login() {
 				<div className="container">
 					<Row className="justify-content-center">
 						<Col xl="12" lg="12" md="12" sm="12">
-							<div className="card o-hidden border-0 shadow-lg my-5">
+							<div className="card o-hidden border-0 shadow-lg my-5 animated--grow-in">
 								<div className="card-body p-0">
 									<Row>
 										<Col

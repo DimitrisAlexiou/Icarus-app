@@ -1,6 +1,8 @@
 const asyncHandler = require('express-async-handler');
 const bcrypt = require('bcryptjs');
 const User = require('../../models/users/user');
+const Student = require('../../models/users/student');
+const Instructor = require('../../models/users/instructor');
 const { generateToken } = require('../../middleware/authMiddleware');
 
 module.exports.login = asyncHandler(async (req, res) => {
@@ -25,7 +27,13 @@ module.exports.login = asyncHandler(async (req, res) => {
 				user.lastLogin = new Date();
 				user.loginFailedAttempts = 0;
 				await user.save();
-				return res.status(200).json({ user, token: generateToken(user._id) });
+				let userType;
+				if (user.type === 'Student') {
+					userType = await Student.findOne({ _id: user.student }).select('-_id');
+				} else if (user.type === 'Instructor') {
+					userType = await Instructor.findOne({ _id: user.student }).select('-_id');
+				}
+				return res.status(200).json({ user, userType, token: generateToken(user._id) });
 			}
 		} else {
 			if (user && user.lastLogin !== null && user.isActive === true) {
@@ -43,6 +51,6 @@ module.exports.login = asyncHandler(async (req, res) => {
 		}
 	} catch (error) {
 		console.error('❌ Error while finding existing user: ', error);
-		return res.status(500).json({ message: `${error.message}` });
+		return res.status(500).json({ message: 'Something went wrong, try again later!' });
 	}
 });

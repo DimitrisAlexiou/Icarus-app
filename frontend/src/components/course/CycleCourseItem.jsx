@@ -48,11 +48,7 @@ export default function ObligatoryCourseItem({ course }) {
 						{course.description}
 					</p>
 					<div>
-						<Link
-							to={`/course/${course._id}`}
-							type="button"
-							className="btn btn-light btn-small"
-						>
+						<Link to={`/course/${course._id}`} type="button" className="btn btn-light">
 							Learn about
 						</Link>
 					</div>

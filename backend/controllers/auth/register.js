@@ -87,7 +87,12 @@ module.exports.register = asyncHandler(async (req, res) => {
 								} catch (error) {
 									await User.deleteOne(user);
 									console.error('❌ Error while creating student: ', error);
-									return res.status(500).json({ message: `${error.message}` });
+									return res
+										.status(500)
+										.json({
+											message:
+												'Something went wrong, unfortunately account did not created!',
+										});
 								}
 							} else if (user.type === 'Instructor') {
 								try {
@@ -113,7 +118,10 @@ module.exports.register = asyncHandler(async (req, res) => {
 								} catch (error) {
 									await User.deleteOne(user);
 									console.error('❌ Error while creating instructor: ', error);
-									return res.status(500).json({ message: `${error.message}` });
+									return res.status(500).json({
+										message:
+											'Something went wrong, unfortunately account did not created!',
+									});
 								}
 							}
 						} else {
@@ -121,16 +129,20 @@ module.exports.register = asyncHandler(async (req, res) => {
 						}
 					} catch (error) {
 						console.error('❌ Error while creating user: ', error);
-						return res.status(500).json({ message: `${error.message}` });
+						return res.status(500).json({
+							message: 'Something went wrong, unfortunately account did not created!',
+						});
 					}
 				}
 			} catch (error) {
 				console.error('❌ Error while checking if username is taken: ', error);
-				return res.status(500).json({ message: `${error.message}` });
+				return res.status(500).json({
+					message: 'Something went wrong, try again later!',
+				});
 			}
 		}
 	} catch (error) {
 		console.error('❌ Error while finding existing user: ', error);
-		return res.status(500).json({ message: `${error.message}` });
+		return res.status(500).json({ message: 'Something went wrong, try again later!' });
 	}
 });

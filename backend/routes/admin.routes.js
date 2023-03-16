@@ -1,34 +1,50 @@
 const express = require('express');
 const router = express.Router();
-const catchAsync = require('../utils/catchAsync');
 const {
 	createUser,
+	activateUser,
+	deleteUser,
 	getUsers,
 	deleteUsers,
-	deleteUser,
-	activateUser,
+	getStudents,
+	getInstructors,
 } = require('../controllers/admin/user');
 const {
 	defineSemester,
+	updateSemester,
 	getSemesters,
 	getSemester,
 	deleteSemester,
 	deleteSemesters,
 } = require('../controllers/admin/semester');
-const { defineVaccineReassessment } = require('../controllers/admin/vaccineStatement');
-const { defineAssessmentDuration } = require('../controllers/admin/assessmentStatement');
-const { defineReviewDuration } = require('../controllers/admin/reviewDuration');
-const { defineReviewStart } = require('../controllers/admin/reviewStart');
-const { defineGradingDuration } = require('../controllers/admin/gradingDuration');
-const { defineCycles, viewCycles } = require('../controllers/admin/cycles');
-const { defineDegreeRules } = require('../controllers/admin/degreeRules');
+const {
+	defineAssessment,
+	getAssessment,
+	updateAssessment,
+	deleteAssessment,
+} = require('../controllers/admin/assessmentStatement');
+const {
+	defineReviewStatement,
+	getReviewStatement,
+	updateReviewStatement,
+	deleteReviewStatement,
+} = require('../controllers/admin/review');
+const {
+	defineCycles,
+	getCycles,
+	updateCycles,
+	deleteCycles,
+} = require('../controllers/admin/cycles');
+const {
+	defineDegreeRules,
+	getDegreeRules,
+	updateDegreeRules,
+	deleteDegreeRules,
+} = require('../controllers/admin/degreeRules');
 const {
 	validateSemester,
-	validateVaccineReassessment,
-	validateAssessmentDuration,
-	validateReviewDuration,
-	validateReviewStart,
-	validateGradingDuration,
+	validateAssessment,
+	validateReview,
 	validateCycles,
 	validateDegreeRules,
 	validateUser,
@@ -44,100 +60,139 @@ const {
 const { getGeneralReviews, deleteGeneralReviews } = require('../controllers/admin/generalReview');
 const { authorize } = require('../middleware/authMiddleware');
 
-// @desc    Define / View / Delete Semester
-// @route   POST/GET/DELETE /api/admin/configuration/semester
+// @desc    Define / View Semester
+// @route   POST/GET /api/admin/configuration/semester
 // @access  Private
 router
 	.route('/semester')
-	.post(validateSemester, catchAsync(defineSemester))
-	.get(catchAsync(getSemester))
-	.delete(catchAsync(deleteSemester));
+	.post(authorize, validateSemester, defineSemester)
+	.get(authorize, getSemester);
+
+// @desc    Update / Delete Semester
+// @route   PUT/DELETE /api/admin/configuration/semester/:id
+// @access  Private
+router
+	.route('/semester/:id')
+	.put(authorize, validateSemester, updateSemester)
+	.delete(authorize, deleteSemester);
 
 // @desc    View / Delete Semesters
 // @route   GET/DELETE /api/admin/configuration/semester
 // @access  Private
-router.route('/semesters').get(catchAsync(getSemesters)).delete(catchAsync(deleteSemesters));
+router.route('/semesters').get(authorize, getSemesters).delete(authorize, deleteSemesters);
 
-// @desc    Define Vaccine/Reassessment Statement Duration Window
-// @route   POST /api/admin/configuration/vaccine_reassessment_duration
+// @desc    Define / View Assessment Statement Duration period
+// @route   POST/GET /api/admin/configuration/assessment
 // @access  Private
 router
-	.route('/vaccine_reassessment_duration')
-	.post(validateVaccineReassessment, catchAsync(defineVaccineReassessment));
+	.route('/assessment')
+	.post(authorize, validateAssessment, defineAssessment)
+	.get(authorize, getAssessment);
 
-// @desc    Define Assessment Statement Duration Window
-// @route   POST /api/admin/configuration/assessment_duration
+// @desc    Update / Delete Assessment Statement Duration period
+// @route   PUT/DELETE /api/admin/configuration/assessment/:id
 // @access  Private
 router
-	.route('/assessment_duration')
-	.post(validateAssessmentDuration, catchAsync(defineAssessmentDuration));
+	.route('/assessment/:id')
+	.put(authorize, validateAssessment, updateAssessment)
+	.delete(authorize, deleteAssessment);
 
-// @desc    Define Review Duration Window
-// @route   POST /api/admin/configuration/review_duration
+// @desc    Define / View Review Statement period
+// @route   POST/GET /api/admin/configuration/review
 // @access  Private
-router.route('/review_duration').post(validateReviewDuration, catchAsync(defineReviewDuration));
+router
+	.route('/review')
+	.post(authorize, validateReview, defineReviewStatement)
+	.get(authorize, getReviewStatement);
 
-// @desc    Define Review Starting Date
-// @route   POST /api/admin/configuration/review_start
+// @desc    Update / Delete Review Statement period
+// @route   PUT/DELETE /api/admin/configuration/degree_rules/:id
 // @access  Private
-router.route('/review_start').post(validateReviewStart, catchAsync(defineReviewStart));
-
-// @desc    Define Grading Duration Window
-// @route   POST /api/admin/configuration/grading_duration
-// @access  Private
-router.route('/grading_duration').post(validateGradingDuration, catchAsync(defineGradingDuration));
+router
+	.route('/review/:id')
+	.put(authorize, validateReview, updateReviewStatement)
+	.delete(authorize, deleteReviewStatement);
 
 // @desc    Define / View List of Cycles
 // @route   POST/GET /api/admin/configuration/cycles
 // @access  Private
-router.route('/cycles').post(validateCycles, catchAsync(defineCycles)).get(catchAsync(viewCycles));
+router.route('/cycles').post(authorize, validateCycles, defineCycles).get(authorize, getCycles);
 
-// @desc    Define Degree Rules
-// @route   POST /api/admin/configuration/degree_rules
+// @desc    Update / Delete List of Cycles
+// @route   PUT/DELETE /api/admin/configuration/cycles
 // @access  Private
-router.route('/degree_rules').post(validateDegreeRules, catchAsync(defineDegreeRules));
+router
+	.route('/cycles')
+	.put(authorize, validateCycles, updateCycles)
+	.delete(authorize, deleteCycles);
+
+// @desc    Define / View Degree Rules
+// @route   POST/GET /api/admin/configuration/degree_rules
+// @access  Private
+router
+	.route('/degree_rules')
+	.post(authorize, validateDegreeRules, defineDegreeRules)
+	.get(authorize, getDegreeRules);
+
+// @desc    Update / Delete Degree Rules
+// @route   PUT/DELETE /api/admin/configuration/degree_rules/:id
+// @access  Private
+router
+	.route('/degree_rules/:id')
+	.put(authorize, validateDegreeRules, updateDegreeRules)
+	.delete(authorize, deleteDegreeRules);
 
 // @desc    Create User / Get Users / Delete Users
 // @route   POST/GET/DELETE /api/admin/users
 // @access  Private
 router
 	.route('/users')
-	.post(authorize, validateUser, catchAsync(createUser))
-	.get(catchAsync(getUsers))
-	.delete(authorize, catchAsync(deleteUsers));
+	.post(authorize, validateUser, createUser)
+	.get(authorize, getUsers)
+	.delete(authorize, deleteUsers);
 
 // @desc    Delete User
 // @route   DELETE /api/admin/users/:id
 // @access  Private
-router.route('/users/:id').delete(authorize, catchAsync(deleteUser));
+router.route('/users/:id').delete(authorize, deleteUser);
+
+// @desc    GET Students
+// @route   GET /api/admin/users/students
+// @access  Private
+router.route('/users/students').get(authorize, getStudents);
+
+// @desc    GET Instructors
+// @route   GET /api/admin/users/instructors
+// @access  Private
+router.route('/users/instructors').get(authorize, getInstructors);
 
 // @desc    Activate User
 // @route   PUT /api/admin/users/activate/:id/
 // @access  Private
-router.route('/users/activate/:id').put(authorize, validateUser, catchAsync(activateUser));
+router.route('/users/activate/:id').put(authorize, validateUser, activateUser);
 
 // @desc    Get / Delete All Teaching Reviews
 // @route   GET/DELETE /api/admin/review/teaching
 // @access  Private ADMIN || INSTRUCTOR
 router
 	.route('/review/teaching')
-	.get(authorize, catchAsync(getTeachingReviews))
-	.delete(authorize, catchAsync(deleteTeachingReviews));
+	.get(authorize, getTeachingReviews)
+	.delete(authorize, deleteTeachingReviews);
 
 // @desc    Get / Delete All Instructor Reviews
 // @route   GET/DELETE /api/admin/review/instructor
 // @access  Private ADMIN
 router
 	.route('/review/instructor')
-	.get(authorize, catchAsync(getInstructorReviews))
-	.delete(authorize, catchAsync(deleteInstructorReviews));
+	.get(authorize, getInstructorReviews)
+	.delete(authorize, deleteInstructorReviews);
 
 // @desc    Get / Delete All General Reviews
 // @route   GET/DELETE /api/admin/review/general
 // @access  Private ADMIN
 router
 	.route('/review/general')
-	.get(authorize, catchAsync(getGeneralReviews))
-	.delete(authorize, catchAsync(deleteGeneralReviews));
+	.get(authorize, getGeneralReviews)
+	.delete(authorize, deleteGeneralReviews);
 
 module.exports = router;

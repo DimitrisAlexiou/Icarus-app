@@ -2,12 +2,12 @@ import { Link } from 'react-router-dom';
 
 export default function Notification({ icon, message, link, linkMessage }) {
 	return (
-		<div className="container-fluid">
+		<div className="animated--grow-in">
 			<div className="text-center">
-				<div className="error mx-auto mb-5 mt-5">{icon}</div>
-				<p className="text-gray-500 mb-4">{message}</p>
+				<i className="fa-3x mx-auto mb-5 mt-5">{icon}</i>
+				<p className="text-gray-500 mt-5 mb-5">{message}</p>
 				<Link
-					className="btn btn-light-cornflower-blue btn-small align-self-center"
+					className="btn btn-light-cornflower-blue align-self-center"
 					to={link}
 					style={{ textDecoration: 'none' }}
 				>

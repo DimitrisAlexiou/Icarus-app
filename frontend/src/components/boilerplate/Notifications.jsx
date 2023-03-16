@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -17,28 +17,16 @@ import {
 import Spinner from './Spinner';
 import '../../App.css';
 
-export default function NotificationsNavItem() {
-	const [isOpen, setIsOpen] = useState(false);
-	const [dropdownOpen, setDropdownOpen] = useState(false);
-
-	const toggle = () => setDropdownOpen((prevState) => !prevState);
-	// const Handletoggle = () => {
-	// 	setIsOpen(!isOpen);
-	// };
-
-	// const { notifications, isLoading, isSuccess } = useSelector(
+export default function Notifications() {
+	// const { notifications, isLoading } = useSelector(
 	// 	(state) => state.notifications,
 	// );
 
-	const dispatch = useDispatch();
+	const [dropdownOpen, setDropdownOpen] = useState(false);
 
-	// useEffect(() => {
-	// 	return () => {
-	// 		if (isSuccess) {
-	// 			dispatch(reset());
-	// 		}
-	// 	};
-	// }, [dispatch, isSuccess]);
+	const toggle = () => setDropdownOpen((prevState) => !prevState);
+
+	const dispatch = useDispatch();
 
 	// useEffect(() => {
 	// 	dispatch(getNotifications());
@@ -75,21 +63,16 @@ export default function NotificationsNavItem() {
 
 	return (
 		<>
-			<Dropdown variant="muted" isOpen={dropdownOpen} toggle={toggle}>
-				<DropdownToggle className="nav-link collapsed" color="null">
+			<Dropdown isOpen={dropdownOpen} toggle={toggle}>
+				<DropdownToggle className="nav-link" color="null">
 					<FontAwesomeIcon icon={faBell} />
 					<span className="badge badge-danger badge-counter my-4">
 						{/* {notifications.count()} */}
 						3+
 					</span>
 				</DropdownToggle>
-
-				<DropdownMenu
-					className="rounded dropdown-list shadow animated--grow-in"
-					style={{ margin: 0 }}
-				>
+				<DropdownMenu className="rounded dropdown-list">
 					<h6 className="dropdown-header">Alerts Center</h6>
-
 					<DropdownItem className="dropdown-item d-flex align-items-center animated--grow-in">
 						<div className="mr-3">
 							<div className="icon-circle bg-success">
@@ -103,7 +86,6 @@ export default function NotificationsNavItem() {
 							$290.29 has been deposited into your account!
 						</div>
 					</DropdownItem>
-
 					<DropdownItem className="dropdown-item d-flex align-items-center animated--grow-in">
 						<div className="mr-3">
 							<div className="icon-circle bg-warning">
@@ -117,15 +99,16 @@ export default function NotificationsNavItem() {
 							Spending Alert: We've noticed unusually high spending for your account.
 						</div>
 					</DropdownItem>
-
 					<DropdownItem className="dropdown-item text-center small text-gray-500">
-						<Link
+						<NavLink
 							to={'/notifications'}
-							type="button"
-							className="btn btn-light btn-small"
+							style={{
+								textDecoration: 'none',
+								color: 'inherit',
+							}}
 						>
 							Show All Alerts
-						</Link>
+						</NavLink>
 					</DropdownItem>
 				</DropdownMenu>
 			</Dropdown>

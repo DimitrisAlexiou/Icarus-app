@@ -21,7 +21,9 @@ module.exports.getUsers = asyncHandler(async (_, res) => {
 		}
 	} catch (error) {
 		console.error('❌ Error while finding users', error);
-		return res.status(500).json({ message: `${error.message}` });
+		return res.status(500).json({
+			message: 'Something went wrong, try again later!',
+		});
 	}
 });
 
@@ -31,7 +33,9 @@ module.exports.deleteUsers = asyncHandler(async (_, res) => {
 		return res.status(200).json({ message: 'All users deleted!' });
 	} catch (error) {
 		console.error('❌ Error while deleting all users', error);
-		return res.status(500).json({ message: `${error.message}` });
+		return res.status(500).json({
+			message: 'Something went wrong, try again later!',
+		});
 	}
 });
 
@@ -42,7 +46,9 @@ module.exports.deleteUser = asyncHandler(async (req, res) => {
 		return res.status(200).json({ message: 'User deleted successfully!' });
 	} catch (error) {
 		console.error('❌ Error while deleting user', error);
-		return res.status(500).json({ message: `${error.message}` });
+		return res.status(500).json({
+			message: 'Something went wrong, try again later!',
+		});
 	}
 });
 
@@ -60,7 +66,9 @@ module.exports.activateUser = asyncHandler(async (req, res) => {
 		}
 	} catch (error) {
 		console.error('❌ Error while activating user', error);
-		return res.status(500).json({ message: `${error.message}` });
+		return res.status(500).json({
+			message: 'Something went wrong, try again later!',
+		});
 	}
 });
 
@@ -68,9 +76,43 @@ module.exports.createUser = asyncHandler(async (req, res) => {
 	try {
 		const user = new User(req.body);
 		const newUser = await user.save();
-		return res.status(201).json(newUser, { message: 'User created successfully!' });
+		return res.status(201).json(newUser);
 	} catch (error) {
 		console.error('❌ Error while creating user', error);
-		return res.status(500).json({ message: `${error.message}` });
+		return res.status(500).json({
+			message: 'Something went wrong, try again later!',
+		});
+	}
+});
+
+module.exports.getStudents = asyncHandler(async (_, res) => {
+	try {
+		const students = await Student.find({});
+		if (students.length === 0) {
+			return res.status(404).json({ message: 'Seems like there are no students!' });
+		} else {
+			return res.status(200).json(students);
+		}
+	} catch (error) {
+		console.error('❌ Error while finding students', error);
+		return res.status(500).json({
+			message: 'Something went wrong, try again later!',
+		});
+	}
+});
+
+module.exports.getInstructors = asyncHandler(async (_, res) => {
+	try {
+		const instructors = await Instructor.find({});
+		if (instructors.length === 0) {
+			return res.status(404).json({ message: 'Seems like there are no instructors!' });
+		} else {
+			return res.status(200).json(instructors);
+		}
+	} catch (error) {
+		console.error('❌ Error while finding instructors', error);
+		return res.status(500).json({
+			message: 'Something went wrong, try again later!',
+		});
 	}
 });

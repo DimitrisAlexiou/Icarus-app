@@ -1,23 +1,22 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { getCourses, reset } from '../../features/courses/courseSlice';
+import { getCourses, resetCourses } from '../../features/courses/courseSlice';
 import { getCycles } from '../../features/admin/cyclesSlice';
 import { Toast } from '../../constants/sweetAlertNotification';
 import { Col } from 'reactstrap';
+import { faBook } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import CourseItem from '../../components/course/CourseItem';
+import CycleCourseItem from '../../components/course/CycleCourseItem';
 import Spinner from '../../components/boilerplate/Spinner';
 import BreadcrumbNav from '../../components/boilerplate/Breadcrumb';
-import { Link } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBook } from '@fortawesome/free-solid-svg-icons';
-import CycleCourseItem from '../../components/course/CycleCourseItem';
 import Notification from '../../components/boilerplate/Notification';
 
 export default function UndergraduateCourses() {
 	const {
 		courses,
 		isLoading,
-		isError,
+		isError: isCourseError,
 		message: courseMessage,
 	} = useSelector((state) => state.courses);
 	const {
@@ -30,12 +29,14 @@ export default function UndergraduateCourses() {
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		if (isError) {
-			Toast.fire({
-				title: 'Something went wrong!',
-				text: courseMessage,
-				icon: 'error',
-			});
+		if (isCourseError) {
+			if (courseMessage !== 'Seems like there are no courses!') {
+				Toast.fire({
+					title: 'Something went wrong!',
+					text: courseMessage,
+					icon: 'error',
+				});
+			}
 		}
 		if (cyclesIsError) {
 			Toast.fire({
@@ -44,8 +45,8 @@ export default function UndergraduateCourses() {
 				icon: 'error',
 			});
 		}
-		dispatch(reset());
-	}, [dispatch, isError, cyclesIsError, courseMessage, cyclesMessage]);
+		dispatch(resetCourses());
+	}, [dispatch, isCourseError, cyclesIsError, courseMessage, cyclesMessage]);
 
 	useEffect(() => {
 		dispatch(getCourses());
@@ -58,33 +59,44 @@ export default function UndergraduateCourses() {
 
 	return (
 		<>
-			<BreadcrumbNav link={'/course'} header={'Courses'} active={'Obligatory Courses'} />
-			<Col xs="12" sm="12" md="11" lg="10" xl="6" className="g-4 mb-3 mx-5">
-				<h1 className="h3 mb-5 text-gray-800 font-weight-bold">Obligatory Courses</h1>
-				{courses.map(
-					(course) => (
-						// course.isObligatory === true ? (
-						// course.hasPrerequisites === true ? (
-
-						<CourseItem key={course._id} course={course} cycles={cycles} />
-					)
-					// ) : (
-					// null
-					// )
-					// ) : (
-					// 	<Notification
-					// 		icon={<FontAwesomeIcon icon={faBook} />}
-					// 		message={'There are no undergraduate courses available right now !'}
-					// 		link={'/course'}
-					// 		linkMessage={'Back to Courses'}
-					// 	/>
-					// )
-				)}
-			</Col>
+			<BreadcrumbNav
+				className="animated--grow-in"
+				link={'/course'}
+				header={'Courses'}
+				active={'Obligatory Courses'}
+			/>
+			<h1 className="h3 mb-5 text-gray-800 font-weight-bold animated--grow-in">
+				Obligatory Courses
+			</h1>
+			{courses.length ? (
+				courses.map((course) => (
+					<Col
+						key={course._id}
+						xs="12"
+						sm="12"
+						md="11"
+						lg="10"
+						xl="6"
+						className="mb-3 mx-3 animated--grow-in"
+					>
+						{course.type === 'Undergraduate' && course.isObligatory ? (
+							<CourseItem key={course._id} course={course} />
+						) : (
+							<CourseItem key={course._id} course={course} cycles={cycles} />
+						)}
+					</Col>
+				))
+			) : (
+				<Notification
+					icon={<FontAwesomeIcon icon={faBook} />}
+					message={'There are no undergraduate courses available right now !'}
+					link={'/course'}
+					linkMessage={'Back to Courses'}
+				/>
+			)}
 		</>
 
-		// course.type === 'Undergraduate' ? (
-		// 	<div>
+		// course.type === 'Undergraduate' && (
 		// 		{/* <div className="row mb-3">
 		// 				<div className="col-6">
 		// 					<h1 className="h3 mb-3 text-gray-800 font-weight-bold">
@@ -94,7 +106,7 @@ export default function UndergraduateCourses() {
 		// 				<div className="col-6 mb-3 px-3 d-flex justify-content-end">
 		// 					<Link
 		// 						to="/course"
-		// 						className="btn btn-light-cornflower-blue btn-small align-self-center"
+		// 						className="btn btn-light-cornflower-blue align-self-center"
 		// 					>
 		// 						Back
 		// 					</Link>
@@ -135,17 +147,7 @@ export default function UndergraduateCourses() {
 		// 				</div>
 		// 			</div>
 		// 		</div>
-		// 	</div>
-		// )
-		// 	: (
-		// 	<Notification
-		// 		icon={<FontAwesomeIcon icon={faBook} />}
-		// 		message={'There are no undergraduate courses available right now !'}
-		// 		link={'/course'}
-		// 		linkMessage={'Back to Courses'}
-		// 	/>
 		// )
 		// )}
-		// </>
 	);
 }

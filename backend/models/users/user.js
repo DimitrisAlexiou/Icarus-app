@@ -71,7 +71,7 @@ const userSchema = new Schema(
 	}
 );
 
-userSchema.post('findOneAndDelete', async function (data) {
+userSchema.post('findByIdAndDelete', async function (data) {
 	if (data) {
 		await Note.deleteMany({
 			_id: {
@@ -81,7 +81,7 @@ userSchema.post('findOneAndDelete', async function (data) {
 	}
 });
 
-userSchema.post('findOneAndDelete', async function (data) {
+userSchema.post('findByIdAndDelete', async function (data) {
 	if (data) {
 		await Student.deleteOne({
 			_id: {
@@ -91,13 +91,20 @@ userSchema.post('findOneAndDelete', async function (data) {
 	}
 });
 
-userSchema.post('findOneAndDelete', async function (data) {
+userSchema.post('findByIdAndDelete', async function (data) {
 	if (data) {
 		await Instructor.deleteOne({
 			_id: {
 				$in: data.instructor,
 			},
 		});
+	}
+});
+
+userSchema.post('deleteMany', async function (data) {
+	if (data) {
+		await Student.deleteMany({});
+		await Instructor.deleteMany({});
 	}
 });
 

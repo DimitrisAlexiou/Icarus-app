@@ -1,60 +1,90 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate, Link } from 'react-router-dom';
-import { Row, Col, Button } from 'reactstrap';
-import { Formik, Form } from 'formik';
+import { useNavigate } from 'react-router-dom';
+import { Row, Col } from 'reactstrap';
+import { Formik } from 'formik';
 import { CourseSchema } from '../../schemas/course/Course';
 import { Toast } from '../../constants/sweetAlertNotification';
-import { createCourse, getCourses, reset } from '../../features/courses/courseSlice';
+import { createCourse, getCourses } from '../../features/courses/courseSlice';
 import { getCycles } from '../../features/admin/cyclesSlice';
-import { getSemester } from '../../features/admin/semesterSlice';
+import { getSemesters } from '../../features/admin/semesterSlice';
 import CourseForm from '../../components/course/CourseForm';
-import SubmitButton from '../../components/buttons/SubmitButton';
+import BackButton from '../../components/buttons/BackButton';
 import Spinner from '../../components/boilerplate/Spinner';
 
 export default function NewCourse() {
-	const { courses, isLoading, isError, message } = useSelector((state) => state.courses);
-	const { cycles, isLoading: cyclesIsLoading } = useSelector((state) => state.cycles);
-	// const { semester, isLoading: semesterIsLoading } = useSelector((state) => state.semester);
+	const {
+		courses,
+		isLoading: coursesIsLoading,
+		isError: coursesIsError,
+		message: coursesMessage,
+	} = useSelector((state) => state.courses);
+	const {
+		cycles,
+		isLoading: cyclesIsLoading,
+		isError: cyclesIsError,
+		message: cyclesMessage,
+	} = useSelector((state) => state.cycles);
+	const {
+		semesters,
+		isLoading: semestersIsLoading,
+		isError: semestersIsError,
+		message: semestersMessage,
+	} = useSelector((state) => state.semesters);
 
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
 	useEffect(() => {
-		if (isError) {
+		dispatch(getCourses());
+		dispatch(getCycles());
+		dispatch(getSemesters());
+
+		if (coursesIsError) {
 			Toast.fire({
 				title: 'Something went wrong!',
-				text: message,
+				text: coursesMessage,
+				icon: 'error',
+			});
+		} else if (cyclesIsError) {
+			Toast.fire({
+				title: 'Something went wrong!',
+				text: cyclesMessage,
+				icon: 'error',
+			});
+		} else if (semestersIsError) {
+			Toast.fire({
+				title: 'Something went wrong!',
+				text: semestersMessage,
 				icon: 'error',
 			});
 		}
-		dispatch(reset());
-	}, [dispatch, isError, message]);
+	}, [
+		dispatch,
+		coursesIsError,
+		cyclesIsError,
+		semestersIsError,
+		coursesMessage,
+		cyclesMessage,
+		semestersMessage,
+	]);
 
-	useEffect(() => {
-		dispatch(getCourses());
-		dispatch(getCycles());
-		// dispatch(getSemester());
-	}, [dispatch]);
-
-	if (isLoading || cyclesIsLoading) {
+	if (coursesIsLoading || cyclesIsLoading || semestersIsLoading) {
 		return <Spinner />;
 	}
 
 	return (
 		<>
-			<Row className="mb-5">
+			<Row className="mb-5 animated--grow-in">
 				<Col sm="6" xs="6" md="6">
-					<h1 className="h3 text-gray-800 font-weight-bold">Create new Course !</h1>
+					<h1 className="h3 text-gray-800 font-weight-bold">Create Course</h1>
 				</Col>
 				<Col className="d-flex justify-content-end">
-					<Link to="/course" className="btn btn-orange btn-small align-self-center">
-						Cancel
-					</Link>
+					<BackButton url={'/course'} />
 				</Col>
 			</Row>
 
-			<Row className="justify-content-center">
+			<Row className="justify-content-center animated--grow-in">
 				<Col>
 					<div className="card shadow mb-4">
 						<div className="card-header py-3">
@@ -76,7 +106,7 @@ export default function NewCourse() {
 									ects: 0,
 									year: '',
 									cycle: '',
-									prerequisites: [],
+									prerequisites: [''],
 								}}
 								validationSchema={CourseSchema}
 								onSubmit={(values, { setSubmitting }) => {
@@ -91,48 +121,29 @@ export default function NewCourse() {
 										semester: values.semester,
 										ects: values.ects,
 										year: values.year,
-										cycle: values.cycle,
-										prerequisites: values.prerequisites,
+										cycle: values.cycle ? values.cycle : null,
+										prerequisites: values.prerequisites.some(Boolean)
+											? values.prerequisites
+											: [null],
 									};
+									console.log(course);
 									dispatch(createCourse(course));
-									Toast.fire({
-										title: 'Success',
-										text: 'Course created successfully!',
-										icon: 'success',
-									});
-									navigate('/course');
 									setSubmitting(false);
+									navigate('/course');
 								}}
 								validateOnMount
 							>
 								{({ isSubmitting, dirty, values, handleReset, setFieldValue }) => (
-									<Form>
-										<CourseForm
-											courses={courses}
-											cycles={cycles}
-											// semesters={semester}
-											values={values}
-											setFieldValue={setFieldValue}
-										/>
-
-										<Row>
-											<Col className="mb-3">
-												<Button
-													onClick={handleReset}
-													disabled={!dirty || isSubmitting}
-												>
-													Clear
-												</Button>
-											</Col>
-											<Col className="text-right px-0">
-												<SubmitButton
-													color={'primary'}
-													message={'Create Course'}
-													disabled={isSubmitting}
-												/>
-											</Col>
-										</Row>
-									</Form>
+									<CourseForm
+										courses={courses}
+										cycles={cycles}
+										semesters={semesters}
+										values={values}
+										setFieldValue={setFieldValue}
+										isSubmitting={isSubmitting}
+										dirty={dirty}
+										handleReset={handleReset}
+									/>
 								)}
 							</Formik>
 						</div>

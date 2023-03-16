@@ -3,24 +3,23 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Col, Row } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { getCourses, reset } from '../../features/courses/courseSlice';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBook } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import CourseItem from '../../components/course/CourseItem';
 import Notification from '../../components/boilerplate/Notification';
+import BreadcrumbNav from '../../components/boilerplate/Breadcrumb';
 import Spinner from '../../components/boilerplate/Spinner';
 
 export default function MasterCourses() {
-	const { courses, isLoading, isSuccess } = useSelector((state) => state.courses);
+	const { courses, isLoading, isError } = useSelector((state) => state.courses);
+	const {
+		cycles,
+		isLoading: cyclesIsLoading,
+		isError: cyclesIsError,
+		message: cyclesMessage,
+	} = useSelector((state) => state.cycles);
 
 	const dispatch = useDispatch();
-
-	useEffect(() => {
-		return () => {
-			if (isSuccess) {
-				dispatch(reset());
-			}
-		};
-	}, [dispatch, isSuccess]);
 
 	useEffect(() => {
 		dispatch(getCourses());
@@ -32,39 +31,40 @@ export default function MasterCourses() {
 
 	return (
 		<>
-			{courses.map((course) =>
-				course.type === 'Master' ? (
-					<>
-						<Row className="mb-3">
-							<Col md="6">
-								<h1 className="h3 mb-3 text-gray-800 font-weight-bold">
-									Master Courses !
-								</h1>
-							</Col>
-							<Col className="mb-3 px-3 d-flex justify-content-end">
-								<Link
-									to="/course"
-									className="btn btn-light-cornflower-blue btn-small align-self-center"
-								>
-									Back
-								</Link>
-							</Col>
-						</Row>
-
-						<Row>
-							<Col sm="12" md="9" lg="4" className="g-4 mb-3">
-								<CourseItem key={course._id} course={course} />
-							</Col>
-						</Row>
-					</>
-				) : (
-					<Notification
-						icon={<FontAwesomeIcon icon={faBook} />}
-						message={'There are no master courses available right now !'}
-						link={'/course'}
-						linkMessage={'Back to Courses'}
-					/>
-				)
+			<BreadcrumbNav
+				className="animated--grow-in"
+				link={'/course'}
+				header={'Courses'}
+				active={'Master Courses'}
+			/>
+			<h1 className="h3 mb-5 text-gray-800 font-weight-bold animated--grow-in">
+				Master Courses
+			</h1>
+			{courses.length ? (
+				courses.map((course) => (
+					<Col
+						key={course._id}
+						xs="12"
+						sm="12"
+						md="11"
+						lg="10"
+						xl="6"
+						className="g-4 mb-3 mx-5 animated--grow-in"
+					>
+						{course.type === 'Master' && course.isObligatory ? (
+							<CourseItem key={course._id} course={course} />
+						) : (
+							<CourseItem key={course._id} course={course} cycles={cycles} />
+						)}
+					</Col>
+				))
+			) : (
+				<Notification
+					icon={<FontAwesomeIcon icon={faBook} />}
+					message={'There are no master courses available right now !'}
+					link={'/course'}
+					linkMessage={'Back to Courses'}
+				/>
 			)}
 		</>
 	);

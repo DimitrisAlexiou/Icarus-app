@@ -4,7 +4,7 @@ import img from '../assets/images/undraw_page_not_found.svg';
 
 export default function NotFound() {
 	return (
-		<div className="d-flex error-page">
+		<div className="d-flex error-page animated--grow-in">
 			<div className="text-center">
 				<div className="error mx-auto" data-text="404">
 					404

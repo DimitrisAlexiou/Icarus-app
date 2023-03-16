@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const reviewDurationSchema = new Schema(
+const reviewSchema = new Schema(
 	{
 		startDate: {
 			type: Date,
@@ -13,10 +13,14 @@ const reviewDurationSchema = new Schema(
 			default: Date.now,
 			required: true,
 		},
+		start: {
+			type: Number,
+			required: true,
+		},
 	},
 	{
 		timestamps: true,
-	},
+	}
 );
 
-module.exports = mongoose.model('ReviewDuration', reviewDurationSchema);
+module.exports = mongoose.model('Review', reviewSchema);

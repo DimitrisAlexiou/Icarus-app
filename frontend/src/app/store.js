@@ -2,7 +2,9 @@ import { configureStore } from '@reduxjs/toolkit';
 import { authSlice } from '../features/auth/authSlice';
 import { userSlice } from '../features/admin/userSlice';
 import { semesterSlice } from '../features/admin/semesterSlice';
-import { vaccineReassessmentSlice } from '../features/admin/vaccineReassessmentSlice';
+import { reviewSlice } from '../features/admin/reviewSlice';
+import { degreeRulesSlice } from '../features/admin/degreeRulesSlice';
+import { assessmentSlice } from '../features/admin/assessmentSlice';
 import { cyclesSlice } from '../features/admin/cyclesSlice';
 import { courseSlice } from '../features/courses/courseSlice';
 import { noteSlice } from '../features/notes/noteSlice';
@@ -20,7 +22,9 @@ export const store = configureStore({
 		teachingReview: teachingReviewSlice.reducer,
 		instructorReview: instructorReviewSlice.reducer,
 		generalReview: generalReviewSlice.reducer,
-		semester: semesterSlice.reducer,
-		vaccineReassessment: vaccineReassessmentSlice.reducer,
+		semesters: semesterSlice.reducer,
+		review: reviewSlice.reducer,
+		degreeRules: degreeRulesSlice.reducer,
+		assessment: assessmentSlice.reducer,
 	},
 });

@@ -1,16 +1,13 @@
 import * as Yup from 'yup';
 
-export const CycleSchema = Yup.object().shape({
-	name: Yup.string()
-		.oneOf(
-			[
-				'Security',
-				'Software Engineering',
-				'Information Systems',
-				'Communication Systems',
-				'AI',
-			],
-			'Name should be one of the following: [Security, Software Engineering, Information Systems, Communication Systems, AI]'
+export const CyclesSchema = Yup.object().shape({
+	names: Yup.array()
+		.of(
+			Yup.object().shape({
+				cycle: Yup.string()
+					.max(80, 'Cycle name must be 80 characters or less.')
+					.required('Cycle name is required.'),
+			})
 		)
-		.required('Please select the course cycle.'),
+		.required('Please define at least one cycle.'),
 });

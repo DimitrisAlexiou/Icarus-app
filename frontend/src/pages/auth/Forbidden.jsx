@@ -3,7 +3,7 @@ import { Col, Row } from 'reactstrap';
 
 export default function Forbidden() {
 	return (
-		<div className="container-fluid">
+		<div className="container-fluid animated--grow-in">
 			<div className="text-center">
 				<div className="error mx-auto" data-text="403">
 					403

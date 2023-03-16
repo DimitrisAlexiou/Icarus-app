@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, forwardRef, useRef } from 'react';
 import {
 	Nav,
 	NavItem,
@@ -7,10 +7,15 @@ import {
 	DropdownToggle,
 	DropdownMenu,
 	DropdownItem,
+	Modal,
+	ModalHeader,
+	ModalBody,
+	ModalFooter,
 } from 'reactstrap';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { logout } from '../../features/auth/authSlice';
+import { navbarLinks } from '../../utils/NavigationLinks';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
 	faUnlock,
@@ -23,20 +28,53 @@ import {
 	faBarsStaggered,
 } from '@fortawesome/free-solid-svg-icons';
 import Clock from 'react-live-clock';
-import NotificationsNavItem from './NotificationsNavItem';
-import MessagesNavItem from './MessagesNavItem';
-import LogoutModal from './LogoutModal';
+import NotificationsNavItem from './Notifications';
+import MessagesNavItem from './Messages';
 import img from '../../assets/images/undraw_profile.svg';
 import '../../App.css';
 
 export default function NavBar() {
 	const { user } = useSelector((store) => store.auth);
-	const dispatch = useDispatch();
 
-	const [dropdownOpenUser, setDropdownOpenUser] = useState(false);
-	const toggleUser = () => setDropdownOpenUser((prevState) => !prevState);
+	const myRef = useRef(null);
 
 	const [showLogout, setShowLogout] = useState(false);
+	const [dropdownOpenUser, setDropdownOpenUser] = useState(false);
+
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
+
+	const toggleUser = () => setDropdownOpenUser((prevState) => !prevState);
+	const toggleLogout = () => setShowLogout(!showLogout);
+	const handleLogout = () => {
+		dispatch(logout());
+		setShowLogout(false);
+		navigate('/');
+	};
+
+	const ModalComponent = forwardRef((props, ref) => {
+		return (
+			<Modal
+				className="modal-dialog modal-content"
+				isOpen={showLogout}
+				toggle={toggleLogout}
+				ref={ref}
+			>
+				<ModalHeader className="modal-header modal-title">Ready to Leave?</ModalHeader>
+				<ModalBody className="modal-body">
+					Logout will terminate your current session.
+				</ModalBody>
+				<ModalFooter className="modal-footer">
+					<Button
+						className="btn btn-light-cornflower-blue align-self-center"
+						onClick={() => handleLogout()}
+					>
+						Logout
+					</Button>
+				</ModalFooter>
+			</Modal>
+		);
+	});
 
 	return (
 		<>
@@ -46,7 +84,6 @@ export default function NavBar() {
 			>
 				<NavItem className="nav-item mx-1 text-center d-none d-md-inline">
 					<Button
-						id="sidebarToggleTop"
 						className="rounded-circle border-0"
 						color="null"
 						// onClick={openSidebar}
@@ -67,7 +104,7 @@ export default function NavBar() {
 					</a>
 				</NavItem>
 
-				<NavItem className="navbar-nav ml-auto">
+				<div className="navbar-nav ml-auto">
 					<NavItem className="nav-item mx-1">
 						<Clock className="nav-link" format={'HH:mm:ss'} ticking={true} />
 					</NavItem>
@@ -99,90 +136,49 @@ export default function NavBar() {
 					<NavItem className="nav-item mx-1">
 						{user ? (
 							<>
-								<Dropdown
-									className="animated--grow-in"
-									isOpen={dropdownOpenUser}
-									toggle={toggleUser}
-								>
-									<DropdownToggle className="nav-link mx-1" color="null">
+								<Dropdown isOpen={dropdownOpenUser} toggle={toggleUser}>
+									<DropdownToggle className="nav-link" color="null">
 										<img
 											className="img-profile rounded-circle"
 											src={img}
 											alt="profile_picture"
 										/>
 									</DropdownToggle>
-									<DropdownMenu style={{ margin: 0 }}>
-										<DropdownItem className="dropdown-item d-flex align-items-center">
-											<NavLink
-												to="profile"
-												style={{
-													textDecoration: 'none',
-													color: 'inherit',
-												}}
-											>
-												<FontAwesomeIcon
-													className="fa-sm fa-fw mr-2 text-gray-400"
-													icon={faUser}
-												/>
-												Profile
-											</NavLink>
-										</DropdownItem>
-										<DropdownItem className="dropdown-item d-flex align-items-center">
-											<NavLink
-												to="settings"
-												style={{
-													textDecoration: 'none',
-													color: 'inherit',
-												}}
-											>
-												<FontAwesomeIcon
-													className="fa-sm fa-fw mr-2 text-gray-400"
-													icon={faCogs}
-												/>
-												Settings
-											</NavLink>
-										</DropdownItem>
-										<DropdownItem className="dropdown-item d-flex align-items-center">
-											<NavLink
-												to="activity"
-												style={{
-													textDecoration: 'none',
-													color: 'inherit',
-												}}
-											>
-												<FontAwesomeIcon
-													className="fa-sm fa-fw mr-2 text-gray-400"
-													icon={faList}
-												/>
-												Activity Log
-											</NavLink>
-										</DropdownItem>
-										<DropdownItem divider />
-										<DropdownItem className="dropdown-item d-flex align-items-center">
-											<NavItem onClick={() => dispatch(logout())}>
-												<FontAwesomeIcon
-													className="mr-2 text-gray-400"
-													icon={faSignOut}
-												/>
-												Logout
-											</NavItem>
-										</DropdownItem>
-										{/* <DropdownItem className="dropdown-item d-flex align-items-center">
-											<div type="button" onClick={() => setShowLogout(true)}>
-													<FontAwesomeIcon className="mr-2 text-gray-400"> icon={faSignOut} />
-												Logout
-											</div>
-										</DropdownItem> */}
-										{/* {showLogout && (
-											<LogoutModal setShowLogout={setShowLogout} />
-										)} */}
+									<DropdownMenu>
+										{navbarLinks.map((navbarLink) => {
+											const { id, text, path, icon } = navbarLink;
+											return (
+												<DropdownItem
+													key={id}
+													className="dropdown-item d-flex align-items-center animated--grow-in"
+												>
+													<NavLink
+														to={path}
+														style={{
+															textDecoration: 'none',
+															color: 'inherit',
+														}}
+													>
+														{icon}
+														{text}
+													</NavLink>
+												</DropdownItem>
+											);
+										})}
 									</DropdownMenu>
 								</Dropdown>
 							</>
 						) : null}
 					</NavItem>
-				</NavItem>
+
+					{user ? (
+						<NavItem className="nav-item mx-1 mt-4" onClick={() => setShowLogout(true)}>
+							<FontAwesomeIcon className="text-gray-400" icon={faSignOut} />
+						</NavItem>
+					) : null}
+				</div>
 			</Nav>
+			<ModalComponent ref={myRef} />
 		</>
 	);
 }

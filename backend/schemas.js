@@ -19,30 +19,45 @@ module.exports.userSchema = Joi.object({
 		password: Joi.string()
 			.min(8)
 			.pattern(
-				new RegExp('^(?=.*d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z])(?=.*[!@#$%^&*]).{8,}$')
+				new RegExp(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z])(?=.*[!@#$%^&*]).{8,}$/)
 			)
 			.required(),
 		type: Joi.string().valid('Student', 'Instructor').required(),
+		studentId: Joi.string().when('type', {
+			is: 'Student',
+			then: Joi.string()
+				.pattern(new RegExp(/^321\/\d{7}$/))
+				.required(),
+			otherwise: Joi.string(),
+		}),
+		entranceYear: Joi.number().when('type', {
+			is: 'Student',
+			then: Joi.number().min(1980).max(new Date().getFullYear()).required(),
+			otherwise: Joi.number(),
+		}),
+		studentType: Joi.string().when('type', {
+			is: 'Student',
+			then: Joi.string().valid('Undergraduate', 'Master', 'PhD').required(),
+			otherwise: Joi.string(),
+		}),
+		facultyType: Joi.string().when('type', {
+			is: 'Instructor',
+			then: Joi.string().valid('DEP', 'EDIP', 'ETEP').required(),
+			otherwise: Joi.string(),
+		}),
+		degree: Joi.string().when('type', {
+			is: 'Instructor',
+			then: Joi.string().valid('Assistant', 'Associate', 'Professor'),
+			otherwise: Joi.string(),
+		}),
+		instructorEntranceYear: Joi.number().when('type', {
+			is: 'Instructor',
+			then: Joi.number().min(1980).max(new Date().getFullYear()),
+			otherwise: Joi.number(),
+		}),
 	}).required(),
 });
 
-module.exports.studentSchema = Joi.object({
-	student: Joi.object({
-		studentId: Joi.string().required(),
-		studentType: Joi.string().valid('Undergraduate', 'Master', 'PhD').required(),
-		entranceYear: Joi.number().min(1980).max(new Date().getFullYear()).required(),
-	}).required(),
-});
-
-module.exports.instructorSchema = Joi.object({
-	instructor: Joi.object({
-		facultyType: Joi.string().valid('DEP', 'EDIP', 'ETEP').required(),
-		degree: Joi.string().valid('Assistant', 'Associate', 'Professor'),
-		instructorEntranceYear: Joi.number().min(1980).max(new Date().getFullYear()),
-	}).required(),
-});
-
-// TODO: add PREREQUISITES
 module.exports.courseSchema = Joi.object({
 	course: Joi.object({
 		courseId: Joi.string()
@@ -58,26 +73,47 @@ module.exports.courseSchema = Joi.object({
 		hasPrerequisites: Joi.boolean().default(false).required(),
 		hasLab: Joi.boolean().default(false).required(),
 		description: Joi.string(),
-		semester: Joi.string().valid('Winter', 'Spring', 'Any').required(),
+		semester: Joi.object({
+			type: Joi.string().valid('Winter', 'Spring', 'Any').required(),
+		}),
 		ects: Joi.number().min(1).required(),
-		year: Joi.string().valid('1', '2', '3', '4', '5').required(),
-		cycle: Joi.string()
-			.valid(
-				'Security',
-				'Software Engineering',
-				'Information Systems',
-				'Communication Systems',
-				'AI'
-			)
-			.required(),
-		prerequisites: Joi.array().items().required(),
+		year: Joi.string()
+			.required()
+			.custom((value, helpers) => {
+				const validYears = {
+					Undergraduate: ['1', '2', '3', '4', '5'],
+					Master: ['1', '2'],
+				};
+				const { type } = helpers.parent;
+				if (!validYears[type].includes(value)) {
+					return helpers.message(
+						`Year should be one of the following: [${validYears[type].join(', ')}]`
+					);
+				}
+				return value;
+			}),
+		cycle: Joi.object({
+			cycle: Joi.when('isObligatory', {
+				is: false,
+				then: Joi.string().required(),
+				otherwise: Joi.string().allow(''),
+			}),
+		}),
+		prerequisites: Joi.array().items(
+			Joi.object({
+				prerequisite: Joi.string().when('hasPrerequisites', {
+					is: true,
+					then: Joi.string().required(),
+					otherwise: Joi.string().allow(''),
+				}),
+				prerequisiteType: Joi.string().when('hasPrerequisites', {
+					is: true,
+					then: Joi.string().valid('Hard', 'Soft').required(),
+					otherwise: Joi.string().allow(''),
+				}),
+			})
+		),
 		isActive: Joi.boolean().default(false).required(),
-	}).required(),
-});
-
-module.exports.prerequisitesSchema = Joi.object({
-	prerequisites: Joi.object({
-		type: Joi.string().valid('Hard', 'Soft').required(),
 	}).required(),
 });
 
@@ -90,6 +126,7 @@ module.exports.teachingSchema = Joi.object({
 		theoryGradeThreshold: Joi.number().min(4).required(),
 		labGradeThreshold: Joi.number().min(4).required(),
 		books: Joi.string().required(),
+		// books: Joi.array().items(string().required()),
 	}).required(),
 });
 
@@ -116,10 +153,10 @@ module.exports.instructorReviewSchema = Joi.object({
 
 module.exports.generalReviewSchema = Joi.object({
 	generalReview: Joi.object({
-		course_opinion: Joi.string().required(),
-		instructor_opinion: Joi.string().required(),
-		likes: Joi.string().required(),
-		dislikes: Joi.string().required(),
+		course_opinion: Joi.string().max(800).required(),
+		instructor_opinion: Joi.string().max(800).required(),
+		likes: Joi.string().max(800).required(),
+		dislikes: Joi.string().max(800).required(),
 	}).required(),
 });
 
@@ -128,53 +165,23 @@ module.exports.semesterSchema = Joi.object({
 		type: Joi.string().valid('Winter', 'Spring', 'Any').required(),
 		startDate: Joi.date().greater('now').required(),
 		endDate: Joi.date().greater(Joi.ref('startDate')).required(),
+		grading: Joi.number().min(1).required(),
 	}),
 });
 
-module.exports.vaccineReassessmentSchema = Joi.object({
-	vaccineReassessment: Joi.object({
-		startDate: Joi.date().greater('now').required(),
-		endDate: Joi.date().greater(Joi.ref('startDate')).required(),
-	}),
-});
-
-module.exports.assessmentDurationSchema = Joi.object({
-	assessmentDuration: Joi.object({
-		startDate: Joi.date().greater('now').required(),
-		endDate: Joi.date().greater(Joi.ref('startDate')).required(),
-	}),
-});
-
-module.exports.reviewDurationSchema = Joi.object({
-	reviewDuration: Joi.object({
-		startDate: Joi.date().greater('now').required(),
-		endDate: Joi.date().greater(Joi.ref('startDate')).required(),
-	}),
-});
-
-module.exports.reviewStartSchema = Joi.object({
-	reviewStart: Joi.object({
-		init: Joi.number().min(1).required(),
-	}),
-});
-
-module.exports.gradingDurationSchema = Joi.object({
-	gradingDuration: Joi.object({
+module.exports.assessmentSchema = Joi.object({
+	assessment: Joi.object({
+		vaccineStartDate: Joi.date().greater('now').required(),
+		vaccineEndDate: Joi.date().greater(Joi.ref('vaccineStartDate')).required(),
 		period: Joi.number().min(1).required(),
 	}),
 });
 
-module.exports.validateCyclesSchema = Joi.object({
-	cycles: Joi.object({
-		name: Joi.string()
-			.valid(
-				'Security',
-				'Software Engineering',
-				'Information Systems',
-				'Communication Systems',
-				'AI'
-			)
-			.required(),
+module.exports.reviewSchema = Joi.object({
+	review: Joi.object({
+		startDate: Joi.date().greater('now').required(),
+		endDate: Joi.date().greater(Joi.ref('startDate')).required(),
+		start: Joi.number().min(1).required(),
 	}),
 });
 
@@ -187,4 +194,14 @@ module.exports.degreeRulesSchema = Joi.object({
 	}).required(),
 });
 
-//TODO rest schema validations
+module.exports.cyclesSchema = Joi.object({
+	cycles: Joi.object({
+		names: Joi.array()
+			.items(
+				Joi.object({
+					cycle: Joi.string().required(),
+				})
+			)
+			.required(),
+	}),
+});

@@ -4,13 +4,13 @@ import { Button, Card, CardText, CardTitle, Row, Col } from 'reactstrap';
 export default function Reviews() {
 	return (
 		<>
-			<h1 className="h3 mb-5 text-gray-800 font-weight-bold">Reviews</h1>
+			<h1 className="h3 mb-5 text-gray-800 font-weight-bold animated--grow-in">Reviews</h1>
 
-			<Row className="justify-content-center">
+			<Row className="justify-content-center animated--grow-in">
 				<Col md="7" lg="4" className="mb-3">
 					<Card body color="primary" inverse>
 						<CardTitle tag="h5">Teaching</CardTitle>
-						<CardText>Review the teaching of the course.</CardText>
+						<CardText>Teaching of the course.</CardText>
 						<Row>
 							<Col>
 								<Link to="/review/teaching">
@@ -28,7 +28,7 @@ export default function Reviews() {
 				<Col md="7" lg="4" className="mb-3">
 					<Card body color="info" inverse>
 						<CardTitle tag="h5">Instructor</CardTitle>
-						<CardText>Review the instructor of the course.</CardText>
+						<CardText>Instructor of the course.</CardText>
 						<Row>
 							<Col>
 								<Link to="/review/instructor">
@@ -46,7 +46,7 @@ export default function Reviews() {
 				<Col md="7" lg="4" className="mb-3">
 					<Card body color="success" inverse>
 						<CardTitle tag="h5">General</CardTitle>
-						<CardText>Review the general aspects of the course.</CardText>
+						<CardText>General aspects of the course.</CardText>
 						<Row>
 							<Col>
 								<Link to="/review/general">

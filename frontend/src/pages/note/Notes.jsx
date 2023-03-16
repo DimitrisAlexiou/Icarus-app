@@ -1,14 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, forwardRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { Formik, Form } from 'formik';
+import { Modal, ModalHeader, ModalBody, Button, Row, Col } from 'reactstrap';
+import { Formik } from 'formik';
 import { createUserNote, getUserNotes, reset as notesReset } from '../../features/notes/noteSlice';
 import { NoteSchema } from '../../schemas/Note';
 import { Toast } from '../../constants/sweetAlertNotification';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faNotes, faPlus } from '@fortawesome/free-solid-svg-icons';
-import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from 'reactstrap';
-import noteService from '../../features/notes/noteService';
+import { faNoteSticky, faPlus } from '@fortawesome/free-solid-svg-icons';
 import NoteForm from '../../components/note/NoteForm';
 import NoteItem from '../../components/note/NoteItem';
 import Spinner from '../../components/boilerplate/Spinner';
@@ -16,14 +15,9 @@ import Spinner from '../../components/boilerplate/Spinner';
 export default function Notes() {
 	const { notes, isLoading, isSuccess, isError, message } = useSelector((state) => state.notes);
 
-	const [modalIsOpen, setModalIsOpen] = useState(false);
-	const openModal = () => setModalIsOpen(true);
-	const closeModal = () => setModalIsOpen(false);
-
-	const initialValues = {
-		title: '',
-		text: '',
-	};
+	const myRef = useRef(null);
+	const [modal, setModal] = useState(false);
+	const toggle = () => setModal(!modal);
 
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -36,39 +30,52 @@ export default function Notes() {
 		};
 	}, [dispatch, isSuccess]);
 
-	useEffect(() => {
-		if (isError) {
-			Toast.fire({
-				title: 'Error while getting user notes!',
-				text: message,
-				icon: 'error',
-			});
-		}
-		dispatch(getUserNotes());
-	}, [dispatch, isError, message]);
+	// useEffect(() => {
+	// 	if (isError) {
+	// 		Toast.fire({
+	// 			title: 'Something went wrong!',
+	// 			text: message,
+	// 			icon: 'error',
+	// 		});
+	// 	}
+	// 	dispatch(getUserNotes());
+	// }, [dispatch, isError, message]);
 
-	const onSubmit = async (formNoteData) => {
-		try {
-			await noteService.createUserNote(formNoteData);
-			Toast.fire({
-				title: 'Success',
-				text: 'Note posted successfully!',
-				icon: 'success',
-			});
-			navigate('/note');
-		} catch (error) {
-			Toast.fire({
-				title: 'Error while posting note!',
-				text: error.response.data,
-				icon: 'error',
-			});
-		}
-	};
-
-	// const onSubmit = async (formNoteData) => {
-	//     dispatch(createUserNote(formNoteData));
-	//     closeModal();
-	// };
+	const ModalComponent = forwardRef((props, ref) => {
+		return (
+			<Modal ref={ref} isOpen={modal} toggle={toggle} className="modal-lg">
+				<ModalHeader>Fill the form below to post a new note</ModalHeader>
+				<ModalBody>
+					<Formik
+						initialValues={{
+							title: '',
+							text: '',
+						}}
+						validationSchema={NoteSchema}
+						onSubmit={(values, { setSubmitting }) => {
+							const note = {
+								title: values.title,
+								text: values.text,
+							};
+							console.log(note);
+							dispatch(createUserNote(note));
+							setSubmitting(false);
+							navigate('/note');
+						}}
+						validateOnMount
+					>
+						{({ isSubmitting, dirty, handleReset }) => (
+							<NoteForm
+								isSubmitting={isSubmitting}
+								dirty={dirty}
+								handleReset={handleReset}
+							/>
+						)}
+					</Formik>
+				</ModalBody>
+			</Modal>
+		);
+	});
 
 	if (isLoading) {
 		return <Spinner />;
@@ -76,63 +83,39 @@ export default function Notes() {
 
 	return (
 		<>
-			<Formik
-				initialValues={initialValues}
-				validationSchema={NoteSchema}
-				onSubmit={(formNoteData) => {
-					onSubmit(formNoteData);
-				}}
-				validateOnMount
-			>
-				<div>
-					<h1 className="h3 mb-3 text-gray-800 font-weight-bold">Notes !</h1>
-
+			<Row className="mb-5 animated--grow-in">
+				<Col sm="6" xs="6" md="6">
+					<h1 className="h3 mb-3 text-gray-800 font-weight-bold animated--grow-in">
+						Notes
+					</h1>
+				</Col>
+				<Col className="px-3 d-flex justify-content-end">
 					<Button
-						onClick={openModal}
-						className="btn btn-light-cornflower-blue btn-small align-self-center"
+						onClick={() => setModal(true)}
+						color="null"
+						className="btn btn-light-cornflower-blue align-self-center"
 					>
-						Add Note <FontAwesomeIcon icon={faPlus} />
+						Note <FontAwesomeIcon icon={faPlus} />
 					</Button>
+				</Col>
+			</Row>
 
-					<Modal isOpen={modalIsOpen} onRequestClose={closeModal}>
-						<ModalHeader className="modal-header" closeButton>
-							Fill the form below to post a new note
-						</ModalHeader>
-						<ModalBody className="modal-body">
-							<Form name="newNote">
-								<NoteForm initialValues={initialValues} />
-							</Form>
-						</ModalBody>
-						<ModalFooter className="modal-footer">
-							<Button className="btn btn-secondary" onClick={closeModal}>
-								Close
-							</Button>
-							<Button
-								className="btn btn-light-cornflower-blue btn-small align-self-center"
-								type="submit"
-								disabled={isLoading}
-							>
-								Post
-							</Button>
-						</ModalFooter>
-					</Modal>
+			<ModalComponent ref={myRef} />
 
-					{notes.length ? (
-						notes.map((note) => <NoteItem key={note._id} note={note} />)
-					) : (
-						<div className="container-fluid">
-							<div className="text-center">
-								<div className="error mx-auto mb-5 mt-5">
-									<FontAwesomeIcon icon={faNotes} />
-								</div>
-								<p className="text-gray-500 mb-4">
-									There aren't any notes posted yet !
-								</p>
-							</div>
-						</div>
-					)}
+			{notes.length ? (
+				notes.map((note, index) => <NoteItem key={index} note={note} />)
+			) : (
+				<div className="animated--grow-in">
+					<div className="text-center mt-5">
+						<i className="fa-3x mx-auto mb-5 mt-5">
+							<FontAwesomeIcon icon={faNoteSticky} />
+						</i>
+						<p className="text-gray-500 mt-5 mb-5">
+							There aren't any notes posted yet !
+						</p>
+					</div>
 				</div>
-			</Formik>
+			)}
 		</>
 	);
 }

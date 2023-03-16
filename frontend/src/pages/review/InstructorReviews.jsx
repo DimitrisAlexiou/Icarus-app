@@ -31,11 +31,18 @@ export default function InstructorReviews() {
 
 	return (
 		<>
-			<BreadcrumbNav link={'/review'} header={'Reviews'} active={'Instructor Reviews'} />
+			<BreadcrumbNav
+				className="animated--grow-in"
+				link={'/review'}
+				header={'Reviews'}
+				active={'Instructor Reviews'}
+			/>
 
-			<h1 className="h3 mb-5 text-gray-800 font-weight-bold">Instructor Reviews</h1>
+			<h1 className="h3 mb-5 text-gray-800 font-weight-bold animated--grow-in">
+				Instructor Reviews
+			</h1>
 
-			<Row>
+			<Row className="animated--grow-in">
 				<Col sm="12" md="6" lg="4" className="g-4 mb-3">
 					{instructorReview.map((instructorReview) => (
 						<InstructorReviewItem

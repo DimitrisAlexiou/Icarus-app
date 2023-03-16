@@ -7,10 +7,10 @@ export default function Dashboard() {
 		<>
 			{user ? (
 				<>
-					<h1 className="h3 mb-5 text-gray-800 font-weight-bold">
+					<h1 className="h3 mb-5 text-gray-800 font-weight-bold animated--grow-in">
 						Dashboard {user.user.name}
 					</h1>
-					<p>
+					<p className="animated--grow-in">
 						{!user.user.isActive && !user.user.lastLogin ? (
 							<span>
 								Account is not yet active, it will be available soon.(Not yet logged
@@ -25,7 +25,9 @@ export default function Dashboard() {
 					</p>
 				</>
 			) : (
-				<h1 className="h3 mb-5 text-gray-800 font-weight-bold">Dashboard</h1>
+				<h1 className="h3 mb-5 text-gray-800 font-weight-bold animated--grow-in">
+					Dashboard
+				</h1>
 			)}
 		</>
 	);

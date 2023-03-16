@@ -18,6 +18,10 @@ const semesterSchema = new Schema(
 			default: Date.now,
 			required: true,
 		},
+		grading: {
+			type: Number,
+			required: true,
+		},
 		// teachings: [
 		// 	{
 		// 		type: Schema.Types.ObjectId,
@@ -45,7 +49,7 @@ const semesterSchema = new Schema(
 	},
 	{
 		timestamps: true,
-	},
+	}
 );
 
 module.exports = mongoose.model('Semester', semesterSchema);

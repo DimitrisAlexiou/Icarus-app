@@ -1,5 +1,10 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { API_URL_REGISTER, API_URL_LOGIN, API_URL_LOGOUT } from '../../constants/config';
+import {
+	API_URL_REGISTER,
+	API_URL_LOGIN,
+	API_URL_LOGOUT,
+	API_URL_USER,
+} from '../../constants/config';
 import {
 	getUserFromLocalStorage,
 	addUserToLocalStorage,
@@ -37,6 +42,26 @@ export const login = createAsyncThunk(API_URL_LOGIN, async (user, thunkAPI) => {
 
 export const logout = createAsyncThunk(API_URL_LOGOUT, async () => {
 	await authService.logout();
+});
+
+export const getProfile = createAsyncThunk(API_URL_USER, async (user, thunkAPI) => {
+	try {
+		const token = thunkAPI.getState().auth.user.token;
+		const userId = user.user._id;
+		return await authService.getProfile(userId, token);
+	} catch (error) {
+		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+	}
+});
+
+export const updateProfile = createAsyncThunk(API_URL_USER + '/update', async (data, thunkAPI) => {
+	try {
+		const token = thunkAPI.getState().auth.user.token;
+		const userId = user.user._id;
+		return await authService.updateProfile(userId, data, token);
+	} catch (error) {
+		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+	}
 });
 
 export const authSlice = createSlice({
@@ -85,6 +110,32 @@ export const authSlice = createSlice({
 			.addCase(logout.fulfilled, (state) => {
 				state.user = null;
 				removeUserFromLocalStorage();
+			})
+			.addCase(getProfile.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(getProfile.fulfilled, (state, action) => {
+				state.isLoading = false;
+				state.isSuccess = true;
+				state.user = action.payload;
+			})
+			.addCase(getProfile.rejected, (state, action) => {
+				state.isLoading = false;
+				state.isError = true;
+				state.message = action.payload;
+			})
+			.addCase(updateProfile.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(updateProfile.fulfilled, (state, action) => {
+				state.isLoading = false;
+				state.isSuccess = true;
+				state.user = action.payload;
+			})
+			.addCase(updateProfile.rejected, (state, action) => {
+				state.isLoading = false;
+				state.isError = true;
+				state.message = action.payload;
 			});
 	},
 });

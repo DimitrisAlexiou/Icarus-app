@@ -51,11 +51,12 @@ const teachingSchema = new Schema({
 });
 
 teachingSchema.pre('save', async function (next) {
-	if (Course.hasLab === true) {
-		labWeight.default = 40;
-		theoryWeight.default = 60;
-		theoryGradeThreshold.default = 5;
-		labGradeThreshold.default = 5;
+	const course = await Course.findById(this.course);
+	if (course.hasLab === true) {
+		this.labWeight = 40;
+		this.theoryWeight = 60;
+		this.theoryGradeThreshold = 5;
+		this.labGradeThreshold = 5;
 	}
 	next();
 });

@@ -2,7 +2,7 @@ const asyncHandler = require('express-async-handler');
 const TeachingReview = require('../../models/review/teachingReview');
 const User = require('../../models/users/user');
 const Semester = require('../../models/admin/semester');
-const ReviewDuration = require('../../models/admin/reviewDuration');
+const ReviewDuration = require('../../models/admin/review');
 const Course = require('../../models/course/course');
 
 //TODO FIX THE REQ.USER.ID FOR FINDING USER WITH USERID

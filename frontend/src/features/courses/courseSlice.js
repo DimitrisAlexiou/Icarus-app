@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { API_URL_COURSE } from '../../constants/config';
 import { extractErrorMessage } from '../../utils/redux/errorMessage';
+import { Toast } from '../../constants/sweetAlertNotification';
 import courseService from './courseService';
 
 const initialState = {
@@ -12,23 +13,42 @@ const initialState = {
 	message: '',
 };
 
-export const createCourse = createAsyncThunk(`${API_URL_COURSE}/new`, async (data, thunkAPI) => {
+export const createCourse = createAsyncThunk(API_URL_COURSE + '/create', async (data, thunkAPI) => {
 	try {
 		const token = thunkAPI.getState().auth.user.token;
-		// return await courseService.createCourse(data, token);
-		return await courseService.createCourse(data);
+		return await courseService.createCourse(data, token);
 	} catch (error) {
 		return thunkAPI.rejectWithValue(extractErrorMessage(error));
 	}
 });
 
 export const updateCourse = createAsyncThunk(
-	`${API_URL_COURSE}/:courseId/edit`,
-	async (courseId, courseData, thunkAPI) => {
+	API_URL_COURSE + '/update',
+	async (courseId, data, thunkAPI) => {
 		try {
 			const token = thunkAPI.getState().auth.user.token;
-			// return await courseService.updateCourse(courseId, courseData, token);
-			return await courseService.updateCourse(courseId, courseData);
+			return await courseService.updateCourse(courseId, data, token);
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
+	}
+);
+
+export const getCourse = createAsyncThunk(API_URL_COURSE + '/get', async (courseId, thunkAPI) => {
+	try {
+		const token = thunkAPI.getState().auth.user.token;
+		return await courseService.getCourse(courseId, token);
+	} catch (error) {
+		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+	}
+});
+
+export const deleteCourse = createAsyncThunk(
+	API_URL_COURSE + '/delete',
+	async (courseId, thunkAPI) => {
+		try {
+			const token = thunkAPI.getState().auth.user.token;
+			return await courseService.deleteCourse(courseId, token);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -36,19 +56,18 @@ export const updateCourse = createAsyncThunk(
 );
 
 export const activateCourse = createAsyncThunk(
-	`${API_URL_COURSE}/:courseId`,
+	API_URL_COURSE + '/activate',
 	async (courseId, thunkAPI) => {
 		try {
 			const token = thunkAPI.getState().auth.user.token;
-			// return await courseService.createCourse(courseData, token);
-			return await courseService.activateCourse(courseId);
+			return await courseService.activateCourse(courseId, token);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
 	}
 );
 
-export const getCourses = createAsyncThunk(API_URL_COURSE, async (_, thunkAPI) => {
+export const getCourses = createAsyncThunk(API_URL_COURSE + '/get_all', async (_, thunkAPI) => {
 	try {
 		const token = thunkAPI.getState().auth.user.token;
 		return await courseService.getCourses(token);
@@ -57,26 +76,12 @@ export const getCourses = createAsyncThunk(API_URL_COURSE, async (_, thunkAPI) =
 	}
 });
 
-export const getCourse = createAsyncThunk(
-	`${API_URL_COURSE}/:courseId`,
-	async (courseId, thunkAPI) => {
+export const deleteCourses = createAsyncThunk(
+	API_URL_COURSE + '/delete_all',
+	async (_, thunkAPI) => {
 		try {
 			const token = thunkAPI.getState().auth.user.token;
-			// return await courseService.getCourse(courseId, token);
-			return await courseService.getCourse(courseId);
-		} catch (error) {
-			return thunkAPI.rejectWithValue(extractErrorMessage(error));
-		}
-	}
-);
-
-export const deleteCourse = createAsyncThunk(
-	`${API_URL_COURSE}/:courseId`,
-	async (courseId, thunkAPI) => {
-		try {
-			const token = thunkAPI.getState().auth.user.token;
-			// return await courseService.deleteCourse(courseId, token);
-			return await courseService.deleteCourse(courseId);
+			return await courseService.deleteCourses(token);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -87,64 +92,22 @@ export const courseSlice = createSlice({
 	name: 'course',
 	initialState,
 	reducers: {
-		reset: () => initialState,
+		resetCourses: () => initialState,
 	},
 	extraReducers: (builder) => {
 		builder
-			.addCase(createCourse, (state, action) => {
-				switch (action.type) {
-					case createCourse.pending:
-						state.isLoading = true;
-						break;
-					case createCourse.fulfilled:
-						state.isLoading = false;
-						state.isSuccess = true;
-						break;
-					case createCourse.rejected:
-						state.isLoading = false;
-						state.isError = true;
-						state.message = action.payload;
-						break;
-					default:
-						break;
-				}
-			})
-			// .addCase(createCourse.pending, (state) => {
-			// 	state.isLoading = true;
-			// })
-			// .addCase(createCourse.fulfilled, (state) => {
-			// 	state.isLoading = false;
-			// 	state.isSuccess = true;
-			// })
-			// .addCase(createCourse.rejected, (state, action) => {
-			// 	state.isLoading = false;
-			// 	state.isError = true;
-			// 	state.message = action.payload;
-			// 	// state.isError = action.payload.status === 'error';
-			// 	// state.message = action.payload.message;
-			// })
-			.addCase(getCourses.pending, (state) => {
+			.addCase(createCourse.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(getCourses.fulfilled, (state, action) => {
+			.addCase(createCourse.fulfilled, (state) => {
 				state.isLoading = false;
-				state.isSuccess = true;
-				state.courses = action.payload;
+				Toast.fire({
+					title: 'Success',
+					text: 'Course created successfully!',
+					icon: 'success',
+				});
 			})
-			.addCase(getCourses.rejected, (state, action) => {
-				state.isLoading = false;
-				state.isError = true;
-				state.message = action.payload;
-			})
-			.addCase(getCourse.pending, (state) => {
-				state.isLoading = true;
-			})
-			.addCase(getCourse.fulfilled, (state, action) => {
-				state.isLoading = false;
-				state.isSuccess = true;
-				state.course = action.payload;
-			})
-			.addCase(getCourse.rejected, (state, action) => {
+			.addCase(createCourse.rejected, (state, action) => {
 				state.isLoading = false;
 				state.isError = true;
 				state.message = action.payload;
@@ -154,7 +117,11 @@ export const courseSlice = createSlice({
 			})
 			.addCase(updateCourse.fulfilled, (state, action) => {
 				state.isLoading = false;
-				state.isSuccess = true;
+				Toast.fire({
+					title: 'Success',
+					text: 'Course updated successfully!',
+					icon: 'success',
+				});
 				state.courses.map((course) =>
 					course._id === action.payload._id ? action.payload : course
 				);
@@ -163,49 +130,80 @@ export const courseSlice = createSlice({
 				state.isLoading = false;
 				state.isError = true;
 				state.message = action.payload;
+			})
+			.addCase(getCourse.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(getCourse.fulfilled, (state, action) => {
+				state.isLoading = false;
+				state.course = action.payload;
+			})
+			.addCase(getCourse.rejected, (state, action) => {
+				state.isLoading = false;
+				state.isError = true;
+				state.message = action.payload;
+			})
+			.addCase(deleteCourse.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(deleteCourse.fulfilled, (state) => {
+				state.isLoading = false;
+				Toast.fire({
+					title: 'Success',
+					text: 'Course deleted successfully!',
+					icon: 'success',
+				});
+			})
+			.addCase(deleteCourse.rejected, (state, action) => {
+				state.isLoading = false;
+				state.isError = true;
+				state.message = action.payload;
+			})
+			.addCase(activateCourse.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(activateCourse.fulfilled, (state, action) => {
+				state.isLoading = false;
+				state.isSuccess = true;
+				state.courses.map((course) =>
+					course._id === action.payload._id ? (course.isActive = true) : course
+				);
+			})
+			.addCase(activateCourse.rejected, (state, action) => {
+				state.isLoading = false;
+				state.isError = true;
+				state.message = action.payload;
+			})
+			.addCase(getCourses.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(getCourses.fulfilled, (state, action) => {
+				state.isLoading = false;
+				state.courses = action.payload;
+			})
+			.addCase(getCourses.rejected, (state, action) => {
+				state.isLoading = false;
+				state.isError = true;
+				state.message = action.payload;
+			})
+			.addCase(deleteCourses.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(deleteCourses.fulfilled, (state) => {
+				state.isLoading = false;
+				Toast.fire({
+					title: 'Success',
+					text: 'Courses deleted successfully!',
+					icon: 'success',
+				});
+			})
+			.addCase(deleteCourses.rejected, (state, action) => {
+				state.isLoading = false;
+				state.isError = true;
+				state.message = action.payload;
 			});
-		// .addCase(activateCourse.fulfilled, (state, action) => {
-		// 	state.isLoading = false;
-		// 	state.isSuccess = true;
-		// 	state.courses.map((course) =>
-		// 		course._id === action.payload._id ? (course.isActive = true) : course,
-		// 	);
-		// });
-		// .addCase(deleteCourse.fulfilled, (state, action) => {
-		//  state.isLoading = false;
-		//  state.isSuccess = true;
-		//	state.message = action.payload;
-		// });
-		// .addCase(deleteCourse.pending, (state) => {
-		//  state.isLoading = true;
-		// })
-		// .addCase(deleteCourse.rejected, (state, action) => {
-		//  state.isLoading = false;
-		//  state.isError = true;
-		//	state.message = action.payload;
-
-		// });
-		// .addCase(deleteCourse, (state, action) => {
-		// 	switch (action.type) {
-		// 		case deleteCourse.pending:
-		// 			state.isLoading = true;
-		// 			break;
-		// 		case deleteCourse.fulfilled:
-		// 			state.isLoading = false;
-		// 			state.isSuccess = true;
-		// 			state.message = action.payload;
-		// 			break;
-		// 		case deleteCourse.rejected:
-		// 			state.isLoading = false;
-		// 			state.isError = true;
-		// 			state.message = action.payload;
-		// 			break;
-		// 		default:
-		// 			break;
-		// 	}
-		// });
 	},
 });
 
-export const { reset } = courseSlice.actions;
+export const { resetCourses } = courseSlice.actions;
 export default courseSlice.reducer;

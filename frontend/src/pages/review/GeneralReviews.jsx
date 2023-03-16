@@ -29,11 +29,18 @@ export default function GeneralReviews() {
 
 	return (
 		<>
-			<BreadcrumbNav link={'/review'} header={'Reviews'} active={'General Reviews'} />
+			<BreadcrumbNav
+				className="animated--grow-in"
+				link={'/review'}
+				header={'Reviews'}
+				active={'General Reviews'}
+			/>
 
-			<h1 className="h3 mb-5 text-gray-800 font-weight-bold">General Reviews</h1>
+			<h1 className="h3 mb-5 text-gray-800 font-weight-bold animated--grow-in">
+				General Reviews
+			</h1>
 
-			<Row>
+			<Row className="animated--grow-in">
 				<Col sm="12" md="6" lg="4" className="g-4 mb-3">
 					{generalReview.map((generalReview) => (
 						<GeneralReviewItem key={generalReview._id} generalReview={generalReview} />

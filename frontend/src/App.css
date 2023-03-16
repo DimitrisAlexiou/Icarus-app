@@ -3861,7 +3861,7 @@ input[type='button'].btn-block {
 	min-height: 1.5rem;
 	padding-left: 1.5rem;
 	-webkit-print-color-adjust: exact;
-	color-adjust: exact;
+	print-color-adjust: exact;
 }
 
 .custom-control-inline {
@@ -11969,4 +11969,26 @@ body.sidebar-toggled footer.sticky-footer {
 
 .slider-thumb:active {
 	cursor: grabbing;
+}
+
+.loadingContainer {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	/* background-color: var(--cyan); */
+}
+
+.loadingSpinner {
+	width: 4rem;
+	height: 4rem;
+}
+
+.loadingMessage {
+	margin-top: 1rem;
+	font-size: 1.2rem;
 }

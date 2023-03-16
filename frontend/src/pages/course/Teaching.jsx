@@ -1,15 +1,13 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { Row, Col } from 'reactstrap';
-import { Formik, Form } from 'formik';
+import { Formik } from 'formik';
 import { TeachingSchema } from '../../schemas/course/Teaching';
 import { Toast } from '../../constants/sweetAlertNotification';
 import { getCourse } from '../../features/courses/courseSlice';
-import courseService from '../../features/courses/courseService';
 import TeachingForm from '../../components/course/TeachingForm';
-import CancelButton from '../../components/buttons/CancelButton';
-import SubmitButton from '../../components/buttons/SubmitButton';
+import BackButton from '../../components/buttons/BackButton';
 import Spinner from '../../components/boilerplate/Spinner';
 
 export default function NewTeaching() {
@@ -19,29 +17,11 @@ export default function NewTeaching() {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 
-	const onSubmit = async (formTeachingData) => {
-		try {
-			await courseService.createTeaching(formTeachingData);
-			Toast.fire({
-				title: 'Success',
-				text: 'Teaching created successfully!',
-				icon: 'success',
-			});
-			navigate('/course/' + courseId);
-		} catch (error) {
-			Toast.fire({
-				title: 'Error while creating teaching for the course!',
-				text: error.response.data,
-				icon: 'error',
-			});
-		}
-	};
-
 	useEffect(() => {
 		if (isError) {
 			Toast.fire({
-				title: 'Error !',
-				text: isError.response.data,
+				title: 'Something went wrong!',
+				text: message,
 				icon: 'error',
 			});
 		}
@@ -54,16 +34,21 @@ export default function NewTeaching() {
 
 	return (
 		<>
-			<h1 className="h3 mb-5 text-gray-800 font-weight-bold">
-				Create new Teaching for the {course.title} course !
-			</h1>
+			<Row className="mb-5 animated--grow-in">
+				<Col sm="6" xs="6" md="6">
+					<h1 className="h3 text-gray-800 font-weight-bold">{course.title} Teaching</h1>
+				</Col>
+				<Col className="d-flex justify-content-end">
+					<BackButton url={'/course/' + courseId} />
+				</Col>
+			</Row>
 
-			<Row className="justify-content-center">
+			<Row className="justify-content-center animated--grow-in">
 				<Col sm="12" md="11" lg="10" xl="8">
 					<div className="card shadow mb-4">
 						<div className="card-header py-3">
 							<h6 className="m-0 font-weight-bold text-primary">
-								Fill the form below to create a new teaching for the course
+								Fill the form below to configure the teaching for the course
 							</h6>
 						</div>
 						<div className="card-body">
@@ -75,30 +60,34 @@ export default function NewTeaching() {
 									labGrade: 0,
 									theoryGradeThreshold: 0,
 									labGradeThreshold: 0,
-									books: [],
+									books: [''],
 								}}
 								validationSchema={TeachingSchema}
-								onSubmit={(formTeachingData) => {
-									onSubmit(formTeachingData);
+								onSubmit={(values, { setSubmitting }) => {
+									const teaching = {
+										labWeight: values.labWeight,
+										theoryWeight: values.theoryWeight,
+										theoryGrade: values.theoryGrade,
+										labGrade: values.labGrade,
+										theoryGradeThreshold: values.theoryGradeThreshold,
+										labGradeThreshold: values.labGradeThreshold,
+										books: values.books.some(Boolean) ? values.books : [null],
+									};
+									console.log(teaching);
+									// dispatch(configureTeaching(teaching));
+									setSubmitting(false);
+									navigate('/course/' + courseId);
 								}}
 								validateOnMount
 							>
-								<Form>
-									<TeachingForm />
-
-									<Row>
-										<Col>
-											<CancelButton url={'/course/' + courseId} />
-										</Col>
-										<Col className="text-right px-0">
-											<SubmitButton
-												color={'primary'}
-												message={'Create Teaching'}
-												disabled={isLoading}
-											/>
-										</Col>
-									</Row>
-								</Form>
+								{({ isSubmitting, dirty, values, handleReset }) => (
+									<TeachingForm
+										values={values}
+										isSubmitting={isSubmitting}
+										dirty={dirty}
+										handleReset={handleReset}
+									/>
+								)}
 							</Formik>
 						</div>
 					</div>

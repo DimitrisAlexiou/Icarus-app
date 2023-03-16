@@ -1,6 +1,7 @@
 require('colors');
 require('dotenv').config();
 const express = require('express');
+const mongoose = require('mongoose');
 const cors = require('cors');
 const mongoSanitize = require('express-mongo-sanitize');
 // const helmet = require('helmet');
@@ -19,6 +20,7 @@ const { errorHandler } = require('./middleware/errorHandler');
 const PORT = process.env.PORT || 4000;
 
 //? DATABASE
+mongoose.set('strictQuery', false);
 connectDB();
 
 const app = express();

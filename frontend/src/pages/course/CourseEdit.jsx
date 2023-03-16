@@ -9,7 +9,7 @@ import { FormGroup, Label, Row, Col } from 'reactstrap';
 import { Field, ErrorMessage } from 'formik';
 import FormErrorMessage from '../../components/FormErrorMessage';
 import FormCheckbox from '../../components/FormCheckbox';
-import CancelButton from '../../components/buttons/CancelButton';
+import BackButton from '../../components/buttons/BackButton';
 import SubmitButton from '../../components/buttons/SubmitButton';
 import Spinner from '../../components/boilerplate/Spinner';
 
@@ -80,9 +80,18 @@ export default function CourseEdit() {
 
 	return (
 		<>
-			<h1 className="h3 mb-5 text-gray-800 font-weight-bold">Update {course.title} Course</h1>
+			<Row className="mb-5 animated--grow-in">
+				<Col sm="6" xs="6" md="6">
+					<h1 className="h3 mb-5 text-gray-800 font-weight-bold animated--grow-in">
+						Update {course.title}
+					</h1>
+				</Col>
+				<Col className="d-flex justify-content-end">
+					<BackButton url={`/course/${courseId}`} />
+				</Col>
+			</Row>
 
-			<Row className="justify-content-center">
+			<Row className="justify-content-center animated--grow-in">
 				<Col sm="12" md="10" lg="8" xl="6">
 					<div className="card shadow mb-4">
 						<div className="card-header py-3">
@@ -287,9 +296,6 @@ export default function CourseEdit() {
                                             </Row> */}
 
 									<Row>
-										<Col>
-											<CancelButton url={`/course/${courseId}`} />
-										</Col>
 										<Col className="text-right px-0">
 											<SubmitButton
 												color={'primary'}

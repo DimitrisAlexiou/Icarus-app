@@ -1,11 +1,15 @@
-const jwt = require('jsonwebtoken');
+import axios from 'axios';
 
-export const checkTokenExpiration = () => {
-	const token = localStorage.getItem('token');
-	if (!token) {
-		return false;
+export const checkTokenExpiration = (error) => {
+	const status = error.response ? error.response.status : null;
+
+	if (status === 401) {
+		window.location.replace('/unauthorized');
 	}
 
-	const verified = jwt.verify(token, process.env.JWT_SECRET_KEY);
-	return verified;
+	return Promise.reject(error);
 };
+
+axios.interceptors.response.use((response) => response, checkTokenExpiration);
+
+export default axios;

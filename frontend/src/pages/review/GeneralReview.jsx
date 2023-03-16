@@ -42,11 +42,18 @@ export default function GeneralReview() {
 
 	return (
 		<>
-			<BreadcrumbNav link={'/review'} header={'Reviews'} active={'General Review'} />
+			<BreadcrumbNav
+				className="animated--grow-in"
+				link={'/review'}
+				header={'Reviews'}
+				active={'General Review'}
+			/>
 
-			<h1 className="h3 mb-5 text-gray-800 font-weight-bold">General Review</h1>
+			<h1 className="h3 mb-5 text-gray-800 font-weight-bold animated--grow-in">
+				General Review
+			</h1>
 
-			<Row className="justify-content-center">
+			<Row className="justify-content-center animated--grow-in">
 				<Col sm="12" md="10" lg="8" xl="8">
 					<div className="card shadow mb-4">
 						<div className="card-header py-3">
@@ -74,27 +81,11 @@ export default function GeneralReview() {
 								validateOnMount
 							>
 								{({ isSubmitting, dirty, handleReset }) => (
-									<Form>
-										<GeneralReviewForm />
-
-										<Row>
-											<Col md="6" sm="6" xs="6">
-												<Button
-													onClick={handleReset}
-													disabled={!dirty || isSubmitting}
-												>
-													Clear
-												</Button>
-											</Col>
-											<Col className="text-right px-0">
-												<SubmitButton
-													color={'primary'}
-													message={'Review'}
-													disabled={isSubmitting}
-												/>
-											</Col>
-										</Row>
-									</Form>
+									<GeneralReviewForm
+										isSubmitting={isSubmitting}
+										dirty={dirty}
+										handleReset={handleReset}
+									/>
 								)}
 							</Formik>
 						</div>
