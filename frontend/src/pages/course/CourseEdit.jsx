@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
+import { FormGroup, Label, Row, Col, Button } from 'reactstrap';
 import { Formik, Form } from 'formik';
 import { getCourse, updateCourse, reset } from '../../features/courses/courseSlice';
 import { Toast } from '../../constants/sweetAlertNotification';
 import { CourseSchema } from '../../schemas/course/Course';
-import { FormGroup, Label, Row, Col } from 'reactstrap';
 import { Field, ErrorMessage } from 'formik';
 import FormErrorMessage from '../../components/FormErrorMessage';
 import FormCheckbox from '../../components/FormCheckbox';
@@ -58,7 +58,7 @@ export default function CourseEdit() {
 		//  await courseService.updateCourse(formCourseData);
 		//  Toast.fire({
 		//      title: 'Success',
-		//      text: 'Course updated successfully!',
+		//      text: 'Course updated!',
 		//      icon: 'success',
 		//  });
 		//  navigate('/course/' + courseId);
@@ -295,15 +295,28 @@ export default function CourseEdit() {
                                                 </Col>
                                             </Row> */}
 
-									<Row>
-										<Col className="text-right px-0">
+									{/* <Row className="mt-4">
+										<Col
+											sm="6"
+											md="6"
+											xs="12"
+											className="text-sm-left text-center"
+										>
+											<Button
+												onClick={handleReset}
+												disabled={!dirty || isSubmitting}
+											>
+												Clear
+											</Button>
+										</Col>
+										<Col className="text-sm-right text-center mt-sm-0 mt-3 px-0">
 											<SubmitButton
 												color={'primary'}
 												message={'Update Course'}
-												disabled={isLoading}
+												disabled={isSubmitting}
 											/>
 										</Col>
-									</Row>
+									</Row> */}
 								</Form>
 							</Formik>
 						</div>

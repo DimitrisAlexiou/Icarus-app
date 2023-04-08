@@ -1,6 +1,16 @@
 import axios from 'axios';
-import { API_URL_REGISTER, API_URL_LOGIN, API_URL_USER, headers } from '../../constants/config';
-import { removeUserFromLocalStorage } from '../../utils/redux/localStorage';
+import {
+	API_URL_REGISTER,
+	API_URL_LOGIN,
+	API_URL_FORGOT_PASSWORD,
+	API_URL_USER,
+	headers,
+} from '../../constants/config';
+import {
+	removeUserFromLocalStorage,
+	getLastPageFromLocalStorage,
+	removeLastPageFromLocalStorage,
+} from '../../utils/redux/localStorage';
 
 const register = async (data) => {
 	const config = {
@@ -25,14 +35,38 @@ const login = async (data) => {
 
 	if (response.data) {
 		localStorage.setItem('user', JSON.stringify(response.data));
+		if (getLastPageFromLocalStorage()) {
+			window.location.href = getLastPageFromLocalStorage();
+			removeLastPageFromLocalStorage();
+		}
 	}
 
 	return response.data;
 };
 
-const logout = async () => removeUserFromLocalStorage();
+const logout = async () => {
+	removeUserFromLocalStorage();
+};
 
-const getProfile = async (_, token) => {
+const forgotPassword = async (data) => {
+	const config = {
+		headers: { headers },
+	};
+
+	const response = await axios.post(API_URL_FORGOT_PASSWORD, data, config);
+
+	// if (response.data) {
+	// 	localStorage.setItem('user', JSON.stringify(response.data));
+	// 	if (getLastPageFromLocalStorage()) {
+	// 		window.location.href = getLastPageFromLocalStorage();
+	// 		removeLastPageFromLocalStorage();
+	// 	}
+	// }
+
+	return response.data;
+};
+
+const getProfile = async (token) => {
 	const config = {
 		headers: { headers, Authorization: `Bearer ${token}` },
 	};
@@ -56,6 +90,7 @@ const authService = {
 	register,
 	login,
 	logout,
+	forgotPassword,
 	getProfile,
 	updateProfile,
 };

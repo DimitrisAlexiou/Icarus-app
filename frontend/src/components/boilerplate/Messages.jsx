@@ -3,10 +3,9 @@ import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEnvelope } from '@fortawesome/free-solid-svg-icons';
+import { faEnvelope } from '@fortawesome/free-regular-svg-icons';
 // import { getMessages, reset } from '../../features/messages/messagesSlice';
 import Spinner from './Spinner';
-import '../../App.css';
 
 export default function Messages() {
 	// const { messages, isLoading, isSuccess } = useSelector(
@@ -106,7 +105,7 @@ export default function Messages() {
 							<div className="small text-gray-500">Chicken the Dog · 2w</div>
 						</div>
 					</DropdownItem>
-					<DropdownItem className="dropdown-item text-center  animated--grow-in small text-gray-500">
+					<DropdownItem className="dropdown-item text-center animated--grow-in small text-gray-500">
 						<Link
 							to={'/messages'}
 							style={{

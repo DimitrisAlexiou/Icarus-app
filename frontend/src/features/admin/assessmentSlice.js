@@ -63,7 +63,7 @@ export const assessmentSlice = createSlice({
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
-					text: 'Assessment configuration defined successfully!',
+					text: 'Assessment configuration defined!',
 					icon: 'success',
 				});
 				state.assessment = action.payload;

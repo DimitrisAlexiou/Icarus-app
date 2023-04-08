@@ -85,7 +85,7 @@ export const semesterSlice = createSlice({
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
-					text: 'Semester defined successfully!',
+					text: 'Semester defined!',
 					icon: 'success',
 				});
 				state.semester = action.payload;
@@ -126,7 +126,7 @@ export const semesterSlice = createSlice({
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
-					text: 'Semester updated successfully!',
+					text: 'Semester updated!',
 					icon: 'success',
 				});
 				state.semesters.map((semester) =>

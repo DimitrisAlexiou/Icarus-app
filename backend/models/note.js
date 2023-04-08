@@ -14,20 +14,29 @@ const noteSchema = new Schema(
 		postDate: {
 			type: Date,
 			default: Date.now,
+			required: true,
 		},
 		file: {
-			data: Buffer,
-			contentType: String,
+			type: String,
 		},
-		user: {
+		categories: [
+			{
+				type: String,
+			},
+		],
+		importance: {
+			type: Boolean,
+			default: false,
+		},
+		owner: {
 			type: Schema.Types.ObjectId,
-			required: true,
 			ref: 'User',
+			required: true,
 		},
 	},
 	{
 		timestamps: true,
-	},
+	}
 );
 
 module.exports = mongoose.model('Note', noteSchema);

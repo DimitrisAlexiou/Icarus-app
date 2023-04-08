@@ -8,6 +8,8 @@ const mongoSanitize = require('express-mongo-sanitize');
 const connectDB = require('./database/db');
 const ExpressError = require('./utils/ExpressError');
 const courseRoute = require('./routes/course.routes');
+const noteRoute = require('./routes/note.routes');
+const calendarRoute = require('./routes/calendar.routes');
 const userRoute = require('./routes/user.routes');
 const teachingReviewRoute = require('./routes/review/teachingReview.routes');
 const instructorReviewRoute = require('./routes/review/instructorReview.routes');
@@ -16,7 +18,6 @@ const adminRoute = require('./routes/admin.routes');
 const authRoute = require('./routes/auth/auth.routes');
 const { errorHandler } = require('./middleware/errorHandler');
 
-//? PORT
 const PORT = process.env.PORT || 4000;
 
 //? DATABASE
@@ -40,6 +41,8 @@ app.use(errorHandler);
 //? ROUTES
 app.use('/api/auth', authRoute);
 app.use('/api/course', courseRoute);
+app.use('/api/note', noteRoute);
+app.use('/api/calendar', calendarRoute);
 app.use('/api/user', userRoute);
 app.use('/api/review/teaching', teachingReviewRoute);
 app.use('/api/review/instructor', instructorReviewRoute);

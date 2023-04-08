@@ -3,6 +3,7 @@ import {
 	API_URL_REGISTER,
 	API_URL_LOGIN,
 	API_URL_LOGOUT,
+	API_URL_FORGOT_PASSWORD,
 	API_URL_USER,
 } from '../../constants/config';
 import {
@@ -11,13 +12,11 @@ import {
 	removeUserFromLocalStorage,
 } from '../../utils/redux/localStorage';
 import { extractErrorMessage } from '../../utils/redux/errorMessage';
+import { Toast } from '../../constants/sweetAlertNotification';
 import authService from './authService';
 
-const user = JSON.parse(localStorage.getItem('user'));
-
 const initialState = {
-	user: user ? user : null,
-	// user: getUserFromLocalStorage(),
+	user: getUserFromLocalStorage(),
 	isError: false,
 	isSuccess: false,
 	isLoading: false,
@@ -44,6 +43,14 @@ export const logout = createAsyncThunk(API_URL_LOGOUT, async () => {
 	await authService.logout();
 });
 
+export const forgotPassword = createAsyncThunk(API_URL_FORGOT_PASSWORD, async (user, thunkAPI) => {
+	try {
+		return await authService.forgotPassword(user);
+	} catch (error) {
+		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+	}
+});
+
 export const getProfile = createAsyncThunk(API_URL_USER, async (user, thunkAPI) => {
 	try {
 		const token = thunkAPI.getState().auth.user.token;
@@ -54,15 +61,17 @@ export const getProfile = createAsyncThunk(API_URL_USER, async (user, thunkAPI) 
 	}
 });
 
-export const updateProfile = createAsyncThunk(API_URL_USER + '/update', async (data, thunkAPI) => {
-	try {
-		const token = thunkAPI.getState().auth.user.token;
-		const userId = user.user._id;
-		return await authService.updateProfile(userId, data, token);
-	} catch (error) {
-		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+export const updateProfile = createAsyncThunk(
+	API_URL_USER + '/update',
+	async ({ userId, user }, thunkAPI) => {
+		try {
+			const token = thunkAPI.getState().auth.user.token;
+			return await authService.updateProfile(userId, user, token);
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
 	}
-});
+);
 
 export const authSlice = createSlice({
 	name: 'auth',
@@ -84,7 +93,7 @@ export const authSlice = createSlice({
 				state.isLoading = false;
 				state.isSuccess = true;
 				state.user = action.payload;
-				// addUserToLocalStorage(state.user);
+				addUserToLocalStorage(state.user);
 			})
 			.addCase(register.rejected, (state, action) => {
 				state.isLoading = false;
@@ -99,7 +108,7 @@ export const authSlice = createSlice({
 				state.isLoading = false;
 				state.isSuccess = true;
 				state.user = action.payload;
-				// addUserToLocalStorage(state.user);
+				addUserToLocalStorage(state.user);
 			})
 			.addCase(login.rejected, (state, action) => {
 				state.isLoading = false;
@@ -110,6 +119,20 @@ export const authSlice = createSlice({
 			.addCase(logout.fulfilled, (state) => {
 				state.user = null;
 				removeUserFromLocalStorage();
+			})
+			.addCase(forgotPassword.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(forgotPassword.fulfilled, (state, action) => {
+				state.isLoading = false;
+				state.isSuccess = true;
+				// state.user = action.payload;
+				// addUserToLocalStorage(state.user);
+			})
+			.addCase(forgotPassword.rejected, (state, action) => {
+				state.isLoading = false;
+				state.isError = true;
+				state.message = action.payload;
 			})
 			.addCase(getProfile.pending, (state) => {
 				state.isLoading = true;
@@ -130,7 +153,13 @@ export const authSlice = createSlice({
 			.addCase(updateProfile.fulfilled, (state, action) => {
 				state.isLoading = false;
 				state.isSuccess = true;
-				state.user = action.payload;
+				if (state.auth.user) {
+					console.log(state.auth.user);
+					state.auth.user = state.auth.user.map((user) =>
+						user._id === action.payload._id ? action.payload : user
+					);
+				}
+				return { ...state };
 			})
 			.addCase(updateProfile.rejected, (state, action) => {
 				state.isLoading = false;

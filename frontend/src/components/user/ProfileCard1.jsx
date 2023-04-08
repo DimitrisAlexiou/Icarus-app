@@ -1,12 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Col, Badge } from 'reactstrap';
-import {
-	faCalendarCheck,
-	faGraduationCap,
-	faIdBadge,
-	faUserTie,
-	faCertificate,
-} from '@fortawesome/free-solid-svg-icons';
+import { faUserTie, faCertificate, faGraduationCap } from '@fortawesome/free-solid-svg-icons';
+import { faCalendarCheck, faIdBadge } from '@fortawesome/free-regular-svg-icons';
 import img from '../../assets/images/undraw_profile.svg';
 
 export default function ProfileCard1({ user }) {
@@ -38,9 +33,9 @@ export default function ProfileCard1({ user }) {
 							<p className="text-muted mt-3">University of Aegean</p>
 						</Col>
 					</div>
-					<hr />
 					{user.user.type === 'Student' ? (
 						<>
+							<hr />
 							<ul className="list-group list-group-flush">
 								<li className="list-group-item d-flex justify-content-between align-items-center flex-wrap">
 									<h6 className="mb-0 text-gray-800">
@@ -84,8 +79,9 @@ export default function ProfileCard1({ user }) {
 								</li>
 							</ul>
 						</>
-					) : (
+					) : user.user.type === 'Instructor' ? (
 						<>
+							<hr />
 							<ul className="list-group list-group-flush">
 								<li className="list-group-item d-flex justify-content-between align-items-center flex-wrap">
 									<h6 className="mb-0 text-gray-800">
@@ -127,7 +123,7 @@ export default function ProfileCard1({ user }) {
 								</li>
 							</ul>
 						</>
-					)}
+					) : null}
 				</div>
 			</div>
 		</>

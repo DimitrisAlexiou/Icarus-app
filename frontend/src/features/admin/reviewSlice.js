@@ -60,7 +60,7 @@ export const reviewSlice = createSlice({
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
-					text: 'Review configuration defined successfully!',
+					text: 'Review configuration defined!',
 					icon: 'success',
 				});
 				state.review = action.payload;

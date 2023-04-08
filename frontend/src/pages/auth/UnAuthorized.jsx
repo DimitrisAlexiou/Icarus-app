@@ -3,13 +3,13 @@ import { Col, Row } from 'reactstrap';
 
 export default function Unauthorized() {
 	return (
-		<div className="container-fluid animated--grow-in">
+		<div className="container-fluid animated--grow-in mt-5">
 			<div className="text-center">
-				<div className="error mx-auto  mb-2" data-text="401">
+				<div className="error mx-auto mb-3" data-text="401">
 					401
 				</div>
 				<p className="text-gray-500 mb-3">Your login session has expired...</p>
-				<Row className="justify-content-center mb-4">
+				<Row className="justify-content-center mb-5">
 					<img
 						className="notauthorized"
 						src="undraw_not_authorized.svg"

@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Student = require('../users/student');
 const Instructor = require('../users/instructor');
 const Note = require('../note');
+const calendar = require('../calendar');
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema(
@@ -30,7 +31,7 @@ const userSchema = new Schema(
 		},
 		type: {
 			type: String,
-			enum: ['Student', 'Instructor'],
+			enum: ['Student', 'Instructor', 'Admin'],
 			required: true,
 		},
 		isActive: {
@@ -51,6 +52,10 @@ const userSchema = new Schema(
 			type: Date,
 			default: null,
 		},
+		tokenVersion: {
+			type: Number,
+			default: 0,
+		},
 		student: {
 			type: Schema.Types.ObjectId,
 			ref: 'Student',
@@ -65,17 +70,44 @@ const userSchema = new Schema(
 				ref: 'Note',
 			},
 		],
+		events: [
+			{
+				type: Schema.Types.ObjectId,
+				ref: 'Calendar',
+			},
+		],
 	},
 	{
 		timestamps: true,
 	}
 );
 
+userSchema.pre('create', async function (next) {
+	if (this.isAdmin) {
+		const existingAdmin = await this.constructor.findOne({ isAdmin: true });
+		if (existingAdmin && !this.isNew) {
+			const error = new Error('There can be only one admin user');
+			return next(error);
+		}
+	}
+	return next();
+});
+
 userSchema.post('findByIdAndDelete', async function (data) {
 	if (data) {
 		await Note.deleteMany({
 			_id: {
 				$in: data.notes,
+			},
+		});
+	}
+});
+
+userSchema.post('findByIdAndDelete', async function (data) {
+	if (data) {
+		await calendar.deleteMany({
+			_id: {
+				$in: data.events,
 			},
 		});
 	}

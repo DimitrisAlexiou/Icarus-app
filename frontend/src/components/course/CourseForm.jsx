@@ -14,6 +14,7 @@ export default function CourseForm({
 	isSubmitting,
 	dirty,
 	handleReset,
+	isEditting,
 }) {
 	const courseYear = (type) => {
 		return new Promise((resolve, reject) => {
@@ -301,7 +302,7 @@ export default function CourseForm({
 														})
 													}
 												>
-													+
+													Add Prerequisite
 												</Button>
 											</Col>
 											<Col className="text-right">
@@ -389,15 +390,22 @@ export default function CourseForm({
 				)}
 
 				<Row>
-					<Col className="mb-3">
-						<Button onClick={handleReset} disabled={!dirty || isSubmitting}>
+					<Col sm="6" md="6" xs="12" className="text-sm-left text-center">
+						<Button
+							onClick={() => {
+								handleReset();
+								setHasPrerequisites(false);
+								setIsObligatory(true);
+							}}
+							disabled={!dirty || isSubmitting}
+						>
 							Clear
 						</Button>
 					</Col>
-					<Col className="text-right px-0">
+					<Col className="text-sm-right text-center mt-sm-0 mt-3 px-0">
 						<SubmitButton
 							color={'primary'}
-							message={'Create Course'}
+							message={isEditting ? 'Update' : 'Create Course'}
 							disabled={isSubmitting}
 						/>
 					</Col>

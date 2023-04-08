@@ -138,7 +138,7 @@ const CourseCard = ({ course }) => {
 					<p style={{ textAlign: 'justify' }}>
 						{course.isObligatory ? 'Obligatory' : 'Optional'}
 					</p>
-					<hr />
+					<hr className="d-none d-lg-block" />
 				</Col>
 			</Row>
 			{course.hasPrerequisites
@@ -164,7 +164,7 @@ const CourseCard = ({ course }) => {
 									<p style={{ textAlign: 'justify' }}>
 										{prerequisite.prerequisiteType}
 									</p>
-									<hr />
+									<hr className="d-none d-lg-block" />
 								</Col>
 							</Row>
 						</div>

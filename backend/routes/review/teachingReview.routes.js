@@ -2,11 +2,18 @@ const express = require('express');
 const router = express.Router();
 const { createUserTeachingReview } = require('../../controllers/review/teachingReview');
 const { validateTeachingReview } = require('../../middleware/validations');
-const { authorize } = require('../../middleware/authMiddleware');
+const { authorize, checkUserRole } = require('../../middleware/authMiddleware');
 
 // @desc    Create Teaching Review
 // @route   POST /api/review/teaching
-// @access  Private User
-router.route('/').post(authorize, validateTeachingReview, createUserTeachingReview);
+// @access  Private USER || ADMIN
+router
+	.route('/')
+	.post(
+		authorize,
+		checkUserRole(['Admin', 'Student']),
+		validateTeachingReview,
+		createUserTeachingReview
+	);
 
 module.exports = router;

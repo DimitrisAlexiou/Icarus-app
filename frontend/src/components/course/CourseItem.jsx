@@ -1,20 +1,16 @@
 import { Link } from 'react-router-dom';
-import { Badge, Row, Col } from 'reactstrap';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBook } from '@fortawesome/free-solid-svg-icons';
-import UndergraduateCourseNotification from '../boilerplate/UndergraduateCourseNotification';
+import { Badge, Row, Col, Card } from 'reactstrap';
 
 export default function CourseItem({ course }) {
-	// return course.isObligatory === true ? (
 	return (
 		<>
-			<div className="card border-left-sky-blue-crayola mb-4">
-				<div className="card-header py-3">
+			<Card className="card-animate border-left-sky-blue-crayola mb-3">
+				<div className="card-header">
 					<Row>
-						<Col xs="12" sm="6" md="6" lg="6" xl="6">
+						<Col xs="9" sm="9" md="7" lg="8" xl="7">
 							<h5 className="text-cerulean-crayola">{course.title}</h5>
 						</Col>
-						<Col xs="12" sm="4" md="3" lg="4" xl="4">
+						<Col xs="3" sm="3" md="3" lg="4" xl="3">
 							{course.isActive === true ? (
 								<Badge color="info" pill>
 									Active
@@ -27,9 +23,9 @@ export default function CourseItem({ course }) {
 						</Col>
 						<Col
 							xs="12"
-							sm="2"
-							md="3"
-							lg="2"
+							sm="12"
+							md="2"
+							lg="12"
 							xl="2"
 							className="d-flex justify-content-end py-1"
 						>
@@ -82,13 +78,7 @@ export default function CourseItem({ course }) {
 						Course doesn't have prerequisites!
 					</div>
 				)}
-			</div>
+			</Card>
 		</>
 	);
-	// : (
-	// 	<UndergraduateCourseNotification
-	// 		icon={<FontAwesomeIcon icon={faBook} />}
-	// 		message={'There are no obligatory courses available right now !'}
-	// 	/>
-	// );
 }

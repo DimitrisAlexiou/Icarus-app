@@ -9,10 +9,9 @@ import {
 	faUsers,
 	faLayerGroup,
 	faClockRotateLeft,
-	faNoteSticky,
-	faComment,
 	faSpinner,
 } from '@fortawesome/free-solid-svg-icons';
+import { faNoteSticky, faComment } from '@fortawesome/free-regular-svg-icons';
 import CoursesDataTable from '../../components/admin/CoursesDataTable';
 import SemestersDataTable from '../../components/admin/SemestersDataTable';
 import Spinner from '../../components/boilerplate/Spinner';
@@ -20,12 +19,14 @@ import { getCourses } from '../../features/courses/courseSlice';
 import { getSemesters } from '../../features/admin/semesterSlice';
 import { getCycles } from '../../features/admin/cyclesSlice';
 import { getInstructors, getStudents, getUsers } from '../../features/admin/userSlice';
+import { getUserNotes } from '../../features/notes/noteSlice';
 
 export default function AdminDashboard() {
 	const { courses, isLoading } = useSelector((state) => state.courses);
 	const { users, students, instructors } = useSelector((state) => state.users);
 	const { cycles, isLoading: cyclesIsLoading } = useSelector((state) => state.cycles);
 	const { semesters, isLoading: semesterIsLoading } = useSelector((state) => state.semesters);
+	const { notes, isLoading: notesIsLoading } = useSelector((state) => state.notes);
 
 	const dispatch = useDispatch();
 
@@ -36,18 +37,15 @@ export default function AdminDashboard() {
 		dispatch(getUsers());
 		dispatch(getStudents());
 		dispatch(getInstructors());
+		dispatch(getUserNotes());
 	}, [dispatch]);
 
-	if (isLoading || cyclesIsLoading || semesterIsLoading) {
+	if (isLoading || cyclesIsLoading || semesterIsLoading || notesIsLoading) {
 		return <Spinner />;
 	}
 
 	return (
 		<>
-			<h1 className="h3 mb-5 text-gray-800 font-weight-bold animated--grow-in">
-				Admin Dashboard
-			</h1>
-
 			<Row className="animated--grow-in">
 				<Col xl="3" md="6" className="mb-4">
 					<div className="card border-left-success shadow h-100 py-2">
@@ -126,7 +124,7 @@ export default function AdminDashboard() {
 										Notes
 									</div>
 									<div className="h5 mb-0 font-weight-bold text-gray-800">
-										{/* {notes && notes.length ? notes.length : 0} */}
+										{notes && notes.length ? notes.length : 0}
 									</div>
 								</Col>
 								<div className="col-auto">
@@ -140,10 +138,10 @@ export default function AdminDashboard() {
 				</Col>
 			</Row>
 
-			<Badge color="info" className="animated--grow-in">
+			<Badge color="info" className="mb-3 animated--grow-in">
 				Users
 			</Badge>
-			<Row className="mt-3 mb-4 animated--grow-in">
+			<Row className="animated--grow-in">
 				<Col xl="3" md="6" className="mb-4">
 					<div className="card border-left-dark shadow h-100 py-2">
 						<div className="card-body">
@@ -211,10 +209,10 @@ export default function AdminDashboard() {
 				</Col>
 			</Row>
 
-			<Badge color="info" className="animated--grow-in">
+			<Badge color="info" className="mb-3 animated--grow-in">
 				Reviews
 			</Badge>
-			<Row className="mt-3 mb-4 animated--grow-in">
+			<Row className="animated--grow-in">
 				<Col xl="3" md="6" className="mb-4">
 					<div className="card border-left-primary shadow h-100 py-2">
 						<div className="card-body">
@@ -286,9 +284,9 @@ export default function AdminDashboard() {
 				Courses
 			</Badge>
 			{courses.length ? (
-				<Row className="justify-content-center animated--grow-in">
+				<Row className="justify-content-center animated--grow-in mb-3">
 					<Col xs="12" sm="12" md="12" lg="12" xl="12">
-						<div className="card card-body mb-5">
+						<div className="card card-body">
 							<CoursesDataTable
 								courses={courses}
 								cycles={cycles}
@@ -325,9 +323,9 @@ export default function AdminDashboard() {
 				Semesters
 			</Badge>
 			{semesters.length ? (
-				<Row className="justify-content-center animated--grow-in">
+				<Row className="justify-content-center animated--grow-in mb-3">
 					<Col xs="12" sm="12" md="12" lg="12" xl="12">
-						<div className="card card-body mb-5">
+						<div className="card card-body">
 							<SemestersDataTable semesters={semesters} />
 						</div>
 					</Col>

@@ -58,6 +58,17 @@ module.exports.userSchema = Joi.object({
 	}).required(),
 });
 
+module.exports.profileSchema = Joi.object({
+	name: Joi.string()
+		.max(40)
+		.pattern(new RegExp(/^[A-Za-z]+$/)),
+	surname: Joi.string()
+		.max(40)
+		.pattern(new RegExp(/^[A-Za-z]+$/)),
+	username: Joi.string().pattern(new RegExp(/^icsd[0-9]{5}$/)),
+	email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net', 'gr'] } }),
+});
+
 module.exports.courseSchema = Joi.object({
 	course: Joi.object({
 		courseId: Joi.string()
@@ -125,8 +136,7 @@ module.exports.teachingSchema = Joi.object({
 		labGrade: Joi.number().min(0).required(),
 		theoryGradeThreshold: Joi.number().min(4).required(),
 		labGradeThreshold: Joi.number().min(4).required(),
-		books: Joi.string().required(),
-		// books: Joi.array().items(string().required()),
+		books: Joi.array().items(Joi.string()),
 	}).required(),
 });
 
@@ -191,6 +201,28 @@ module.exports.degreeRulesSchema = Joi.object({
 		cycleCourses: Joi.number().min(1).required(),
 		courses: Joi.number().min(1).required(),
 		practice: Joi.boolean().default(false).required(),
+	}).required(),
+});
+
+module.exports.noteSchema = Joi.object({
+	note: Joi.object({
+		title: Joi.string().max(40).required(),
+		text: Joi.string().max(800).required(),
+		postDate: Joi.date().default(Date.now).required(),
+		file: Joi.string(),
+		categories: Joi.array().items(Joi.string()),
+		importance: Joi.boolean().default(false),
+		owner: Joi.string().required(),
+	}).required(),
+});
+
+module.exports.calendarSchema = Joi.object({
+	calendar: Joi.object({
+		eventId: Joi.string().required(),
+		title: Joi.string().max(50).required(),
+		start: Joi.date().required(),
+		end: Joi.date().required(),
+		allDay: Joi.boolean().required(),
 	}).required(),
 });
 

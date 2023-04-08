@@ -297,7 +297,7 @@ module.exports.deleteUserTeachingReview = asyncHandler(async (req, res) => {
 					id: teachingReviewId,
 					user: userId,
 				});
-				return res.status(200).json('Teaching review deleted successfully!');
+				return res.status(200).json('Teaching review deleted!');
 			} catch (error) {
 				console.error('❌ Error while deleting user teaching review: ', error);
 				return res.status(500).json(`${error.message}`);

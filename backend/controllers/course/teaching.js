@@ -76,7 +76,7 @@ module.exports.deleteTeaching = asyncHandler(async (req, res) => {
 			$unset: { teaching: teachingId },
 		});
 		await Teaching.findByIdAndDelete(teachingId);
-		return res.status(200).json('Course teaching deleted successfully!');
+		return res.status(200).json('Course teaching deleted!');
 	} catch (error) {
 		console.error('❌ Error while deleting course teaching: ', error);
 		return res.status(500).json({ message: 'Something went wrong, try again later!' });

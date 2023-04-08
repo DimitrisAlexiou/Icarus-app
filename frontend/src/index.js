@@ -5,7 +5,8 @@ import { Provider } from 'react-redux';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 // import sr from '../src/utils/scrollRevealConfig';
-import './index.css';
+import './App.css';
+import 'animate.css';
 import 'react-bootstrap-range-slider/dist/react-bootstrap-range-slider.css';
 
 // sr.reveal(document.querySelector('#content'));

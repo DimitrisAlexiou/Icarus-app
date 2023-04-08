@@ -27,7 +27,7 @@ export default function TeachingReview() {
 		if (isSuccess) {
 			Toast.fire({
 				title: 'Success',
-				text: 'Review submitted successfully!',
+				text: 'Review submitted!',
 				icon: 'success',
 			});
 			navigate('/review');

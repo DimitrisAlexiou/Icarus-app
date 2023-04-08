@@ -28,7 +28,8 @@ import {
 } from '../../features/admin/degreeRulesSlice';
 import { defineCycles, getCycles, deleteCycles } from '../../features/admin/cyclesSlice';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashAlt, faEdit, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faTrashAlt, faEdit } from '@fortawesome/free-regular-svg-icons';
 import { Toast } from '../../constants/sweetAlertNotification';
 import SubmitButton from '../../components/buttons/SubmitButton';
 import FormErrorMessage from '../../components/FormErrorMessage';
@@ -519,7 +520,7 @@ export default function Configuration() {
 														dispatch(defineAssessment(assessment));
 														Toast.fire({
 															title: 'Success',
-															text: 'Assessment/Vaccine period defined successfully!',
+															text: 'Assessment/Vaccine period defined!',
 															icon: 'success',
 														});
 														setSubmitting(false);
@@ -1143,8 +1144,13 @@ export default function Configuration() {
 																	)}
 																/>
 															</FormGroup>
-															<Row>
-																<Col className="mb-3">
+															<Row className="mb-3">
+																<Col
+																	sm="6"
+																	md="6"
+																	xs="12"
+																	className="text-sm-left text-center"
+																>
 																	<Button
 																		onClick={handleReset}
 																		disabled={
@@ -1154,10 +1160,10 @@ export default function Configuration() {
 																		Clear
 																	</Button>
 																</Col>
-																<Col className="text-right px-0">
+																<Col className="text-sm-right text-center mt-sm-0 mt-3 px-0">
 																	<SubmitButton
-																		message={'Configure'}
 																		color={'primary'}
+																		message={'Configure'}
 																		disabled={isSubmitting}
 																	/>
 																</Col>

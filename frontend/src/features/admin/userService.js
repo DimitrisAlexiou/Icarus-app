@@ -71,6 +71,16 @@ const deleteUser = async (userId, token) => {
 	return response.data;
 };
 
+const deleteUsers = async (token) => {
+	const config = {
+		headers: { headers, Authorization: `Bearer ${token}` },
+	};
+
+	const response = axios.delete(API_URL_USERS + '/delete_all', config);
+
+	return response.data;
+};
+
 const userService = {
 	getUsers,
 	getStudents,
@@ -79,6 +89,7 @@ const userService = {
 	updateUser,
 	activateUser,
 	deleteUser,
+	deleteUsers,
 };
 
 export default userService;

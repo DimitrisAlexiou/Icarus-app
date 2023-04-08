@@ -87,12 +87,10 @@ module.exports.register = asyncHandler(async (req, res) => {
 								} catch (error) {
 									await User.deleteOne(user);
 									console.error('❌ Error while creating student: ', error);
-									return res
-										.status(500)
-										.json({
-											message:
-												'Something went wrong, unfortunately account did not created!',
-										});
+									return res.status(500).json({
+										message:
+											'Something went wrong, unfortunately account did not created!',
+									});
 								}
 							} else if (user.type === 'Instructor') {
 								try {

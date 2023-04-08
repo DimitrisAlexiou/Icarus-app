@@ -15,11 +15,13 @@ import {
 } from 'reactstrap';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTrashAlt, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import {
 	getUsers,
 	updateUser,
 	deleteUser,
+	deleteUsers,
 	activateUser,
 	reset,
 } from '../../features/admin/userSlice';
@@ -37,8 +39,9 @@ export default function Users() {
 	const [searchQuery, setSearchQuery] = useState('');
 	const [sortColumn, setSortColumn] = useState('username');
 	const [sortOrder, setSortOrder] = useState('asc');
+	const [currentPage, setCurrentPage] = useState(0);
+	const [itemsPerPage, setItemsPerPage] = useState(10);
 	const [modal, setModal] = useState(false);
-
 	const [currentUser, setCurrentUser] = useState({
 		username: '',
 		name: '',
@@ -108,6 +111,15 @@ export default function Users() {
 	// 	await axios.put(`http://localhost:3000/api/admin/users/${currentUser._id}`, currentUser);
 	// };
 
+	const handlePageClick = (event) => {
+		setCurrentPage(Number(event.target.id));
+	};
+
+	const handleItemsPerPageChange = (event) => {
+		setItemsPerPage(Number(event.target.value));
+		setCurrentPage(0);
+	};
+
 	const handleSearchQueryChange = (e) => {
 		setSearchQuery(e.target.value);
 	};
@@ -134,7 +146,39 @@ export default function Users() {
 		return matchUsername || matchSurname;
 	});
 
-	const usersFound = filteredUsers.map((user) => {
+	const indexOfLastItem = (currentPage + 1) * itemsPerPage;
+	const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+	const currentUsers = filteredUsers.slice(indexOfFirstItem, indexOfLastItem);
+
+	const pageNumbers = [];
+	for (let i = 0; i < Math.ceil(filteredUsers.length / itemsPerPage); i++) {
+		pageNumbers.push(i);
+	}
+
+	const renderPageNumbers = pageNumbers.map((number) => {
+		return (
+			<Button
+				className="text-gray-500"
+				key={number}
+				id={number}
+				color="null"
+				onClick={handlePageClick}
+			>
+				{number + 1}
+			</Button>
+		);
+	});
+
+	const itemsPerPageOptions = [10, 25, 50, 100];
+	const renderItemsPerPageOptions = itemsPerPageOptions.map((option) => {
+		return (
+			<option key={option} value={option}>
+				{option}
+			</option>
+		);
+	});
+
+	const usersFound = currentUsers.map((user) => {
 		return (
 			<tr key={user._id}>
 				<th scope="row" onClick={() => handleSort('username')}>
@@ -319,7 +363,7 @@ export default function Users() {
 									</Col>
 								</Row>
 								<Row>
-									<Col>
+									<Col sm="6" md="6" xs="12" className="text-sm-left text-center">
 										<Button
 											onClick={handleReset}
 											disabled={!dirty || isSubmitting}
@@ -327,7 +371,7 @@ export default function Users() {
 											Clear
 										</Button>
 									</Col>
-									<Col className="text-right px-0">
+									<Col className="text-sm-right text-center mt-sm-0 mt-3 px-0">
 										<SubmitButton
 											// onClick={update}
 											color={'primary'}
@@ -363,35 +407,78 @@ export default function Users() {
 					</Link>
 				</Col>
 			</Row>
-			<Row className="animated--grow-in">
-				<Col className="d-flex justify-content-end mb-3">
-					<Button className="btn btn-red align-self-center" color="null">
-						Delete Users
-					</Button>
-				</Col>
-			</Row>
+
 			<Row className="justify-content-center animated--grow-in">
 				<Col className="card card-body mb-4" xs="12" sm="12" md="12" lg="12" xl="12">
-					<Input
-						type="text"
-						placeholder="Search by username or surname . . ."
-						value={searchQuery}
-						onChange={handleSearchQueryChange}
-					/>
-					<Table className="mt-3" responsive hover>
-						<thead>
-							<tr>
-								<th>Username</th>
-								<th>Name</th>
-								<th>Surname</th>
-								<th>Email</th>
-								<th>Type</th>
-								<th>Status</th>
-								<th>Actions</th>
-							</tr>
-						</thead>
-						<tbody>{usersFound}</tbody>
-					</Table>
+					<Row>
+						<Col>
+							<Input
+								type="text"
+								placeholder="Search by username or surname . . ."
+								value={searchQuery}
+								onChange={handleSearchQueryChange}
+							/>
+						</Col>
+						<Col xs="3" sm="2" md="2" lg="2" xl="1">
+							<select
+								value={itemsPerPage}
+								onChange={handleItemsPerPageChange}
+								className="form-control"
+							>
+								{renderItemsPerPageOptions}
+							</select>
+						</Col>
+						{usersFound && (
+							<Col
+								xs="2"
+								sm="1"
+								md="1"
+								lg="1"
+								xl="1"
+								className="d-flex justify-content-end"
+							>
+								<Button
+									className="btn btn-red align-self-center"
+									color="null"
+									onClick={() => dispatch(deleteUsers())}
+								>
+									<FontAwesomeIcon icon={faTrashAlt} />
+								</Button>
+							</Col>
+						)}
+					</Row>
+					{usersFound.length === 0 ? (
+						<span className="mt-4 mb-4 text-gray-500 font-weight-bold">
+							There are no entries for your current search
+						</span>
+					) : (
+						<Table className="mt-3" responsive hover>
+							<thead>
+								<tr>
+									<th>Username</th>
+									<th>Name</th>
+									<th>Surname</th>
+									<th>Email</th>
+									<th>Type</th>
+									<th>Status</th>
+									<th>Actions</th>
+								</tr>
+							</thead>
+							<tbody>{usersFound}</tbody>
+						</Table>
+					)}
+					<Row>
+						<Col sm="6" xs="6" md="6">
+							<span className="text-gray-500">
+								Showing {indexOfFirstItem + 1} to{' '}
+								{Math.min(indexOfLastItem, filteredUsers.length)} of{' '}
+								{filteredUsers.length} entries
+							</span>
+						</Col>
+						<Col className="d-flex justify-content-end">
+							<span id="page-numbers">{renderPageNumbers}</span>
+						</Col>
+					</Row>
 				</Col>
 			</Row>
 			<ModalComponent ref={myRef} />

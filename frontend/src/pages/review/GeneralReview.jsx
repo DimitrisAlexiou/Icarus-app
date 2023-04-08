@@ -1,14 +1,13 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { Row, Col, Button } from 'reactstrap';
-import { Formik, Form } from 'formik';
+import { Row, Col } from 'reactstrap';
+import { Formik } from 'formik';
 import { createGeneralReview, reset } from '../../features/reviews/generalReviewSlice';
 import { GeneralReviewSchema } from '../../schemas/review/GeneralReview';
 import { Toast } from '../../constants/sweetAlertNotification';
 import GeneralReviewForm from '../../components/review/GeneralReviewForm';
 import BreadcrumbNav from '../../components/boilerplate/Breadcrumb';
-import SubmitButton from '../../components/buttons/SubmitButton';
 import Spinner from '../../components/boilerplate/Spinner';
 
 export default function GeneralReview() {
@@ -28,7 +27,7 @@ export default function GeneralReview() {
 		if (isSuccess) {
 			Toast.fire({
 				title: 'Success',
-				text: 'Review submitted successfully!',
+				text: 'Review submitted!',
 				icon: 'success',
 			});
 			navigate('/review');

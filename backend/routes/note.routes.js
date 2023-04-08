@@ -10,35 +10,26 @@ const {
 } = require('../controllers/note');
 const { validateNote } = require('../middleware/validations');
 const { authorize } = require('../middleware/authMiddleware');
+const { upload } = require('../utils/upload');
 
-// @desc    Get User Notes
-// @route   GET /api/note
+// @desc    Get / Post / Delete User Notes
+// @route   GET/POST/DELETE /api/note
 // @access  Private
-router.route('/').get(getUserNotes);
+router
+	.route('/')
+	.get(authorize, getUserNotes)
+	.post(authorize, upload.single('file'), validateNote, createUserNote)
+	.delete(authorize, deleteUserNotes);
 
-// @desc    Create User Note
-// @route   POST /api/note
+// @desc    Get / Update / Delete User Note by ID
+// @route   GET/PUT/DELETE /api/note/:id
 // @access  Private
-router.route('/').post(validateNote, createUserNote);
+router
+	.route('/:id')
+	.get(authorize, viewUserNote)
+	.put(authorize, upload.single('file'), validateNote, updateUserNote)
+	.delete(authorize, deleteUserNote);
 
-// @desc    Delete all User Notes
-// @route   DELETE /api/note
-// @access  Private
-router.route('/').delete(deleteUserNotes);
-
-// @desc    Get User Note by ID
-// @route   GET /api/note/:id
-// @access  Private
-router.route('/:id').get(viewUserNote);
-
-// @desc    Update User Note by ID
-// @route   PUT /api/note/:id
-// @access  Private
-router.route('/:id').put(validateNote, updateUserNote);
-
-// @desc    Delete User Note by ID
-// @route   DELETE /api/note/:id
-// @access  Private
-router.route('/:id').delete(deleteUserNote);
+router.route('/:id/importance').put(authorize, validateNote, updateUserNote);
 
 module.exports = router;

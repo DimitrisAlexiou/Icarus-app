@@ -20,7 +20,7 @@ const {
 	deleteUserGeneralReview,
 } = require('../controllers/review/generalReview');
 const {
-	validateUser,
+	validateProfile,
 	validateTeachingReview,
 	validateInstructorReview,
 	validateGeneralReview,
@@ -57,12 +57,9 @@ router
 	);
 
 // @desc    Get / Update / Delete User by ID
-// @route   GET/PUT/DELETE /api/user/profile
+// @route   GET/DELETE /api/user/profile / PUT /api/user/profile/:id
 // @access  Private User
-router
-	.route('/profile')
-	.get(authorize, viewProfile)
-	.put(authorize, validateUser, updateProfile)
-	.delete(authorize, deleteUser);
+router.route('/profile').get(authorize, viewProfile).delete(authorize, deleteUser);
+router.route('/profile/:id').put(authorize, validateProfile, updateProfile);
 
 module.exports = router;

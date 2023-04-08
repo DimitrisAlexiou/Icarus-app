@@ -87,6 +87,15 @@ export const deleteUser = createAsyncThunk(`${API_URL_USERS}/:userId`, async (us
 	}
 });
 
+export const deleteUsers = createAsyncThunk(API_URL_USERS + '/delete_all', async (_, thunkAPI) => {
+	try {
+		const token = thunkAPI.getState().auth.user.token;
+		return await userService.deleteUsers(token);
+	} catch (error) {
+		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+	}
+});
+
 export const userSlice = createSlice({
 	name: 'user',
 	initialState,
@@ -141,7 +150,7 @@ export const userSlice = createSlice({
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
-					text: 'User created successfully!',
+					text: 'User created!',
 					icon: 'success',
 				});
 			})
@@ -187,16 +196,36 @@ export const userSlice = createSlice({
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
-					text: 'User deleted successfully!',
+					text: 'User deleted!',
 					icon: 'success',
 				});
 			})
-			.addCase(deleteUser.rejected, (state, action) => {
+			.addCase(deleteUser.rejected, (state) => {
 				state.isLoading = false;
 				state.isError = true;
 				Toast.fire({
 					title: 'Something went wrong!',
 					text: 'User did not deleted!',
+					icon: 'error',
+				});
+			})
+			.addCase(deleteUsers.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(deleteUsers.fulfilled, (state) => {
+				state.isLoading = false;
+				Toast.fire({
+					title: 'Success',
+					text: 'Users deleted!',
+					icon: 'success',
+				});
+			})
+			.addCase(deleteUsers.rejected, (state) => {
+				state.isLoading = false;
+				state.isError = true;
+				Toast.fire({
+					title: 'Something went wrong!',
+					text: 'Users did not deleted!',
 					icon: 'error',
 				});
 			});

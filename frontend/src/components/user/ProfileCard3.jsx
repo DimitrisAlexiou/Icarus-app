@@ -1,9 +1,11 @@
 export default function ProfileCard3({ user }) {
 	return (
 		<>
-			<div className="card-body mb-5">
-				<h5 className="d-flex align-items-center mb-3">User Status</h5>
-				<p>Web Design</p>
+			<div className="card-body animated--grow-in mb-5">
+				<h5 className="d-flex align-items-center mb-3 font-weight-bold mb-4">
+					Degree Status
+				</h5>
+				<p> Passed Courses</p>
 				<div className="progress mb-3" style={{ height: '5px' }}>
 					<div
 						className="progress-bar bg-primary"
@@ -14,7 +16,7 @@ export default function ProfileCard3({ user }) {
 						aria-valuemax="100"
 					></div>
 				</div>
-				<p>Website Markup</p>
+				<p>Closed Cycles</p>
 				<div className="progress mb-3" style={{ height: '5px' }}>
 					<div
 						className="progress-bar bg-danger"
@@ -25,7 +27,7 @@ export default function ProfileCard3({ user }) {
 						aria-valuemax="100"
 					></div>
 				</div>
-				<p>One Page</p>
+				<p>Total ECTS</p>
 				<div className="progress mb-3" style={{ height: '5px' }}>
 					<div
 						className="progress-bar bg-success"
@@ -36,7 +38,7 @@ export default function ProfileCard3({ user }) {
 						aria-valuemax="100"
 					></div>
 				</div>
-				<p>Mobile Template</p>
+				<p>Total registered courses</p>
 				<div className="progress mb-3" style={{ height: '5px' }}>
 					<div
 						className="progress-bar bg-warning"

@@ -72,7 +72,7 @@ export const degreeRulesSlice = createSlice({
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
-					text: 'Degree rules assigned successfully!',
+					text: 'Degree rules assigned!',
 					icon: 'success',
 				});
 				state.degreeRules = action.payload;
@@ -101,7 +101,7 @@ export const degreeRulesSlice = createSlice({
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
-					text: 'Degree Rules updated successfully!',
+					text: 'Degree Rules updated!',
 					icon: 'success',
 				});
 				state.degreeRules = action.payload;

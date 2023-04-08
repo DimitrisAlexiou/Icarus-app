@@ -21,7 +21,8 @@ import {
 	resetCourses,
 } from '../../features/courses/courseSlice';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTrashAlt, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import { Toast } from '../../constants/sweetAlertNotification';
 import { CourseSchema } from '../../schemas/course/Course';
 import CourseForm from '../../components/course/CourseForm';
@@ -35,11 +36,13 @@ export default function CoursesDataTable({ courses, cycles, semesters }) {
 	const [isMounted, setIsMounted] = useState(true);
 	const myRef = useRef(null);
 
+	const [isEditting, setIsEditting] = useState(false);
 	const [searchQuery, setSearchQuery] = useState('');
 	const [sortColumn, setSortColumn] = useState('courseId');
 	const [sortOrder, setSortOrder] = useState('asc');
+	const [currentPage, setCurrentPage] = useState(0);
+	const [itemsPerPage, setItemsPerPage] = useState(10);
 	const [modal, setModal] = useState(false);
-
 	const [currentCourse, setCurrentCourse] = useState({
 		courseId: '',
 		title: '',
@@ -52,7 +55,7 @@ export default function CoursesDataTable({ courses, cycles, semesters }) {
 		ects: '',
 		year: '',
 		cycle: '',
-		prerequisites: [''],
+		prerequisites: [],
 		isActive: '',
 	});
 
@@ -63,7 +66,7 @@ export default function CoursesDataTable({ courses, cycles, semesters }) {
 		if (isSuccess) {
 			Toast.fire({
 				title: 'Success',
-				text: 'Course activated successfully!',
+				text: 'Course activated!',
 				icon: 'success',
 			});
 			navigate('/admin/dashboard');
@@ -96,6 +99,15 @@ export default function CoursesDataTable({ courses, cycles, semesters }) {
 		dispatch(deleteCourse(course._id));
 	};
 
+	const handlePageClick = (event) => {
+		setCurrentPage(Number(event.target.id));
+	};
+
+	const handleItemsPerPageChange = (event) => {
+		setItemsPerPage(Number(event.target.value));
+		setCurrentPage(0);
+	};
+
 	const handleSearchQueryChange = (e) => {
 		setSearchQuery(e.target.value);
 	};
@@ -122,7 +134,39 @@ export default function CoursesDataTable({ courses, cycles, semesters }) {
 		return matchTitle || matchID;
 	});
 
-	const coursesFound = filteredCourses.map((course) => {
+	const indexOfLastItem = (currentPage + 1) * itemsPerPage;
+	const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+	const currentCourses = filteredCourses.slice(indexOfFirstItem, indexOfLastItem);
+
+	const pageNumbers = [];
+	for (let i = 0; i < Math.ceil(filteredCourses.length / itemsPerPage); i++) {
+		pageNumbers.push(i);
+	}
+
+	const renderPageNumbers = pageNumbers.map((number) => {
+		return (
+			<Button
+				className="text-gray-500"
+				key={number}
+				id={number}
+				color="null"
+				onClick={handlePageClick}
+			>
+				{number + 1}
+			</Button>
+		);
+	});
+
+	const itemsPerPageOptions = [10, 25, 50, 100];
+	const renderItemsPerPageOptions = itemsPerPageOptions.map((option) => {
+		return (
+			<option key={option} value={option}>
+				{option}
+			</option>
+		);
+	});
+
+	const coursesFound = currentCourses.map((course) => {
 		return (
 			<tr key={course._id} onClick={() => viewCourse(course._id)}>
 				<th
@@ -170,6 +214,7 @@ export default function CoursesDataTable({ courses, cycles, semesters }) {
 								onClick={(e) => {
 									e.stopPropagation();
 									editC(course);
+									setIsEditting(true);
 								}}
 							>
 								<FontAwesomeIcon icon={faEdit} />
@@ -242,7 +287,7 @@ export default function CoursesDataTable({ courses, cycles, semesters }) {
 						}}
 						validateOnMount
 					>
-						{({ isSubmitting, dirty, values, handleReset, setFieldValue }) => (
+						{({ values, setFieldValue }) => (
 							<Form>
 								<CourseForm
 									courses={courses}
@@ -250,24 +295,8 @@ export default function CoursesDataTable({ courses, cycles, semesters }) {
 									semesters={semesters}
 									values={values}
 									setFieldValue={setFieldValue}
+									isEditting={isEditting}
 								/>
-								<Row>
-									<Col className="mb-3">
-										<Button
-											onClick={handleReset}
-											disabled={!dirty || isSubmitting}
-										>
-											Clear
-										</Button>
-									</Col>
-									<Col className="text-right px-0">
-										<SubmitButton
-											color={'primary'}
-											message={'Update Course'}
-											disabled={isSubmitting}
-										/>
-									</Col>
-								</Row>
 							</Form>
 						)}
 					</Formik>
@@ -288,27 +317,58 @@ export default function CoursesDataTable({ courses, cycles, semesters }) {
 
 	return (
 		<>
-			<Input
-				type="text"
-				placeholder="Search by title or ID . . ."
-				value={searchQuery}
-				onChange={handleSearchQueryChange}
-			/>
-			<Table className="mt-3" responsive hover>
-				<thead>
-					<tr>
-						<th>ID</th>
-						<th>Title</th>
-						<th>Type</th>
-						<th>Prerequisites</th>
-						<th>Lab</th>
-						<th>Obligatory</th>
-						<th>Active</th>
-						<th>Actions</th>
-					</tr>
-				</thead>
-				<tbody>{coursesFound}</tbody>
-			</Table>
+			<Row>
+				<Col>
+					<Input
+						type="text"
+						placeholder="Search by username or surname . . ."
+						value={searchQuery}
+						onChange={handleSearchQueryChange}
+					/>
+				</Col>
+				<Col xs="3" sm="2" md="2" lg="2" xl="1" className="d-flex justify-content-end">
+					<select
+						value={itemsPerPage}
+						onChange={handleItemsPerPageChange}
+						className="form-control"
+					>
+						{renderItemsPerPageOptions}
+					</select>
+				</Col>
+			</Row>
+			{coursesFound.length === 0 ? (
+				<span className="mt-4 mb-4 text-gray-500 font-weight-bold">
+					There are no entries for your current search
+				</span>
+			) : (
+				<Table className="mt-3" responsive hover>
+					<thead>
+						<tr>
+							<th>ID</th>
+							<th>Title</th>
+							<th>Type</th>
+							<th>Prerequisites</th>
+							<th>Lab</th>
+							<th>Obligatory</th>
+							<th>Active</th>
+							<th>Actions</th>
+						</tr>
+					</thead>
+					<tbody>{coursesFound}</tbody>
+				</Table>
+			)}
+			<Row>
+				<Col sm="6" xs="6" md="6">
+					<span className="text-gray-500">
+						Showing {indexOfFirstItem + 1} to{' '}
+						{Math.min(indexOfLastItem, filteredCourses.length)} of{' '}
+						{filteredCourses.length} entries
+					</span>
+				</Col>
+				<Col className="d-flex justify-content-end">
+					<span id="page-numbers">{renderPageNumbers}</span>
+				</Col>
+			</Row>
 			<ModalComponent ref={myRef} />
 		</>
 	);

@@ -220,7 +220,7 @@ module.exports.deleteUserGeneralReview = asyncHandler(async (req, res) => {
 			const { id } = req.params;
 			try {
 				await GeneralReview.findByIdAndDelete(id);
-				return res.status(200).json('General review deleted successfully!');
+				return res.status(200).json('General review deleted!');
 			} catch (error) {
 				console.error('❌ Error while deleting user general review: ', error);
 				return res.status(500).json(`${error.message}`);

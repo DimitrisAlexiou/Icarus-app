@@ -1,14 +1,12 @@
 import axios from 'axios';
-import { BASE_URL, headers } from '../../constants/config';
-const API_URL_NOTES = `${BASE_URL}/api/note`;
-const API_URL_NOTE = `${BASE_URL}/api/note/`;
+import { API_URL_NOTE, headers } from '../../constants/config';
 
 const getUserNotes = async (token) => {
 	const config = {
 		headers: { headers, Authorization: `Bearer ${token}` },
 	};
 
-	const response = await axios.get(API_URL_NOTES, config);
+	const response = await axios.get(API_URL_NOTE, config);
 
 	return response.data;
 };
@@ -28,7 +26,9 @@ const createUserNote = async (data, token) => {
 		headers: { headers, Authorization: `Bearer ${token}` },
 	};
 
-	return await axios.post(API_URL_NOTES, data, config);
+	const response = await axios.post(API_URL_NOTE, data, config);
+
+	return response.data;
 };
 
 const updateUserNote = async (noteId, data, token) => {
@@ -37,6 +37,23 @@ const updateUserNote = async (noteId, data, token) => {
 	};
 
 	const response = await axios.put(API_URL_NOTE + noteId, data, config);
+
+	return response.data;
+};
+
+const updateImportance = async (noteId, token) => {
+	const config = {
+		headers: { headers, Authorization: `Bearer ${token}` },
+	};
+
+	const currentNote = await axios.get(API_URL_NOTE + noteId, config);
+
+	const updatedNote = {
+		...currentNote.data,
+		importance: !currentNote.data.importance,
+	};
+
+	const response = await axios.put(API_URL_NOTE + noteId, updatedNote, config);
 
 	return response.data;
 };
@@ -51,12 +68,24 @@ const deleteUserNote = async (noteId, token) => {
 	return response.data;
 };
 
+const deleteUserNotes = async (token) => {
+	const config = {
+		headers: { headers, Authorization: `Bearer ${token}` },
+	};
+
+	const response = axios.delete(API_URL_NOTE, config);
+
+	return response.data;
+};
+
 const noteService = {
 	createUserNote,
 	updateUserNote,
+	updateImportance,
 	deleteUserNote,
-	getUserNotes,
+	deleteUserNotes,
 	getUserNote,
+	getUserNotes,
 };
 
 export default noteService;

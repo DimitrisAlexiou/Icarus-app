@@ -59,13 +59,13 @@ export default function GeneralReviewForm({ isSubmitting, dirty, handleReset }) 
 					<ErrorMessage name="dislikes" component={FormErrorMessage} />
 				</FormGroup>
 
-				<Row>
-					<Col md="6" sm="6" xs="6">
+				<Row className="mt-4">
+					<Col sm="6" md="6" xs="12" className="text-sm-left text-center">
 						<Button onClick={handleReset} disabled={!dirty || isSubmitting}>
 							Clear
 						</Button>
 					</Col>
-					<Col className="text-right px-0">
+					<Col className="text-sm-right text-center mt-sm-0 mt-3 px-0">
 						<SubmitButton
 							color={'primary'}
 							message={'Review'}

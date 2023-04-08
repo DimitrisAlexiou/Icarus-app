@@ -1,5 +1,6 @@
 const {
 	userSchema,
+	profileSchema,
 	courseSchema,
 	teachingSchema,
 	teachingReviewSchema,
@@ -10,6 +11,8 @@ const {
 	reviewSchema,
 	cyclesSchema,
 	degreeRulesSchema,
+	noteSchema,
+	calendarSchema,
 } = require('../schemas');
 const ExpressError = require('../utils/expressError');
 
@@ -17,6 +20,17 @@ module.exports.validateUser = (req, res, next) => {
 	const { error } = userSchema.validate(req.body.user);
 	if (error) {
 		console.error('❌ Error while validating user schema ---> ', error);
+		const msg = error.details.map((el) => el.message).join(',');
+		throw new ExpressError(msg, 400);
+	} else {
+		next();
+	}
+};
+
+module.exports.validateProfile = (req, res, next) => {
+	const { error } = profileSchema.validate(req.body);
+	if (error) {
+		console.error('❌ Error while validating profile schema ---> ', error);
 		const msg = error.details.map((el) => el.message).join(',');
 		throw new ExpressError(msg, 400);
 	} else {
@@ -130,6 +144,28 @@ module.exports.validateDegreeRules = (req, res, next) => {
 	const { error } = degreeRulesSchema.validate(req.body.degreeRules);
 	if (error) {
 		console.error('❌ Error while validating degree rules schema ---> ', error);
+		const msg = error.details.map((el) => el.message).join(',');
+		throw new ExpressError(msg, 400);
+	} else {
+		next();
+	}
+};
+
+module.exports.validateNote = (req, res, next) => {
+	const { error } = noteSchema.validate(req.body.note);
+	if (error) {
+		console.error('❌ Error while validating note schema ---> ', error);
+		const msg = error.details.map((el) => el.message).join(',');
+		throw new ExpressError(msg, 400);
+	} else {
+		next();
+	}
+};
+
+module.exports.validateCalendar = (req, res, next) => {
+	const { error } = calendarSchema.validate(req.body.calendar);
+	if (error) {
+		console.error('❌ Error while validating calendar schema ---> ', error);
 		const msg = error.details.map((el) => el.message).join(',');
 		throw new ExpressError(msg, 400);
 	} else {

@@ -3,11 +3,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import { getCourses, resetCourses } from '../../features/courses/courseSlice';
 import { getCycles } from '../../features/admin/cyclesSlice';
 import { Toast } from '../../constants/sweetAlertNotification';
-import { Col } from 'reactstrap';
+import { Col, Row } from 'reactstrap';
 import { faBook } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import CourseItem from '../../components/course/CourseItem';
-import CycleCourseItem from '../../components/course/CycleCourseItem';
 import Spinner from '../../components/boilerplate/Spinner';
 import BreadcrumbNav from '../../components/boilerplate/Breadcrumb';
 import Notification from '../../components/boilerplate/Notification';
@@ -65,27 +64,21 @@ export default function UndergraduateCourses() {
 				header={'Courses'}
 				active={'Obligatory Courses'}
 			/>
-			<h1 className="h3 mb-5 text-gray-800 font-weight-bold animated--grow-in">
+			<h3 className="mb-4 text-gray-800 font-weight-bold animated--grow-in">
 				Obligatory Courses
-			</h1>
+			</h3>
 			{courses.length ? (
-				courses.map((course) => (
-					<Col
-						key={course._id}
-						xs="12"
-						sm="12"
-						md="11"
-						lg="10"
-						xl="6"
-						className="mb-3 mx-3 animated--grow-in"
-					>
-						{course.type === 'Undergraduate' && course.isObligatory ? (
-							<CourseItem key={course._id} course={course} />
-						) : (
-							<CourseItem key={course._id} course={course} cycles={cycles} />
-						)}
-					</Col>
-				))
+				<Row className="justify-content-center animated--grow-in">
+					{courses.map((course, index) => (
+						<Col key={index} xs="12" sm="12" md="12" lg="5" className="mb-3 mx-auto">
+							{course.type === 'Undergraduate' && course.isObligatory ? (
+								<CourseItem key={course._id} course={course} />
+							) : (
+								<CourseItem key={course._id} course={course} cycles={cycles} />
+							)}
+						</Col>
+					))}
+				</Row>
 			) : (
 				<Notification
 					icon={<FontAwesomeIcon icon={faBook} />}
@@ -95,59 +88,5 @@ export default function UndergraduateCourses() {
 				/>
 			)}
 		</>
-
-		// course.type === 'Undergraduate' && (
-		// 		{/* <div className="row mb-3">
-		// 				<div className="col-6">
-		// 					<h1 className="h3 mb-3 text-gray-800 font-weight-bold">
-		// 						Undergraduate Courses
-		// 					</h1>
-		// 				</div>
-		// 				<div className="col-6 mb-3 px-3 d-flex justify-content-end">
-		// 					<Link
-		// 						to="/course"
-		// 						className="btn btn-light-cornflower-blue align-self-center"
-		// 					>
-		// 						Back
-		// 					</Link>
-		// 				</div>
-		// 			</div> */}
-		// 		{/* <div className="row d-flex justify-content-center">
-		// 			{courses.map((course) =>
-		// 				course.isObligatory === true ? (
-		// 					<div className="col-sm-12 col-md-9 col-lg-9 col-xl-5 g-4 mb-3 mx-5">
-		// 						<div className="col">
-		// 							<h5 className="h5 mb-4 text-gray-600">
-		// 								Obligatory Courses
-		// 							</h5>
-		// 							<CourseItem key={course._id} course={course} />
-		// 						</div>
-		// 					</div>
-		// 				) : (
-		// 					<div className="col-sm-12 col-md-9 col-lg-9 col-xl-5 g-4 mb-3 mx-5">
-		// 						<div className="col">
-		// 							<h5 className="h5 mb-4 text-gray-600">Cycles</h5>
-		// 							<CycleCourseItem key={course._id} course={course} />
-		// 						</div>
-		// 					</div>
-		// 				)
-		// 			)}
-		// 		</div> */}
-		// 		<div className="row d-flex justify-content-center">
-		// 			<div className="col-sm-12 col-md-9 col-lg-9 col-xl-5 g-4 mb-3 mx-5">
-		// 				<div className="col">
-		// 					<h5 className="h5 mb-4 text-gray-600">Obligatory Courses</h5>
-		// 					<CourseItem key={course._id} course={course} />
-		// 				</div>
-		// 			</div>
-		// 			<div className="col-sm-12 col-md-9 col-lg-9 col-xl-5 g-4 mb-3 mx-5">
-		// 				<div className="col">
-		// 					<h5 className="h5 mb-4 text-gray-600">Cycles</h5>
-		// 					<CycleCourseItem key={course._id} course={course} />
-		// 				</div>
-		// 			</div>
-		// 		</div>
-		// )
-		// )}
 	);
 }

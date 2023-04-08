@@ -71,7 +71,7 @@ export default function NewTeaching() {
 										labGrade: values.labGrade,
 										theoryGradeThreshold: values.theoryGradeThreshold,
 										labGradeThreshold: values.labGradeThreshold,
-										books: values.books.some(Boolean) ? values.books : [null],
+										books: values.books,
 									};
 									console.log(teaching);
 									// dispatch(configureTeaching(teaching));

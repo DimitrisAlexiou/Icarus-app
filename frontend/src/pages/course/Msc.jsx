@@ -1,8 +1,7 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Col, Row } from 'reactstrap';
-import { Link } from 'react-router-dom';
-import { getCourses, reset } from '../../features/courses/courseSlice';
+import { getCourses } from '../../features/courses/courseSlice';
 import { faBook } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import CourseItem from '../../components/course/CourseItem';
@@ -10,7 +9,7 @@ import Notification from '../../components/boilerplate/Notification';
 import BreadcrumbNav from '../../components/boilerplate/Breadcrumb';
 import Spinner from '../../components/boilerplate/Spinner';
 
-export default function MasterCourses() {
+export default function MscCourses() {
 	const { courses, isLoading, isError } = useSelector((state) => state.courses);
 	const {
 		cycles,
@@ -37,31 +36,33 @@ export default function MasterCourses() {
 				header={'Courses'}
 				active={'Master Courses'}
 			/>
-			<h1 className="h3 mb-5 text-gray-800 font-weight-bold animated--grow-in">
+			<h3 className="mb-4 text-gray-800 font-weight-bold animated--grow-in">
 				Master Courses
-			</h1>
+			</h3>
 			{courses.length ? (
-				courses.map((course) => (
-					<Col
-						key={course._id}
-						xs="12"
-						sm="12"
-						md="11"
-						lg="10"
-						xl="6"
-						className="g-4 mb-3 mx-5 animated--grow-in"
-					>
-						{course.type === 'Master' && course.isObligatory ? (
-							<CourseItem key={course._id} course={course} />
-						) : (
-							<CourseItem key={course._id} course={course} cycles={cycles} />
-						)}
-					</Col>
-				))
+				<Row className="d-flex justify-content-center animated--grow-in">
+					{courses.map((course, index) => (
+						<Col
+							key={index}
+							xs="12"
+							sm="12"
+							md="12"
+							lg="5"
+							xl="5"
+							className="mb-3 mx-auto"
+						>
+							{course.type === 'Master' && course.isObligatory ? (
+								<CourseItem key={course._id} course={course} />
+							) : (
+								<CourseItem key={course._id} course={course} cycles={cycles} />
+							)}
+						</Col>
+					))}
+				</Row>
 			) : (
 				<Notification
 					icon={<FontAwesomeIcon icon={faBook} />}
-					message={'There are no master courses available right now !'}
+					message={'There are no Msc courses available right now !'}
 					link={'/course'}
 					linkMessage={'Back to Courses'}
 				/>

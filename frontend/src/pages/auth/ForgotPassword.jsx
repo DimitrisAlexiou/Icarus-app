@@ -1,104 +1,155 @@
-import React from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { Button, Row, Col } from 'reactstrap';
-import { Formik, Form } from 'formik';
+import { useEffect } from 'react';
+import { useNavigate, Link, NavLink } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { Button, Row, Col, FormGroup, Label, Nav } from 'reactstrap';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { forgotPassword, reset } from '../../features/auth/authSlice';
+import { FaStudiovinari } from 'react-icons/fa';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-// import { UserSchema } from '../../schemas/User';
+import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
+import { EmailSchema } from '../../schemas/auth/ForgotPassword';
 import { Toast } from '../../constants/sweetAlertNotification';
-// import loginService from '../../features/auth/loginService';
-import LoginForm from '../../components/auth/LoginForm';
-import SubmitButton from '../../components/buttons/SubmitButton';
-import SignUpInButton from '../../components/buttons/SignUpInButton';
+import FormErrorMessage from '../../components/FormErrorMessage';
+import Spinner from '../../components/boilerplate/Spinner';
 
-export default function Login() {
-	const initialValues = {
-		username: '',
-		email: '',
-		password: '',
-	};
+export default function ForgotPassword() {
+	const { user, isError, isLoading, isSuccess, message } = useSelector((state) => state.auth);
 
+	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
-	// const onSubmit = async (loginData) => {
-	// 	try {
-	// 		await registerService.createUser(loginData);
-	// 		Toast.fire({
-	// 			title: 'Success',
-	// 			text: 'User logged in successfully!',
-	// 			icon: 'success',
-	// 		});
-	// 		navigate('/');
-	// 	} catch (error) {
-	// 		Toast.fire({
-	// 			title: 'Error while logging user!',
-	// 			text: error.response.data,
-	// 			icon: 'error',
-	// 		});
-	// 	}
-	// };
+	useEffect(() => {
+		if (isError) {
+			Toast.fire({
+				title: 'Something went wrong!',
+				text: message,
+				icon: 'error',
+			});
+		}
+		if (isSuccess) {
+			Toast.fire({
+				title: 'Success',
+				text: `New password restored ${user.user.name}`,
+				icon: 'success',
+			});
+			navigate('/');
+		}
+
+		dispatch(reset());
+	}, [isError, isSuccess, user, message, navigate, dispatch]);
+
+	if (isLoading) {
+		return <Spinner />;
+	}
 
 	return (
 		<>
 			<div className="bg-gradient-primary">
 				<div className="container">
+					<Row className="justify-content-left">
+						<Nav className="logo">
+							<NavLink className="sidebar-brand d-flex align-items-center" to="/">
+								<div className="logo-brand-icon rotate-n-15">
+									<i>
+										<FaStudiovinari />
+									</i>
+								</div>
+								<span
+									style={{ fontSize: '1.3rem' }}
+									className="sidebar-brand-text mx-3 mt-3"
+								>
+									Icarus
+								</span>
+							</NavLink>
+						</Nav>
+					</Row>
 					<Row className="justify-content-center">
-						<Col xl="12" lg="12" md="12" sm="12">
-							<div className="card o-hidden border-0 shadow-lg my-5 animated--grow-in">
+						<Col xl="10" lg="12" md="10" sm="12">
+							<div className="card o-hidden border-0 shadow-lg my-4 animated--grow-in">
 								<div className="card-body p-0">
 									<Row>
 										<Col
-											lg="6"
+											lg="5"
+											xl="5"
 											className="d-none d-lg-block bg-password-image"
 										></Col>
-										<Col lg="6">
+										<Col lg="7" xl="7">
 											<div className="p-5">
 												<div className="text-center">
-													<h1 className="h4 text-gray-900 mb-2">
+													<h1 className="h4 text-gray-900 mb-4">
 														Forgot Your Password?
 													</h1>
-													<p className="mb-4">
+													<p className="mb-5">
 														We get it, stuff happens. Just enter your
 														email address below and we'll send you a
 														link to reset your password!
 													</p>
 												</div>
 												<Formik
-													initialValues={initialValues}
-													// validationSchema={UserSchema}
-													// onSubmit={(loginData) => {
-													// 	onSubmit(loginData);
-													// }}
+													initialValues={{
+														email: '',
+													}}
+													validationSchema={EmailSchema}
+													onSubmit={(values, { setSubmitting }) => {
+														const email = {
+															email: values.email,
+														};
+														dispatch(forgotPassword(user));
+														setSubmitting(false);
+													}}
 													validateOnMount
 												>
-													<Form className="ForgotPassword">
-														{/* <div className="form-group">
-                                                        <input type="email" className="form-control form-control-user"
-                                                            id="exampleInputEmail" aria-describedby="emailHelp"
-                                                            placeholder="Enter Email Address...">
-                                                    </div>
-                                                    <a href="login.html" className="btn btn-primary btn-user btn-block">
-													Reset Password
-												</a> */}
-													</Form>
+													{({ isSubmitting }) => (
+														<Form>
+															<FormGroup
+																className="form-group mb-3"
+																floating
+															>
+																<Field
+																	type="email"
+																	className="form-control"
+																	name="email"
+																/>
+																<Label
+																	for="email"
+																	className="text-gray-600"
+																>
+																	Email
+																</Label>
+																<ErrorMessage
+																	name="email"
+																	component={FormErrorMessage}
+																/>
+															</FormGroup>
+															<Row className="mt-4">
+																<Col className="text-center">
+																	<Button
+																		className="btn-block"
+																		color="primary"
+																		disabled={isSubmitting}
+																	>
+																		Send Reset Link
+																	</Button>
+																</Col>
+															</Row>
+														</Form>
+													)}
 												</Formik>
-												<hr />
 												<Row>
-													<Col md="6">
+													<Col className="text-center mt-4">
+														<hr />
 														<Link
-															to="/auth/register"
-															style={{ textDecoration: 'none' }}
-														>
-															Create Account!
-														</Link>
-													</Col>
-													<Col className="text-right">
-														<Link
+															className="nav-item align-self-center text-gray-500"
 															to="/auth/login"
 															style={{
 																textDecoration: 'none',
 															}}
 														>
-															Already have an account?
+															<FontAwesomeIcon
+																className="mx-2"
+																icon={faChevronLeft}
+															/>
+															Back to Login
 														</Link>
 													</Col>
 												</Row>
@@ -108,14 +159,6 @@ export default function Login() {
 								</div>
 							</div>
 						</Col>
-						<div className="text-center">
-							<Link
-								to="/"
-								className="col-xs-2 col-sm-2 col-md-2 col-lg-2 mb-sm-0 mb-3"
-							>
-								<Button>Landing Page</Button>
-							</Link>
-						</div>
 					</Row>
 				</div>
 			</div>

@@ -5,7 +5,7 @@ const Instructor = require('../models/users/instructor');
 
 module.exports.viewProfile = asyncHandler(async (req, res) => {
 	try {
-		const id = req.user._id;
+		const id = req.user.id;
 		const user = await User.findById(id)
 			.populate({
 				path: 'student',
@@ -28,8 +28,8 @@ module.exports.viewProfile = asyncHandler(async (req, res) => {
 
 module.exports.updateProfile = asyncHandler(async (req, res) => {
 	try {
-		const id = req.user._id;
-		const user = await User.findByIdAndUpdate(id, { ...req.body });
+		const id = req.user.id;
+		const user = await User.findByIdAndUpdate(id, req.body);
 		if (!user) {
 			return res.status(404).json({ message: 'Seems like there is no user with this ID!' });
 		} else {
@@ -44,9 +44,9 @@ module.exports.updateProfile = asyncHandler(async (req, res) => {
 
 module.exports.deleteUser = asyncHandler(async (req, res) => {
 	try {
-		const id = req.user._id;
+		const id = req.user.id;
 		await User.findByIdAndDelete(id);
-		return res.status(200).json({ message: 'User deleted successfully!' });
+		return res.status(200).json({ message: 'User deleted!' });
 	} catch (error) {
 		console.error('❌ Error while deleting user', error);
 		return res

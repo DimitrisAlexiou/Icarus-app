@@ -73,7 +73,7 @@ export const cyclesSlice = createSlice({
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
-					text: 'Cycles defined successfully!',
+					text: 'Cycles defined!',
 					icon: 'success',
 				});
 				state.cycles = action.payload;
@@ -90,7 +90,7 @@ export const cyclesSlice = createSlice({
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
-					text: 'Cycles updated successfully!',
+					text: 'Cycles updated!',
 					icon: 'success',
 				});
 			})

@@ -31,7 +31,7 @@ module.exports.login = asyncHandler(async (req, res) => {
 				if (user.type === 'Student') {
 					userType = await Student.findOne({ _id: user.student }).select('-_id');
 				} else if (user.type === 'Instructor') {
-					userType = await Instructor.findOne({ _id: user.student }).select('-_id');
+					userType = await Instructor.findOne({ _id: user.instructor }).select('-_id');
 				}
 				return res.status(200).json({ user, userType, token: generateToken(user._id) });
 			}

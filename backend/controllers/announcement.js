@@ -37,16 +37,13 @@ module.exports.getInstructorAnnouncements = asyncHandler(async (req, res) => {
 					return res
 						.status(404)
 						.json(
-							`Seems like there are no announcements from instructor: ${req.user.username}!`,
+							`Seems like there are no announcements from instructor: ${req.user.username}!`
 						);
 				} else {
 					return res.status(200).json(instructorAnnouncements);
 				}
 			} catch (error) {
-				console.error(
-					'❌ Error while finding instructor announcements: ',
-					error,
-				);
+				console.error('❌ Error while finding instructor announcements: ', error);
 				return res.status(500).json(`${error.message}`);
 			}
 		}
@@ -72,13 +69,11 @@ module.exports.viewUserNote = asyncHandler(async (req, res) => {
 					return res
 						.status(404)
 						.json(
-							`Seems like there is no note with this ID for user: ${req.user.username}!`,
+							`Seems like there is no note with this ID for user: ${req.user.username}!`
 						);
 				} else {
 					if (note.user.toString() !== userId) {
-						return res
-							.status(401)
-							.json('You are not authorized to view this note!');
+						return res.status(401).json('You are not authorized to view this note!');
 					}
 					return res.status(200).json(note);
 				}
@@ -129,10 +124,7 @@ module.exports.createUserNote = asyncHandler(async (req, res) => {
 					}
 				}
 			} catch (error) {
-				console.error(
-					'❌ Error while checking if note already exists: ',
-					error,
-				);
+				console.error('❌ Error while checking if note already exists: ', error);
 				return res.status(500).json(`${error.message}`);
 			}
 		}
@@ -164,20 +156,18 @@ module.exports.updateUserNote = asyncHandler(async (req, res) => {
 					return res
 						.status(404)
 						.json(
-							`Seems like there is no note with this ID for user: ${req.user.username}!`,
+							`Seems like there is no note with this ID for user: ${req.user.username}!`
 						);
 				} else {
 					if (note.user.toString() !== userId) {
-						return res
-							.status(401)
-							.json('You are not authorized to view this note!');
+						return res.status(401).json('You are not authorized to view this note!');
 					} else {
 						try {
 							const updatedNote = await Note.findByIdAndUpdate(
 								id,
 								{ ...req.body.note },
 								{ user: userId },
-								{ new: true },
+								{ new: true }
 							);
 							return res.status(200).json(updatedNote);
 						} catch (error) {
@@ -209,7 +199,7 @@ module.exports.deleteUserNote = asyncHandler(async (req, res) => {
 			const { id } = req.params;
 			try {
 				await Note.findByIdAndDelete(id);
-				return res.status(200).json('Note deleted successfully!');
+				return res.status(200).json('Note deleted!');
 			} catch (error) {
 				console.error('❌ Error while deleting user note: ', error);
 				return res.status(500).json(`${error.message}`);

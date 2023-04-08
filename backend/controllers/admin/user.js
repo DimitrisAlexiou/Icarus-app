@@ -43,7 +43,7 @@ module.exports.deleteUser = asyncHandler(async (req, res) => {
 	try {
 		const { id } = req.params;
 		await User.findByIdAndDelete(id);
-		return res.status(200).json({ message: 'User deleted successfully!' });
+		return res.status(200).json({ message: 'User deleted!' });
 	} catch (error) {
 		console.error('❌ Error while deleting user', error);
 		return res.status(500).json({
@@ -60,7 +60,7 @@ module.exports.activateUser = asyncHandler(async (req, res) => {
 			user.isActive = true;
 			user.loginFailedAttempts = 0;
 			await user.save();
-			return res.status(200).json({ message: 'User account activated successfully!' });
+			return res.status(200).json({ message: 'User account activated!' });
 		} else {
 			return res.status(400).json({ message: 'User not found!' });
 		}

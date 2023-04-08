@@ -206,7 +206,7 @@ module.exports.deleteCourse = asyncHandler(async (req, res) => {
 	try {
 		const { id } = req.params;
 		await Course.findByIdAndDelete(id);
-		return res.status(200).json({ message: 'Course deleted successfully!' });
+		return res.status(200).json({ message: 'Course deleted!' });
 	} catch (error) {
 		console.error('❌ Error while deleting course: ', error);
 		return res.status(500).json({

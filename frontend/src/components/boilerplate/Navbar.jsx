@@ -19,21 +19,19 @@ import { navbarLinks } from '../../utils/NavigationLinks';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
 	faUnlock,
-	faIdCard,
 	faGraduationCap,
-	faUser,
-	faCogs,
-	faList,
 	faSignOut,
 	faBarsStaggered,
 } from '@fortawesome/free-solid-svg-icons';
+import { faIdCard, faMoon, faSun } from '@fortawesome/free-regular-svg-icons';
 import Clock from 'react-live-clock';
 import NotificationsNavItem from './Notifications';
 import MessagesNavItem from './Messages';
 import img from '../../assets/images/undraw_profile.svg';
-import '../../App.css';
 
-export default function NavBar() {
+export default function NavBar({ isSidebarCollapsed, setSidebarCollapsed }) {
+	const [darkTheme, setDarkTheme] = useState(false);
+
 	const { user } = useSelector((store) => store.auth);
 
 	const myRef = useRef(null);
@@ -60,7 +58,7 @@ export default function NavBar() {
 				toggle={toggleLogout}
 				ref={ref}
 			>
-				<ModalHeader className="modal-header modal-title">Ready to Leave?</ModalHeader>
+				<ModalHeader toggle={toggleLogout}>Ready to Leave?</ModalHeader>
 				<ModalBody className="modal-body">
 					Logout will terminate your current session.
 				</ModalBody>
@@ -80,33 +78,62 @@ export default function NavBar() {
 		<>
 			<Nav
 				fixed="top"
-				className="d-flex navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow sticky-top"
+				className={`justify-content-between navbar navbar-expand topbar mb-4 static-top shadow sticky-top ${
+					darkTheme ? 'navbar-dark bg-dark' : 'navbar-light bg-white'
+				}`}
 			>
-				<NavItem className="nav-item mx-1 text-center d-none d-md-inline">
-					<Button
-						className="rounded-circle border-0"
-						color="null"
-						// onClick={openSidebar}
-					>
-						<FontAwesomeIcon icon={faBarsStaggered} />
-					</Button>
-				</NavItem>
+				<div className="navbar-nav">
+					<NavItem className="nav-item mx-1">
+						<Button
+							className="nav-link rounded-circle border-0"
+							color="null"
+							onClick={() => setSidebarCollapsed(!isSidebarCollapsed)}
+						>
+							<FontAwesomeIcon icon={faBarsStaggered} />
+						</Button>
+					</NavItem>
 
-				<NavItem className="nav-item mx-3">
-					<a
-						href="https://www.icsd.aegean.gr/"
-						target="_blank"
-						className="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"
-						rel="noreferrer"
-					>
-						<FontAwesomeIcon className="text-white-50" icon={faGraduationCap} />
-						<span className="ml-1">ICSD Webpage</span>
-					</a>
-				</NavItem>
+					<NavItem className="d-none d-md-none d-sm-block d-lg-block nav-item mx-3">
+						<a
+							href="https://www.icsd.aegean.gr/"
+							target="_blank"
+							className="btn btn-sm btn-primary shadow-sm"
+							rel="noreferrer"
+							style={{ marginTop: '20px' }}
+						>
+							<FontAwesomeIcon className="text-white-50" icon={faGraduationCap} />
+							<span className="ml-1">ICSD Webpage</span>
+						</a>
+					</NavItem>
+				</div>
 
 				<div className="navbar-nav ml-auto">
+					{/* <NavItem className="nav-item d-none d-sm-none d-sm-block d-lg-block mx-1">
+						<span className="nav-link">
+							{new Date().toLocaleString('en-GB', {
+								day: '2-digit',
+								month: '2-digit',
+								year: 'numeric',
+							})}
+						</span>
+					</NavItem> */}
+
 					<NavItem className="nav-item mx-1">
 						<Clock className="nav-link" format={'HH:mm:ss'} ticking={true} />
+					</NavItem>
+
+					<NavItem className="nav-item">
+						<Button
+							className="nav-link border-0"
+							color="null"
+							onClick={() => setDarkTheme(!darkTheme)}
+						>
+							{darkTheme ? (
+								<FontAwesomeIcon icon={faSun} />
+							) : (
+								<FontAwesomeIcon icon={faMoon} />
+							)}
+						</Button>
 					</NavItem>
 
 					{user ? null : (
@@ -118,7 +145,7 @@ export default function NavBar() {
 								</NavLink>
 							</NavItem>
 
-							<NavItem className="nav-item  mx-1">
+							<NavItem className="nav-item mx-1">
 								<NavLink className="nav-link" to="/auth/login">
 									<FontAwesomeIcon icon={faUnlock} />
 									<span className="ml-2">Login</span>
@@ -138,11 +165,16 @@ export default function NavBar() {
 							<>
 								<Dropdown isOpen={dropdownOpenUser} toggle={toggleUser}>
 									<DropdownToggle className="nav-link" color="null">
-										<img
-											className="img-profile rounded-circle"
-											src={img}
-											alt="profile_picture"
-										/>
+										<span className="mr-2 d-none d-lg-inline text-gray-600 small">
+											{user.user.name}
+										</span>
+										<span className="rounded-circle-success">
+											<img
+												className="img-profile rounded-circle"
+												src={img}
+												alt="profile_picture"
+											/>
+										</span>
 									</DropdownToggle>
 									<DropdownMenu>
 										{navbarLinks.map((navbarLink) => {
@@ -150,7 +182,8 @@ export default function NavBar() {
 											return (
 												<DropdownItem
 													key={id}
-													className="dropdown-item d-flex align-items-center animated--grow-in"
+													className="nav-links-animate align-items-center animated--grow-in"
+													style={{ backgroundColor: 'transparent' }}
 												>
 													<NavLink
 														to={path}
@@ -172,8 +205,10 @@ export default function NavBar() {
 					</NavItem>
 
 					{user ? (
-						<NavItem className="nav-item mx-1 mt-4" onClick={() => setShowLogout(true)}>
-							<FontAwesomeIcon className="text-gray-400" icon={faSignOut} />
+						<NavItem className="nav-item mx-1" onClick={() => setShowLogout(true)}>
+							<NavLink className="nav-link">
+								<FontAwesomeIcon className="text-gray-400" icon={faSignOut} />
+							</NavLink>
 						</NavItem>
 					) : null}
 				</div>

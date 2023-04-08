@@ -76,8 +76,8 @@ export default function NewCourse() {
 	return (
 		<>
 			<Row className="mb-5 animated--grow-in">
-				<Col sm="6" xs="6" md="6">
-					<h1 className="h3 text-gray-800 font-weight-bold">Create Course</h1>
+				<Col sm="6" xs="9" md="6">
+					<h3 className="text-gray-800 font-weight-bold">Create Course</h3>
 				</Col>
 				<Col className="d-flex justify-content-end">
 					<BackButton url={'/course'} />
@@ -85,7 +85,7 @@ export default function NewCourse() {
 			</Row>
 
 			<Row className="justify-content-center animated--grow-in">
-				<Col>
+				<Col lg="9">
 					<div className="card shadow mb-4">
 						<div className="card-header py-3">
 							<h6 className="m-0 font-weight-bold text-primary">
@@ -106,7 +106,7 @@ export default function NewCourse() {
 									ects: 0,
 									year: '',
 									cycle: '',
-									prerequisites: [''],
+									prerequisites: [],
 								}}
 								validationSchema={CourseSchema}
 								onSubmit={(values, { setSubmitting }) => {
@@ -124,7 +124,7 @@ export default function NewCourse() {
 										cycle: values.cycle ? values.cycle : null,
 										prerequisites: values.prerequisites.some(Boolean)
 											? values.prerequisites
-											: [null],
+											: [],
 									};
 									console.log(course);
 									dispatch(createCourse(course));

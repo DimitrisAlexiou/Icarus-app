@@ -1,14 +1,13 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { Row, Col, Button } from 'reactstrap';
+import { Row, Col } from 'reactstrap';
 import { createInstructorReview, reset } from '../../features/reviews/instructorReviewSlice';
-import { Formik, Form } from 'formik';
+import { Formik } from 'formik';
 import { InstructorReviewSchema } from '../../schemas/review/InstructorReview';
 import { Toast } from '../../constants/sweetAlertNotification';
 import InstructorReviewForm from '../../components/review/InstructorReviewForm';
 import BreadcrumbNav from '../../components/boilerplate/Breadcrumb';
-import SubmitButton from '../../components/buttons/SubmitButton';
 import Spinner from '../../components/boilerplate/Spinner';
 
 export default function InstructorReview() {
@@ -30,7 +29,7 @@ export default function InstructorReview() {
 		if (isSuccess) {
 			Toast.fire({
 				title: 'Success',
-				text: 'Review submitted successfully!',
+				text: 'Review submitted!',
 				icon: 'success',
 			});
 			navigate('/review');

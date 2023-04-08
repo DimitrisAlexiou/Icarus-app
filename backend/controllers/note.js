@@ -2,26 +2,17 @@ const asyncHandler = require('express-async-handler');
 const Note = require('../models/note');
 const User = require('../models/users/user');
 
-//TODO FIX THE REQ.USER.ID FOR FINDING USER WITH USER ID
+module.exports.createUserNote = asyncHandler(async (req, res) => {
+	const { title, text, postDate, file, categories, importance } = req.body;
 
-//? --------------------- * * NOTES CRUD * * --------------------
-// View all Notes (ADMIN)
-module.exports.getNotes = asyncHandler(async (req, res) => {
-	try {
-		const notes = await Note.find({});
-		if (notes.length === 0) {
-			return res.status(404).json('Seems like there are no notes!');
-		} else {
-			return res.status(200).json(notes);
-		}
-	} catch (error) {
-		console.error('❌ Error while finding notes: ', error);
-		return res.status(500).json(`${error.message}`);
+	if (!title || !text) {
+		return res.status(400).json('Please fill in all the required fields!');
 	}
-});
 
-// View all User Notes
-module.exports.getUserNotes = asyncHandler(async (req, res) => {
+	if (categories && typeof categories === 'string') {
+		categories = categories.split(',');
+	}
+
 	try {
 		const userId = req.user.id;
 		const user = await User.findById(userId);
@@ -30,30 +21,43 @@ module.exports.getUserNotes = asyncHandler(async (req, res) => {
 			return res.status(401).json('User not found!');
 		} else {
 			try {
-				const userNotes = await Note.find({
-					user: userId,
-				});
-				if (userNotes.length === 0) {
+				const existingNote = await Note.findOne({ title: title, owner: userId });
+				if (existingNote) {
 					return res
-						.status(404)
-						.json(
-							`Seems like there are no notes from user: ${req.user.username}!`,
-						);
+						.status(400)
+						.json('Seems like a note with this title already exists!');
 				} else {
-					return res.status(200).json(userNotes);
+					try {
+						const note = await Note.create({
+							title,
+							text,
+							postDate,
+							file,
+							categories,
+							importance,
+							owner: userId,
+							status: 'new',
+						});
+						console.log(note);
+						return res.status(201).json(note);
+					} catch (error) {
+						console.error('❌ Error while creating note: ', error);
+						return res
+							.status(500)
+							.json({ message: 'Something went wrong, try again later!' });
+					}
 				}
 			} catch (error) {
-				console.error('❌ Error while finding user notes: ', error);
-				return res.status(500).json(`${error.message}`);
+				console.error('❌ Error while checking if note already exists: ', error);
+				return res.status(500).json({ message: 'Something went wrong, try again later!' });
 			}
 		}
 	} catch (error) {
 		console.error('❌ Error while finding user: ', error);
-		return res.status(500).json(`${error.message}`);
+		return res.status(500).json({ message: 'Something went wrong, try again later!' });
 	}
 });
 
-// View User Note by ID
 module.exports.viewUserNote = asyncHandler(async (req, res) => {
 	try {
 		const userId = req.user.id;
@@ -68,82 +72,28 @@ module.exports.viewUserNote = asyncHandler(async (req, res) => {
 				if (!note) {
 					return res
 						.status(404)
-						.json(
-							`Seems like there is no note with this ID for user: ${req.user.username}!`,
-						);
+						.json(`Seems like there is no note with this ID for this user!`);
 				} else {
-					if (note.user.toString() !== userId) {
-						return res
-							.status(401)
-							.json('You are not authorized to view this note!');
+					if (note.owner.toString() !== userId) {
+						return res.status(401).json('You are not authorized to view this note!');
 					}
 					return res.status(200).json(note);
 				}
 			} catch (error) {
 				console.error('❌ Error while finding user note: ', error);
-				return res.status(500).json(`${error.message}`);
+				return res.status(500).json({ message: 'Something went wrong, try again later!' });
 			}
 		}
 	} catch (error) {
 		console.error('❌ Error while finding user: ', error);
-		return res.status(500).json(`${error.message}`);
+		return res.status(500).json({ message: 'Something went wrong, try again later!' });
 	}
 });
 
-// Create User Note
-module.exports.createUserNote = asyncHandler(async (req, res) => {
-	const { title, text } = req.body;
-
-	if (title === undefined || text === undefined) {
-		return res.status(400).json('Please fill in all the required fields!');
-	}
-
-	try {
-		const userId = req.user.id;
-		const user = await User.findById(userId);
-
-		if (!user) {
-			return res.status(401).json('User not found!');
-		} else {
-			try {
-				const note = await Note.findOne({ title: title, user: userId });
-				if (note) {
-					return res
-						.status(400)
-						.json('Seems like a note with this title already exists!');
-				} else {
-					try {
-						const newNote = await Note.create({
-							title,
-							text,
-							user: userId,
-							status: 'new',
-						});
-						return res.status(201).json(newNote);
-					} catch (error) {
-						console.error('❌ Error while creating note: ', error);
-						return res.status(500).json(`${error.message}`);
-					}
-				}
-			} catch (error) {
-				console.error(
-					'❌ Error while checking if note already exists: ',
-					error,
-				);
-				return res.status(500).json(`${error.message}`);
-			}
-		}
-	} catch (error) {
-		console.error('❌ Error while finding user: ', error);
-		return res.status(500).json(`${error.message}`);
-	}
-});
-
-// Update User Note
 module.exports.updateUserNote = asyncHandler(async (req, res) => {
 	const { title, text } = req.body;
 
-	if (title === undefined || text === undefined) {
+	if (!title || !text) {
 		return res.status(400).json('Please fill in all the required fields!');
 	}
 
@@ -160,41 +110,63 @@ module.exports.updateUserNote = asyncHandler(async (req, res) => {
 				if (!note) {
 					return res
 						.status(404)
-						.json(
-							`Seems like there is no note with this ID for user: ${req.user.username}!`,
-						);
+						.json(`Seems like there is no note with this ID for this user!`);
 				} else {
-					if (note.user.toString() !== userId) {
-						return res
-							.status(401)
-							.json('You are not authorized to view this note!');
+					if (note.owner.toString() !== userId) {
+						return res.status(401).json('You are not authorized to view this note!');
 					} else {
 						try {
-							const updatedNote = await Note.findByIdAndUpdate(
-								id,
-								{ ...req.body.note },
-								{ user: userId },
-								{ new: true },
-							);
+							const updatedNote = await Note.findByIdAndUpdate(id, req.body, {
+								new: true,
+							});
 							return res.status(200).json(updatedNote);
 						} catch (error) {
 							console.error('❌ Error while updating user note: ', error);
-							return res.status(500).json(`${error.message}`);
+							return res
+								.status(500)
+								.json({ message: 'Something went wrong, try again later!' });
 						}
 					}
 				}
 			} catch (error) {
 				console.error('❌ Error while finding user note: ', error);
-				return res.status(500).json(`${error.message}`);
+				return res.status(500).json({ message: 'Something went wrong, try again later!' });
 			}
 		}
 	} catch (error) {
 		console.error('❌ Error while finding user: ', error);
-		return res.status(500).json(`${error.message}`);
+		return res.status(500).json({ message: 'Something went wrong, try again later!' });
 	}
 });
 
-// Delete User Note by ID
+module.exports.getUserNotes = asyncHandler(async (req, res) => {
+	try {
+		const userId = req.user.id;
+		const user = await User.findById(userId);
+
+		if (!user) {
+			return res.status(401).json('User not found!');
+		} else {
+			try {
+				const userNotes = await Note.find({
+					owner: userId,
+				});
+				if (userNotes.length === 0) {
+					return res.status(404).json(`Seems like there are no notes for this user`);
+				} else {
+					return res.status(200).json(userNotes);
+				}
+			} catch (error) {
+				console.error('❌ Error while finding user notes: ', error);
+				return res.status(500).json({ message: 'Something went wrong, try again later!' });
+			}
+		}
+	} catch (error) {
+		console.error('❌ Error while finding user: ', error);
+		return res.status(500).json({ message: 'Something went wrong, try again later!' });
+	}
+});
+
 module.exports.deleteUserNote = asyncHandler(async (req, res) => {
 	try {
 		const userId = req.user.id;
@@ -206,19 +178,18 @@ module.exports.deleteUserNote = asyncHandler(async (req, res) => {
 			const { id } = req.params;
 			try {
 				await Note.findByIdAndDelete(id);
-				return res.status(200).json('Note deleted successfully!');
+				return res.status(200).json('Note deleted!');
 			} catch (error) {
 				console.error('❌ Error while deleting user note: ', error);
-				return res.status(500).json(`${error.message}`);
+				return res.status(500).json({ message: 'Something went wrong, try again later!' });
 			}
 		}
 	} catch (error) {
 		console.error('❌ Error while finding user: ', error);
-		return res.status(500).json(`${error.message}`);
+		return res.status(500).json({ message: 'Something went wrong, try again later!' });
 	}
 });
 
-// Delete all User Notes
 module.exports.deleteUserNotes = asyncHandler(async (req, res) => {
 	try {
 		const userId = req.user.id;
@@ -228,26 +199,15 @@ module.exports.deleteUserNotes = asyncHandler(async (req, res) => {
 			return res.status(401).json('User not found!');
 		} else {
 			try {
-				await Note.deleteMany({ user: userId });
+				await Note.deleteMany({ owner: userId });
 				return res.status(200).json('All user notes deleted!');
 			} catch (error) {
 				console.error('❌ Error while deleting all user notes: ', error);
-				return res.status(500).json(`${error.message}`);
+				return res.status(500).json({ message: 'Something went wrong, try again later!' });
 			}
 		}
 	} catch (error) {
 		console.error('❌ Error while finding user: ', error);
-		return res.status(500).json(`${error.message}`);
-	}
-});
-
-// Delete all Notes (ADMIN)
-module.exports.deleteNotes = asyncHandler(async (req, res) => {
-	try {
-		await Note.deleteMany({});
-		return res.status(200).json('All notes deleted!');
-	} catch (error) {
-		console.error('❌ Error while deleting all notes: ', error);
-		return res.status(500).json(`${error.message}`);
+		return res.status(500).json({ message: 'Something went wrong, try again later!' });
 	}
 });

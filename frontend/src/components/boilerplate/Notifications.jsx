@@ -3,19 +3,14 @@ import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap
 import { NavLink } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-	faBell,
-	faFileAlt,
-	faDonate,
-	faExclamationTriangle,
-} from '@fortawesome/free-solid-svg-icons';
+import { faBell, faFileAlt } from '@fortawesome/free-regular-svg-icons';
+import { faDonate, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 // import {
 // 	getNotifications,
 // 	reset,
 // } from '../../features/notifications/notificationsSlice';
 // import GeneralReviewItem from '../../components/review/GeneralReviewItem';
 import Spinner from './Spinner';
-import '../../App.css';
 
 export default function Notifications() {
 	// const { notifications, isLoading } = useSelector(

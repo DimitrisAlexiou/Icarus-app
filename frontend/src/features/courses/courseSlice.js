@@ -103,7 +103,7 @@ export const courseSlice = createSlice({
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
-					text: 'Course created successfully!',
+					text: 'Course created!',
 					icon: 'success',
 				});
 			})
@@ -119,7 +119,7 @@ export const courseSlice = createSlice({
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
-					text: 'Course updated successfully!',
+					text: 'Course updated!',
 					icon: 'success',
 				});
 				state.courses.map((course) =>
@@ -150,7 +150,7 @@ export const courseSlice = createSlice({
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
-					text: 'Course deleted successfully!',
+					text: 'Course deleted!',
 					icon: 'success',
 				});
 			})
@@ -193,7 +193,7 @@ export const courseSlice = createSlice({
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
-					text: 'Courses deleted successfully!',
+					text: 'Courses deleted!',
 					icon: 'success',
 				});
 			})
