@@ -1065,10 +1065,7 @@ export default function Configuration() {
 																				{values.names
 																					.length > 0 &&
 																					values.names.map(
-																						(
-																							name,
-																							index
-																						) => (
+																						(index) => (
 																							<FormGroup
 																								className="form-floating mb-3"
 																								key={
@@ -1190,7 +1187,7 @@ export default function Configuration() {
 													{cycles ? (
 														<>
 															{cycles.names.map((cycle, index) => (
-																<div key={index}>
+																<div key={cycle._id}>
 																	<label>
 																		<b>Cycle {index + 1}</b>
 																	</label>

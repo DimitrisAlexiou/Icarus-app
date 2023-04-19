@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { API_URL_ADMIN } from '../../constants/config';
-import { extractErrorMessage } from '../../utils/redux/errorMessage';
+import { extractErrorMessage } from '../../utils/errorMessage';
 import { Toast } from '../../constants/sweetAlertNotification';
 import degreeRulesService from './degreeRulesService';
 
@@ -16,8 +16,7 @@ export const defineDegreeRules = createAsyncThunk(
 	API_URL_ADMIN + '/define',
 	async (data, thunkAPI) => {
 		try {
-			const token = thunkAPI.getState().auth.user.token;
-			return await degreeRulesService.defineDegreeRules(data, token);
+			return await degreeRulesService.defineDegreeRules(data);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -26,8 +25,7 @@ export const defineDegreeRules = createAsyncThunk(
 
 export const getDegreeRules = createAsyncThunk(API_URL_ADMIN + '/get', async (_, thunkAPI) => {
 	try {
-		const token = thunkAPI.getState().auth.user.token;
-		return await degreeRulesService.getDegreeRules(token);
+		return await degreeRulesService.getDegreeRules();
 	} catch (error) {
 		return thunkAPI.rejectWithValue(extractErrorMessage(error));
 	}
@@ -37,8 +35,7 @@ export const updateDegreeRules = createAsyncThunk(
 	API_URL_ADMIN + '/update',
 	async (degreeRulesId, data, thunkAPI) => {
 		try {
-			const token = thunkAPI.getState().auth.user.token;
-			return await degreeRulesService.updateDegreeRules(degreeRulesId, data, token);
+			return await degreeRulesService.updateDegreeRules(degreeRulesId, data);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -49,8 +46,7 @@ export const deleteDegreeRules = createAsyncThunk(
 	API_URL_ADMIN + '/delete',
 	async (degreeRulesId, thunkAPI) => {
 		try {
-			const token = thunkAPI.getState().auth.user.token;
-			return await degreeRulesService.deleteDegreeRules(degreeRulesId, token);
+			return await degreeRulesService.deleteDegreeRules(degreeRulesId);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}

@@ -1,10 +1,19 @@
-import { Link } from 'react-router-dom';
 import { Badge, Row, Col, Card } from 'reactstrap';
+import { useNavigate } from 'react-router-dom';
 
 export default function CourseItem({ course }) {
+	const navigate = useNavigate();
+
+	const viewCourse = () => {
+		navigate(`/course/${course._id}`);
+	};
+
 	return (
 		<>
-			<Card className="card-animate border-left-sky-blue-crayola mb-3">
+			<Card
+				className="card-animate border-left-sky-blue-crayola mb-3"
+				onClick={() => viewCourse()}
+			>
 				<div className="card-header">
 					<Row>
 						<Col xs="9" sm="9" md="7" lg="8" xl="7">
@@ -51,9 +60,6 @@ export default function CourseItem({ course }) {
 					>
 						{course.description}
 					</p>
-					<Link to={`/course/${course._id}`} type="button" className="btn btn-light">
-						Learn about
-					</Link>
 				</div>
 				{course.hasPrerequisites ? (
 					<div

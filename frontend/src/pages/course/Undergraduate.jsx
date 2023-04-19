@@ -69,8 +69,15 @@ export default function UndergraduateCourses() {
 			</h3>
 			{courses.length ? (
 				<Row className="justify-content-center animated--grow-in">
-					{courses.map((course, index) => (
-						<Col key={index} xs="12" sm="12" md="12" lg="5" className="mb-3 mx-auto">
+					{courses.map((course) => (
+						<Col
+							key={course._id}
+							xs="12"
+							sm="12"
+							md="12"
+							lg="5"
+							className="mb-3 mx-auto"
+						>
 							{course.type === 'Undergraduate' && course.isObligatory ? (
 								<CourseItem key={course._id} course={course} />
 							) : (

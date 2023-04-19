@@ -174,12 +174,12 @@ export default function Notes() {
 								<span className="d-none d-md-block">All Notes</span>
 							</Badge>
 							<span className="topbar-divider"></span>
-							{allCategories.map((category, index) => (
+							{allCategories.map((category) => (
 								<Badge
 									color="info"
 									pill
 									style={{ fontSize: '0.8rem' }}
-									key={index}
+									key={category}
 									className={`mx-1 d-flex align-items-center ${
 										selectedCategory === category ? 'active' : ''
 									}`}
@@ -230,9 +230,9 @@ export default function Notes() {
 
 			{filteredNotesByCategory.length ? (
 				<Row className="animated--grow-in">
-					{filteredNotesByCategory.map((note, index) => (
+					{filteredNotesByCategory.map((note) => (
 						<Col
-							key={index}
+							key={note._id}
 							xs="12"
 							sm="12"
 							md="6"

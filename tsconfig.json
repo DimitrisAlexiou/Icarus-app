@@ -1,0 +1,12 @@
+{
+	"compilerOptions": {
+		"module": "NodeNext",
+		"moduleResolution": "node",
+		"baseUrl": "backend",
+		"outDir": "dist",
+		"jsx": "react",
+		"sourceMap": true,
+		"noImplicitAny": true
+	},
+	"include": ["backend/**/*", "frontend/**/*"]
+}

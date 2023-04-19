@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { API_URL_NOTE } from '../../constants/config';
-import { extractErrorMessage } from '../../utils/redux/errorMessage';
+import { extractErrorMessage } from '../../utils/errorMessage';
 import { Toast } from '../../constants/sweetAlertNotification';
 import noteService from './noteService';
 
@@ -15,8 +15,7 @@ const initialState = {
 
 export const getUserNotes = createAsyncThunk(API_URL_NOTE, async (_, thunkAPI) => {
 	try {
-		const token = thunkAPI.getState().auth.user.token;
-		return await noteService.getUserNotes(token);
+		return await noteService.getUserNotes();
 	} catch (error) {
 		return thunkAPI.rejectWithValue(extractErrorMessage(error));
 	}
@@ -24,8 +23,7 @@ export const getUserNotes = createAsyncThunk(API_URL_NOTE, async (_, thunkAPI) =
 
 export const getUserNote = createAsyncThunk(API_URL_NOTE + 'get', async (noteId, thunkAPI) => {
 	try {
-		const token = thunkAPI.getState().auth.user.token;
-		return await noteService.getUserNote(noteId, token);
+		return await noteService.getUserNote(noteId);
 	} catch (error) {
 		return thunkAPI.rejectWithValue(extractErrorMessage(error));
 	}
@@ -33,8 +31,7 @@ export const getUserNote = createAsyncThunk(API_URL_NOTE + 'get', async (noteId,
 
 export const createUserNote = createAsyncThunk(API_URL_NOTE + 'create', async (data, thunkAPI) => {
 	try {
-		const token = thunkAPI.getState().auth.user.token;
-		return await noteService.createUserNote(data, token);
+		return await noteService.createUserNote(data);
 	} catch (error) {
 		return thunkAPI.rejectWithValue(extractErrorMessage(error));
 	}
@@ -44,10 +41,9 @@ export const updateUserNote = createAsyncThunk(
 	API_URL_NOTE + 'update',
 	async ({ noteId, data }, thunkAPI) => {
 		try {
-			const token = thunkAPI.getState().auth.user.token;
 			console.log('SLICE------------' + noteId);
 			console.log('SLICE------------' + data);
-			return await noteService.updateUserNote(noteId, data, token);
+			return await noteService.updateUserNote(noteId, data);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -58,8 +54,7 @@ export const updateImportance = createAsyncThunk(
 	API_URL_NOTE + 'update_importance',
 	async (noteId, thunkAPI) => {
 		try {
-			const token = thunkAPI.getState().auth.user.token;
-			const updatedNote = await noteService.updateImportance(noteId, token);
+			const updatedNote = await noteService.updateImportance(noteId);
 			return { noteId, updatedNote };
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
@@ -71,8 +66,7 @@ export const deleteUserNote = createAsyncThunk(
 	API_URL_NOTE + 'delete',
 	async (noteId, thunkAPI) => {
 		try {
-			const token = thunkAPI.getState().auth.user.token;
-			return await noteService.deleteUserNote(noteId, token);
+			return await noteService.deleteUserNote(noteId);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -83,8 +77,7 @@ export const deleteUserNotes = createAsyncThunk(
 	API_URL_NOTE + 'delete_all',
 	async (_, thunkAPI) => {
 		try {
-			const token = thunkAPI.getState().auth.user.token;
-			return await noteService.deleteUserNotes(token);
+			return await noteService.deleteUserNotes();
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}

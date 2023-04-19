@@ -1,42 +1,26 @@
-import axios from 'axios';
-import { API_URL_CALENDAR, headers } from '../../constants/config';
+import axiosFetch from '../../utils/axios';
+import { API_URL_CALENDAR } from '../../constants/config';
 
-const getEvents = async (token) => {
-	const config = {
-		headers: { headers, Authorization: `Bearer ${token}` },
-	};
-
-	const response = await axios.get(API_URL_CALENDAR, config);
+const getEvents = async () => {
+	const response = await axiosFetch.get(API_URL_CALENDAR);
 
 	return response.data;
 };
 
-const addEvent = async (data, token) => {
-	const config = {
-		headers: { headers, Authorization: `Bearer ${token}` },
-	};
-
-	const response = await axios.post(API_URL_CALENDAR, data, config);
+const addEvent = async (data) => {
+	const response = await axiosFetch.post(API_URL_CALENDAR, data);
 
 	return response.data;
 };
 
-const deleteEvent = async (eventId, token) => {
-	const config = {
-		headers: { headers, Authorization: `Bearer ${token}` },
-	};
-
-	const response = axios.delete(API_URL_CALENDAR + '/' + eventId, config);
+const deleteEvent = async (eventId) => {
+	const response = axiosFetch.delete(API_URL_CALENDAR + '/' + eventId);
 
 	return response.data;
 };
 
-const deleteEvents = async (token) => {
-	const config = {
-		headers: { headers, Authorization: `Bearer ${token}` },
-	};
-
-	const response = axios.delete(API_URL_CALENDAR + '/delete_all', config);
+const deleteEvents = async () => {
+	const response = axiosFetch.delete(API_URL_CALENDAR + '/delete_all');
 
 	return response.data;
 };

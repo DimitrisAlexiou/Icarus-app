@@ -1,32 +1,20 @@
-import axios from 'axios';
-import { API_URL_ADMIN, headers } from '../../constants/config';
+import axiosFetch from '../../utils/axios';
+import { API_URL_ADMIN } from '../../constants/config';
 
-const defineAssessment = async (data, token) => {
-	const config = {
-		headers: { headers, Authorization: `Bearer ${token}` },
-	};
-
-	const response = await axios.post(API_URL_ADMIN + '/assessment', data, config);
+const defineAssessment = async (data) => {
+	const response = await axiosFetch.post(API_URL_ADMIN + '/assessment', data);
 
 	return response.data;
 };
 
-const getAssessment = async (token) => {
-	const config = {
-		headers: { headers, Authorization: `Bearer ${token}` },
-	};
-
-	const response = await axios.get(API_URL_ADMIN + '/assessment', config);
+const getAssessment = async () => {
+	const response = await axiosFetch.get(API_URL_ADMIN + '/assessment');
 
 	return response.data;
 };
 
-const deleteAssessment = async (assessmentId, token) => {
-	const config = {
-		headers: { headers, Authorization: `Bearer ${token}` },
-	};
-
-	const response = axios.delete(API_URL_ADMIN + '/assessment/' + assessmentId, config);
+const deleteAssessment = async (assessmentId) => {
+	const response = axiosFetch.delete(API_URL_ADMIN + '/assessment/' + assessmentId);
 
 	return response.data;
 };

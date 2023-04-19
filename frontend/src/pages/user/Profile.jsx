@@ -76,6 +76,23 @@ export default function Profile() {
 				{/* <img src={undraw_account} alt="undraw_account" className="profile_card_photo" /> */}
 			</Row>
 			<ProfileCard3 user={user} />
+			<Row className="mb-5 animated--grow-in">
+				<Col className="d-flex justify-content-end">
+					<span className="text-xs text-gray-500">
+						Last login:{' '}
+						{new Date(user.user.lastLogin)
+							.toLocaleString('en-GB', {
+								day: '2-digit',
+								month: '2-digit',
+								year: 'numeric',
+								hour: 'numeric',
+								minute: 'numeric',
+								second: 'numeric',
+							})
+							.replace(',', '')}
+					</span>
+				</Col>
+			</Row>
 		</>
 	);
 }

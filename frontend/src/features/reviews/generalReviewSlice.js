@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { extractErrorMessage } from '../../utils/redux/errorMessage';
+import { extractErrorMessage } from '../../utils/errorMessage';
 import generalReviewService from './generalReviewService';
 
 const initialState = {
@@ -11,13 +11,10 @@ const initialState = {
 	message: '',
 };
 
-// Create General Review
 export const createGeneralReview = createAsyncThunk(
 	'api/review/general',
 	async (data, thunkAPI) => {
 		try {
-			// const token = thunkAPI.getState().auth.user.token;
-			// return await generalReviewService.createGeneralReview(data, token);
 			return await generalReviewService.createGeneralReview(data);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
@@ -25,13 +22,11 @@ export const createGeneralReview = createAsyncThunk(
 	}
 );
 
-// Get All General Reviews
 export const getGeneralReviews = createAsyncThunk(
 	'/api/review/general/all',
 	async (_, thunkAPI) => {
 		try {
-			const token = thunkAPI.getState().auth.user.token;
-			return await generalReviewService.getGeneralReviews(token);
+			return await generalReviewService.getGeneralReviews();
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}

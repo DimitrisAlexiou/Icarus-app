@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Row, Col } from 'reactstrap';
-import { getLastPageFromLocalStorage } from '../utils/redux/localStorage';
+import { getLastPageFromLocalStorage } from '../utils/localStorage';
 import img from '../assets/images/undraw_page_not_found.svg';
 
 export default function NotFound() {

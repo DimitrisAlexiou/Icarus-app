@@ -1,4 +1,5 @@
 import axios from 'axios';
+import axiosFetch from '../../utils/axios';
 import {
 	API_URL_REGISTER,
 	API_URL_LOGIN,
@@ -10,7 +11,7 @@ import {
 	removeUserFromLocalStorage,
 	getLastPageFromLocalStorage,
 	removeLastPageFromLocalStorage,
-} from '../../utils/redux/localStorage';
+} from '../../utils/localStorage';
 
 const register = async (data) => {
 	const config = {
@@ -66,22 +67,14 @@ const forgotPassword = async (data) => {
 	return response.data;
 };
 
-const getProfile = async (token) => {
-	const config = {
-		headers: { headers, Authorization: `Bearer ${token}` },
-	};
-
-	const response = await axios.get(API_URL_USER, config);
+const getProfile = async () => {
+	const response = await axiosFetch.get(API_URL_USER);
 
 	return response.data;
 };
 
-const updateProfile = async (userId, data, token) => {
-	const config = {
-		headers: { headers, Authorization: `Bearer ${token}` },
-	};
-
-	const response = await axios.put(API_URL_USER + '/' + userId, data, config);
+const updateProfile = async (userId, data) => {
+	const response = await axiosFetch.put(API_URL_USER + '/' + userId, data);
 
 	return response.data;
 };

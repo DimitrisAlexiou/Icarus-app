@@ -72,7 +72,7 @@ export default function NoteItem({ note, onDelete }) {
 							</Col>
 							{note.categories.filter(Boolean).length > 0 && (
 								<Col className="d-flex justify-content-end">
-									{note.categories.map((category, index) => (
+									{note.categories.map((index) => (
 										<FontAwesomeIcon
 											key={index}
 											icon={faCircle}

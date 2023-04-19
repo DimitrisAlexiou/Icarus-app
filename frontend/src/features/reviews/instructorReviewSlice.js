@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { extractErrorMessage } from '../../utils/redux/errorMessage';
+import { extractErrorMessage } from '../../utils/errorMessage';
 import instructorReviewService from './instructorReviewService';
 
 const initialState = {
@@ -11,29 +11,22 @@ const initialState = {
 	message: '',
 };
 
-// Create Instructor Review
 export const createInstructorReview = createAsyncThunk(
 	'api/review/instructor',
 	async (instructorReviewData, thunkAPI) => {
 		try {
-			const token = thunkAPI.getState().auth.user.token;
-			return await instructorReviewService.createInstructorReview(
-				instructorReviewData,
-				token
-			);
+			return await instructorReviewService.createInstructorReview(instructorReviewData);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
 	}
 );
 
-// Get All Instructor Reviews
 export const getInstructorReviews = createAsyncThunk(
 	'/api/review/instructor/all',
 	async (_, thunkAPI) => {
 		try {
-			const token = thunkAPI.getState().auth.user.token;
-			return await instructorReviewService.getInstructorReviews(token);
+			return await instructorReviewService.getInstructorReviews();
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -76,6 +69,5 @@ export const instructorReviewSlice = createSlice({
 	},
 });
 
-// export const { reset } = instructorReviewSlice.actions;
 export const { reset } = instructorReviewSlice.actions;
 export default instructorReviewSlice.reducer;

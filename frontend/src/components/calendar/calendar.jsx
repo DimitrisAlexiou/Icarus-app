@@ -175,16 +175,16 @@ export default function Calendar() {
 							activeIndex={activeIndex}
 							onClickHandler={goToIndex}
 						/>
-						{eventPages.map((page, eventPagesIndex) => (
+						{eventPages.map((page) => (
 							<CarouselItem
 								className="mb-4"
-								key={eventPagesIndex}
+								key={page}
 								onExiting={() => setAnimating(true)}
 								onExited={() => setAnimating(false)}
 							>
 								<Row>
-									{page.map((event, eventIndex) => (
-										<Col xs="6" sm="6" md="4" lg="3" xl="2" key={eventIndex}>
+									{page.map((event) => (
+										<Col xs="6" sm="6" md="4" lg="3" xl="2" key={event._id}>
 											<Card className="card-note mb-4">
 												<CardBody>
 													<CardTitle

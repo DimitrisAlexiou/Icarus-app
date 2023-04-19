@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { API_URL_ADMIN } from '../../constants/config';
-import { extractErrorMessage } from '../../utils/redux/errorMessage';
+import { extractErrorMessage } from '../../utils/errorMessage';
 import { Toast } from '../../constants/sweetAlertNotification';
 import cyclesService from './cyclesService';
 
@@ -17,8 +17,7 @@ export const defineCycles = createAsyncThunk(
 	API_URL_ADMIN + '/defineCycles',
 	async (data, thunkAPI) => {
 		try {
-			const token = thunkAPI.getState().auth.user.token;
-			return await cyclesService.defineCycles(data, token);
+			return await cyclesService.defineCycles(data);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -29,8 +28,7 @@ export const updateCycles = createAsyncThunk(
 	API_URL_ADMIN + '/updateCycles',
 	async (data, thunkAPI) => {
 		try {
-			const token = thunkAPI.getState().auth.user.token;
-			return await cyclesService.updateCycles(data, token);
+			return await cyclesService.updateCycles(data);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -39,8 +37,7 @@ export const updateCycles = createAsyncThunk(
 
 export const getCycles = createAsyncThunk(API_URL_ADMIN + '/getCycles', async (_, thunkAPI) => {
 	try {
-		const token = thunkAPI.getState().auth.user.token;
-		return await cyclesService.getCycles(token);
+		return await cyclesService.getCycles();
 	} catch (error) {
 		return thunkAPI.rejectWithValue(extractErrorMessage(error));
 	}
@@ -50,8 +47,7 @@ export const deleteCycles = createAsyncThunk(
 	API_URL_ADMIN + '/deleteCycles',
 	async (_, thunkAPI) => {
 		try {
-			const token = thunkAPI.getState().auth.user.token;
-			return await cyclesService.deleteCycles(token);
+			return await cyclesService.deleteCycles();
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}

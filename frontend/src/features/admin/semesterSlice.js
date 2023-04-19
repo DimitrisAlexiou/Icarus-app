@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { API_URL_ADMIN } from '../../constants/config';
-import { extractErrorMessage } from '../../utils/redux/errorMessage';
+import { extractErrorMessage } from '../../utils/errorMessage';
 import { Toast } from '../../constants/sweetAlertNotification';
 import semesterService from './semesterService';
 
@@ -17,8 +17,7 @@ export const defineSemester = createAsyncThunk(
 	API_URL_ADMIN + '/defineSemester',
 	async (data, thunkAPI) => {
 		try {
-			const token = thunkAPI.getState().auth.user.token;
-			return await semesterService.defineSemester(data, token);
+			return await semesterService.defineSemester(data);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -29,8 +28,7 @@ export const updateSemester = createAsyncThunk(
 	API_URL_ADMIN + '/updateSemester',
 	async (semesterId, data, thunkAPI) => {
 		try {
-			const token = thunkAPI.getState().auth.user.token;
-			return await semesterService.updateSemester(semesterId, data, token);
+			return await semesterService.updateSemester(semesterId, data);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -41,8 +39,7 @@ export const getSemesters = createAsyncThunk(
 	API_URL_ADMIN + '/getSemesters',
 	async (_, thunkAPI) => {
 		try {
-			const token = thunkAPI.getState().auth.user.token;
-			return await semesterService.getSemesters(token);
+			return await semesterService.getSemesters();
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -51,8 +48,7 @@ export const getSemesters = createAsyncThunk(
 
 export const getSemester = createAsyncThunk(API_URL_ADMIN + '/getSemester', async (_, thunkAPI) => {
 	try {
-		const token = thunkAPI.getState().auth.user.token;
-		return await semesterService.getSemester(token);
+		return await semesterService.getSemester();
 	} catch (error) {
 		return thunkAPI.rejectWithValue(extractErrorMessage(error));
 	}
@@ -62,8 +58,7 @@ export const deleteSemester = createAsyncThunk(
 	API_URL_ADMIN + '/deleteSemester',
 	async (semesterId, thunkAPI) => {
 		try {
-			const token = thunkAPI.getState().auth.user.token;
-			return await semesterService.deleteSemester(semesterId, token);
+			return await semesterService.deleteSemester(semesterId);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}

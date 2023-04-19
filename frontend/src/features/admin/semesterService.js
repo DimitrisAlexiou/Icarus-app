@@ -1,52 +1,32 @@
-import axios from 'axios';
-import { API_URL_ADMIN, headers } from '../../constants/config';
+import axiosFetch from '../../utils/axios';
+import { API_URL_ADMIN } from '../../constants/config';
 
-const defineSemester = async (data, token) => {
-	const config = {
-		headers: { headers, Authorization: `Bearer ${token}` },
-	};
-
-	const response = await axios.post(API_URL_ADMIN + '/semester', data, config);
+const defineSemester = async (data) => {
+	const response = await axiosFetch.post(API_URL_ADMIN + '/semester', data);
 
 	return response.data;
 };
 
-const getSemesters = async (token) => {
-	const config = {
-		headers: { headers, Authorization: `Bearer ${token}` },
-	};
-
-	const response = await axios.get(API_URL_ADMIN + '/semesters', config);
+const getSemesters = async () => {
+	const response = await axiosFetch.get(API_URL_ADMIN + '/semesters');
 
 	return response.data;
 };
 
-const getSemester = async (token) => {
-	const config = {
-		headers: { headers, Authorization: `Bearer ${token}` },
-	};
-
-	const response = await axios.get(API_URL_ADMIN + '/semester', config);
+const getSemester = async () => {
+	const response = await axiosFetch.get(API_URL_ADMIN + '/semester');
 
 	return response.data;
 };
 
-const updateSemester = async (semesterId, data, token) => {
-	const config = {
-		headers: { headers, Authorization: `Bearer ${token}` },
-	};
-
-	const response = await axios.put(API_URL_ADMIN + '/semester' + semesterId, data, config);
+const updateSemester = async (semesterId, data) => {
+	const response = await axiosFetch.put(API_URL_ADMIN + '/semester' + semesterId, data);
 
 	return response.data;
 };
 
-const deleteSemester = async (semesterId, token) => {
-	const config = {
-		headers: { headers, Authorization: `Bearer ${token}` },
-	};
-
-	const response = await axios.delete(API_URL_ADMIN + '/semester/' + semesterId, config);
+const deleteSemester = async (semesterId) => {
+	const response = await axiosFetch.delete(API_URL_ADMIN + '/semester/' + semesterId);
 
 	return response.data;
 };

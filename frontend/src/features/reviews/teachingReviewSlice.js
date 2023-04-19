@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { extractErrorMessage } from '../../utils/redux/errorMessage';
+import { extractErrorMessage } from '../../utils/errorMessage';
 import teachingReviewService from './teachingReviewService';
 
 const initialState = {
@@ -11,43 +11,33 @@ const initialState = {
 	message: '',
 };
 
-// Create Teaching Review for Course (User Teaching)
 export const createTeachingReview = createAsyncThunk(
 	'api/review/teaching/:teachingId',
-	async ({ teachingReviewData, teachingId }, thunkAPI) => {
+	async ({ data, teachingId }, thunkAPI) => {
 		try {
-			const token = thunkAPI.getState().auth.user.token;
-			return await teachingReviewService.createTeachingReview(
-				teachingReviewData,
-				teachingId,
-				token
-			);
+			return await teachingReviewService.createTeachingReview(data, teachingId);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
 	}
 );
 
-// Get User Teaching Reviews
 export const getUserTeachingReviews = createAsyncThunk(
 	'/api/review/teaching',
 	async (_, thunkAPI) => {
 		try {
-			const token = thunkAPI.getState().auth.user.token;
-			return await teachingReviewService.getUserTeachingReviews(token);
+			return await teachingReviewService.getUserTeachingReviews();
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
 	}
 );
 
-// Get all Teaching Reviews
 export const getTeachingReviews = createAsyncThunk(
 	'/api/review/teaching/all',
 	async (_, thunkAPI) => {
 		try {
-			const token = thunkAPI.getState().auth.user.token;
-			return await teachingReviewService.getTeachingReviews(token);
+			return await teachingReviewService.getTeachingReviews();
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -58,7 +48,7 @@ export const teachingReviewSlice = createSlice({
 	name: 'teachingReview',
 	initialState,
 	reducers: {
-		reset: (state) => initialState,
+		reset: () => initialState,
 	},
 	extraReducers: (builder) => {
 		builder

@@ -1,42 +1,26 @@
-import axios from 'axios';
-import { API_URL_ADMIN, headers } from '../../constants/config';
+import axiosFetch from '../../utils/axios';
+import { API_URL_ADMIN } from '../../constants/config';
 
-const defineDegreeRules = async (data, token) => {
-	const config = {
-		headers: { headers, Authorization: `Bearer ${token}` },
-	};
-
-	const response = await axios.post(API_URL_ADMIN + '/degree_rules', data, config);
+const defineDegreeRules = async (data) => {
+	const response = await axiosFetch.post(API_URL_ADMIN + '/degree_rules', data);
 
 	return response.data;
 };
 
-const getDegreeRules = async (token) => {
-	const config = {
-		headers: { headers, Authorization: `Bearer ${token}` },
-	};
-
-	const response = await axios.get(API_URL_ADMIN + '/degree_rules', config);
+const getDegreeRules = async () => {
+	const response = await axiosFetch.get(API_URL_ADMIN + '/degree_rules');
 
 	return response.data;
 };
 
-const updateDegreeRules = async (degreeRulesId, data, token) => {
-	const config = {
-		headers: { headers, Authorization: `Bearer ${token}` },
-	};
-
-	const response = await axios.put(API_URL_ADMIN + '/degree_rules' + degreeRulesId, data, config);
+const updateDegreeRules = async (degreeRulesId, data) => {
+	const response = await axiosFetch.put(API_URL_ADMIN + '/degree_rules' + degreeRulesId, data);
 
 	return response.data;
 };
 
-const deleteDegreeRules = async (degreeRulesId, token) => {
-	const config = {
-		headers: { headers, Authorization: `Bearer ${token}` },
-	};
-
-	const response = axios.delete(API_URL_ADMIN + '/degree_rules/' + degreeRulesId, config);
+const deleteDegreeRules = async (degreeRulesId) => {
+	const response = axiosFetch.delete(API_URL_ADMIN + '/degree_rules/' + degreeRulesId);
 
 	return response.data;
 };

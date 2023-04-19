@@ -41,9 +41,9 @@ export default function MscCourses() {
 			</h3>
 			{courses.length ? (
 				<Row className="d-flex justify-content-center animated--grow-in">
-					{courses.map((course, index) => (
+					{courses.map((course) => (
 						<Col
-							key={index}
+							key={course._id}
 							xs="12"
 							sm="12"
 							md="12"

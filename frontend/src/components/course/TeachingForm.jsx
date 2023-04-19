@@ -108,7 +108,7 @@ export default function TeachingForm({ values, isSubmitting, dirty, handleReset 
 							<Row>
 								<Col md="8" lg="6">
 									{values.books.length > 0 &&
-										values.books.map((book, index) => (
+										values.books.map((index) => (
 											<FormGroup
 												className="form-floating mb-3"
 												key={index}

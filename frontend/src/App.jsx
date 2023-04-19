@@ -33,7 +33,7 @@ import Users from './pages/admin/Users';
 import Professors from './pages/admin/Professors';
 import Students from './pages/admin/Students';
 import { checkTokenExpiration } from './utils/checkTokenExpiration';
-import { addLastPageToLocalStorage } from './utils/redux/localStorage';
+import { addLastPageToLocalStorage } from './utils/localStorage';
 import { ThemeProvider } from '@mui/material';
 import { ColorModeContext, useMode } from './theme';
 

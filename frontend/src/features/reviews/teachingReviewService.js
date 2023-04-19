@@ -1,45 +1,20 @@
-import axios from 'axios';
-
+import axiosFetch from '../../utils/axios';
 const API_URL = '/api/review/teaching';
 
-// Create Teaching Review
-const createTeachingReview = async (teachingReviewData, teachingId, token) => {
-	const config = {
-		headers: {
-			'Content-Type': 'application/json',
-			Authorization: `Bearer ${token}`,
-		},
-	};
-
-	const response = await axios.post(API_URL, teachingReviewData, teachingId, config);
+const createTeachingReview = async (teachingReviewData, teachingId) => {
+	const response = await axiosFetch.post(API_URL, teachingReviewData, teachingId);
 
 	return response.data;
 };
 
-// Get User Teaching Reviews
-const getUserTeachingReviews = async (token) => {
-	const config = {
-		headers: {
-			'Content-Type': 'application/json',
-			Authorization: `Bearer ${token}`,
-		},
-	};
-
-	const response = await axios.get(API_URL, config);
+const getUserTeachingReviews = async () => {
+	const response = await axiosFetch.get(API_URL);
 
 	return response.data;
 };
 
-// Get all Teaching Reviews
-const getTeachingReviews = async (token) => {
-	const config = {
-		headers: {
-			'Content-Type': 'application/json',
-			Authorization: `Bearer ${token}`,
-		},
-	};
-
-	const response = await axios.get(API_URL, config);
+const getTeachingReviews = async () => {
+	const response = await axiosFetch.get(API_URL);
 
 	return response.data;
 };

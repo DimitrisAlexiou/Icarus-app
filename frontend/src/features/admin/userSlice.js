@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { API_URL_USERS } from '../../constants/config';
-import { extractErrorMessage } from '../../utils/redux/errorMessage';
+import { extractErrorMessage } from '../../utils/errorMessage';
 import { Toast } from '../../constants/sweetAlertNotification';
 import userService from './userService';
 
@@ -17,8 +17,7 @@ const initialState = {
 
 export const getUsers = createAsyncThunk(API_URL_USERS, async (_, thunkAPI) => {
 	try {
-		const token = thunkAPI.getState().auth.user.token;
-		return await userService.getUsers(token);
+		return await userService.getUsers();
 	} catch (error) {
 		return thunkAPI.rejectWithValue(extractErrorMessage(error));
 	}
@@ -26,8 +25,7 @@ export const getUsers = createAsyncThunk(API_URL_USERS, async (_, thunkAPI) => {
 
 export const getStudents = createAsyncThunk(API_URL_USERS + '/students', async (_, thunkAPI) => {
 	try {
-		const token = thunkAPI.getState().auth.user.token;
-		return await userService.getStudents(token);
+		return await userService.getStudents();
 	} catch (error) {
 		return thunkAPI.rejectWithValue(extractErrorMessage(error));
 	}
@@ -37,8 +35,7 @@ export const getInstructors = createAsyncThunk(
 	API_URL_USERS + '/instructors',
 	async (_, thunkAPI) => {
 		try {
-			const token = thunkAPI.getState().auth.user.token;
-			return await userService.getInstructors(token);
+			return await userService.getInstructors();
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -47,8 +44,7 @@ export const getInstructors = createAsyncThunk(
 
 export const addUser = createAsyncThunk(`${API_URL_USERS}/add`, async (data, thunkAPI) => {
 	try {
-		const token = thunkAPI.getState().auth.user.token;
-		return await userService.addUser(data, token);
+		return await userService.addUser(data);
 	} catch (error) {
 		return thunkAPI.rejectWithValue(extractErrorMessage(error));
 	}
@@ -58,8 +54,7 @@ export const updateUser = createAsyncThunk(
 	`${API_URL_USERS}/:userId/edit`,
 	async (userId, data, thunkAPI) => {
 		try {
-			const token = thunkAPI.getState().auth.user.token;
-			return await userService.updateUser(userId, data, token);
+			return await userService.updateUser(userId, data);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -70,8 +65,7 @@ export const activateUser = createAsyncThunk(
 	`${API_URL_USERS}/:userId/activate`,
 	async (userId, data, thunkAPI) => {
 		try {
-			const token = thunkAPI.getState().auth.user.token;
-			return await userService.activateUser(userId, data, token);
+			return await userService.activateUser(userId, data);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -80,8 +74,7 @@ export const activateUser = createAsyncThunk(
 
 export const deleteUser = createAsyncThunk(`${API_URL_USERS}/:userId`, async (userId, thunkAPI) => {
 	try {
-		const token = thunkAPI.getState().auth.user.token;
-		return await userService.deleteUser(userId, token);
+		return await userService.deleteUser(userId);
 	} catch (error) {
 		return thunkAPI.rejectWithValue(extractErrorMessage(error));
 	}
@@ -89,8 +82,7 @@ export const deleteUser = createAsyncThunk(`${API_URL_USERS}/:userId`, async (us
 
 export const deleteUsers = createAsyncThunk(API_URL_USERS + '/delete_all', async (_, thunkAPI) => {
 	try {
-		const token = thunkAPI.getState().auth.user.token;
-		return await userService.deleteUsers(token);
+		return await userService.deleteUsers();
 	} catch (error) {
 		return thunkAPI.rejectWithValue(extractErrorMessage(error));
 	}

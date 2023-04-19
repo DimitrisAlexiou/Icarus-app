@@ -10,8 +10,8 @@ import {
 	getUserFromLocalStorage,
 	addUserToLocalStorage,
 	removeUserFromLocalStorage,
-} from '../../utils/redux/localStorage';
-import { extractErrorMessage } from '../../utils/redux/errorMessage';
+} from '../../utils/localStorage';
+import { extractErrorMessage } from '../../utils/errorMessage';
 import { Toast } from '../../constants/sweetAlertNotification';
 import authService from './authService';
 

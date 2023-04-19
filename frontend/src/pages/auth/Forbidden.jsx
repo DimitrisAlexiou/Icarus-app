@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Col, Row } from 'reactstrap';
-import { getLastPageFromLocalStorage } from '../../utils/redux/localStorage';
+import { getLastPageFromLocalStorage } from '../../utils/localStorage';
 
 export default function Forbidden() {
 	const lastPage = getLastPageFromLocalStorage();

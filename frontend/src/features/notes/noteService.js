@@ -1,79 +1,51 @@
-import axios from 'axios';
-import { API_URL_NOTE, headers } from '../../constants/config';
+import axiosFetch from '../../utils/axios';
+import { API_URL_NOTE } from '../../constants/config';
 
-const getUserNotes = async (token) => {
-	const config = {
-		headers: { headers, Authorization: `Bearer ${token}` },
-	};
-
-	const response = await axios.get(API_URL_NOTE, config);
+const getUserNotes = async () => {
+	const response = await axiosFetch.get(API_URL_NOTE);
 
 	return response.data;
 };
 
-const getUserNote = async (noteId, token) => {
-	const config = {
-		headers: { headers, Authorization: `Bearer ${token}` },
-	};
-
-	const response = await axios.get(API_URL_NOTE + noteId, config);
+const getUserNote = async (noteId) => {
+	const response = await axiosFetch.get(API_URL_NOTE + noteId);
 
 	return response.data;
 };
 
-const createUserNote = async (data, token) => {
-	const config = {
-		headers: { headers, Authorization: `Bearer ${token}` },
-	};
-
-	const response = await axios.post(API_URL_NOTE, data, config);
+const createUserNote = async (data) => {
+	const response = await axiosFetch.post(API_URL_NOTE, data);
 
 	return response.data;
 };
 
-const updateUserNote = async (noteId, data, token) => {
-	const config = {
-		headers: { headers, Authorization: `Bearer ${token}` },
-	};
-
-	const response = await axios.put(API_URL_NOTE + noteId, data, config);
+const updateUserNote = async (noteId, data) => {
+	const response = await axiosFetch.put(API_URL_NOTE + noteId, data);
 
 	return response.data;
 };
 
-const updateImportance = async (noteId, token) => {
-	const config = {
-		headers: { headers, Authorization: `Bearer ${token}` },
-	};
-
-	const currentNote = await axios.get(API_URL_NOTE + noteId, config);
+const updateImportance = async (noteId) => {
+	const currentNote = await axiosFetch.get(API_URL_NOTE + noteId);
 
 	const updatedNote = {
 		...currentNote.data,
 		importance: !currentNote.data.importance,
 	};
 
-	const response = await axios.put(API_URL_NOTE + noteId, updatedNote, config);
+	const response = await axiosFetch.put(API_URL_NOTE + noteId, updatedNote);
 
 	return response.data;
 };
 
-const deleteUserNote = async (noteId, token) => {
-	const config = {
-		headers: { headers, Authorization: `Bearer ${token}` },
-	};
-
-	const response = axios.delete(API_URL_NOTE + noteId, config);
+const deleteUserNote = async (noteId) => {
+	const response = axiosFetch.delete(API_URL_NOTE + noteId);
 
 	return response.data;
 };
 
-const deleteUserNotes = async (token) => {
-	const config = {
-		headers: { headers, Authorization: `Bearer ${token}` },
-	};
-
-	const response = axios.delete(API_URL_NOTE, config);
+const deleteUserNotes = async () => {
+	const response = axiosFetch.delete(API_URL_NOTE);
 
 	return response.data;
 };

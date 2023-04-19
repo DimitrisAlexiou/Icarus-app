@@ -138,12 +138,12 @@ const CourseCard = ({ course }) => {
 					<p style={{ textAlign: 'justify' }}>
 						{course.isObligatory ? 'Obligatory' : 'Optional'}
 					</p>
-					<hr className="d-none d-lg-block" />
+					{course.hasPrerequisites ? <hr /> : <hr className="d-none d-lg-block" />}
 				</Col>
 			</Row>
 			{course.hasPrerequisites
 				? course.prerequisites.map((prerequisite, index) => (
-						<div key={index}>
+						<div key={prerequisite._id}>
 							<Badge color="info" className="mt-3 mb-3" pill>
 								<b>Prerequisite {index + 1}</b>
 							</Badge>

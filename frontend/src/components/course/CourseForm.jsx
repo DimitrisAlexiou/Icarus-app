@@ -215,8 +215,8 @@ export default function CourseForm({
 						<FormGroup className="form-floating mb-3" floating>
 							<Field as="select" className="form-control" name="semester">
 								<option default>Select course semester</option>
-								{semesters.map((semester, index) => (
-									<option key={index} value={semester._id}>
+								{semesters.map((semester) => (
+									<option key={semester._id} value={semester._id}>
 										{semester.type}
 									</option>
 								))}
@@ -268,8 +268,8 @@ export default function CourseForm({
 								<FormGroup className="form-floating mb-3" floating>
 									<Field as="select" className="form-control" name="cycle">
 										<option default>Select course cycle</option>
-										{cycles.names.map((cycle, index) => (
-											<option key={index} value={cycle._id}>
+										{cycles.names.map((cycle) => (
+											<option key={cycle._id} value={cycle._id}>
 												{cycle.cycle}
 											</option>
 										))}
@@ -318,7 +318,7 @@ export default function CourseForm({
 										</Row>
 										{values.prerequisites.length > 0 &&
 											values.prerequisites.map((prerequisite, index) => (
-												<Row key={index}>
+												<Row key={prerequisite._id}>
 													<Col md="6">
 														<FormGroup
 															className="form-floating mb-3"
@@ -332,9 +332,9 @@ export default function CourseForm({
 																<option default>
 																	Select prerequisite
 																</option>
-																{courses.map((course, index) => (
+																{courses.map((course) => (
 																	<option
-																		key={index}
+																		key={course._id}
 																		value={course._id}
 																	>
 																		{course.title}

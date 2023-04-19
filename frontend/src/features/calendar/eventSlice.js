@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { API_URL_CALENDAR } from '../../constants/config';
-import { extractErrorMessage } from '../../utils/redux/errorMessage';
+import { extractErrorMessage } from '../../utils/errorMessage';
 import { Toast } from '../../constants/sweetAlertNotification';
 import eventService from './eventService';
 
@@ -15,8 +15,7 @@ const initialState = {
 
 export const getEvents = createAsyncThunk(API_URL_CALENDAR, async (_, thunkAPI) => {
 	try {
-		const token = thunkAPI.getState().auth.user.token;
-		return await eventService.getEvents(token);
+		return await eventService.getEvents();
 	} catch (error) {
 		return thunkAPI.rejectWithValue(extractErrorMessage(error));
 	}
@@ -24,8 +23,7 @@ export const getEvents = createAsyncThunk(API_URL_CALENDAR, async (_, thunkAPI) 
 
 export const addEvent = createAsyncThunk(API_URL_CALENDAR + '/add', async (data, thunkAPI) => {
 	try {
-		const token = thunkAPI.getState().auth.user.token;
-		return await eventService.addEvent(data, token);
+		return await eventService.addEvent(data);
 	} catch (error) {
 		return thunkAPI.rejectWithValue(extractErrorMessage(error));
 	}
@@ -35,8 +33,7 @@ export const deleteEvent = createAsyncThunk(
 	API_URL_CALENDAR + '/delete',
 	async (eventId, thunkAPI) => {
 		try {
-			const token = thunkAPI.getState().auth.user.token;
-			return await eventService.deleteEvent(eventId, token);
+			return await eventService.deleteEvent(eventId);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -47,8 +44,7 @@ export const deleteEvents = createAsyncThunk(
 	API_URL_CALENDAR + '/delete_all',
 	async (_, thunkAPI) => {
 		try {
-			const token = thunkAPI.getState().auth.user.token;
-			return await eventService.deleteEvents(token);
+			return await eventService.deleteEvents();
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}

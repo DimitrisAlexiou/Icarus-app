@@ -1,39 +1,26 @@
-import axios from 'axios';
-import { API_URL_ADMIN, headers } from '../../constants/config';
+import axiosFetch from '../../utils/axios';
+import { API_URL_ADMIN } from '../../constants/config';
 
-const defineCycles = async (data, token) => {
-	const config = {
-		headers: { headers, Authorization: `Bearer ${token}` },
-	};
-	const response = await axios.post(API_URL_ADMIN + '/cycles', data, config);
+const defineCycles = async (data) => {
+	const response = await axiosFetch.post(API_URL_ADMIN + '/cycles', data);
 
 	return response.data;
 };
 
-const updateCycles = async (data, token) => {
-	const config = {
-		headers: { headers, Authorization: `Bearer ${token}` },
-	};
-	const response = await axios.put(API_URL_ADMIN + '/cycles', data, config);
+const updateCycles = async (data) => {
+	const response = await axiosFetch.put(API_URL_ADMIN + '/cycles', data);
 
 	return response.data;
 };
 
-const getCycles = async (token) => {
-	const config = {
-		headers: { headers, Authorization: `Bearer ${token}` },
-	};
-	const response = await axios.get(API_URL_ADMIN + '/cycles', config);
+const getCycles = async () => {
+	const response = await axiosFetch.get(API_URL_ADMIN + '/cycles');
 
 	return response.data;
 };
 
-const deleteCycles = async (token) => {
-	const config = {
-		headers: { headers, Authorization: `Bearer ${token}` },
-	};
-
-	const response = axios.delete(API_URL_ADMIN + '/cycles', config);
+const deleteCycles = async () => {
+	const response = axiosFetch.delete(API_URL_ADMIN + '/cycles');
 
 	return response.data;
 };

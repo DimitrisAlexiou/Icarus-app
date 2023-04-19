@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { API_URL_ADMIN } from '../../constants/config';
-import { extractErrorMessage } from '../../utils/redux/errorMessage';
+import { extractErrorMessage } from '../../utils/errorMessage';
 import { Toast } from '../../constants/sweetAlertNotification';
 import AssessmentService from './assessmentService';
 
@@ -16,8 +16,7 @@ export const defineAssessment = createAsyncThunk(
 	API_URL_ADMIN + '/defineAssessment',
 	async (data, thunkAPI) => {
 		try {
-			const token = thunkAPI.getState().auth.user.token;
-			return await AssessmentService.defineAssessment(data, token);
+			return await AssessmentService.defineAssessment(data);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -28,8 +27,7 @@ export const getAssessment = createAsyncThunk(
 	API_URL_ADMIN + '/getAssessment',
 	async (_, thunkAPI) => {
 		try {
-			const token = thunkAPI.getState().auth.user.token;
-			return await AssessmentService.getAssessment(token);
+			return await AssessmentService.getAssessment();
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -40,8 +38,7 @@ export const deleteAssessment = createAsyncThunk(
 	API_URL_ADMIN + '/deleteAssessment',
 	async (assessmentId, thunkAPI) => {
 		try {
-			const token = thunkAPI.getState().auth.user.token;
-			return await AssessmentService.deleteAssessment(assessmentId, token);
+			return await AssessmentService.deleteAssessment(assessmentId);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}

@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { API_URL_ADMIN } from '../../constants/config';
-import { extractErrorMessage } from '../../utils/redux/errorMessage';
+import { extractErrorMessage } from '../../utils/errorMessage';
 import { Toast } from '../../constants/sweetAlertNotification';
 import reviewService from './reviewService';
 
@@ -16,8 +16,7 @@ export const defineReview = createAsyncThunk(
 	API_URL_ADMIN + '/defineReview',
 	async (data, thunkAPI) => {
 		try {
-			const token = thunkAPI.getState().auth.user.token;
-			return await reviewService.defineReview(data, token);
+			return await reviewService.defineReview(data);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -26,8 +25,7 @@ export const defineReview = createAsyncThunk(
 
 export const getReview = createAsyncThunk(API_URL_ADMIN + '/getReview', async (_, thunkAPI) => {
 	try {
-		const token = thunkAPI.getState().auth.user.token;
-		return await reviewService.getReview(token);
+		return await reviewService.getReview();
 	} catch (error) {
 		return thunkAPI.rejectWithValue(extractErrorMessage(error));
 	}
@@ -37,8 +35,7 @@ export const deleteReview = createAsyncThunk(
 	API_URL_ADMIN + '/deleteReview',
 	async (reviewId, thunkAPI) => {
 		try {
-			const token = thunkAPI.getState().auth.user.token;
-			return await reviewService.deleteReview(reviewId, token);
+			return await reviewService.deleteReview(reviewId);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
