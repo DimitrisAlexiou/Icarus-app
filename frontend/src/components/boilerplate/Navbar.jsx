@@ -28,6 +28,7 @@ import Clock from 'react-live-clock';
 import NotificationsNavItem from './Notifications';
 import MessagesNavItem from './Messages';
 import img from '../../assets/images/undraw_profile.svg';
+import moment from 'moment';
 
 export default function NavBar({ isSidebarCollapsed, setSidebarCollapsed }) {
 	const [darkTheme, setDarkTheme] = useState(false);
@@ -105,20 +106,13 @@ export default function NavBar({ isSidebarCollapsed, setSidebarCollapsed }) {
 							<span className="ml-1">ICSD Webpage</span>
 						</a>
 					</NavItem>
+					<NavItem className="nav-item d-none d-sm-none d-sm-block d-lg-block mx-1">
+						<span className="nav-link">{moment().format('MMMM D, YYYY')}</span>
+					</NavItem>
 				</div>
 
 				<div className="navbar-nav ml-auto">
-					{/* <NavItem className="nav-item d-none d-sm-none d-sm-block d-lg-block mx-1">
-						<span className="nav-link">
-							{new Date().toLocaleString('en-GB', {
-								day: '2-digit',
-								month: '2-digit',
-								year: 'numeric',
-							})}
-						</span>
-					</NavItem> */}
-
-					<NavItem className="nav-item mx-1">
+					<NavItem className="d-none d-sm-none d-sm-block d-lg-block nav-item mx-1">
 						<Clock className="nav-link" format={'HH:mm:ss'} ticking={true} />
 					</NavItem>
 
@@ -168,7 +162,7 @@ export default function NavBar({ isSidebarCollapsed, setSidebarCollapsed }) {
 										<span className="mr-2 d-none d-lg-inline text-gray-600 small">
 											{user.user.name}
 										</span>
-										<span className="rounded-circle-success">
+										<span className="profile-picture-circle">
 											<img
 												className="img-profile rounded-circle"
 												src={img}

@@ -2,11 +2,11 @@ import { forwardRef, useState } from 'react';
 import { Field, ErrorMessage } from 'formik';
 import { Label, FormGroup, Button, Col } from 'reactstrap';
 import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
 import FormErrorMessage from './FormErrorMessage';
+import 'react-datepicker/dist/react-datepicker.css';
 
 const DateInput = forwardRef(({ value, onClick }, ref) => (
-	<Button type="button" color="null" onClick={onClick} innerRef={ref}>
+	<Button type="button" color="null" onClick={onClick} ref={ref}>
 		{value}
 	</Button>
 ));

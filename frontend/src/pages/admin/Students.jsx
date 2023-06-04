@@ -6,9 +6,7 @@ import Spinner from '../../components/boilerplate/Spinner';
 export default function Users() {
 	const navigate = useNavigate();
 
-	// if (isLoading) {
-	// 	return <Spinner />;
-	// }
+	// if (isLoading) return <Spinner />;
 
 	return (
 		<>

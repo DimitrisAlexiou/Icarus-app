@@ -1,24 +1,20 @@
-import { useState, useEffect, useRef, forwardRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useRef, forwardRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Table, Button, Row, Col, Modal, ModalHeader, ModalBody, Input } from 'reactstrap';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
-import { updateSemester, deleteSemester, resetSemester } from '../../features/admin/semesterSlice';
-import { SemesterSchema } from '../../schemas/admin/Semester';
-import { Toast } from '../../constants/sweetAlertNotification';
+import { deleteSemester } from '../../features/admin/semesterSlice';
+import moment from 'moment';
 import SemesterForm from '../../components/admin/SemesterForm';
-import SubmitButton from '../../components/buttons/SubmitButton';
 import Spinner from '../../components/boilerplate/Spinner';
 
 export default function SemestersDataTable({ semesters }) {
-	const { isLoading, isError, isSuccess, message } = useSelector((state) => state.semesters);
+	const { isLoading, isEditingSemester, editSemesterId } = useSelector(
+		(state) => state.semesters
+	);
 
-	const [isMounted, setIsMounted] = useState(true);
 	const myRef = useRef(null);
 
-	const [isEditting, setIsEditting] = useState(false);
 	const [searchQuery, setSearchQuery] = useState('');
 	const [sortColumn, setSortColumn] = useState('type');
 	const [sortOrder, setSortOrder] = useState('asc');
@@ -27,26 +23,18 @@ export default function SemestersDataTable({ semesters }) {
 	const [modal, setModal] = useState(false);
 	const [currentSemester, setCurrentSemester] = useState({
 		type: '',
-		grdaing: 0,
+		grading: 0,
 		startDate: '',
 		endDate: '',
 	});
 
 	const dispatch = useDispatch();
-	const navigate = useNavigate();
 
 	const toggle = () => setModal(!modal);
 
 	const editS = (semester) => {
 		setCurrentSemester(semester);
 		setModal(true);
-	};
-
-	const updateS = () => {
-		if (isMounted) {
-			dispatch(updateSemester(currentSemester));
-			setModal(false);
-		}
 	};
 
 	const deleteS = (semester) => {
@@ -134,23 +122,9 @@ export default function SemestersDataTable({ semesters }) {
 				</th>
 				<td>{semester.grading} weeks</td>
 				<td onClick={() => handleSort('startDate')}>
-					{new Date(semester.startDate)
-						.toLocaleDateString('en-US', {
-							year: 'numeric',
-							month: '2-digit',
-							day: '2-digit',
-						})
-						.replace(/(\d+)\/(\d+)\/(\d+)/, '$2/$1/$3')}
+					{moment(semester.startDate).format('DD/MM/YYYY')}
 				</td>
-				<td>
-					{new Date(semester.endDate)
-						.toLocaleDateString('en-US', {
-							year: 'numeric',
-							month: '2-digit',
-							day: '2-digit',
-						})
-						.replace(/(\d+)\/(\d+)\/(\d+)/, '$2/$1/$3')}
-				</td>
+				<td>{moment(semester.endDate).format('DD/MM/YYYY')}</td>
 				<td>
 					<Row style={{ width: '150px' }}>
 						<Col xs="6" sm="4" className="mb-2">
@@ -158,7 +132,6 @@ export default function SemestersDataTable({ semesters }) {
 								className="btn btn-light"
 								onClick={() => {
 									editS(semester);
-									setIsEditting(true);
 								}}
 							>
 								<FontAwesomeIcon icon={faEdit} />
@@ -180,51 +153,17 @@ export default function SemestersDataTable({ semesters }) {
 			<Modal ref={myRef} isOpen={modal} toggle={toggle} className="modal-lg">
 				<ModalHeader toggle={toggle}>Edit Semester ({currentSemester.type})</ModalHeader>
 				<ModalBody>
-					<Formik
-						initialValues={{
-							type: '',
-							grading: 0,
-							startDate: '',
-							endDate: '',
-						}}
-						validationSchema={SemesterSchema}
-						onSubmit={(values, { setSubmitting }) => {
-							const semester = {
-								type: values.courseId,
-								grading: values.grading,
-								startDate: values.startDate,
-								endDate: values.endDate,
-							};
-							if (isMounted) {
-								console.log(semester);
-								dispatch(updateS(semester));
-								setModal(false);
-								setSubmitting(false);
-								setIsMounted(false);
-								navigate('/admin/dashboard');
-							}
-						}}
-						validateOnMount
-					>
-						{({ isSubmitting, dirty, handleReset }) => (
-							<Form>
-								<SemesterForm
-									isSubmitting={isSubmitting}
-									dirty={dirty}
-									handleReset={handleReset}
-									isEditting={isEditting}
-								/>
-							</Form>
-						)}
-					</Formik>
+					<SemesterForm
+						semester={currentSemester}
+						isEditingSemester={isEditingSemester}
+						editSemesterId={editSemesterId}
+					/>
 				</ModalBody>
 			</Modal>
 		);
 	});
 
-	if (isLoading) {
-		return <Spinner />;
-	}
+	if (isLoading) return <Spinner />;
 
 	return (
 		<>

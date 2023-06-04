@@ -73,11 +73,24 @@ const getProfile = async () => {
 	return response.data;
 };
 
-const updateProfile = async (userId, data) => {
-	const response = await axiosFetch.put(API_URL_USER + '/' + userId, data);
+const updateProfile = async (data) => {
+	const response = await axiosFetch.put(API_URL_USER, data);
 
 	return response.data;
 };
+
+// const clearStore = async () => {
+// 	try {
+// 		thunkAPI.dispatch(resetCalendar());
+// 	thunkAPI.dispatch(resetCourses());
+// 	thunkAPI.dispatch(resetNotes());
+// 	thunkAPI.dispatch(resetInstructorReview());
+// 	thunkAPI.dispatch(resetGeneralReview());
+// 	thunkAPI.dispatch(resetTeachingReview());
+// 	// thunkAPI.dispatch(reset());
+// 	// thunkAPI.dispatch(reset());
+// 	// thunkAPI.dispatch(reset());
+// };
 
 const authService = {
 	register,

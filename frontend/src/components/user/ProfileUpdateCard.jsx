@@ -1,17 +1,15 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { FormGroup, Label, Row, Col, Button } from 'reactstrap';
+import { FormGroup, Label, Row, Col, Button, Spinner } from 'reactstrap';
 import { UserSchema } from '../../schemas/auth/User';
-import { updateProfile, reset } from '../../features/auth/authSlice';
+import { updateProfile } from '../../features/auth/authSlice';
 import { Toast } from '../../constants/sweetAlertNotification';
 import FormErrorMessage from '../FormErrorMessage';
-import SubmitButton from '../buttons/SubmitButton';
-import Spinner from '../../components/boilerplate/Spinner';
+import CustomSpinner from '../../components/boilerplate/Spinner';
 
-export default function ProfileCard2({ user }) {
-	const { isLoading, isError, isSuccess, message } = useSelector((state) => state.auth);
-
+export default function ProfileUpdateCard() {
+	const { user, isLoading, isError, isSuccess, message } = useSelector((state) => state.auth);
 	const dispatch = useDispatch();
 
 	useEffect(() => {
@@ -31,9 +29,7 @@ export default function ProfileCard2({ user }) {
 		}
 	}, [isError, isSuccess, message]);
 
-	if (isLoading) {
-		return <Spinner />;
-	}
+	if (isLoading) return <CustomSpinner />;
 
 	return (
 		<>
@@ -110,7 +106,7 @@ export default function ProfileCard2({ user }) {
 								...(values.degree && { degree: values.degree }),
 							};
 							console.log(updatedUser);
-							dispatch(updateProfile({ userId: user.user._id, data: updatedUser }));
+							dispatch(updateProfile(updatedUser));
 							setSubmitting(false);
 						}}
 						validateOnMount
@@ -185,7 +181,7 @@ export default function ProfileCard2({ user }) {
 										</FormGroup>
 									</Col>
 								</Row>
-								{user.user.type === 'Instructor' && (
+								{user.user.type === 'Instructor' ? (
 									<Row>
 										<Col md="5">
 											<FormGroup className="form-floating mb-3" floating>
@@ -209,7 +205,7 @@ export default function ProfileCard2({ user }) {
 											</FormGroup>
 										</Col>
 									</Row>
-								)}
+								) : null}
 								<Row className="mt-3">
 									<Col sm="6" md="6" xs="12" className="text-sm-left text-center">
 										<Button
@@ -219,12 +215,20 @@ export default function ProfileCard2({ user }) {
 											Clear
 										</Button>
 									</Col>
-									<Col className="text-sm-right text-center mt-sm-0 mt-3 px-0">
-										<SubmitButton
-											color={'primary'}
-											message={'Update Profile'}
-											disabled={isSubmitting}
-										/>
+									<Col className="text-sm-right text-center mt-sm-0 mt-3">
+										<Button
+											type="submit"
+											color="primary"
+											disabled={isSubmitting || isLoading}
+										>
+											{isSubmitting ? (
+												<>
+													Updating <Spinner type="grow" size="sm" />
+												</>
+											) : (
+												'Update Profile'
+											)}
+										</Button>
 									</Col>
 								</Row>
 							</Form>

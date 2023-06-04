@@ -1,36 +1,23 @@
 import { useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { Row, Col } from 'reactstrap';
-import { Formik } from 'formik';
-import { TeachingSchema } from '../../schemas/course/Teaching';
-import { Toast } from '../../constants/sweetAlertNotification';
 import { getCourse } from '../../features/courses/courseSlice';
 import TeachingForm from '../../components/course/TeachingForm';
 import BackButton from '../../components/buttons/BackButton';
 import Spinner from '../../components/boilerplate/Spinner';
 
 export default function NewTeaching() {
-	const { course, isError, isLoading, message } = useSelector((state) => state.courses);
+	const { course, isLoading } = useSelector((state) => state.courses);
 
 	const { courseId } = useParams();
-	const navigate = useNavigate();
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		if (isError) {
-			Toast.fire({
-				title: 'Something went wrong!',
-				text: message,
-				icon: 'error',
-			});
-		}
 		dispatch(getCourse(courseId));
-	}, [dispatch, isError, message, courseId]);
+	}, [dispatch, courseId]);
 
-	if (isLoading) {
-		return <Spinner />;
-	}
+	if (isLoading) return <Spinner />;
 
 	return (
 		<>
@@ -52,43 +39,7 @@ export default function NewTeaching() {
 							</h6>
 						</div>
 						<div className="card-body">
-							<Formik
-								initialValues={{
-									labWeight: 0,
-									theoryWeight: 0,
-									theoryGrade: 0,
-									labGrade: 0,
-									theoryGradeThreshold: 0,
-									labGradeThreshold: 0,
-									books: [''],
-								}}
-								validationSchema={TeachingSchema}
-								onSubmit={(values, { setSubmitting }) => {
-									const teaching = {
-										labWeight: values.labWeight,
-										theoryWeight: values.theoryWeight,
-										theoryGrade: values.theoryGrade,
-										labGrade: values.labGrade,
-										theoryGradeThreshold: values.theoryGradeThreshold,
-										labGradeThreshold: values.labGradeThreshold,
-										books: values.books,
-									};
-									console.log(teaching);
-									// dispatch(configureTeaching(teaching));
-									setSubmitting(false);
-									navigate('/course/' + courseId);
-								}}
-								validateOnMount
-							>
-								{({ isSubmitting, dirty, values, handleReset }) => (
-									<TeachingForm
-										values={values}
-										isSubmitting={isSubmitting}
-										dirty={dirty}
-										handleReset={handleReset}
-									/>
-								)}
-							</Formik>
+							<TeachingForm courseId={courseId} />
 						</div>
 					</div>
 				</Col>

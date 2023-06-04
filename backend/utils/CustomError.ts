@@ -1,11 +1,10 @@
-class expressError extends Error {
+class CustomError extends Error {
 	public statusCode: number;
 
 	constructor(message: string, statusCode: number) {
-		super();
-		this.message = message;
+		super(message);
 		this.statusCode = statusCode;
 	}
 }
 
-export default expressError;
+export default CustomError;

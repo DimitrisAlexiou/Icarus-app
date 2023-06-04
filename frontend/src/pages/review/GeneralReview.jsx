@@ -2,9 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { Row, Col } from 'reactstrap';
-import { Formik } from 'formik';
-import { createGeneralReview, reset } from '../../features/reviews/generalReviewSlice';
-import { GeneralReviewSchema } from '../../schemas/review/GeneralReview';
+import { resetGeneralReview } from '../../features/reviews/generalReviewSlice';
 import { Toast } from '../../constants/sweetAlertNotification';
 import GeneralReviewForm from '../../components/review/GeneralReviewForm';
 import BreadcrumbNav from '../../components/boilerplate/Breadcrumb';
@@ -32,12 +30,10 @@ export default function GeneralReview() {
 			});
 			navigate('/review');
 		}
-		dispatch(reset());
+		dispatch(resetGeneralReview());
 	}, [dispatch, isError, isSuccess, message, navigate]);
 
-	if (isLoading) {
-		return <Spinner />;
-	}
+	if (isLoading) return <Spinner />;
 
 	return (
 		<>
@@ -59,34 +55,7 @@ export default function GeneralReview() {
 							<h6 className="m-0 font-weight-bold text-primary">Leave your review</h6>
 						</div>
 						<div className="card-body">
-							<Formik
-								initialValues={{
-									course_opinion: '',
-									instructor_opinion: '',
-									likes: '',
-									dislikes: '',
-								}}
-								validationSchema={GeneralReviewSchema}
-								onSubmit={(values, { setSubmitting }) => {
-									const generalReview = {
-										course_opinion: values.course_opinion,
-										instructor_opinion: values.instructor_opinion,
-										likes: values.likes,
-										dislikes: values.dislikes,
-									};
-									dispatch(createGeneralReview(generalReview));
-									setSubmitting(false);
-								}}
-								validateOnMount
-							>
-								{({ isSubmitting, dirty, handleReset }) => (
-									<GeneralReviewForm
-										isSubmitting={isSubmitting}
-										dirty={dirty}
-										handleReset={handleReset}
-									/>
-								)}
-							</Formik>
+							<GeneralReviewForm />
 						</div>
 					</div>
 				</Col>

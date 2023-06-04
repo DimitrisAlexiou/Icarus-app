@@ -1,5 +1,17 @@
 import { Schema, model } from 'mongoose';
 
+export interface CourseStatementProps {
+	courses: [
+		{
+			type: Schema.Types.ObjectId;
+			required: true;
+			ref: 'CourseStatement';
+		}
+	];
+	user: string;
+	semester: string;
+}
+
 const courseStatementSchema = new Schema(
 	{
 		courses: [

@@ -16,6 +16,7 @@ import {
 	CardBody,
 	CardTitle,
 	CardText,
+	Spinner,
 } from 'reactstrap';
 import { useSelector, useDispatch } from 'react-redux';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
@@ -24,15 +25,15 @@ import { EventSchema } from '../../schemas/calendar/Event';
 import { Toast } from '../../constants/sweetAlertNotification';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
+import moment from 'moment';
 import TimePicker from 'react-time-picker';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import listPlugin from '@fullcalendar/list';
-import SubmitButton from '../buttons/SubmitButton';
 import FormErrorMessage from '../FormErrorMessage';
-import Spinner from '../../components/boilerplate/Spinner';
+import CustomSpinner from '../../components/boilerplate/Spinner';
 
 export default function Calendar() {
 	const { events, isLoading, isError, message } = useSelector((state) => state.events);
@@ -140,9 +141,7 @@ export default function Calendar() {
 		setActiveIndex(newIndex);
 	};
 
-	if (isLoading) {
-		return <Spinner />;
-	}
+	if (isLoading) return <CustomSpinner />;
 
 	return (
 		<>
@@ -206,16 +205,9 @@ export default function Calendar() {
 																fontSize: 13,
 															}}
 														>
-															{new Date(event.start)
-																.toLocaleDateString('en-US', {
-																	year: 'numeric',
-																	month: '2-digit',
-																	day: '2-digit',
-																})
-																.replace(
-																	/(\d+)\/(\d+)\/(\d+)/,
-																	'$2/$1/$3'
-																)}
+															{moment(event.start).format(
+																'MMMM D, YYYY'
+															)}
 														</small>
 													</CardText>
 													<CardText

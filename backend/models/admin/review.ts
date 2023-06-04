@@ -1,5 +1,12 @@
 import { Schema, model } from 'mongoose';
 
+export interface ReviewProps {
+	startDate: Date;
+	endDate: Date;
+	startAfter: number;
+	semester: string;
+}
+
 const reviewSchema = new Schema(
 	{
 		startDate: {
@@ -12,7 +19,7 @@ const reviewSchema = new Schema(
 			default: Date.now,
 			required: true,
 		},
-		start: {
+		startAfter: {
 			type: Number,
 			required: true,
 		},
@@ -29,10 +36,11 @@ const reviewSchema = new Schema(
 
 export const Review = model('Review', reviewSchema);
 
-export const getReviewByStartingDate = (startDate: Date) => Review.findOne({ startDate });
-export const getReview = () => Review.findOne();
+export const getReviewBySemester = (semesterId: string) => Review.findOne({ semester: semesterId });
+export const getReview = () => Review.find();
 export const createReview = (values: Record<string, any>) =>
 	new Review(values).save().then((review) => review.toObject());
 export const updateReviewById = (id: string, values: Record<string, any>) =>
 	Review.findByIdAndUpdate(id, values);
 export const deleteReviewById = (id: string) => Review.findByIdAndDelete(id);
+export const deleteReview = () => Review.deleteMany();

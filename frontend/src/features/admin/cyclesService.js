@@ -7,8 +7,8 @@ const defineCycles = async (data) => {
 	return response.data;
 };
 
-const updateCycles = async (data) => {
-	const response = await axiosFetch.put(API_URL_ADMIN + '/cycles', data);
+const updateCycles = async (cyclesId, data) => {
+	const response = await axiosFetch.put(API_URL_ADMIN + '/cycles/' + cyclesId, data);
 
 	return response.data;
 };
@@ -19,8 +19,8 @@ const getCycles = async () => {
 	return response.data;
 };
 
-const deleteCycles = async () => {
-	const response = axiosFetch.delete(API_URL_ADMIN + '/cycles');
+const deleteCycles = async (cyclesId) => {
+	const response = axiosFetch.delete(API_URL_ADMIN + '/cycles/' + cyclesId);
 
 	return response.data;
 };

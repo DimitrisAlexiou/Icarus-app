@@ -38,9 +38,7 @@ export default function ForgotPassword() {
 		dispatch(reset());
 	}, [isError, isSuccess, user, message, navigate, dispatch]);
 
-	if (isLoading) {
-		return <Spinner />;
-	}
+	if (isLoading) return <Spinner />;
 
 	return (
 		<>
@@ -124,6 +122,7 @@ export default function ForgotPassword() {
 															<Row className="mt-4">
 																<Col className="text-center">
 																	<Button
+																		type="submit"
 																		className="btn-block"
 																		color="primary"
 																		disabled={isSubmitting}

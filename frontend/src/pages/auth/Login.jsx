@@ -2,12 +2,10 @@ import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, Link, NavLink } from 'react-router-dom';
 import { Row, Col, Nav } from 'reactstrap';
-import { Formik } from 'formik';
-import { LoginSchema } from '../../schemas/auth/Login';
 import { faGoogle, faGithub } from '@fortawesome/free-brands-svg-icons';
 import { FaStudiovinari } from 'react-icons/fa';
 import { Toast } from '../../constants/sweetAlertNotification';
-import { login, reset } from '../../features/auth/authSlice';
+import { reset } from '../../features/auth/authSlice';
 import LoginForm from '../../components/auth/LoginForm';
 import SignUpInButton from '../../components/buttons/SignUpInButton';
 import Spinner from '../../components/boilerplate/Spinner';
@@ -46,9 +44,7 @@ export default function Login() {
 		dispatch(reset());
 	}, [isError, isSuccess, user, message, navigate, dispatch]);
 
-	if (isLoading) {
-		return <Spinner />;
-	}
+	if (isLoading) return <Spinner />;
 
 	return (
 		<>
@@ -89,30 +85,8 @@ export default function Login() {
 														Welcome Back !
 													</h4>
 												</div>
-												<Formik
-													initialValues={{
-														username: '',
-														password: '',
-													}}
-													validationSchema={LoginSchema}
-													onSubmit={(values, { setSubmitting }) => {
-														const user = {
-															username: values.username,
-															password: values.password,
-														};
-														dispatch(login(user));
-														setSubmitting(false);
-													}}
-													validateOnMount
-												>
-													{({ isSubmitting, dirty, handleReset }) => (
-														<LoginForm
-															isSubmitting={isSubmitting}
-															dirty={dirty}
-															handleReset={handleReset}
-														/>
-													)}
-												</Formik>
+
+												<LoginForm />
 
 												<hr />
 												<Row>

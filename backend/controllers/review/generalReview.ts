@@ -7,201 +7,140 @@ import {
 	deleteGeneralReviewById,
 	getUserSubmittedGeneralReview,
 } from '../../models/review/generalReview';
-import { User, getUserById } from '../../models/users/user';
-
-interface User {
-	id: string;
-	username: string;
-}
+import { UserProps } from '../../models/users/user';
+import { getCurrentSemester } from '../../models/admin/semester';
+import { getReviewBySemester } from '../../models/admin/review';
+import { tryCatch } from '../../utils/tryCatch';
+import CustomError from '../../utils/CustomError';
 
 interface AuthenticatedRequest extends Request {
-	user?: User;
+	user?: UserProps;
 }
 
-export const getAllUserGeneralReviews = async (req: AuthenticatedRequest, res: Response) => {
-	try {
+export const getAllUserGeneralReviews = tryCatch(
+	async (req: AuthenticatedRequest, res: Response) => {
 		const userId = req.user.id;
-		const user = await getUserById(userId);
+		const userGeneralReviews = await getUserGeneralReviews(userId);
 
-		if (!user) {
-			return res.status(401).json('User not found.');
-		} else {
-			try {
-				const userGeneralReviews = await getUserGeneralReviews(userId);
-				if (!userGeneralReviews)
-					return res
-						.status(404)
-						.json(
-							`Seems like there are no general reviews from user: ${req.user.username}.`
-						);
-				else return res.status(200).json(userGeneralReviews);
-			} catch (error) {
-				console.error('❌ Error while finding user general reviews: ', error);
-				return res.status(500).json({
-					message: 'Something went wrong, try again later.',
-				});
-			}
-		}
-	} catch (error) {
-		console.error('❌ Error while finding user: ', error);
-		return res.status(500).json({
-			message: 'Something went wrong, try again later.',
-		});
+		if (!userGeneralReviews)
+			throw new CustomError(
+				`Seems like there are no general reviews registered from user: ${req.user.username}.`,
+				404
+			);
+
+		return res.status(200).json(userGeneralReviews);
 	}
-};
+);
 
-export const viewUserGeneralReview = async (req: AuthenticatedRequest, res: Response) => {
-	try {
+export const viewUserGeneralReview = tryCatch(async (req: AuthenticatedRequest, res: Response) => {
+	const { id } = req.params;
+	const generalReview = await getGeneralReviewById(id);
+
+	if (!generalReview)
+		throw new CustomError(
+			'Seems like the general review that you are trying to view does not exist.',
+			404
+		);
+
+	return res.status(200).json(generalReview);
+});
+
+export const createUserGeneralReview = tryCatch(
+	async (req: AuthenticatedRequest, res: Response) => {
+		const { course_opinion, instructor_opinion, likes, dislikes } = req.body;
+
+		if (!course_opinion || !instructor_opinion || !likes || !dislikes)
+			throw new CustomError('Please fill in all the required fields.', 400);
+
+		const currentDate = new Date();
+		const semester = await getCurrentSemester(currentDate);
+
+		if (!semester)
+			throw new CustomError(
+				'Seems like there is no defined semester for current period.',
+				404
+			);
+
+		const semesterId = semester._id.toString();
+		const reviewDuration = await getReviewBySemester(semesterId);
+
+		if (reviewDuration.endDate < currentDate)
+			throw new CustomError(
+				'The review duration period has ended. No more general reviews can be submitted.',
+				406
+			);
+
 		const userId = req.user.id;
-		const user = await getUserById(userId);
+		const existingGeneralReview = await getUserSubmittedGeneralReview(userId);
 
-		if (!user) {
-			return res.status(401).json('User not found.');
-		} else {
-			try {
-				const { id } = req.params;
-				const generalReview = await getGeneralReviewById(id);
-				if (!generalReview)
-					return res
-						.status(404)
-						.json(
-							`Seems like there is no general review with this ID for user: ${req.user.username}.`
-						);
-				// if (generalReview.user.toString() !== userId) {
-				// 	return res
-				// 		.status(401)
-				// 		.json('You are not authorized to view this general review!');
-				// }
-				else return res.status(200).json(generalReview);
-			} catch (error) {
-				console.error('❌ Error while finding user general review: ', error);
-				return res.status(500).json({
-					message: 'Something went wrong, try again later.',
-				});
-			}
-		}
-	} catch (error) {
-		console.error('❌ Error while finding user: ', error);
-		return res.status(500).json({
-			message: 'Something went wrong, try again later.',
+		if (existingGeneralReview)
+			throw new CustomError(
+				'Seems like a general review has been already submitted for this semester.',
+				406
+			);
+
+		const generalReview = await createGeneralReview({
+			course_opinion,
+			instructor_opinion,
+			likes,
+			dislikes,
+			user: userId,
+			status: 'new',
 		});
+
+		return res.status(201).json(generalReview);
 	}
-};
+);
 
-export const createUserGeneralReview = async (req: AuthenticatedRequest, res: Response) => {
-	const { course_opinion, instructor_opinion, likes, dislikes } = req.body;
+export const updateUserGeneralReview = tryCatch(
+	async (req: AuthenticatedRequest, res: Response) => {
+		const { course_opinion, instructor_opinion, likes, dislikes } = req.body;
 
-	if (!course_opinion || !instructor_opinion || !likes || !dislikes)
-		return res.status(400).json('Please fill in all the required fields.');
+		if (!course_opinion || !instructor_opinion || !likes || !dislikes)
+			throw new CustomError('Please fill in all the required fields.', 400);
 
-	try {
-		const userId = req.user.id;
-		const user = await getUserById(userId);
+		const currentDate = new Date();
+		const semester = await getCurrentSemester(currentDate);
 
-		if (!user) {
-			return res.status(401).json('User not found.');
-		} else {
-			try {
-				const instructorReview = await getUserSubmittedGeneralReview(userId);
-				if (instructorReview) {
-					return res
-						.status(406)
-						.json(
-							`${req.user.username} has already submitted an instructor review for this semester.`
-						);
-				} else {
-					try {
-						const newGeneralReview = await createGeneralReview({
-							course_opinion,
-							instructor_opinion,
-							likes,
-							dislikes,
-							user: userId,
-							status: 'new',
-						});
+		if (!semester)
+			throw new CustomError(
+				'Seems like there is no defined semester for current period.',
+				404
+			);
 
-						return res.status(201).json(newGeneralReview);
-					} catch (error) {
-						console.error('❌ Error while creating general review: ', error);
-						return res.status(500).json({
-							message:
-								'Something went wrong, unfortunately general review did not created.',
-						});
-					}
-				}
-			} catch (error) {
-				console.error(
-					'❌ Error while checking if user has already submitted a general review for this semester: ',
-					error
-				);
-				return res.status(500).json({
-					message: 'Something went wrong, try again later.',
-				});
-			}
-		}
-	} catch (error) {
-		console.error('❌ Error while finding user: ', error);
-		return res.status(500).json({
-			message: 'Something went wrong, try again later.',
-		});
+		const semesterId = semester._id.toString();
+		const reviewDuration = await getReviewBySemester(semesterId);
+
+		if (reviewDuration.endDate < currentDate)
+			throw new CustomError(
+				'The review duration period has ended. No more general reviews can be submitted.',
+				406
+			);
+
+		const { id } = req.params;
+		const updatedGeneralReview = await updateGeneralReviewById(id, { ...req.body });
+
+		if (!updatedGeneralReview)
+			throw new CustomError(
+				'Seems like the general review that you are trying to update does not exist.',
+				404
+			);
+
+		return res.status(200).json(updatedGeneralReview);
 	}
-};
+);
 
-export const updateUserGeneralReview = async (req: AuthenticatedRequest, res: Response) => {
-	const { course_opinion, instructor_opinion, likes, dislikes } = req.body;
+export const deleteUserGeneralReview = tryCatch(
+	async (req: AuthenticatedRequest, res: Response) => {
+		const { id } = req.params;
+		const generalReviewToDelete = await deleteGeneralReviewById(id);
 
-	if (!course_opinion || !instructor_opinion || !likes || !dislikes)
-		return res.status(400).json('Please fill in all the required fields.');
+		if (!generalReviewToDelete)
+			throw new CustomError(
+				'Seems like the general review that you are trying to delete does not exist.',
+				404
+			);
 
-	try {
-		const userId = req.user.id;
-		const user = await getUserById(userId);
-
-		if (!user) {
-			return res.status(401).json('User not found.');
-		} else {
-			try {
-				const { id } = req.params;
-				const updatedGeneralReview = await updateGeneralReviewById(id, { ...req.body });
-				return res.status(200).json(updatedGeneralReview);
-			} catch (error) {
-				console.error('❌ Error while updating user general review: ', error);
-				return res.status(500).json({
-					message: 'Something went wrong, unfortunately general review did not updated.',
-				});
-			}
-		}
-	} catch (error) {
-		console.error('❌ Error while finding user: ', error);
-		return res.status(500).json({
-			message: 'Something went wrong, try again later.',
-		});
+		return res.status(200).json({ message: 'General review deleted.' });
 	}
-};
-
-export const deleteUserGeneralReview = async (req: AuthenticatedRequest, res: Response) => {
-	try {
-		const userId = req.user.id;
-		const user = await getUserById(userId);
-
-		if (!user) {
-			return res.status(401).json('User not found.');
-		} else {
-			try {
-				const { id } = req.params;
-				await deleteGeneralReviewById(id);
-				return res.status(200).json('General review deleted.');
-			} catch (error) {
-				console.error('❌ Error while deleting user general review: ', error);
-				return res.status(500).json({
-					message: 'Something went wrong, unfortunately general review did not deleted.',
-				});
-			}
-		}
-	} catch (error) {
-		console.error('❌ Error while finding user: ', error);
-		return res.status(500).json({
-			message: 'Something went wrong, try again later.',
-		});
-	}
-};
+);

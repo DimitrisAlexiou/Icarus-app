@@ -9,7 +9,8 @@
 		"test": "jest --watchAll --verbose",
 		"testCoverage": "jest --watchAll --verbose --coverage",
 		"e2e": "cypress open",
-		"dev": "concurrently \"npm run server\" \"npm run client\""
+		"dev": "concurrently \"npm run server\" \"npm run client\"",
+		"build": "tsc -w"
 	},
 	"author": "Dimitris Alexiou",
 	"license": "ISC",

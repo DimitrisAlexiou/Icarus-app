@@ -1,5 +1,12 @@
 import { Schema, model } from 'mongoose';
 
+export interface AssessmentProps {
+	period: number;
+	vaccineStartDate: Date;
+	vaccineEndDate: Date;
+	semester: string;
+}
+
 const assessmentSchema = new Schema(
 	{
 		period: {

@@ -13,16 +13,23 @@ const getAssessment = async () => {
 	return response.data;
 };
 
+const updateAssessment = async (assessmentId, data) => {
+	const response = await axiosFetch.put(API_URL_ADMIN + '/assessment/' + assessmentId, data);
+
+	return response.data;
+};
+
 const deleteAssessment = async (assessmentId) => {
 	const response = axiosFetch.delete(API_URL_ADMIN + '/assessment/' + assessmentId);
 
 	return response.data;
 };
 
-const semesterService = {
+const assessmentService = {
 	defineAssessment,
 	getAssessment,
+	updateAssessment,
 	deleteAssessment,
 };
 
-export default semesterService;
+export default assessmentService;

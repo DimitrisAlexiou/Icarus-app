@@ -1,5 +1,12 @@
 import { Schema, model } from 'mongoose';
 
+export interface SemesterProps {
+	type: string;
+	startDate: Date;
+	endDate: Date;
+	grading: number;
+}
+
 const semesterSchema = new Schema(
 	{
 		type: {

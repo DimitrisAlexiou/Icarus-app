@@ -2,12 +2,10 @@ import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, Link, NavLink } from 'react-router-dom';
 import { Row, Col, Nav } from 'reactstrap';
-import { Formik } from 'formik';
-import { UserSchema } from '../../schemas/auth/User';
 import { Toast } from '../../constants/sweetAlertNotification';
 import { faGoogle, faGithub } from '@fortawesome/free-brands-svg-icons';
 import { FaStudiovinari } from 'react-icons/fa';
-import { register, reset } from '../../features/auth/authSlice';
+import { reset } from '../../features/auth/authSlice';
 import RegisterForm from '../../components/auth/RegisterForm';
 import SignUpInButton from '../../components/buttons/SignUpInButton';
 import Spinner from '../../components/boilerplate/Spinner';
@@ -45,9 +43,7 @@ export default function Register() {
 		dispatch(reset());
 	}, [dispatch, navigate, isError, isSuccess, user, message]);
 
-	if (isLoading) {
-		return <Spinner />;
-	}
+	if (isLoading) return <Spinner />;
 
 	return (
 		<>
@@ -88,65 +84,8 @@ export default function Register() {
 														Create Account !
 													</h4>
 												</div>
-												<Formik
-													initialValues={{
-														name: '',
-														surname: '',
-														username: '',
-														email: '',
-														password: '',
-														confirmPassword: '',
-														type: '',
-														studentId: '',
-														studentType: '',
-														entranceYear: '',
-														facultyType: '',
-														degree: '',
-														instructorEntranceYear: '',
-													}}
-													validationSchema={UserSchema}
-													onSubmit={(values, { setSubmitting }) => {
-														if (values.type === 'Student') {
-															const user = {
-																name: values.name,
-																surname: values.surname,
-																username: values.username,
-																email: values.email,
-																password: values.password,
-																type: values.type,
-																studentId: values.studentId,
-																studentType: values.studentType,
-																entranceYear: values.entranceYear,
-															};
-															dispatch(register(user));
-															setSubmitting(false);
-														} else if (values.type === 'Instructor') {
-															const user = {
-																name: values.name,
-																surname: values.surname,
-																username: values.username,
-																email: values.email,
-																password: values.password,
-																type: values.type,
-																facultyType: values.facultyType,
-																degree: values.degree,
-																instructorEntranceYear:
-																	values.instructorEntranceYear,
-															};
-															dispatch(register(user));
-															setSubmitting(false);
-														}
-													}}
-													validateOnMount
-												>
-													{({ isSubmitting, dirty, handleReset }) => (
-														<RegisterForm
-															isSubmitting={isSubmitting}
-															dirty={dirty}
-															handleReset={handleReset}
-														/>
-													)}
-												</Formik>
+
+												<RegisterForm />
 
 												<hr />
 												<Row>

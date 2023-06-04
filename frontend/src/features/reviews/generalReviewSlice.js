@@ -37,7 +37,7 @@ export const generalReviewSlice = createSlice({
 	name: 'generalReview',
 	initialState,
 	reducers: {
-		reset: () => initialState,
+		resetGeneralReview: () => initialState,
 	},
 	extraReducers: (builder) => {
 		builder
@@ -69,5 +69,5 @@ export const generalReviewSlice = createSlice({
 	},
 });
 
-export const { reset } = generalReviewSlice.actions;
+export const { resetGeneralReview } = generalReviewSlice.actions;
 export default generalReviewSlice.reducer;

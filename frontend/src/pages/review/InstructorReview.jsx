@@ -2,9 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { Row, Col } from 'reactstrap';
-import { createInstructorReview, reset } from '../../features/reviews/instructorReviewSlice';
-import { Formik } from 'formik';
-import { InstructorReviewSchema } from '../../schemas/review/InstructorReview';
+import { resetInstructorReview } from '../../features/reviews/instructorReviewSlice';
 import { Toast } from '../../constants/sweetAlertNotification';
 import InstructorReviewForm from '../../components/review/InstructorReviewForm';
 import BreadcrumbNav from '../../components/boilerplate/Breadcrumb';
@@ -34,12 +32,10 @@ export default function InstructorReview() {
 			});
 			navigate('/review');
 		}
-		dispatch(reset());
+		dispatch(resetInstructorReview());
 	}, [dispatch, isError, isSuccess, message, navigate]);
 
-	if (isLoading) {
-		return <Spinner />;
-	}
+	if (isLoading) return <Spinner />;
 
 	return (
 		<>
@@ -61,38 +57,7 @@ export default function InstructorReview() {
 							<h6 className="m-0 font-weight-bold text-primary">Leave your review</h6>
 						</div>
 						<div className="card-body">
-							<Formik
-								initialValues={{
-									good_organization: 1,
-									clear_comprehensive_answers: 1,
-									student_participation: 1,
-									course_consistency: 1,
-									instructor_approachable: 1,
-								}}
-								validationSchema={InstructorReviewSchema}
-								onSubmit={(values, { setSubmitting }) => {
-									const instructorReview = {
-										good_organization: values.good_organization,
-										clear_comprehensive_answers:
-											values.clear_comprehensive_answers,
-										student_participation: values.student_participation,
-										course_consistency: values.course_consistency,
-										instructor_approachable: values.instructor_approachable,
-									};
-									console.log(instructorReview);
-									dispatch(createInstructorReview(instructorReview));
-									setSubmitting(false);
-								}}
-								validateOnMount
-							>
-								{({ isSubmitting, dirty, handleReset }) => (
-									<InstructorReviewForm
-										isSubmitting={isSubmitting}
-										dirty={dirty}
-										handleReset={handleReset}
-									/>
-								)}
-							</Formik>
+							<InstructorReviewForm />
 						</div>
 					</div>
 				</Col>

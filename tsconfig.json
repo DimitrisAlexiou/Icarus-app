@@ -3,7 +3,8 @@
 		"module": "NodeNext",
 		"moduleResolution": "node",
 		"baseUrl": "backend",
-		"outDir": "dist",
+		"outDir": "./dist",
+		"rootDir": "./backend",
 		"jsx": "react",
 		"sourceMap": true,
 		"noImplicitAny": true

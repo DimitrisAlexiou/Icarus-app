@@ -1,5 +1,15 @@
 import { Schema, model } from 'mongoose';
 
+export interface InstructorReviewProps {
+	good_organization: number;
+	clear_comprehensive_answers: number;
+	student_participation: number;
+	course_consistency: number;
+	instructor_approachable: number;
+	user: string;
+	teaching: string;
+}
+
 const instructorReviewSchema = new Schema(
 	{
 		good_organization: {

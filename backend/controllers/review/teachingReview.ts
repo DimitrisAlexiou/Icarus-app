@@ -1,318 +1,183 @@
 import { Request, Response } from 'express';
 import {
-	TeachingReview,
+	getUserSubmittedTeachingReview,
 	getUserTeachingReviews,
 	getTeachingReviewById,
 	createTeachingReview,
+	updateTeachingReviewById,
 	deleteTeachingReviewById,
 } from '../../models/review/teachingReview';
-import { User, getUserById } from '../../models/users/user';
-import { Semester } from '../../models/admin/semester';
-import { Review } from '../../models/admin/review';
-import { Course } from '../../models/course/course';
-
-interface User {
-	id: string;
-	username: string;
-}
-
-interface TeachingReview {
-	teachingId: string;
-}
-
-interface Review {
-	endDate: Date;
-}
+import { UserProps } from '../../models/users/user';
+import { getCurrentSemester } from '../../models/admin/semester';
+import { getReviewBySemester } from '../../models/admin/review';
+import { tryCatch } from '../../utils/tryCatch';
+import CustomError from '../../utils/CustomError';
 
 interface AuthenticatedRequest extends Request {
-	user?: User;
+	user?: UserProps;
 }
 
-export const getAllUserTeachingReviews = async (req: AuthenticatedRequest, res: Response) => {
-	try {
+export const getAllUserTeachingReviews = tryCatch(
+	async (req: AuthenticatedRequest, res: Response) => {
 		const userId = req.user.id;
-		const user = await getUserById(userId);
+		const userTeachingReviews = await getUserTeachingReviews(userId);
 
-		if (!user) {
-			return res.status(404).json('User not found.');
-		} else {
-			try {
-				const userTeachingReviews = await getUserTeachingReviews(userId);
-				if (!userTeachingReviews)
-					return res
-						.status(404)
-						.json(
-							`Seems like there are no teaching reviews from user: ${user.username}.`
-						);
-				else return res.status(200).json(userTeachingReviews);
-			} catch (error) {
-				console.error('❌ Error while finding user teaching reviews: ', error);
-				return res.status(500).json({
-					message: 'Something went wrong, try again later.',
-				});
-			}
-		}
-	} catch (error) {
-		console.error('❌ Error while finding user: ', error);
-		return res.status(500).json({
-			message: 'Something went wrong, try again later.',
-		});
+		if (!userTeachingReviews)
+			throw new CustomError(
+				`Seems like there are no teaching reviews registered from user: ${req.user.username}.`,
+				404
+			);
+
+		return res.status(200).json(userTeachingReviews);
 	}
-};
+);
 
-export const viewUserTeachingReview = async (req: AuthenticatedRequest, res: Response) => {
-	try {
+export const viewUserTeachingReview = tryCatch(async (req: AuthenticatedRequest, res: Response) => {
+	const { id } = req.params;
+	const teachingReview = await getTeachingReviewById(id);
+
+	if (!teachingReview)
+		throw new CustomError(
+			'Seems like the teaching review that you are trying to view does not exist.',
+			404
+		);
+
+	return res.status(200).json(teachingReview);
+});
+
+// * WE ACCESS THE TEACHING REVIEW FORM BY SELECTING A TEACHING(COURSE) WHERE THE USER IS ENROLLED
+// * THE PAGE RENDERS ALL THE TEACHINGS(COURSES) THAT THE USER IS ENROLLED IN, THEN BY SELECTING ONE OF THEM,
+// * THE TEACHING REVIEW FORM IS RENDERED WITH THE TEACHINGID ALREADY PASSED, THE USER ID IS PASSED THROUGH REQ.USER
+export const createUserTeachingReview = tryCatch(
+	async (req: AuthenticatedRequest, res: Response) => {
+		const {
+			clear_course_objectives,
+			course_material,
+			course_comprehension,
+			examination_method,
+			course_difficulty,
+			course_activities,
+		} = req.body;
+
+		if (
+			!clear_course_objectives ||
+			!course_material ||
+			!course_comprehension ||
+			!examination_method ||
+			!course_difficulty ||
+			!course_activities
+		)
+			throw new CustomError('Please provide a rating for all required fields.', 400);
+
+		const currentDate = new Date();
+		const semester = await getCurrentSemester(currentDate);
+
+		if (!semester)
+			throw new CustomError(
+				'Seems like there is no defined semester for current period.',
+				404
+			);
+
+		const semesterId = semester._id.toString();
+		const reviewDuration = await getReviewBySemester(semesterId);
+
+		if (reviewDuration.endDate < currentDate)
+			throw new CustomError(
+				'The review duration period has ended. No more teaching reviews can be submitted.',
+				406
+			);
+
 		const userId = req.user.id;
-		const user = await getUserById(userId);
+		const { teachingId } = req.params;
+		const existingTeachingReview = await getUserSubmittedTeachingReview(userId, teachingId);
 
-		if (!user) {
-			return res.status(404).json('User not found.');
-		} else {
-			try {
-				const { id } = req.params;
-				const teachingReview = await getTeachingReviewById(id);
-				if (!teachingReview)
-					return res
-						.status(404)
-						.json(
-							`Seems like there is no teaching review with this ID for user: ${user.username}.`
-						);
-				else return res.status(200).json(teachingReview);
-			} catch (error) {
-				console.error('❌ Error while finding user teaching review: ', error);
-				return res.status(500).json({
-					message: 'Something went wrong, try again later.',
-				});
-			}
-		}
-	} catch (error) {
-		console.error('❌ Error while finding user: ', error);
-		return res.status(500).json({
-			message: 'Something went wrong, try again later.',
+		if (existingTeachingReview)
+			throw new CustomError(
+				'Seems like a teaching review has been already submitted for this semester.',
+				406
+			);
+
+		const teachingReview = await createTeachingReview({
+			clear_course_objectives,
+			course_material,
+			course_comprehension,
+			examination_method,
+			course_difficulty,
+			course_activities,
+			user: req.user,
+			teaching: teachingId,
+			status: 'new',
 		});
+
+		return res.status(201).json(teachingReview);
 	}
-};
+);
 
-// ΣΤΟ TEACHING REVIEW ΠΗΓΑΙΝΟΥΜΕ ΔΙΑΛΕΓΟΝΤΑΣ ΕΝΑ COURSE στο ΟΠΟΙΟ Ο ΤΡΕΧΩΝ USER ΕΙΝΑΙ ENROLLED
-// export const createUserTeachingReview = async (req: AuthenticatedRequest, res: Response) => {
-// 	const {
-// 		clear_course_objectives,
-// 		course_material,
-// 		course_comprehension,
-// 		examination_method,
-// 		course_difficulty,
-// 		course_activities,
-// 	} = req.body;
+export const updateUserTeachingReview = tryCatch(
+	async (req: AuthenticatedRequest, res: Response) => {
+		const {
+			clear_course_objectives,
+			course_material,
+			course_comprehension,
+			examination_method,
+			course_difficulty,
+			course_activities,
+		} = req.body;
 
-// 	if (
-// 		!clear_course_objectives ||
-// 		!course_material ||
-// 		!course_comprehension ||
-// 		!examination_method ||
-// 		!course_difficulty ||
-// 		!course_activities
-// 	)
-// 		return res.status(400).json('Please provide a rating for all required fields.');
+		if (
+			!clear_course_objectives ||
+			!course_material ||
+			!course_comprehension ||
+			!examination_method ||
+			!course_difficulty ||
+			!course_activities
+		)
+			throw new CustomError('Please fill in all the required fields.', 400);
 
-// 	try {
-// 		const userId = req.user.id;
-// 		const user = await getUserById(userId);
-// 		if (!user) {
-// 			return res.status(404).json('User not found.');
-// 		} else {
-// 			try {
-// 				const semester = await Semester.find({});
-// 				if (!semester) {
-// 					return res.status(404).json('Semester is not defined.');
-// 				} else {
-// 					try {
-// 						const reviewDuration = await Review.find();
-// 						if (reviewDuration.endDate < new Date()) {
-// 							return res.status(406).json('The review duration period has ended.');
-// 						} else {
-// 							try {
-// 								const teachingReview = await TeachingReview.findOne({
-// 									user: userId,
-// 									semester: semester,
-// 								});
-// 								if (teachingReview) {
-// 									return res
-// 										.status(406)
-// 										.json(
-// 											`${user.username} has already submitted a teaching review for this semester.`
-// 										);
-// 								} else {
-// 									try {
-// 										const newTeachingReview = await createTeachingReview({
-// 											clear_course_objectives,
-// 											course_material,
-// 											course_comprehension,
-// 											examination_method,
-// 											course_difficulty,
-// 											course_activities,
-// 											user: userId,
-// 											// teaching: teachingId,
-// 											semester: semester,
-// 											status: 'new',
-// 										});
-// 										return res.status(201).json(newTeachingReview);
-// 									} catch (error) {
-// 										console.error(
-// 											'❌ Error while creating user teaching review: ',
-// 											error
-// 										);
-// 										return res.status(500).json({
-// 											message:
-// 												'Something went wrong, unfortunately teaching review did not created.',
-// 										});
-// 									}
-// 								}
-// 							} catch (error) {
-// 								console.error(
-// 									'❌ Error while checking if user has already submitted a teaching review for this semester: ',
-// 									error
-// 								);
-// 								return res
-// 									.status(500)
-// 									.json({ message: 'Something went wrong, try again later.' });
-// 							}
-// 						}
-// 					} catch (error) {
-// 						console.error('❌ Error while finding review duration period: ', error);
-// 						return res
-// 							.status(500)
-// 							.json({ message: 'Something went wrong, try again later.' });
-// 					}
-// 				}
-// 			} catch (error) {
-// 				console.error('❌ Error while checking if semester has been defined: ', error);
-// 				return res.status(500).json({ message: 'Something went wrong, try again later.' });
-// 			}
-// 		}
-// 	} catch (error) {
-// 		console.error('❌ Error while finding user: ', error);
-// 		return res.status(500).json({ message: 'Something went wrong, try again later.' });
-// 	}
-// };
+		const currentDate = new Date();
+		const semester = await getCurrentSemester(currentDate);
 
-// export const updateUserTeachingReview = async (req: AuthenticatedRequest, res: Response) => {
-// 	const {
-// 		clear_course_objectives,
-// 		course_material,
-// 		course_comprehension,
-// 		examination_method,
-// 		course_difficulty,
-// 		course_activities,
-// 	} = req.body;
+		if (!semester)
+			throw new CustomError(
+				'Seems like there is no defined semester for current period.',
+				404
+			);
 
-// 	if (
-// 		!clear_course_objectives ||
-// 		!course_material ||
-// 		!course_comprehension ||
-// 		!examination_method ||
-// 		!course_difficulty ||
-// 		!course_activities
-// 	)
-// 		return res.status(400).json('Please fill in all the required fields.');
+		const semesterId = semester._id.toString();
+		const reviewDuration = await getReviewBySemester(semesterId);
 
-// 	try {
-// 		const userId = req.user.id;
-// 		const user = await getUserById(userId);
+		if (reviewDuration.endDate < currentDate)
+			throw new CustomError(
+				'The review duration period has ended. No more teaching reviews can be submitted.',
+				406
+			);
 
-// 		if (!user) {
-// 			return res.status(404).json('User not found.');
-// 		} else {
-// 			try {
-// 				const { teachingReviewId } = req.params;
-// 				const teachingReview = await TeachingReview.findOne({
-// 					id: teachingReviewId,
-// 					user: userId,
-// 				});
-// 				if (!teachingReview) {
-// 					return res
-// 						.status(404)
-// 						.json(
-// 							`Seems like there is no teaching review with this ID for user: ${user.username}!`
-// 						);
-// 				} else {
-// 					if (teachingReview.user.toString() !== userId) {
-// 						return res
-// 							.status(401)
-// 							.json('You are not authorized to update this teaching review!');
-// 					} else {
-// 						try {
-// 							const reviewDuration = await Review.find();
-// 							if (reviewDuration.endDate < new Date()) {
-// 								return res
-// 									.status(406)
-// 									.json('The review duration period has ended!');
-// 							} else {
-// 								try {
-// 									const updatedTeachingReview =
-// 										await TeachingReview.findByIdAndUpdate(
-// 											teachingReviewId,
-// 											{
-// 												...req.body,
-// 											},
-// 											{ new: true }
-// 										);
-// 									return res.status(200).json(updatedTeachingReview);
-// 								} catch (error) {
-// 									console.error(
-// 										'❌ Error while updating user teaching review: ',
-// 										error
-// 									);
-// 									return res.status(500).json({
-// 										message: 'Something went wrong, try again later!',
-// 									});
-// 								}
-// 							}
-// 						} catch (error) {
-// 							console.error('❌ Error while finding review duration period: ', error);
-// 							return res.status(500).json({
-// 								message: 'Something went wrong, try again later!',
-// 							});
-// 						}
-// 					}
-// 				}
-// 			} catch (error) {
-// 				console.error('❌ Error while finding user teaching review: ', error);
-// 				return res.status(500).json({
-// 					message: 'Something went wrong, try again later!',
-// 				});
-// 			}
-// 		}
-// 	} catch (error) {
-// 		console.error('❌ Error while finding user: ', error);
-// 		return res.status(500).json({
-// 			message: 'Something went wrong, try again later!',
-// 		});
-// 	}
-// };
-
-export const deleteUserTeachingReview = async (req: AuthenticatedRequest, res: Response) => {
-	try {
-		const userId = req.user.id;
-		const user = await getUserById(userId);
-
-		if (!user) {
-			return res.status(404).json('User not found.');
-		} else {
-			try {
-				const { id } = req.params;
-				await deleteTeachingReviewById(id);
-				return res.status(200).json('Teaching review deleted.');
-			} catch (error) {
-				console.error('❌ Error while deleting user teaching review: ', error);
-				return res.status(500).json({
-					message: 'Something went wrong, unfortunately teaching review did not deleted.',
-				});
-			}
-		}
-	} catch (error) {
-		console.error('❌ Error while finding user: ', error);
-		return res.status(500).json({
-			message: 'Something went wrong, try again later.',
+		const { id } = req.params;
+		const updatedTeachingReview = await updateTeachingReviewById(id, {
+			...req.body,
 		});
+
+		if (!updatedTeachingReview)
+			throw new CustomError(
+				'Seems like the teaching review that you are trying to update does not exist.',
+				404
+			);
+
+		return res.status(200).json(updatedTeachingReview);
 	}
-};
+);
+
+export const deleteUserTeachingReview = tryCatch(
+	async (req: AuthenticatedRequest, res: Response) => {
+		const { id } = req.params;
+		const teachingReviewToDelete = await deleteTeachingReviewById(id);
+
+		if (!teachingReviewToDelete)
+			throw new CustomError(
+				'Seems like the teaching review that you are trying to delete does not exist.',
+				404
+			);
+
+		return res.status(200).json({ message: 'Teaching review deleted.' });
+	}
+);

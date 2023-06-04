@@ -27,9 +27,7 @@ export default function Notifications() {
 	// 	dispatch(getNotifications());
 	// }, [dispatch]);
 
-	// if (isLoading) {
-	// 	return <Spinner />;
-	// }
+	// if (isLoading) return <Spinner />;
 
 	// {
 	// 	notifications.map((notifications) => (

@@ -1,11 +1,8 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import { Row, Col } from 'reactstrap';
-import { Formik } from 'formik';
-import { CourseSchema } from '../../schemas/course/Course';
 import { Toast } from '../../constants/sweetAlertNotification';
-import { createCourse, getCourses } from '../../features/courses/courseSlice';
+import { getCourses } from '../../features/courses/courseSlice';
 import { getCycles } from '../../features/admin/cyclesSlice';
 import { getSemesters } from '../../features/admin/semesterSlice';
 import CourseForm from '../../components/course/CourseForm';
@@ -13,12 +10,7 @@ import BackButton from '../../components/buttons/BackButton';
 import Spinner from '../../components/boilerplate/Spinner';
 
 export default function NewCourse() {
-	const {
-		courses,
-		isLoading: coursesIsLoading,
-		isError: coursesIsError,
-		message: coursesMessage,
-	} = useSelector((state) => state.courses);
+	const { courses, isLoading: coursesIsLoading } = useSelector((state) => state.courses);
 	const {
 		cycles,
 		isLoading: cyclesIsLoading,
@@ -33,20 +25,13 @@ export default function NewCourse() {
 	} = useSelector((state) => state.semesters);
 
 	const dispatch = useDispatch();
-	const navigate = useNavigate();
 
 	useEffect(() => {
 		dispatch(getCourses());
 		dispatch(getCycles());
 		dispatch(getSemesters());
 
-		if (coursesIsError) {
-			Toast.fire({
-				title: 'Something went wrong!',
-				text: coursesMessage,
-				icon: 'error',
-			});
-		} else if (cyclesIsError) {
+		if (cyclesIsError) {
 			Toast.fire({
 				title: 'Something went wrong!',
 				text: cyclesMessage,
@@ -59,19 +44,9 @@ export default function NewCourse() {
 				icon: 'error',
 			});
 		}
-	}, [
-		dispatch,
-		coursesIsError,
-		cyclesIsError,
-		semestersIsError,
-		coursesMessage,
-		cyclesMessage,
-		semestersMessage,
-	]);
+	}, [dispatch, cyclesIsError, semestersIsError, cyclesMessage, semestersMessage]);
 
-	if (coursesIsLoading || cyclesIsLoading || semestersIsLoading) {
-		return <Spinner />;
-	}
+	if (coursesIsLoading || cyclesIsLoading || semestersIsLoading) return <Spinner />;
 
 	return (
 		<>
@@ -93,59 +68,7 @@ export default function NewCourse() {
 							</h6>
 						</div>
 						<div className="card-body">
-							<Formik
-								initialValues={{
-									courseId: '',
-									title: '',
-									type: '',
-									isObligatory: true,
-									hasPrerequisites: false,
-									hasLab: false,
-									description: '',
-									semester: '',
-									ects: 0,
-									year: '',
-									cycle: '',
-									prerequisites: [],
-								}}
-								validationSchema={CourseSchema}
-								onSubmit={(values, { setSubmitting }) => {
-									const course = {
-										courseId: values.courseId,
-										title: values.title,
-										type: values.type,
-										isObligatory: values.isObligatory,
-										hasPrerequisites: values.hasPrerequisites,
-										hasLab: values.hasLab,
-										description: values.description,
-										semester: values.semester,
-										ects: values.ects,
-										year: values.year,
-										cycle: values.cycle ? values.cycle : null,
-										prerequisites: values.prerequisites.some(Boolean)
-											? values.prerequisites
-											: [],
-									};
-									console.log(course);
-									dispatch(createCourse(course));
-									setSubmitting(false);
-									navigate('/course');
-								}}
-								validateOnMount
-							>
-								{({ isSubmitting, dirty, values, handleReset, setFieldValue }) => (
-									<CourseForm
-										courses={courses}
-										cycles={cycles}
-										semesters={semesters}
-										values={values}
-										setFieldValue={setFieldValue}
-										isSubmitting={isSubmitting}
-										dirty={dirty}
-										handleReset={handleReset}
-									/>
-								)}
-							</Formik>
+							<CourseForm courses={courses} cycles={cycles} semesters={semesters} />
 						</div>
 					</div>
 				</Col>

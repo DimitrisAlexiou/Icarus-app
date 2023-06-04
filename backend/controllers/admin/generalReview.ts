@@ -1,24 +1,20 @@
 import { Request, Response } from 'express';
 import { getGeneralReviews, deleteGeneralReviews } from '../../models/review/generalReview';
+import { tryCatch } from '../../utils/tryCatch';
+import CustomError from '../../utils/CustomError';
 
-export const getAllGeneralReviews = async (_: Request, res: Response) => {
-	try {
-		const generalReviews = await getGeneralReviews();
-		if (!generalReviews)
-			return res.status(404).json({ message: 'Seems like there are no general reviews.' });
-		else return res.status(200).json(generalReviews);
-	} catch (error) {
-		console.error('❌ Error while finding general reviews: ', error);
-		return res.status(500).json({ message: 'Something went wrong, try again later.' });
-	}
-};
+export const getAllGeneralReviews = tryCatch(async (_: Request, res: Response) => {
+	const generalReviews = await getGeneralReviews();
+	if (!generalReviews)
+		throw new CustomError(
+			'Seems like there are no general reviews registered in the system.',
+			404
+		);
 
-export const deleteAllGeneralReviews = async (_: Request, res: Response) => {
-	try {
-		await deleteGeneralReviews();
-		return res.status(200).json({ message: 'All general reviews deleted.' });
-	} catch (error) {
-		console.error('❌ Error while deleting all general reviews: ', error);
-		return res.status(500).json({ message: 'Something went wrong, try again later.' });
-	}
-};
+	return res.status(200).json(generalReviews);
+});
+
+export const deleteAllGeneralReviews = tryCatch(async (_: Request, res: Response) => {
+	await deleteGeneralReviews();
+	return res.status(200).json({ message: 'General reviews existing in the system deleted.' });
+});

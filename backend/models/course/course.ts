@@ -1,6 +1,27 @@
 import { Schema, model } from 'mongoose';
 import { Teaching } from './teaching';
 
+export interface CourseProps {
+	courseId: string;
+	title: string;
+	type: string;
+	description: string;
+	prerequisites: [
+		{
+			prerequisite: string;
+			prerequisiteType: string;
+		}
+	];
+	semester: string;
+	cycle: string;
+	year: number;
+	ects: number;
+	hasLab: boolean;
+	isObligatory: boolean;
+	hasPrerequisites: boolean;
+	isActive: boolean;
+}
+
 const courseSchema = new Schema(
 	{
 		courseId: {
@@ -45,8 +66,8 @@ const courseSchema = new Schema(
 			required: true,
 		},
 		year: {
-			type: String,
-			enum: ['1', '2', '3', '4', '5'],
+			type: Number,
+			enum: [1, 2, 3, 4, 5],
 			required: true,
 		},
 		cycle: {

@@ -1,10 +1,8 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { createTeachingReview, reset } from '../../features/reviews/teachingReviewSlice';
-import { Formik } from 'formik';
+import { resetTeachingReview } from '../../features/reviews/teachingReviewSlice';
 import { Row, Col } from 'reactstrap';
-import { TeachingReviewSchema } from '../../schemas/review/TeachingReview';
 import { Toast } from '../../constants/sweetAlertNotification';
 import TeachingReviewForm from '../../components/review/TeachingReviewForm';
 import BreadcrumbNav from '../../components/boilerplate/Breadcrumb';
@@ -32,12 +30,10 @@ export default function TeachingReview() {
 			});
 			navigate('/review');
 		}
-		dispatch(reset());
+		dispatch(resetTeachingReview());
 	}, [dispatch, isError, isSuccess, message, navigate]);
 
-	if (isLoading) {
-		return <Spinner />;
-	}
+	if (isLoading) return <Spinner />;
 
 	return (
 		<>
@@ -59,39 +55,7 @@ export default function TeachingReview() {
 							<h6 className="m-0 font-weight-bold text-primary">Leave your review</h6>
 						</div>
 						<div className="card-body">
-							<Formik
-								initialValues={{
-									clear_course_objectives: 1,
-									course_material: 1,
-									course_comprehension: 1,
-									examination_method: 1,
-									course_difficulty: 1,
-									course_activities: 1,
-								}}
-								validationSchema={TeachingReviewSchema}
-								onSubmit={(values, { setSubmitting }) => {
-									const teachingReview = {
-										clear_course_objectives: values.clear_course_objectives,
-										course_material: values.course_material,
-										course_comprehension: values.course_comprehension,
-										examination_method: values.examination_method,
-										course_difficulty: values.course_difficulty,
-										course_activities: values.course_activities,
-									};
-									console.log(teachingReview);
-									dispatch(createTeachingReview(teachingReview));
-									setSubmitting(false);
-								}}
-								validateOnMount
-							>
-								{({ isSubmitting, dirty, handleReset }) => (
-									<TeachingReviewForm
-										isSubmitting={isSubmitting}
-										dirty={dirty}
-										handleReset={handleReset}
-									/>
-								)}
-							</Formik>
+							<TeachingReviewForm />
 						</div>
 					</div>
 				</Col>

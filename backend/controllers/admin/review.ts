@@ -3,100 +3,106 @@ import {
 	createReview,
 	updateReviewById,
 	getReview,
-	getReviewByStartingDate,
+	getReviewBySemester,
 	deleteReviewById,
+	deleteReview,
 } from '../../models/admin/review';
+import { getCurrentSemester } from '../../models/admin/semester';
+import { tryCatch } from '../../utils/tryCatch';
+import CustomError from '../../utils/CustomError';
 
-export const defineReviewStatement = async (req: Request, res: Response) => {
-	const { startDate, endDate, start } = req.body;
+export const defineReviewStatement = tryCatch(async (req: Request, res: Response) => {
+	const { startDate, endDate, startAfter } = req.body;
 
-	if (!startDate || !endDate || !start)
-		return res.status(400).json({ message: 'Please provide the required fields.' });
+	if (!startDate || !endDate || !startAfter)
+		throw new CustomError('Please fill in all the required fields.', 400);
 
-	try {
-		const existingReview = await getReviewByStartingDate(startDate);
-		if (existingReview) {
-			return res.status(400).json({
-				message: 'Seems like review statement period is already defined.',
-			});
-		} else {
-			try {
-				const review = await createReview({
-					startDate,
-					endDate,
-					start,
-					status: 'new',
-				});
-				return res.status(201).json(review);
-			} catch (error) {
-				console.error('❌ Error while defining review statement period: ', error);
-				return res.status(500).json({
-					message:
-						'Something went wrong, unfortunately the review statement period did not defined.',
-				});
-			}
-		}
-	} catch (error) {
-		console.error(
-			'❌ Error while checking if review statement period already defined: ',
-			error
+	const semester = await getCurrentSemester(new Date());
+	if (!semester)
+		throw new CustomError(
+			'Seems like there is no defined semester for current period. Define a semester first in order to define review statement configuration.',
+			404
 		);
-		return res.status(500).json({ message: 'Something went wrong, try again later.' });
-	}
-};
 
-export const getReviewStatement = async (_: Request, res: Response) => {
-	try {
-		const reviewStatement = await getReview();
-		if (!reviewStatement) {
-			return res
-				.status(404)
-				.json({ message: 'Seems like there is no review statement period defined.' });
-		} else {
-			return res.status(200).json(reviewStatement);
-		}
-	} catch (error) {
-		console.error('❌ Error while finding review statement period: ', error);
-		return res.status(500).json({ message: 'Something went wrong, try again later.' });
-	}
-};
+	const semesterId = semester._id.toString();
+	const existingReview = await getReviewBySemester(semesterId);
+	if (existingReview)
+		throw new CustomError(
+			'Seems like review statement configuration is already defined for this semester.',
+			400
+		);
 
-export const updateReviewStatement = async (req: Request, res: Response) => {
-	const { startDate, endDate, start } = req.body;
+	const review = await createReview({
+		startDate,
+		endDate,
+		startAfter,
+		semester: semester,
+		status: 'new',
+	});
 
-	if (!startDate || !endDate || !start)
-		return res.status(400).json({
-			message: 'Please provide the required fields.',
-		});
+	return res.status(201).json(review);
+});
 
-	try {
-		const { id } = req.params;
-		const updatedReview = await updateReviewById(id, req.body);
-		if (!updatedReview)
-			return res.status(404).json({
-				message:
-					'Seems like there is no review statement duration period defined for current semester.',
-			});
-		else return res.status(200).json(updatedReview);
-	} catch (error) {
-		console.error('❌ Error while updating review statement period: ', error);
-		return res.status(500).json({
-			message:
-				'Something went wrong, unfortunately the review statement period did not updated.',
-		});
-	}
-};
+export const getReviewStatement = tryCatch(async (_: Request, res: Response) => {
+	const semester = await getCurrentSemester(new Date());
+	if (!semester)
+		throw new CustomError(
+			'Seems like there is no defined semester for current period. Define a semester first in order to define review statement configuration.',
+			404
+		);
 
-export const deleteReviewStatement = async (req: Request, res: Response) => {
-	try {
-		const { id } = req.params;
-		await deleteReviewById(id);
-		return res.status(200).json({ message: 'Current review statement period deleted.' });
-	} catch (error) {
-		console.error('❌ Error while deleting defined review statement period: ', error);
-		return res.status(500).json({
-			message:
-				'Something went wrong, unfortunately defined review statement did not deleted.',
-		});
-	}
-};
+	const semesterId = semester._id.toString();
+	const review = await getReviewBySemester(semesterId);
+	if (!review)
+		throw new CustomError(
+			'Seems like there is no review statement configuration defined for this semester.',
+			404
+		);
+
+	return res.status(200).json(review);
+});
+
+export const getReviewStatements = tryCatch(async (_: Request, res: Response) => {
+	const reviews = await getReview();
+	if (!reviews)
+		throw new CustomError(
+			'Seems like there are no review statement configurations defined.',
+			404
+		);
+
+	return res.status(200).json(reviews);
+});
+
+export const updateReviewStatement = tryCatch(async (req: Request, res: Response) => {
+	const { startDate, endDate, startAfter } = req.body;
+
+	if (!startDate || !endDate || !startAfter)
+		throw new CustomError('Please fill in all the required fields.', 400);
+
+	const { id } = req.params;
+	const updatedReview = await updateReviewById(id, { ...req.body });
+	if (!updatedReview)
+		throw new CustomError(
+			'Seems like the review statement configuration that you are trying to update does not exist.',
+			404
+		);
+
+	return res.status(200).json(updatedReview);
+});
+
+export const deleteReviewStatement = tryCatch(async (req: Request, res: Response) => {
+	const { id } = req.params;
+	const reviewStatementToDelete = await deleteReviewById(id);
+	if (!reviewStatementToDelete)
+		throw new CustomError(
+			'Seems like the review statement configuration that you are trying to delete does not exist.',
+			404
+		);
+
+	return res.status(200).json({ message: 'Review statement configuration deleted.' });
+});
+
+export const deleteAllReviewStatements = tryCatch(async (_: Request, res: Response) => {
+	await deleteReview();
+	return res.status(200).json({ message: 'Defined review statement configurations deleted.' });
+});

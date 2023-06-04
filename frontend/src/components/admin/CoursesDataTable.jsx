@@ -1,42 +1,19 @@
-import { useState, useEffect, forwardRef, useRef } from 'react';
+import { useState, forwardRef, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-	Row,
-	Col,
-	Table,
-	Button,
-	Modal,
-	ModalHeader,
-	ModalBody,
-	FormGroup,
-	Label,
-	Input,
-} from 'reactstrap';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import {
-	updateCourse,
-	deleteCourse,
-	activateCourse,
-	resetCourses,
-} from '../../features/courses/courseSlice';
+import { Row, Col, Table, Button, Modal, ModalHeader, ModalBody, Input } from 'reactstrap';
+import { deleteCourse, activateCourse, setEditCourse } from '../../features/courses/courseSlice';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { faEdit, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
-import { Toast } from '../../constants/sweetAlertNotification';
-import { CourseSchema } from '../../schemas/course/Course';
 import CourseForm from '../../components/course/CourseForm';
-import SubmitButton from '../../components/buttons/SubmitButton';
-import FormErrorMessage from '../FormErrorMessage';
 import Spinner from '../../components/boilerplate/Spinner';
 
 export default function CoursesDataTable({ courses, cycles, semesters }) {
-	const { isLoading, isSuccess } = useSelector((state) => state.courses);
+	const { isLoading, isEditingCourse, editCourseId } = useSelector((state) => state.courses);
 
-	const [isMounted, setIsMounted] = useState(true);
-	const myRef = useRef(null);
+	const modalRef = useRef(null);
 
-	const [isEditting, setIsEditting] = useState(false);
 	const [searchQuery, setSearchQuery] = useState('');
 	const [sortColumn, setSortColumn] = useState('courseId');
 	const [sortOrder, setSortOrder] = useState('asc');
@@ -62,17 +39,6 @@ export default function CoursesDataTable({ courses, cycles, semesters }) {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
-	useEffect(() => {
-		if (isSuccess) {
-			Toast.fire({
-				title: 'Success',
-				text: 'Course activated!',
-				icon: 'success',
-			});
-			navigate('/admin/dashboard');
-		}
-	});
-
 	const toggle = () => setModal(!modal);
 
 	const viewCourse = (course) => {
@@ -81,18 +47,6 @@ export default function CoursesDataTable({ courses, cycles, semesters }) {
 
 	const activateC = (course) => {
 		dispatch(activateCourse(course._id));
-	};
-
-	const editC = (course) => {
-		setCurrentCourse(course);
-		setModal(true);
-	};
-
-	const updateC = () => {
-		if (isMounted) {
-			dispatch(updateCourse(currentCourse));
-			setModal(false);
-		}
 	};
 
 	const deleteC = (course) => {
@@ -213,8 +167,13 @@ export default function CoursesDataTable({ courses, cycles, semesters }) {
 								className="btn btn-light"
 								onClick={(e) => {
 									e.stopPropagation();
-									editC(course);
-									setIsEditting(true);
+									dispatch(
+										setEditCourse({
+											editCourseId: course._id,
+										})
+									);
+									setModal(true);
+									setCurrentCourse(course);
 								}}
 							>
 								<FontAwesomeIcon icon={faEdit} />
@@ -237,83 +196,27 @@ export default function CoursesDataTable({ courses, cycles, semesters }) {
 		);
 	});
 
-	const ModalComponent = forwardRef((props, myRef) => {
+	const ModalComponent = forwardRef((props, ref) => {
+		const { modalRef } = props;
+
 		return (
-			<Modal ref={myRef} isOpen={modal} toggle={toggle} className="modal-lg">
+			<Modal ref={modalRef} isOpen={modal} toggle={toggle} className="modal-lg">
 				<ModalHeader toggle={toggle}>Edit Course ({currentCourse.title})</ModalHeader>
 				<ModalBody>
-					<Formik
-						initialValues={{
-							courseId: '',
-							title: '',
-							type: '',
-							isObligatory: '',
-							hasPrerequisites: '',
-							hasLab: '',
-							description: '',
-							semester: '',
-							ects: '',
-							year: '',
-							cycle: '',
-							prerequisites: '',
-							isActive: '',
-						}}
-						validationSchema={CourseSchema}
-						onSubmit={(values, { setSubmitting }) => {
-							const course = {
-								courseId: values.courseId,
-								title: values.title,
-								type: values.type,
-								isObligatory: values.isObligatory,
-								hasPrerequisites: values.hasPrerequisites,
-								hasLab: values.hasLab,
-								description: values.description,
-								semester: values.semester,
-								ects: values.ects,
-								year: values.year,
-								cycle: values.cycle,
-								prerequisites: values.prerequisites,
-								isActive: values.isActive,
-							};
-							if (isMounted) {
-								console.log(course);
-								dispatch(updateC(course));
-								dispatch(resetCourses());
-								setModal(false);
-								setSubmitting(false);
-								setIsMounted(false);
-								navigate('/admin/dashboard');
-							}
-						}}
-						validateOnMount
-					>
-						{({ values, setFieldValue }) => (
-							<Form>
-								<CourseForm
-									courses={courses}
-									cycles={cycles}
-									semesters={semesters}
-									values={values}
-									setFieldValue={setFieldValue}
-									isEditting={isEditting}
-								/>
-							</Form>
-						)}
-					</Formik>
+					<CourseForm
+						course={currentCourse}
+						courses={courses}
+						cycles={cycles}
+						semesters={semesters}
+						isEditingCourse={isEditingCourse}
+						editCourseId={editCourseId}
+					/>
 				</ModalBody>
 			</Modal>
 		);
 	});
 
-	useEffect(() => {
-		return () => {
-			setIsMounted(false);
-		};
-	}, []);
-
-	if (isLoading) {
-		return <Spinner />;
-	}
+	if (isLoading) return <Spinner />;
 
 	return (
 		<>
@@ -336,7 +239,7 @@ export default function CoursesDataTable({ courses, cycles, semesters }) {
 					</select>
 				</Col>
 			</Row>
-			{coursesFound.length === 0 ? (
+			{coursesFound.length < 1 ? (
 				<span className="mt-4 mb-4 text-gray-500 font-weight-bold">
 					There are no entries for your current search
 				</span>
@@ -369,7 +272,7 @@ export default function CoursesDataTable({ courses, cycles, semesters }) {
 					<span id="page-numbers">{renderPageNumbers}</span>
 				</Col>
 			</Row>
-			<ModalComponent ref={myRef} />
+			{isEditingCourse ? <ModalComponent modalRef={modalRef} /> : null}
 		</>
 	);
 }

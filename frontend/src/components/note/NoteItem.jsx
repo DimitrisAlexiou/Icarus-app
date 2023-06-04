@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExclamation } from '@fortawesome/free-solid-svg-icons';
 import { faCircle, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import { updateImportance } from '../../features/notes/noteSlice';
+import moment from 'moment';
 
 export default function NoteItem({ note, onDelete }) {
 	const dispatch = useDispatch();
@@ -16,14 +17,15 @@ export default function NoteItem({ note, onDelete }) {
 						<span className="side-stick"></span>
 						<h5>{note.title}</h5>
 						{/* <p>
-							{note.categories.filter(Boolean).length > 0 && (
+							{note.categories.filter(Boolean).length > 0 ? (
 								<>
 									{note.categories.map((category, index) => (
 										<b key={index}>{category}</b>
 									))}
 								</>
-							)}
+							):null}
 						</p> */}
+						<p className="mx-2 py-1">{note.text}</p>
 						<h6
 							className="mt-2"
 							style={{
@@ -32,15 +34,8 @@ export default function NoteItem({ note, onDelete }) {
 								fontSize: 12,
 							}}
 						>
-							{new Date(note.postDate)
-								.toLocaleDateString('en-US', {
-									year: 'numeric',
-									month: 'long',
-									day: '2-digit',
-								})
-								.replace(/(\d+)\/(\d+)\/(\d+)/, '$2/$1/$3')}
+							Created at: {moment(note.createdAt).format('MMMM DD, YYYY')}
 						</h6>
-						<p className="mx-2 py-1">{note.text}</p>
 						<Row className="d-flex align-items-center">
 							<Col>
 								{note.importance ? (
@@ -70,7 +65,7 @@ export default function NoteItem({ note, onDelete }) {
 									<FontAwesomeIcon icon={faTrashAlt} onClick={onDelete} />
 								</span>
 							</Col>
-							{note.categories.filter(Boolean).length > 0 && (
+							{note.categories.filter(Boolean).length > 0 ? (
 								<Col className="d-flex justify-content-end">
 									{note.categories.map((index) => (
 										<FontAwesomeIcon
@@ -82,7 +77,7 @@ export default function NoteItem({ note, onDelete }) {
 										/>
 									))}
 								</Col>
-							)}
+							) : null}
 						</Row>
 					</Card>
 				</div>

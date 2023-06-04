@@ -1,10 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import { Types } from 'mongoose';
-import rateLimit from 'express-rate-limit';
-import jwt from 'jsonwebtoken';
 import { User, getUserById } from '../models/users/user';
 import { merge, get } from 'lodash';
-import ExpressError from '../utils/expressError';
+import rateLimit from 'express-rate-limit';
+import jwt from 'jsonwebtoken';
 
 interface User {
 	id?: string;
@@ -37,10 +36,11 @@ export const authorize = async (req: AuthenticatedRequest, res: Response, next: 
 			};
 			req.user = (await getUserById(decoded.id).select('-password')) as User;
 
-			if (!req.user) {
-				res.status(401).json({ message: 'Unauthorized access. Please log in first.' });
-				throw new ExpressError('❌ Not authorized!', 401);
-			}
+			if (!req.user)
+				return res
+					.status(401)
+					.json({ message: 'Unauthorized access. Please log in first.' });
+
 			merge(req, { identity: req.user });
 			next();
 		} catch (error) {
@@ -49,15 +49,11 @@ export const authorize = async (req: AuthenticatedRequest, res: Response, next: 
 				return res.status(401).json({ message: 'Token has expired. Please log in again.' });
 			}
 			console.error('❌ Error while authorizing user: '.red.bold, error);
-			res.status(401).json({ message: 'Unauthorized access. Please log in first.' });
-			throw new ExpressError('❌ Not authorized!', 401);
+			return res.status(401).json({ message: 'Unauthorized access. Please log in first.' });
 		}
 	}
 
-	if (!token) {
-		res.status(401).json({ message: 'Token is missing. Please log in first.' });
-		throw new ExpressError('❌ Not authorized!', 401);
-	}
+	if (!token) return res.status(401).json({ message: 'Token is missing. Please log in first.' });
 };
 
 // Limit requests to 5 per hour
@@ -70,13 +66,12 @@ export const resetPasswordLimiter = rateLimit({
 export const checkUserRole = (allowedRoles: string[]) => {
 	return (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
 		// check if user is authenticated
-		if (!req.user) {
-			return res.status(401).json({ message: 'Unauthorized! Please login first.' });
-		}
+		if (!req.user)
+			return res.status(401).json({ message: 'Unauthorized access! Please login first.' });
+
 		// check if user has any of the allowed roles
-		if (!allowedRoles.includes(req.user.type)) {
-			return res.status(403).json({ message: 'Forbidden' });
-		}
+		if (!allowedRoles.includes(req.user.type))
+			return res.status(403).json({ message: 'Forbidden! Cannot access this resource.' });
 
 		// user has one of the allowed roles, call next middleware function
 		next();
@@ -88,16 +83,14 @@ export const isOwner = async (req: AuthenticatedRequest, res: Response, next: Ne
 		const userId = req.user.id;
 		const currentUserId = get(req, 'identity._id') as string;
 
-		if (!currentUserId) {
-			return res.status(400);
-		}
+		if (!currentUserId) return res.status(400);
 
-		if (currentUserId.toString() !== userId) {
-			return res.status(403);
-		}
+		if (currentUserId.toString() !== userId)
+			return res.status(403).json({ message: 'Forbidden! Cannot access this resource.' });
+
 		next();
 	} catch (error) {
-		console.log(error);
+		console.error('❌ Error while checking user ownership: '.red.bold, error);
 		return res.status(400);
 	}
 };

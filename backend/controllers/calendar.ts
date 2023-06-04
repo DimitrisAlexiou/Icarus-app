@@ -6,134 +6,69 @@ import {
 	deleteEvent,
 	deleteEvents,
 } from '../models/calendar';
-import { User, getUserById } from '../models/users/user';
-
-interface User {
-	id: string;
-}
+import { UserProps } from '../models/users/user';
+import { tryCatch } from '../utils/tryCatch';
+import CustomError from '../utils/CustomError';
 
 interface AuthenticatedRequest extends Request {
-	user?: User;
+	user?: UserProps;
 }
 
-export const addEvent = async (req: AuthenticatedRequest, res: Response) => {
+export const addEvent = tryCatch(async (req: AuthenticatedRequest, res: Response) => {
 	const { eventId, title, start, end, allDay } = req.body;
 
 	if (!title || !start || !end || !allDay)
-		return res.status(400).json('Please fill in all the required fields.');
+		throw new CustomError('Please fill in all the required fields.', 400);
 
-	try {
-		const userId = req.user.id;
-		const user = await getUserById(userId);
+	const userId = req.user.id;
+	const existingEvent = await getEventByEventId(eventId);
 
-		if (!user) {
-			return res.status(401).json('User not found.');
-		} else {
-			try {
-				const existingEvent = await getEventByEventId(eventId);
-				if (existingEvent) {
-					return res
-						.status(400)
-						.json('Seems like an event with this title already exists for the day.');
-				} else {
-					try {
-						const event = await createEvent({
-							eventId,
-							title,
-							start,
-							end,
-							allDay,
-							owner: userId,
-							status: 'new',
-						});
-						console.log(event);
-						return res.status(201).json(event);
-					} catch (error) {
-						console.error('❌ Error while creating event: ', error);
-						return res.status(500).json({
-							message: 'Something went wrong, unfortunately event did not created.',
-						});
-					}
-				}
-			} catch (error) {
-				console.error('❌ Error while checking if event already exists: ', error);
-				return res.status(500).json({ message: 'Something went wrong, try again later.' });
-			}
-		}
-	} catch (error) {
-		console.error('❌ Error while finding user: ', error);
-		return res.status(500).json({ message: 'Something went wrong, try again later.' });
-	}
-};
+	if (existingEvent)
+		throw new CustomError(
+			'Seems like an event with this title already exists for that day.',
+			400
+		);
 
-export const viewEvents = async (req: AuthenticatedRequest, res: Response) => {
-	try {
-		const userId = req.user.id;
-		const user = await getUserById(userId);
+	const event = await createEvent({
+		eventId,
+		title,
+		start,
+		end,
+		allDay,
+		owner: userId,
+		status: 'new',
+	});
+	console.log(event);
 
-		if (!user) {
-			return res.status(401).json('User not found.');
-		} else {
-			try {
-				const userEvents = await getEvents(userId);
-				if (!userEvents) return res.status(404).json(`Seems like there are no events.`);
-				else return res.status(200).json(userEvents);
-			} catch (error) {
-				console.error('❌ Error while finding user events: ', error);
-				return res.status(500).json({ message: 'Something went wrong, try again later.' });
-			}
-		}
-	} catch (error) {
-		console.error('❌ Error while finding user: ', error);
-		return res.status(500).json({ message: 'Something went wrong, try again later.' });
-	}
-};
+	return res.status(201).json(event);
+});
 
-export const deleteUserEvent = async (req: AuthenticatedRequest, res: Response) => {
-	try {
-		const userId = req.user.id;
-		const user = await getUserById(userId);
+export const viewEvents = tryCatch(async (req: AuthenticatedRequest, res: Response) => {
+	const userId = req.user.id;
+	const userEvents = await getEvents(userId);
 
-		if (!user) {
-			return res.status(401).json('User not found.');
-		} else {
-			try {
-				const { id } = req.params;
-				await deleteEvent(id);
-				return res.status(200).json('Event deleted.');
-			} catch (error) {
-				console.error('❌ Error while deleting user event: ', error);
-				return res.status(500).json({
-					message: 'Something went wrong, unfortunately event did not deleted.',
-				});
-			}
-		}
-	} catch (error) {
-		console.error('❌ Error while finding user: ', error);
-		return res.status(500).json({ message: 'Something went wrong, try again later.' });
-	}
-};
+	if (!userEvents) throw new CustomError('Seems like there are no events.', 404);
 
-export const deleteUserEvents = async (req: AuthenticatedRequest, res: Response) => {
-	try {
-		const userId = req.user.id;
-		const user = await getUserById(userId);
+	return res.status(200).json(userEvents);
+});
 
-		if (!user) {
-			return res.status(401).json('User not found.');
-		} else {
-			try {
-				await deleteEvents(userId);
-				return res.status(200).json('All user events deleted.');
-			} catch (error) {
-				console.error('❌ Error while deleting all user events: ', error);
-				return res.status(500).json({
-					message: 'Something went wrong, unfortunately events did not deleted.',
-				});
-			}
-		}
-	} catch (error) {
-		console.error('❌ Error while finding user: ', error);
-		return res.status(500).json({ message: 'Something went wrong, try again later.' });
-	}
-};
+export const deleteUserEvent = tryCatch(async (req: AuthenticatedRequest, res: Response) => {
+	const { id } = req.params;
+	const eventToDelete = await deleteEvent(id);
+
+	if (!eventToDelete)
+		throw new CustomError(
+			'Seems like the event that you are trying to delete does not exist.',
+			404
+		);
+
+	return res.status(200).json({ message: 'Event deleted.' });
+});
+
+export const deleteUserEvents = tryCatch(async (req: AuthenticatedRequest, res: Response) => {
+	const userId = req.user.id;
+
+	await deleteEvents(userId);
+
+	return res.status(200).json({ message: 'User events existing in the system deleted.' });
+});

@@ -2,21 +2,20 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { API_URL_ADMIN } from '../../constants/config';
 import { extractErrorMessage } from '../../utils/errorMessage';
 import { Toast } from '../../constants/sweetAlertNotification';
-import AssessmentService from './assessmentService';
+import assessmentService from './assessmentService';
 
 const initialState = {
 	assessment: null,
-	isError: false,
-	isSuccess: false,
 	isLoading: false,
-	message: '',
+	isEditingAssessment: false,
+	editAssessmentId: '',
 };
 
 export const defineAssessment = createAsyncThunk(
 	API_URL_ADMIN + '/defineAssessment',
 	async (data, thunkAPI) => {
 		try {
-			return await AssessmentService.defineAssessment(data);
+			return await assessmentService.defineAssessment(data);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -27,7 +26,19 @@ export const getAssessment = createAsyncThunk(
 	API_URL_ADMIN + '/getAssessment',
 	async (_, thunkAPI) => {
 		try {
-			return await AssessmentService.getAssessment();
+			return await assessmentService.getAssessment();
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
+	}
+);
+
+export const updateAssessment = createAsyncThunk(
+	API_URL_ADMIN + '/updateAssessment',
+	async ({ assessmentId, data }, thunkAPI) => {
+		try {
+			await assessmentService.updateAssessment(assessmentId, data);
+			return thunkAPI.dispatch(getAssessment());
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -38,7 +49,7 @@ export const deleteAssessment = createAsyncThunk(
 	API_URL_ADMIN + '/deleteAssessment',
 	async (assessmentId, thunkAPI) => {
 		try {
-			return await AssessmentService.deleteAssessment(assessmentId);
+			return await assessmentService.deleteAssessment(assessmentId);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -50,6 +61,9 @@ export const assessmentSlice = createSlice({
 	initialState,
 	reducers: {
 		resetAssessment: () => initialState,
+		setEditAssessment: (state, { payload }) => {
+			return { ...state, isEditingAssessment: true, ...payload };
+		},
 	},
 	extraReducers: (builder) => {
 		builder
@@ -67,8 +81,11 @@ export const assessmentSlice = createSlice({
 			})
 			.addCase(defineAssessment.rejected, (state, action) => {
 				state.isLoading = false;
-				state.isError = true;
-				state.message = action.payload;
+				Toast.fire({
+					title: 'Something went wrong!',
+					text: action.payload,
+					icon: 'error',
+				});
 			})
 			.addCase(getAssessment.pending, (state) => {
 				state.isLoading = true;
@@ -79,20 +96,57 @@ export const assessmentSlice = createSlice({
 			})
 			.addCase(getAssessment.rejected, (state, action) => {
 				state.isLoading = false;
-				state.isError = true;
-				state.message = action.payload;
+				if (
+					action.payload !==
+					'Seems like there is no assessment statement duration period defined for current semester.'
+				)
+					Toast.fire({
+						title: 'Something went wrong!',
+						text: action.payload,
+						icon: 'error',
+					});
 			})
-			.addCase(deleteAssessment.fulfilled, (state) => {
+			.addCase(updateAssessment.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(updateAssessment.fulfilled, (state) => {
 				state.isLoading = false;
-				state.isSuccess = true;
+				Toast.fire({
+					title: 'Success',
+					text: 'Assessment configuration updated!',
+					icon: 'success',
+				});
+				// state.assessment = action.payload;
+			})
+			.addCase(updateAssessment.rejected, (state, action) => {
+				state.isLoading = false;
+				Toast.fire({
+					title: 'Something went wrong!',
+					text: action.payload,
+					icon: 'error',
+				});
+			})
+			.addCase(deleteAssessment.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(deleteAssessment.fulfilled, (state, action) => {
+				state.isLoading = false;
+				Toast.fire({
+					title: 'Success',
+					text: action.payload,
+					icon: 'success',
+				});
 			})
 			.addCase(deleteAssessment.rejected, (state, action) => {
 				state.isLoading = false;
-				state.isError = true;
-				state.message = action.payload;
+				Toast.fire({
+					title: 'Something went wrong!',
+					text: action.payload,
+					icon: 'error',
+				});
 			});
 	},
 });
 
-export const { resetAssessment } = assessmentSlice.actions;
+export const { resetAssessment, setEditAssessment } = assessmentSlice.actions;
 export default assessmentSlice.reducer;

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Dashboard, LandingPage, NotFound } from './pages/index';
 import SharedLayout from './components/boilerplate/SharedLayout';
@@ -9,6 +10,7 @@ import Register from './pages/auth/Register';
 import Login from './pages/auth/Login';
 import ForgotPassword from './pages/auth/ForgotPassword';
 import Courses from './pages/course/Courses';
+import Studies from './pages/course/Studies';
 import Undergraduate from './pages/course/Undergraduate';
 import Msc from './pages/course/Msc';
 import Phd from './pages/course/Phd';
@@ -32,24 +34,25 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import Users from './pages/admin/Users';
 import Professors from './pages/admin/Professors';
 import Students from './pages/admin/Students';
-import { checkTokenExpiration } from './utils/checkTokenExpiration';
+import { checkTokenExpiration } from './utils/axios';
 import { addLastPageToLocalStorage } from './utils/localStorage';
 import { ThemeProvider } from '@mui/material';
 import { ColorModeContext, useMode } from './theme';
 
 export default function App() {
 	const [theme, colorMode] = useMode();
+	const { user } = useSelector((state) => state.auth);
 	// const [lastPage, setLastPage] = useState(localStorage.getItem('lastPage'));
 	// const location = useLocation();
 
-	useEffect(() => {
-		const interval = setInterval(() => {
-			console.log('EXECUTING EVERY 15 MINUTES');
-			checkTokenExpiration();
-		}, 10 * 60 * 1000);
-		addLastPageToLocalStorage();
-		return () => clearInterval(interval);
-	}, []);
+	// useEffect(() => {
+	// 	const interval = setInterval(() => {
+	// 		console.log('EXECUTING EVERY 15 MINUTES');
+	// 		checkTokenExpiration();
+	// 	}, 10 * 60 * 1000);
+	// 	addLastPageToLocalStorage();
+	// 	return () => clearInterval(interval);
+	// }, []);
 
 	// useEffect(() => {
 	// 	localStorage.setItem('lastPage', location.pathname);
@@ -76,7 +79,9 @@ export default function App() {
 							<Route path="/auth/login" element={<Login />} />
 							<Route path="/auth/forgot-password" element={<ForgotPassword />} />
 							<Route path="/forbidden" element={<Forbidden />} />
+							<Route path="/studies" element={<Studies />} />
 							<Route path="*" element={<NotFound />} />
+							{/* <Route path="/" element={user ? <SharedLayout /> : <LandingPage />}> */}
 							<Route path="/" element={<SharedLayout />}>
 								<Route index element={<Dashboard />} />
 								<Route

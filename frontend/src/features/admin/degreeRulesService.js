@@ -14,7 +14,7 @@ const getDegreeRules = async () => {
 };
 
 const updateDegreeRules = async (degreeRulesId, data) => {
-	const response = await axiosFetch.put(API_URL_ADMIN + '/degree_rules' + degreeRulesId, data);
+	const response = await axiosFetch.put(API_URL_ADMIN + '/degree_rules/' + degreeRulesId, data);
 
 	return response.data;
 };
@@ -25,11 +25,11 @@ const deleteDegreeRules = async (degreeRulesId) => {
 	return response.data;
 };
 
-const semesterService = {
+const degreeRulesService = {
 	defineDegreeRules,
 	getDegreeRules,
 	updateDegreeRules,
 	deleteDegreeRules,
 };
 
-export default semesterService;
+export default degreeRulesService;

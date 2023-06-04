@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Row, Col } from 'reactstrap';
-import { getTeachingReviews, reset } from '../../features/reviews/teachingReviewSlice';
+import { getTeachingReviews } from '../../features/reviews/teachingReviewSlice';
 import TeachingReviewItem from '../../components/review/TeachingReviewItem';
 import Spinner from '../../components/boilerplate/Spinner';
 import BreadcrumbNav from '../../components/boilerplate/Breadcrumb';
@@ -11,21 +11,19 @@ export default function TeachingReviews() {
 
 	const dispatch = useDispatch();
 
-	useEffect(() => {
-		return () => {
-			if (isSuccess) {
-				dispatch(reset());
-			}
-		};
-	}, [dispatch, isSuccess]);
+	// useEffect(() => {
+	// 	return () => {
+	// 		if (isSuccess) {
+	// 			dispatch(reset());
+	// 		}
+	// 	};
+	// }, [dispatch, isSuccess]);
 
 	useEffect(() => {
 		dispatch(getTeachingReviews());
 	}, [dispatch]);
 
-	if (isLoading) {
-		return <Spinner />;
-	}
+	if (isLoading) return <Spinner />;
 
 	return (
 		<>

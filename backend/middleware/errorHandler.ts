@@ -1,14 +1,15 @@
 import { Request, Response, NextFunction } from 'express';
+import CustomError from '../utils/CustomError';
 
-interface CustomError extends Error {
-	statusCode?: number;
-}
+const errorHandler = (error: CustomError, req: Request, res: Response, next: NextFunction) => {
+	console.error('❌ ', error);
 
-export const errorHandler = (error: CustomError, _: Request, res: Response, next: NextFunction) => {
-	const statusCode = res.statusCode < 400 ? 500 : res.statusCode;
-	res.status(statusCode);
-	res.json({
+	if (error.statusCode === undefined)
+		return res.status(500).json({ message: 'Something went wrong, try again later.' });
+
+	return res.status(error.statusCode).json({
 		message: error.message,
-		stack: process.env.NODE_ENV === 'production' ? null : error.stack,
 	});
 };
+
+export default errorHandler;

@@ -13,16 +13,23 @@ const getReview = async () => {
 	return response.data;
 };
 
+const updateReview = async (reviewId, data) => {
+	const response = await axiosFetch.put(API_URL_ADMIN + '/review/' + reviewId, data);
+
+	return response.data;
+};
+
 const deleteReview = async (reviewId) => {
 	const response = axiosFetch.delete(API_URL_ADMIN + '/review/' + reviewId);
 
 	return response.data;
 };
 
-const semesterService = {
+const reviewService = {
 	defineReview,
 	getReview,
+	updateReview,
 	deleteReview,
 };
 
-export default semesterService;
+export default reviewService;

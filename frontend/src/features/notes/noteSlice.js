@@ -7,10 +7,9 @@ import noteService from './noteService';
 const initialState = {
 	notes: [],
 	note: {},
-	isError: false,
-	isSuccess: false,
 	isLoading: false,
-	message: '',
+	isEditing: false,
+	editNoteId: '',
 };
 
 export const getUserNotes = createAsyncThunk(API_URL_NOTE, async (_, thunkAPI) => {
@@ -41,9 +40,8 @@ export const updateUserNote = createAsyncThunk(
 	API_URL_NOTE + 'update',
 	async ({ noteId, data }, thunkAPI) => {
 		try {
-			console.log('SLICE------------' + noteId);
-			console.log('SLICE------------' + data);
 			return await noteService.updateUserNote(noteId, data);
+			// return thunkAPI.dispatch(getUserNotes());
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -66,7 +64,8 @@ export const deleteUserNote = createAsyncThunk(
 	API_URL_NOTE + 'delete',
 	async (noteId, thunkAPI) => {
 		try {
-			return await noteService.deleteUserNote(noteId);
+			await noteService.deleteUserNote(noteId);
+			return thunkAPI.dispatch(getUserNotes());
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -77,7 +76,8 @@ export const deleteUserNotes = createAsyncThunk(
 	API_URL_NOTE + 'delete_all',
 	async (_, thunkAPI) => {
 		try {
-			return await noteService.deleteUserNotes();
+			await noteService.deleteUserNotes();
+			return thunkAPI.dispatch(getUserNotes());
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -88,7 +88,10 @@ export const noteSlice = createSlice({
 	name: 'note',
 	initialState,
 	reducers: {
-		reset: () => initialState,
+		resetNotes: () => initialState,
+		setEditNote: (state, { payload }) => {
+			return { ...state, isEditing: true, ...payload };
+		},
 	},
 	extraReducers: (builder) => {
 		builder
@@ -101,8 +104,11 @@ export const noteSlice = createSlice({
 			})
 			.addCase(getUserNotes.rejected, (state, action) => {
 				state.isLoading = false;
-				state.isError = true;
-				state.message = action.payload;
+				Toast.fire({
+					title: 'Something went wrong!',
+					text: action.payload,
+					icon: 'error',
+				});
 			})
 			.addCase(getUserNote.pending, (state) => {
 				state.isLoading = true;
@@ -113,8 +119,11 @@ export const noteSlice = createSlice({
 			})
 			.addCase(getUserNote.rejected, (state, action) => {
 				state.isLoading = false;
-				state.isError = true;
-				state.message = action.payload;
+				Toast.fire({
+					title: 'Something went wrong!',
+					text: action.payload,
+					icon: 'error',
+				});
 			})
 			.addCase(createUserNote.pending, (state) => {
 				state.isLoading = true;
@@ -130,8 +139,11 @@ export const noteSlice = createSlice({
 			})
 			.addCase(createUserNote.rejected, (state, action) => {
 				state.isLoading = false;
-				state.isError = true;
-				state.message = action.payload;
+				Toast.fire({
+					title: 'Something went wrong!',
+					text: action.payload,
+					icon: 'error',
+				});
 			})
 			.addCase(updateUserNote.pending, (state) => {
 				state.isLoading = true;
@@ -143,10 +155,10 @@ export const noteSlice = createSlice({
 					text: 'Note updated!',
 					icon: 'success',
 				});
-				state.note = action.payload;
-				state.notes = state.notes.map((note) =>
-					note._id === action.payload._id ? action.payload : note
-				);
+				// state.note = action.payload;
+				// state.notes = state.notes.map((note) =>
+				// 	note._id === action.payload._id ? action.payload : note
+				// );
 				// state.notes = [
 				// 	...state.notes,
 				// 	state.notes.map((note) =>
@@ -156,8 +168,11 @@ export const noteSlice = createSlice({
 			})
 			.addCase(updateUserNote.rejected, (state, action) => {
 				state.isLoading = false;
-				state.isError = true;
-				state.message = action.payload;
+				Toast.fire({
+					title: 'Something went wrong!',
+					text: action.payload,
+					icon: 'error',
+				});
 			})
 			.addCase(updateImportance.pending, (state) => {
 				state.isLoading = true;
@@ -167,7 +182,7 @@ export const noteSlice = createSlice({
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
-					text: 'Note updated!',
+					text: 'Note importance updated!',
 					icon: 'success',
 				});
 				state.note = action.payload;
@@ -184,25 +199,30 @@ export const noteSlice = createSlice({
 			})
 			.addCase(updateImportance.rejected, (state, action) => {
 				state.isLoading = false;
-				state.isError = true;
-				state.message = action.payload;
+				Toast.fire({
+					title: 'Something went wrong!',
+					text: action.payload,
+					icon: 'error',
+				});
 			})
 			.addCase(deleteUserNote.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(deleteUserNote.fulfilled, (state, action) => {
+			.addCase(deleteUserNote.fulfilled, (state) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
 					text: 'Note deleted!',
 					icon: 'success',
 				});
-				state.notes = state.notes.filter((note) => note._id !== action.payload);
 			})
 			.addCase(deleteUserNote.rejected, (state, action) => {
 				state.isLoading = false;
-				state.isError = true;
-				state.message = action.payload;
+				Toast.fire({
+					title: 'Something went wrong!',
+					text: action.payload,
+					icon: 'error',
+				});
 			})
 			.addCase(deleteUserNotes.pending, (state) => {
 				state.isLoading = true;
@@ -214,15 +234,17 @@ export const noteSlice = createSlice({
 					text: 'Notes deleted!',
 					icon: 'success',
 				});
-				state.notes = null;
 			})
 			.addCase(deleteUserNotes.rejected, (state, action) => {
 				state.isLoading = false;
-				state.isError = true;
-				state.message = action.payload;
+				Toast.fire({
+					title: 'Something went wrong!',
+					text: action.payload,
+					icon: 'error',
+				});
 			});
 	},
 });
 
-export const { reset } = noteSlice.actions;
+export const { resetNotes, setEditNote } = noteSlice.actions;
 export default noteSlice.reducer;

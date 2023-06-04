@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { FormGroup, Label, Row, Col, Button } from 'reactstrap';
+import { FormGroup, Label, Row, Col, Button, Spinner } from 'reactstrap';
 import { Formik, Form } from 'formik';
 import { getCourse, updateCourse, reset } from '../../features/courses/courseSlice';
 import { Toast } from '../../constants/sweetAlertNotification';
@@ -10,8 +10,7 @@ import { Field, ErrorMessage } from 'formik';
 import FormErrorMessage from '../../components/FormErrorMessage';
 import FormCheckbox from '../../components/FormCheckbox';
 import BackButton from '../../components/buttons/BackButton';
-import SubmitButton from '../../components/buttons/SubmitButton';
-import Spinner from '../../components/boilerplate/Spinner';
+import CustomSpinner from '../../components/boilerplate/Spinner';
 
 export default function CourseEdit() {
 	const { course, isError, isSuccess, isLoading, message } = useSelector(
@@ -74,9 +73,7 @@ export default function CourseEdit() {
 		navigate('/course/' + courseId);
 	};
 
-	if (isLoading) {
-		return <Spinner />;
-	}
+	if (isLoading) return <CustomSpinner />;
 
 	return (
 		<>
@@ -309,12 +306,16 @@ export default function CourseEdit() {
 												Clear
 											</Button>
 										</Col>
-										<Col className="text-sm-right text-center mt-sm-0 mt-3 px-0">
-											<SubmitButton
-												color={'primary'}
-												message={'Update Course'}
-												disabled={isSubmitting}
-											/>
+										<Col className="text-sm-right text-center mt-sm-0 mt-3">
+											<Button type="submit" color="primary" disabled={isSubmitting || isLoading}>
+											{isSubmitting ? (
+												<>
+													Updating <Spinner type="grow" size="sm" />
+												</>
+											) : (
+												'Update Course'
+											)}
+										</Button>
 										</Col>
 									</Row> */}
 								</Form>

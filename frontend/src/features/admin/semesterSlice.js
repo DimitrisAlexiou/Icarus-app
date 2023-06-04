@@ -7,10 +7,9 @@ import semesterService from './semesterService';
 const initialState = {
 	semesters: [],
 	semester: null,
-	isError: false,
-	isSuccess: false,
 	isLoading: false,
-	message: '',
+	isEditingSemester: false,
+	editSemesterId: '',
 };
 
 export const defineSemester = createAsyncThunk(
@@ -26,7 +25,7 @@ export const defineSemester = createAsyncThunk(
 
 export const updateSemester = createAsyncThunk(
 	API_URL_ADMIN + '/updateSemester',
-	async (semesterId, data, thunkAPI) => {
+	async ({ semesterId, data }, thunkAPI) => {
 		try {
 			return await semesterService.updateSemester(semesterId, data);
 		} catch (error) {
@@ -70,6 +69,9 @@ export const semesterSlice = createSlice({
 	initialState,
 	reducers: {
 		resetSemester: () => initialState,
+		setEditSemester: (state, { payload }) => {
+			return { ...state, isEditingSemester: true, ...payload };
+		},
 	},
 	extraReducers: (builder) => {
 		builder
@@ -87,8 +89,11 @@ export const semesterSlice = createSlice({
 			})
 			.addCase(defineSemester.rejected, (state, action) => {
 				state.isLoading = false;
-				state.isError = true;
-				state.message = action.payload;
+				Toast.fire({
+					title: 'Something went wrong!',
+					text: action.payload,
+					icon: 'error',
+				});
 			})
 			.addCase(getSemesters.pending, (state) => {
 				state.isLoading = true;
@@ -99,8 +104,12 @@ export const semesterSlice = createSlice({
 			})
 			.addCase(getSemesters.rejected, (state, action) => {
 				state.isLoading = false;
-				state.isError = true;
-				state.message = action.payload;
+				if (action.payload !== 'Seems like there are no defined semesters.')
+					Toast.fire({
+						title: 'Something went wrong!',
+						text: action.payload,
+						icon: 'error',
+					});
 			})
 			.addCase(getSemester.pending, (state) => {
 				state.isLoading = true;
@@ -111,8 +120,12 @@ export const semesterSlice = createSlice({
 			})
 			.addCase(getSemester.rejected, (state, action) => {
 				state.isLoading = false;
-				state.isError = true;
-				state.message = action.payload;
+				if (action.payload !== 'Seems like there is no defined semester for this period.')
+					Toast.fire({
+						title: 'Something went wrong!',
+						text: action.payload,
+						icon: 'error',
+					});
 			})
 			.addCase(updateSemester.pending, (state) => {
 				state.isLoading = true;
@@ -121,7 +134,7 @@ export const semesterSlice = createSlice({
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
-					text: 'Semester updated!',
+					text: 'Semester configuration updated!',
 					icon: 'success',
 				});
 				state.semesters.map((semester) =>
@@ -130,21 +143,34 @@ export const semesterSlice = createSlice({
 			})
 			.addCase(updateSemester.rejected, (state, action) => {
 				state.isLoading = false;
-				state.isError = true;
-				state.message = action.payload;
+				Toast.fire({
+					title: 'Something went wrong!',
+					text: action.payload,
+					icon: 'error',
+				});
 			})
-			.addCase(deleteSemester.fulfilled, (state) => {
+			.addCase(deleteSemester.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(deleteSemester.fulfilled, (state, action) => {
 				state.isLoading = false;
-				state.isSuccess = true;
+				Toast.fire({
+					title: 'Success',
+					text: action.payload,
+					icon: 'success',
+				});
 				state.semester = null;
 			})
 			.addCase(deleteSemester.rejected, (state, action) => {
 				state.isLoading = false;
-				state.isError = true;
-				state.message = action.payload;
+				Toast.fire({
+					title: 'Something went wrong!',
+					text: action.payload,
+					icon: 'error',
+				});
 			});
 	},
 });
 
-export const { resetSemester } = semesterSlice.actions;
+export const { resetSemester, setEditSemester } = semesterSlice.actions;
 export default semesterSlice.reducer;

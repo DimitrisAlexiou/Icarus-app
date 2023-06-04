@@ -1,17 +1,14 @@
 import { useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { getCourse, resetCourses } from '../../features/courses/courseSlice';
+import { getCourse } from '../../features/courses/courseSlice';
 import { Row, Col } from 'reactstrap';
-import { Toast } from '../../constants/sweetAlertNotification';
 import CourseCard from '../../components/course/CourseCard';
 import BackButton from '../../components/buttons/BackButton';
 import Spinner from '../../components/boilerplate/Spinner';
 
 export default function Course() {
-	const { course, isError, isSuccess, isLoading, message } = useSelector(
-		(state) => state.courses
-	);
+	const { course, isLoading } = useSelector((state) => state.courses);
 
 	const { courseId } = useParams();
 	const dispatch = useDispatch();
@@ -20,27 +17,7 @@ export default function Course() {
 		dispatch(getCourse(courseId));
 	}, [dispatch, courseId]);
 
-	useEffect(() => {
-		return () => {
-			if (isSuccess) {
-				dispatch(resetCourses());
-			}
-		};
-	}, [dispatch, isSuccess]);
-
-	useEffect(() => {
-		if (isError) {
-			Toast.fire({
-				title: 'Something went wrong !',
-				text: message,
-				icon: 'error',
-			});
-		}
-	}, [dispatch, isError, message]);
-
-	if (isLoading) {
-		return <Spinner />;
-	}
+	if (isLoading) return <Spinner />;
 
 	return (
 		<>

@@ -1,16 +1,12 @@
 import { useEffect, useState, useRef, forwardRef, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { Modal, ModalHeader, ModalBody, Button, Row, Col, Badge } from 'reactstrap';
-import { Formik } from 'formik';
 import {
-	createUserNote,
 	getUserNotes,
-	updateUserNote,
 	deleteUserNote,
 	deleteUserNotes,
+	setEditNote,
 } from '../../features/notes/noteSlice';
-import { NoteSchema } from '../../schemas/Note';
 import { Toast } from '../../constants/sweetAlertNotification';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faCircleExclamation, faXmark } from '@fortawesome/free-solid-svg-icons';
@@ -20,8 +16,8 @@ import NoteItem from '../../components/note/NoteItem';
 import Spinner from '../../components/boilerplate/Spinner';
 
 export default function Notes() {
-	const { notes, isLoading, isError, message } = useSelector((state) => state.notes);
-
+	const { notes, isLoading } = useSelector((state) => state.notes);
+	const { user } = useSelector((state) => state.auth);
 	const [mode, setMode] = useState(null);
 	const [selectedNote, setSelectedNote] = useState(null);
 	const [selectedCategory, setSelectedCategory] = useState(null);
@@ -31,78 +27,39 @@ export default function Notes() {
 	const toggle = () => setModal(!modal);
 
 	const dispatch = useDispatch();
-	const navigate = useNavigate();
 
 	useEffect(() => {
-		if (isError) {
-			if (message !== 'Request failed with status code 404') {
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: message,
-					icon: 'error',
-				});
-			}
-		}
 		dispatch(getUserNotes());
-	}, [dispatch, isError, message]);
+	}, [dispatch]);
 
 	const ModalComponent = forwardRef(({ note, ...props }, ref) => {
 		return (
-			<Modal ref={ref} isOpen={modal} toggle={toggle} className="modal-lg">
-				<ModalHeader toggle={toggle}>
+			<Modal
+				ref={ref}
+				isOpen={modal}
+				toggle={() => {
+					setMode(null);
+					toggle();
+				}}
+				className="modal-lg"
+			>
+				<ModalHeader
+					toggle={() => {
+						setMode(null);
+						toggle();
+					}}
+				>
 					{mode === 'edit' ? 'Edit Note' : 'Fill the form below to post a new note'}
 				</ModalHeader>
 				<ModalBody>
-					<Formik
-						initialValues={{
-							title: note ? note.title : '',
-							text: note ? note.text : '',
-							file: '',
-							categories: note ? note.categories : [],
-							importance: note ? note.importance : false,
-						}}
-						validationSchema={NoteSchema}
-						onSubmit={(values, { setSubmitting }) => {
-							try {
-								const newNote = {
-									title: values.title,
-									text: values.text,
-									file: values.file,
-									categories: values.categories.map((category) => category.value),
-									importance: values.importance,
-								};
-								if (mode === 'edit') {
-									console.log(newNote);
-									console.log(
-										dispatch(
-											updateUserNote({ noteId: note._id, data: newNote })
-										)
-									);
-									dispatch(updateUserNote({ noteId: note._id, data: newNote }));
-								} else {
-									console.log(newNote);
-									dispatch(createUserNote(newNote));
-								}
-								setSubmitting(false);
-								setModal(false);
-								setSelectedCategory(null);
-								navigate('/note');
-							} catch (error) {
-								console.log(error);
-							}
-						}}
-						validateOnMount
-					>
-						{({ isSubmitting, values, setFieldValue, dirty, handleReset }) => (
-							<NoteForm
-								isSubmitting={isSubmitting}
-								values={values}
-								dirty={dirty}
-								setFieldValue={setFieldValue}
-								handleReset={handleReset}
-							/>
-						)}
-					</Formik>
+					<NoteForm
+						note={note}
+						user={user.user}
+						mode={mode}
+						modal={modal}
+						setModal={setModal}
+						setSelectedCategory={setSelectedCategory}
+					/>
 				</ModalBody>
 			</Modal>
 		);
@@ -129,9 +86,7 @@ export default function Notes() {
 		});
 	};
 
-	if (isLoading) {
-		return <Spinner />;
-	}
+	if (isLoading) return <Spinner />;
 
 	return (
 		<>
@@ -155,7 +110,7 @@ export default function Notes() {
 				</Col>
 			</Row>
 
-			{notes.length > 0 && (
+			{notes.length > 0 ? (
 				<>
 					<Col className="animated--grow-in">
 						<Col className="nav nav-pills p-2 bg-white mb-3 rounded-pill align-items-center">
@@ -191,7 +146,7 @@ export default function Notes() {
 									<span className="d-none d-md-block">{category}</span>
 								</Badge>
 							))}
-							{hasImportantNotes && (
+							{hasImportantNotes ? (
 								<>
 									<Badge
 										color="warning"
@@ -209,7 +164,7 @@ export default function Notes() {
 									</Badge>
 									<span className="topbar-divider"></span>
 								</>
-							)}
+							) : null}
 							<Badge
 								color="danger"
 								className={`${
@@ -224,7 +179,7 @@ export default function Notes() {
 						</Col>
 					</Col>
 				</>
-			)}
+			) : null}
 
 			<ModalComponent ref={myRef} mode={mode} toggle={toggle} note={selectedNote} />
 
@@ -239,6 +194,12 @@ export default function Notes() {
 							lg="3"
 							xl="3"
 							onClick={() => {
+								dispatch(
+									setEditNote({
+										editNoteId: note._id,
+										note,
+									})
+								);
 								setSelectedNote(note);
 								setMode('edit');
 								toggle();

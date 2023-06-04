@@ -4,7 +4,7 @@ import { faUserTie, faCertificate, faGraduationCap } from '@fortawesome/free-sol
 import { faCalendarCheck, faIdBadge } from '@fortawesome/free-regular-svg-icons';
 import img from '../../assets/images/undraw_profile.svg';
 
-export default function ProfileCard1({ user }) {
+export default function ProfileInfoCard({ user }) {
 	return (
 		<>
 			<div className="profile_card">

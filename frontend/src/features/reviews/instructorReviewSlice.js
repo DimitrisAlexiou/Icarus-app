@@ -37,7 +37,7 @@ export const instructorReviewSlice = createSlice({
 	name: 'instructorReview',
 	initialState,
 	reducers: {
-		reset: (state) => initialState,
+		resetInstructorReview: () => initialState,
 	},
 	extraReducers: (builder) => {
 		builder
@@ -69,5 +69,5 @@ export const instructorReviewSlice = createSlice({
 	},
 });
 
-export const { reset } = instructorReviewSlice.actions;
+export const { resetInstructorReview } = instructorReviewSlice.actions;
 export default instructorReviewSlice.reducer;

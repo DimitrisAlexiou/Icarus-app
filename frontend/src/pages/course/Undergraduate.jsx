@@ -10,14 +10,12 @@ import CourseItem from '../../components/course/CourseItem';
 import Spinner from '../../components/boilerplate/Spinner';
 import BreadcrumbNav from '../../components/boilerplate/Breadcrumb';
 import Notification from '../../components/boilerplate/Notification';
+import PageButton from '../../components/buttons/PageButton';
 
 export default function UndergraduateCourses() {
-	const {
-		courses,
-		isLoading,
-		isError: isCourseError,
-		message: courseMessage,
-	} = useSelector((state) => state.courses);
+	const { courses, page, totalJobs, numOfPages, isLoading } = useSelector(
+		(state) => state.courses
+	);
 	const {
 		cycles,
 		isLoading: cyclesIsLoading,
@@ -28,15 +26,6 @@ export default function UndergraduateCourses() {
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		if (isCourseError) {
-			if (courseMessage !== 'Seems like there are no courses!') {
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: courseMessage,
-					icon: 'error',
-				});
-			}
-		}
 		if (cyclesIsError) {
 			Toast.fire({
 				title: 'Something went wrong!',
@@ -45,16 +34,14 @@ export default function UndergraduateCourses() {
 			});
 		}
 		dispatch(resetCourses());
-	}, [dispatch, isCourseError, cyclesIsError, courseMessage, cyclesMessage]);
+	}, [dispatch, cyclesIsError, cyclesMessage]);
 
 	useEffect(() => {
 		dispatch(getCourses());
 		dispatch(getCycles());
 	}, [dispatch]);
 
-	if (isLoading || cyclesIsLoading) {
-		return <Spinner />;
-	}
+	if (isLoading || cyclesIsLoading) return <Spinner />;
 
 	return (
 		<>
@@ -68,24 +55,59 @@ export default function UndergraduateCourses() {
 				Obligatory Courses
 			</h3>
 			{courses.length ? (
-				<Row className="justify-content-center animated--grow-in">
-					{courses.map((course) => (
-						<Col
-							key={course._id}
-							xs="12"
-							sm="12"
-							md="12"
-							lg="5"
-							className="mb-3 mx-auto"
-						>
-							{course.type === 'Undergraduate' && course.isObligatory ? (
-								<CourseItem key={course._id} course={course} />
-							) : (
-								<CourseItem key={course._id} course={course} cycles={cycles} />
-							)}
+				<>
+					{/* <Row className="justify-content-center animated--grow-in mb-3">
+						<Col xs="12" sm="12" md="12" lg="12" xl="12">
+							<div className="card card-body">
+								<Row>
+									<Col>
+										<Input
+											type="text"
+											placeholder="Search by username or surname . . ."
+											value={searchQuery}
+											onChange={handleSearchQueryChange}
+										/>
+									</Col>
+									<Col
+										xs="3"
+										sm="2"
+										md="2"
+										lg="2"
+										xl="1"
+										className="d-flex justify-content-end"
+									>
+										<select
+											value={itemsPerPage}
+											onChange={handleItemsPerPageChange}
+											className="form-control"
+										>
+											{renderItemsPerPageOptions}
+										</select>
+									</Col>
+								</Row>
+							</div>
 						</Col>
-					))}
-				</Row>
+					</Row> */}
+					<Row className="justify-content-center animated--grow-in">
+						{courses.map((course) => (
+							<Col
+								key={course._id}
+								xs="12"
+								sm="12"
+								md="12"
+								lg="5"
+								className="mb-3 mx-auto"
+							>
+								{course.type === 'Undergraduate' && course.isObligatory ? (
+									<CourseItem key={course._id} course={course} />
+								) : (
+									<CourseItem key={course._id} course={course} cycles={cycles} />
+								)}
+							</Col>
+						))}
+					</Row>
+					{numOfPages > 1 ? <PageButton /> : null}
+				</>
 			) : (
 				<Notification
 					icon={<FontAwesomeIcon icon={faBook} />}

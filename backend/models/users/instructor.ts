@@ -1,5 +1,12 @@
 import { Schema, model } from 'mongoose';
 
+export interface InstructorProps {
+	facultyType: string;
+	degree: string;
+	instructorEntranceYear: number;
+	user: string;
+}
+
 const instructorSchema = new Schema(
 	{
 		facultyType: {

@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
 import { Card, CardText, CardTitle, Row, Col } from 'reactstrap';
-import { useSelector } from 'react-redux';
+// import { useSelector } from 'react-redux';
 
 export default function Courses() {
-	const { user } = useSelector((state) => state.auth);
+	// const { user } = useSelector((state) => state.auth);
 
 	return (
 		<>
@@ -11,7 +11,7 @@ export default function Courses() {
 				<Col>
 					<h1 className="h3 text-gray-800 font-weight-bold">Studies</h1>
 				</Col>
-				{user.user.isAdmin && (
+				{/* {user.user.isAdmin ? (
 					<Col className="px-3 d-flex justify-content-end">
 						<Link
 							to="/course/new"
@@ -20,7 +20,7 @@ export default function Courses() {
 							Add Course
 						</Link>
 					</Col>
-				)}
+				) : null} */}
 			</Row>
 
 			<Row className="justify-content-center animated--grow-in">

@@ -6,10 +6,9 @@ import degreeRulesService from './degreeRulesService';
 
 const initialState = {
 	degreeRules: null,
-	isError: false,
-	isSuccess: false,
 	isLoading: false,
-	message: '',
+	isEditingDegreeRules: false,
+	editDegreeRulesId: '',
 };
 
 export const defineDegreeRules = createAsyncThunk(
@@ -33,9 +32,10 @@ export const getDegreeRules = createAsyncThunk(API_URL_ADMIN + '/get', async (_,
 
 export const updateDegreeRules = createAsyncThunk(
 	API_URL_ADMIN + '/update',
-	async (degreeRulesId, data, thunkAPI) => {
+	async ({ degreeRulesId, data }, thunkAPI) => {
 		try {
-			return await degreeRulesService.updateDegreeRules(degreeRulesId, data);
+			await degreeRulesService.updateDegreeRules(degreeRulesId, data);
+			return thunkAPI.dispatch(getDegreeRules());
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -46,7 +46,8 @@ export const deleteDegreeRules = createAsyncThunk(
 	API_URL_ADMIN + '/delete',
 	async (degreeRulesId, thunkAPI) => {
 		try {
-			return await degreeRulesService.deleteDegreeRules(degreeRulesId);
+			await degreeRulesService.deleteDegreeRules(degreeRulesId);
+			return thunkAPI.dispatch(getDegreeRules());
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -58,6 +59,9 @@ export const degreeRulesSlice = createSlice({
 	initialState,
 	reducers: {
 		resetDegreeRules: () => initialState,
+		setEditDegreeRules: (state, { payload }) => {
+			return { ...state, isEditingDegreeRules: true, ...payload };
+		},
 	},
 	extraReducers: (builder) => {
 		builder
@@ -75,8 +79,11 @@ export const degreeRulesSlice = createSlice({
 			})
 			.addCase(defineDegreeRules.rejected, (state, action) => {
 				state.isLoading = false;
-				state.isError = true;
-				state.message = action.payload;
+				Toast.fire({
+					title: 'Something went wrong!',
+					text: action.payload,
+					icon: 'error',
+				});
 			})
 			.addCase(getDegreeRules.pending, (state) => {
 				state.isLoading = true;
@@ -87,37 +94,58 @@ export const degreeRulesSlice = createSlice({
 			})
 			.addCase(getDegreeRules.rejected, (state, action) => {
 				state.isLoading = false;
-				state.isError = true;
-				state.message = action.payload;
+				if (action.payload !== 'Seems like there are no defined degree rules.')
+					Toast.fire({
+						title: 'Something went wrong!',
+						text: action.payload,
+						icon: 'error',
+					});
 			})
 			.addCase(updateDegreeRules.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(updateDegreeRules.fulfilled, (state, action) => {
+			.addCase(updateDegreeRules.fulfilled, (state) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
 					text: 'Degree Rules updated!',
 					icon: 'success',
 				});
-				state.degreeRules = action.payload;
+				// state.degreeRules = state.degreeRules.map((degreeRule) => {
+				// 	if (degreeRule.action.payload.id === action.payload.id)
+				// 		return { ...degreeRule, ...action.payload };
+				// 	return degreeRule;
+				// });
 			})
 			.addCase(updateDegreeRules.rejected, (state, action) => {
 				state.isLoading = false;
-				state.isError = true;
-				state.message = action.payload;
+				Toast.fire({
+					title: 'Something went wrong!',
+					text: action.payload,
+					icon: 'error',
+				});
 			})
-			.addCase(deleteDegreeRules.fulfilled, (state) => {
+			.addCase(deleteDegreeRules.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(deleteDegreeRules.fulfilled, (state, action) => {
 				state.isLoading = false;
-				state.isSuccess = true;
+				Toast.fire({
+					title: 'Success',
+					text: action.payload,
+					icon: 'success',
+				});
 			})
 			.addCase(deleteDegreeRules.rejected, (state, action) => {
 				state.isLoading = false;
-				state.isError = true;
-				state.message = action.payload;
+				Toast.fire({
+					title: 'Something went wrong!',
+					text: action.payload,
+					icon: 'error',
+				});
 			});
 	},
 });
 
-export const { resetDegreeRules } = degreeRulesSlice.actions;
+export const { resetDegreeRules, setEditDegreeRules } = degreeRulesSlice.actions;
 export default degreeRulesSlice.reducer;

@@ -8,192 +8,99 @@ import {
 	deleteNote,
 	deleteNotes,
 } from '../models/note';
-import { User, getUserById } from '../models/users/user';
-
-interface User {
-	id: string;
-}
+import { UserProps } from '../models/users/user';
+import { tryCatch } from '../utils/tryCatch';
+import CustomError from '../utils/CustomError';
 
 interface AuthenticatedRequest extends Request {
-	user?: User;
+	user?: UserProps;
 }
 
-export const createUserNote = async (req: AuthenticatedRequest, res: Response) => {
-	const { title, text, postDate, file, importance } = req.body;
+export const createUserNote = tryCatch(async (req: AuthenticatedRequest, res: Response) => {
+	const { title, text, file, importance } = req.body;
 	let { categories } = req.body;
 
-	if (!title || !text) return res.status(400).json('Please fill in all the required fields.');
+	if (!title || !text) throw new CustomError('Please fill in all the required fields.', 400);
 
 	if (categories && typeof categories === 'string') categories = categories.split(',');
 
-	try {
-		const userId = req.user.id;
-		const user = await getUserById(userId);
+	const userId = req.user.id;
+	const existingNote = await getNoteByTitle(title);
 
-		if (!user) {
-			return res.status(401).json('User not found.');
-		} else {
-			try {
-				const existingNote = await getNoteByTitle(title);
-				if (existingNote) {
-					return res
-						.status(400)
-						.json('Seems like a note with this title already exists.');
-				} else {
-					try {
-						const note = await createNote({
-							title,
-							text,
-							postDate,
-							file,
-							categories,
-							importance,
-							owner: userId,
-							status: 'new',
-						});
-						console.log(note);
-						return res.status(201).json(note);
-					} catch (error) {
-						console.error('❌ Error while creating note: ', error);
-						return res.status(500).json({
-							message: 'Something went wrong, unfortunately note did not posted.',
-						});
-					}
-				}
-			} catch (error) {
-				console.error('❌ Error while checking if note already exists: ', error);
-				return res.status(500).json({ message: 'Something went wrong, try again later.' });
-			}
-		}
-	} catch (error) {
-		console.error('❌ Error while finding user: ', error);
-		return res.status(500).json({ message: 'Something went wrong, try again later.' });
-	}
-};
+	if (existingNote)
+		throw new CustomError('Seems like a note with this title already exists.', 400);
 
-export const viewUserNote = async (req: AuthenticatedRequest, res: Response) => {
-	try {
-		const userId = req.user.id;
-		const user = await getUserById(userId);
+	const note = await createNote({
+		title,
+		text,
+		file,
+		categories,
+		importance,
+		owner: userId,
+		status: 'new',
+	});
+	console.log(note);
 
-		if (!user) {
-			return res.status(401).json('User not found.');
-		} else {
-			try {
-				const { id } = req.params;
-				const note = await getNoteById(id);
-				if (!note) {
-					return res
-						.status(404)
-						.json(`Seems like there is no note with this ID for this user.`);
-				} else {
-					return res.status(200).json(note);
-				}
-			} catch (error) {
-				console.error('❌ Error while finding user note: ', error);
-				return res.status(500).json({ message: 'Something went wrong, try again later.' });
-			}
-		}
-	} catch (error) {
-		console.error('❌ Error while finding user: ', error);
-		return res.status(500).json({ message: 'Something went wrong, try again later.' });
-	}
-};
+	return res.status(201).json(note);
+});
 
-export const updateUserNote = async (req: AuthenticatedRequest, res: Response) => {
+export const viewUserNote = tryCatch(async (req: AuthenticatedRequest, res: Response) => {
+	const { id } = req.params;
+	const note = await getNoteById(id);
+
+	if (!note)
+		throw new CustomError(
+			'Seems like the note that you are trying to view does not exist.',
+			404
+		);
+
+	return res.status(200).json(note);
+});
+
+export const updateUserNote = tryCatch(async (req: AuthenticatedRequest, res: Response) => {
 	const { title, text } = req.body;
 
-	if (!title || !text) return res.status(400).json('Please fill in all the required fields.');
+	if (!title || !text) throw new CustomError('Please fill in all the required fields.', 400);
 
-	try {
-		const userId = req.user.id;
-		const user = await getUserById(userId);
+	const { id } = req.params;
+	const updatedNote = await updateNoteById(id, { ...req.body });
 
-		if (!user) {
-			return res.status(401).json('User not found.');
-		} else {
-			try {
-				const { id } = req.params;
-				const updatedNote = await updateNoteById(id, req.body);
-				return res.status(200).json(updatedNote);
-			} catch (error) {
-				console.error('❌ Error while updating user note: ', error);
-				return res
-					.status(500)
-					.json({ message: 'Something went wrong, unfortunately note did not updated.' });
-			}
-		}
-	} catch (error) {
-		console.error('❌ Error while finding user: ', error);
-		return res.status(500).json({ message: 'Something went wrong, try again later.' });
-	}
-};
+	if (!updatedNote)
+		throw new CustomError(
+			'Seems like the note that you are trying to update does not exist.',
+			404
+		);
 
-export const getUserNotes = async (req: AuthenticatedRequest, res: Response) => {
-	try {
-		const userId = req.user.id;
-		const user = await getUserById(userId);
+	return res.status(200).json(updatedNote);
+});
 
-		if (!user) {
-			return res.status(401).json('User not found.');
-		} else {
-			try {
-				const userNotes = await getNotes(userId);
-				if (!userNotes)
-					return res.status(404).json('Seems like there are no notes for this user.');
-				else return res.status(200).json(userNotes);
-			} catch (error) {
-				console.error('❌ Error while finding user notes: ', error);
-				return res.status(500).json({ message: 'Something went wrong, try again later.' });
-			}
-		}
-	} catch (error) {
-		console.error('❌ Error while finding user: ', error);
-		return res.status(500).json({ message: 'Something went wrong, try again later.' });
-	}
-};
+export const getUserNotes = tryCatch(async (req: AuthenticatedRequest, res: Response) => {
+	const userId = req.user.id;
+	const userNotes = await getNotes(userId);
 
-export const deleteUserNote = async (req: AuthenticatedRequest, res: Response) => {
-	try {
-		const userId = req.user.id;
-		const user = await getUserById(userId);
+	if (!userNotes)
+		throw new CustomError('Seems like there are no notes registered for this user.', 404);
 
-		if (!user) {
-			return res.status(401).json('User not found.');
-		} else {
-			try {
-				const { id } = req.params;
-				await deleteNote(id);
-				return res.status(200).json('Note deleted.');
-			} catch (error) {
-				console.error('❌ Error while deleting user note: ', error);
-				return res.status(500).json({ message: 'Something went wrong, try again later.' });
-			}
-		}
-	} catch (error) {
-		console.error('❌ Error while finding user: ', error);
-		return res.status(500).json({ message: 'Something went wrong, try again later.' });
-	}
-};
+	return res.status(200).json(userNotes);
+});
 
-export const deleteUserNotes = async (req: AuthenticatedRequest, res: Response) => {
-	try {
-		const userId = req.user.id;
-		const user = await getUserById(userId);
+export const deleteUserNote = tryCatch(async (req: AuthenticatedRequest, res: Response) => {
+	const { id } = req.params;
+	const noteToDelete = await deleteNote(id);
 
-		if (!user) {
-			return res.status(401).json('User not found.');
-		} else {
-			try {
-				await deleteNotes(userId);
-				return res.status(200).json('All user notes deleted.');
-			} catch (error) {
-				console.error('❌ Error while deleting all user notes: ', error);
-				return res.status(500).json({ message: 'Something went wrong, try again later.' });
-			}
-		}
-	} catch (error) {
-		console.error('❌ Error while finding user: ', error);
-		return res.status(500).json({ message: 'Something went wrong, try again later.' });
-	}
-};
+	if (!noteToDelete)
+		throw new CustomError(
+			'Seems like the note that you are trying to delete does not exist.',
+			404
+		);
+
+	return res.status(200).json({ message: 'Note deleted.' });
+});
+
+export const deleteUserNotes = tryCatch(async (req: AuthenticatedRequest, res: Response) => {
+	const userId = req.user.id;
+
+	await deleteNotes(userId);
+
+	return res.status(200).json({ message: 'User notes existing in the system deleted.' });
+});

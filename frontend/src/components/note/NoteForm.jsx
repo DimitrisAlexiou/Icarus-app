@@ -1,16 +1,26 @@
 import { useState } from 'react';
-import { FormGroup, Label, Row, Col, Button, Input } from 'reactstrap';
-import { Form, Field, ErrorMessage } from 'formik';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { FormGroup, Label, Row, Col, Button, Input, Spinner } from 'reactstrap';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDroplet } from '@fortawesome/free-regular-svg-icons';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
+import { NoteSchema } from '../../schemas/Note';
+import { createUserNote, updateUserNote } from '../../features/notes/noteSlice';
 // import { SketchPicker } from 'react-color';
 // import chroma from 'chroma-js';
 import CreatableSelect from 'react-select/creatable';
-import SubmitButton from '../buttons/SubmitButton';
 import FormErrorMessage from '../FormErrorMessage';
 
-export default function NoteForm({ isSubmitting, dirty, values, setFieldValue, handleReset }) {
+export default function NoteForm({
+	note,
+	user,
+	mode,
+	setModal,
+	setSelectedCategory,
+	setFieldValue,
+}) {
 	const [inputValue, setInputValue] = useState('');
 	const [value, setValue] = useState([]);
 	const [category, showCategory] = useState(false);
@@ -163,7 +173,7 @@ export default function NoteForm({ isSubmitting, dirty, values, setFieldValue, h
 	// 					}}
 	// 				/>
 	// 				{label}
-	// 				{props.data.showColorPicker && (
+	// 				{props.data.showColorPicker ? (
 	// 					<SketchPicker
 	// 						color={color}
 	// 						onChange={(color) => {
@@ -176,81 +186,124 @@ export default function NoteForm({ isSubmitting, dirty, values, setFieldValue, h
 	// 							props.setValue(newValue);
 	// 						}}
 	// 					/>
-	// 				)}
+	// 				):null}
 	// 			</div>
 	// 		</components.Value>
 	// 	);
 	// };
 
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
+
 	return (
 		<>
-			<Form>
-				<Row>
-					<Col xs="8" sm="8" md="8" lg="9" xl="9">
+			<Formik
+				initialValues={{
+					title: note ? note.title : '',
+					text: note ? note.text : '',
+					file: '',
+					// file: note ? note.file : '',
+					categories: note ? note.categories : [],
+					importance: note ? note.importance : false,
+				}}
+				validationSchema={NoteSchema}
+				onSubmit={(values, { setSubmitting }) => {
+					const note = {
+						title: values.title,
+						text: values.text,
+						file: values.file,
+						categories: values.categories.map((category) => category.value),
+						importance: values.importance,
+						owner: user._id,
+					};
+					if (mode === 'edit') {
+						console.log(note);
+						dispatch(updateUserNote({ noteId: note._id, data: note }));
+						setSubmitting(false);
+						setModal(false);
+						return;
+					}
+					console.log(note);
+					dispatch(createUserNote(note));
+					setSubmitting(false);
+					setModal(false);
+					setSelectedCategory(null);
+					navigate('/note');
+				}}
+				validateOnMount
+			>
+				{({ isSubmitting, values, setFieldValue, dirty, handleReset }) => (
+					<Form>
+						<Row>
+							<Col xs="8" sm="8" md="8" lg="9" xl="9">
+								<FormGroup className="form-floating mb-3" floating>
+									<Field type="text" className="form-control" name="title" />
+									<Label for="title" className="text-gray-600">
+										Title
+									</Label>
+									<ErrorMessage name="title" component={FormErrorMessage} />
+								</FormGroup>
+							</Col>
+							<Col className="text-right">
+								<FormGroup switch>
+									<Field name="importance">
+										{({ field }) => (
+											<Input
+												type="switch"
+												role="switch"
+												name="importance"
+												checked={field.value}
+												onChange={() =>
+													setFieldValue('importance', !values.importance)
+												}
+											/>
+										)}
+									</Field>
+									<Label for="importance" className="mx-1 text-gray-600">
+										Important
+									</Label>
+									<ErrorMessage name="importance" component={FormErrorMessage} />
+								</FormGroup>
+							</Col>
+						</Row>
+
 						<FormGroup className="form-floating mb-3" floating>
-							<Field type="text" className="form-control" name="title" />
-							<Label for="title" className="text-gray-600">
-								Title
+							<Field
+								as="textarea"
+								className="form-control"
+								style={{ height: '180px', text_align: 'justify' }}
+								name="text"
+							/>
+							<Label for="text" className="text-gray-600">
+								Text
 							</Label>
-							<ErrorMessage name="title" component={FormErrorMessage} />
+							<ErrorMessage name="text" component={FormErrorMessage} />
 						</FormGroup>
-					</Col>
-					<Col className="text-right">
-						<FormGroup switch>
-							<Field name="importance">
-								{({ field }) => (
-									<Input
-										type="switch"
-										role="switch"
-										name="importance"
-										checked={field.value}
-										onChange={() =>
-											setFieldValue('importance', !values.importance)
-										}
-									/>
-								)}
-							</Field>
-							<Label for="importance" className="mx-1 text-gray-600">
-								Important
-							</Label>
-							<ErrorMessage name="importance" component={FormErrorMessage} />
-						</FormGroup>
-					</Col>
-				</Row>
 
-				<FormGroup className="form-floating mb-3" floating>
-					<Field
-						as="textarea"
-						className="form-control"
-						style={{ height: '180px', text_align: 'justify' }}
-						name="text"
-					/>
-					<Label for="text" className="text-gray-600">
-						Text
-					</Label>
-					<ErrorMessage name="text" component={FormErrorMessage} />
-				</FormGroup>
+						<Row>
+							<Col md="12" lg="6">
+								<FormGroup className="mb-3">
+									<Label for="file" className="text-gray-500">
+										File
+									</Label>
+									<Field name="file" type="file" className="form-control" />
+									<ErrorMessage name="file" component={FormErrorMessage} />
+								</FormGroup>
+							</Col>
+							<Col className="text-right">
+								<Button
+									className="btn btn-light"
+									color="null"
+									onClick={addCategory}
+								>
+									Category <FontAwesomeIcon icon={faPlus} />
+								</Button>
+							</Col>
+						</Row>
 
-				<Row>
-					<Col md="12" lg="6">
-						<FormGroup className="mb-3">
-							<Label for="file" className="text-gray-500">
-								File
-							</Label>
-							<Field name="file" type="file" className="form-control" />
-							<ErrorMessage name="file" component={FormErrorMessage} />
-						</FormGroup>
-					</Col>
-					<Col className="text-right">
-						<Button className="btn btn-light" color="null" onClick={addCategory}>
-							Category <FontAwesomeIcon icon={faPlus} />
-						</Button>
-					</Col>
-				</Row>
-
-				{category && (
-					<>
-						{/* <Row>
+						{category ? (
+							<>
+								{/* <Row>
 							{value.map((option, index) => (
 								<Col
 									key={option.value}
@@ -285,7 +338,7 @@ export default function NoteForm({ isSubmitting, dirty, values, setFieldValue, h
 											{option.label}
 										</div>
 									</div>
-									{option.showColorPicker && (
+									{option.showColorPicker ? (
 										<div
 											className="position-absolute"
 											style={{
@@ -304,51 +357,61 @@ export default function NoteForm({ isSubmitting, dirty, values, setFieldValue, h
 												}}
 											/>
 										</div>
-									)}
+									): null}
 								</Col>
 							))}
 						</Row> */}
 
-						<FormGroup className="form-floating mb-3 mt-2" floating>
-							<CreatableSelect
-								name="categories"
-								components={components}
-								// components={{ ...components, Option, Value }}
-								inputValue={inputValue}
-								isClearable
-								isMulti
-								menuIsOpen={false}
-								onChange={(newValue) => setValue(newValue)}
-								onInputChange={(newValue) => setInputValue(newValue)}
-								onKeyDown={handleKeyDown}
-								placeholder="Insert a category . . ."
-								value={value}
-								// styles={styles}
-							/>
-							<ErrorMessage name="categories" component={FormErrorMessage} />
-						</FormGroup>
-					</>
-				)}
+								<FormGroup className="form-floating mb-3 mt-2" floating>
+									<CreatableSelect
+										name="categories"
+										components={components}
+										// components={{ ...components, Option, Value }}
+										inputValue={inputValue}
+										isClearable
+										isMulti
+										menuIsOpen={false}
+										onChange={(newValue) => setValue(newValue)}
+										onInputChange={(newValue) => setInputValue(newValue)}
+										onKeyDown={handleKeyDown}
+										placeholder="Insert a category . . ."
+										value={value}
+										// styles={styles}
+									/>
+									<ErrorMessage name="categories" component={FormErrorMessage} />
+								</FormGroup>
+							</>
+						) : null}
 
-				<Row className="mt-4">
-					<Col className="mb-3">
-						<Button
-							onClick={() => {
-								setValue([]);
-								setInputValue('');
-								showCategory(false);
-								handleReset();
-							}}
-							disabled={!dirty || isSubmitting}
-						>
-							Clear
-						</Button>
-					</Col>
-					<Col className="text-right px-0">
-						<SubmitButton color={'primary'} message={'Post'} disabled={isSubmitting} />
-					</Col>
-				</Row>
-			</Form>
+						<Row className="mt-4">
+							<Col className="mb-3">
+								<Button
+									onClick={() => {
+										setValue([]);
+										setInputValue('');
+										showCategory(false);
+										handleReset();
+									}}
+									disabled={!dirty || isSubmitting}
+								>
+									Clear
+								</Button>
+							</Col>
+							<Col className="text-right">
+								<Button color="primary" type="submit" disabled={isSubmitting}>
+									{isSubmitting ? (
+										<>
+											Please wait <Spinner type="grow" size="sm" />
+										</>
+									) : (
+										'Post'
+									)}
+								</Button>
+							</Col>
+						</Row>
+					</Form>
+				)}
+			</Formik>
 		</>
 	);
 }

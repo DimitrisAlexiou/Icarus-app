@@ -13,5 +13,5 @@ export const DegreeRulesSchema = Yup.object().shape({
 		.min(1, 'Required passed courses for cycle completion must be at least 1!')
 		.positive('Number must be positive!')
 		.required('Please define the obligatory passed courses for cycle completion.'),
-	practice: Yup.boolean().default(false).required(),
+	practice: Yup.boolean().default(false),
 });

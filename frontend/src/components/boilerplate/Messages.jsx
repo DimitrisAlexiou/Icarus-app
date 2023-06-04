@@ -22,9 +22,7 @@ export default function Messages() {
 	// 	dispatch(getMessages());
 	// }, [dispatch]);
 
-	// if (isLoading) {
-	// 	return <Spinner />;
-	// }
+	// if (isLoading) return <Spinner />;
 
 	// {
 	// 	messages.map((messages) => (

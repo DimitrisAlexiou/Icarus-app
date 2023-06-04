@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Col, Row } from 'reactstrap';
-import { getGeneralReviews, reset } from '../../features/reviews/generalReviewSlice';
+import { getGeneralReviews } from '../../features/reviews/generalReviewSlice';
 import GeneralReviewItem from '../../components/review/GeneralReviewItem';
 import Spinner from '../../components/boilerplate/Spinner';
 import BreadcrumbNav from '../../components/boilerplate/Breadcrumb';
@@ -11,21 +11,19 @@ export default function GeneralReviews() {
 
 	const dispatch = useDispatch();
 
-	useEffect(() => {
-		return () => {
-			if (isSuccess) {
-				dispatch(reset());
-			}
-		};
-	}, [dispatch, isSuccess]);
+	// useEffect(() => {
+	// 	return () => {
+	// 		if (isSuccess) {
+	// 			dispatch(reset());
+	// 		}
+	// 	};
+	// }, [dispatch, isSuccess]);
 
 	useEffect(() => {
 		dispatch(getGeneralReviews());
 	}, [dispatch]);
 
-	if (isLoading) {
-		return <Spinner />;
-	}
+	if (isLoading) return <Spinner />;
 
 	return (
 		<>

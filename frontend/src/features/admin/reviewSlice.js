@@ -6,10 +6,9 @@ import reviewService from './reviewService';
 
 const initialState = {
 	review: null,
-	isError: false,
-	isSuccess: false,
 	isLoading: false,
-	message: '',
+	isEditingReview: false,
+	editReviewId: '',
 };
 
 export const defineReview = createAsyncThunk(
@@ -31,6 +30,18 @@ export const getReview = createAsyncThunk(API_URL_ADMIN + '/getReview', async (_
 	}
 });
 
+export const updateReview = createAsyncThunk(
+	API_URL_ADMIN + '/updateReview',
+	async ({ reviewId, data }, thunkAPI) => {
+		try {
+			await reviewService.updateAssessment(reviewId, data);
+			return thunkAPI.dispatch(getReview());
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
+	}
+);
+
 export const deleteReview = createAsyncThunk(
 	API_URL_ADMIN + '/deleteReview',
 	async (reviewId, thunkAPI) => {
@@ -47,6 +58,9 @@ export const reviewSlice = createSlice({
 	initialState,
 	reducers: {
 		resetReview: () => initialState,
+		setEditReview: (state, { payload }) => {
+			return { ...state, isEditingReview: true, ...payload };
+		},
 	},
 	extraReducers: (builder) => {
 		builder
@@ -64,8 +78,11 @@ export const reviewSlice = createSlice({
 			})
 			.addCase(defineReview.rejected, (state, action) => {
 				state.isLoading = false;
-				state.isError = true;
-				state.message = action.payload;
+				Toast.fire({
+					title: 'Something went wrong!',
+					text: action.payload,
+					icon: 'error',
+				});
 			})
 			.addCase(getReview.pending, (state) => {
 				state.isLoading = true;
@@ -76,20 +93,54 @@ export const reviewSlice = createSlice({
 			})
 			.addCase(getReview.rejected, (state, action) => {
 				state.isLoading = false;
-				state.isError = true;
-				state.message = action.payload;
+				if (action.payload !== 'Seems like there is no review statement period defined.')
+					Toast.fire({
+						title: 'Something went wrong!',
+						text: action.payload,
+						icon: 'error',
+					});
 			})
-			.addCase(deleteReview.fulfilled, (state) => {
+			.addCase(updateReview.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(updateReview.fulfilled, (state) => {
 				state.isLoading = false;
-				state.isSuccess = true;
+				Toast.fire({
+					title: 'Success',
+					text: 'Review configuration updated!',
+					icon: 'success',
+				});
+				// state.review = action.payload;
+			})
+			.addCase(updateReview.rejected, (state, action) => {
+				state.isLoading = false;
+				Toast.fire({
+					title: 'Something went wrong!',
+					text: action.payload,
+					icon: 'error',
+				});
+			})
+			.addCase(deleteReview.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(deleteReview.fulfilled, (state, action) => {
+				state.isLoading = false;
+				Toast.fire({
+					title: 'Success',
+					text: action.payload,
+					icon: 'success',
+				});
 			})
 			.addCase(deleteReview.rejected, (state, action) => {
 				state.isLoading = false;
-				state.isError = true;
-				state.message = action.payload;
+				Toast.fire({
+					title: 'Something went wrong!',
+					text: action.payload,
+					icon: 'error',
+				});
 			});
 	},
 });
 
-export const { resetReview } = reviewSlice.actions;
+export const { resetReview, setEditReview } = reviewSlice.actions;
 export default reviewSlice.reducer;

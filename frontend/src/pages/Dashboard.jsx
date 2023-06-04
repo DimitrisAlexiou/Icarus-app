@@ -12,9 +12,7 @@ export default function Dashboard() {
 				<>
 					<Row className="mb-5 animated--grow-in">
 						<Col sm="6" xs="9" md="6">
-							<h3 className="text-gray-800 font-weight-bold">
-								Dashboard {user.user.name}
-							</h3>
+							<h3 className="text-gray-800 font-weight-bold">Dashboard</h3>
 						</Col>
 						<Col className="d-flex justify-content-end">
 							<p className="text-xs text-gray-500">
@@ -29,12 +27,12 @@ export default function Dashboard() {
 							</p>
 						</Col>
 					</Row>
-					{user.user.isAdmin && <AdminDashboard />}
+					{user.user.isAdmin ? <AdminDashboard /> : null}
 					<Calendar />
 				</>
-			) : (
-				<h3 className="mb-5 text-gray-800 font-weight-bold animated--grow-in">Dashboard</h3>
-			)}
+			) : null
+			// <h3 className="mb-5 text-gray-800 font-weight-bold animated--grow-in">Dashboard</h3>
+			}
 		</>
 	);
 }

@@ -1,5 +1,14 @@
 import { Schema, model } from 'mongoose';
 
+export interface NoteProps {
+	title: string;
+	text: string;
+	file: string;
+	categories: string[];
+	importance: boolean;
+	owner: string;
+}
+
 const noteSchema = new Schema(
 	{
 		title: {
@@ -8,11 +17,6 @@ const noteSchema = new Schema(
 		},
 		text: {
 			type: String,
-			required: true,
-		},
-		postDate: {
-			type: Date,
-			default: Date.now,
 			required: true,
 		},
 		file: {

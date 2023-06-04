@@ -34,8 +34,8 @@ const activateCourse = async (courseId) => {
 	return response.data;
 };
 
-const getCourses = async () => {
-	const response = await axiosFetch.get(API_URL_COURSE);
+const getCourses = async (url) => {
+	const response = await axiosFetch.get(API_URL_COURSE + url);
 
 	return response.data;
 };

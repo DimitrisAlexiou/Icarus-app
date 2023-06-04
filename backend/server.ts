@@ -8,9 +8,10 @@ import cookieParser from 'cookie-parser';
 import mongoSanitize from 'express-mongo-sanitize';
 // import helmet from 'helmet';
 import connectDB from './database/db';
-import ExpressError from './utils/expressError';
 import router from './routes';
-import { errorHandler } from './middleware/errorHandler';
+import errorHandler from './middleware/errorHandler';
+import CustomError from './utils/CustomError';
+import { setCache } from './middleware/cache';
 
 const PORT: number | string = process.env.PORT || 4000;
 
@@ -25,22 +26,22 @@ app.use(
 		extended: false,
 	})
 );
-app.use(cors());
+app.use(
+	cors({
+		credentials: true,
+	})
+);
 app.use(cookieParser());
 app.use(mongoSanitize({ replaceWith: '_' }));
-app.use(errorHandler);
+app.use(setCache);
 // app.use(helmet({ contentSecurityPolicy: false }));
 app.use('/api/v1', router());
 
 app.all('*', (req: Request, res: Response, next: NextFunction) => {
-	next(new ExpressError('Page Not Found', 404));
+	next(new CustomError('Page Not Found', 404));
 });
 
-app.use((err: ExpressError, req: Request, res: Response, next: NextFunction) => {
-	console.error(err.message);
-	if (!err.statusCode) err.statusCode = 500;
-	res.status(err.statusCode).send(err.message);
-});
+app.use(errorHandler);
 
 const server = http.createServer(app);
 server.listen(PORT, () => {

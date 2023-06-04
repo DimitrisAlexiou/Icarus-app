@@ -1,5 +1,12 @@
 import { Schema, model } from 'mongoose';
 
+export interface DegreeRulesProps {
+	cycles: number;
+	cycleCourses: number;
+	courses: number;
+	practice: boolean;
+}
+
 const degreeRulesSchema = new Schema(
 	{
 		cycles: {
@@ -27,7 +34,7 @@ const degreeRulesSchema = new Schema(
 
 export const DegreeRules = model('DegreeRules', degreeRulesSchema);
 
-export const getDegreeRules = () => DegreeRules.find();
+export const getDegreeRules = () => DegreeRules.findOne();
 export const createDegreeRules = (values: Record<string, any>) =>
 	new DegreeRules(values).save().then((degreeRules) => degreeRules.toObject());
 export const updateDegreeRulesById = (id: string, values: Record<string, any>) =>

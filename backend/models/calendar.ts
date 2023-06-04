@@ -1,5 +1,14 @@
 import { Schema, model } from 'mongoose';
 
+export interface CalendarProps {
+	eventId: string;
+	title: string;
+	start: Date;
+	end: Date;
+	allDay: boolean;
+	owner: string;
+}
+
 const calendarSchema = new Schema(
 	{
 		eventId: {

@@ -8,114 +8,77 @@ import {
 	deleteSemesterById,
 	deleteSemesters,
 } from '../../models/admin/semester';
+import { tryCatch } from '../../utils/tryCatch';
+import CustomError from '../../utils/CustomError';
 
-export const defineSemester = async (req: Request, res: Response) => {
+export const defineSemester = tryCatch(async (req: Request, res: Response) => {
 	const { type, grading, startDate, endDate } = req.body;
 
 	if (!type || !grading || !startDate || !endDate)
-		return res.status(400).json({ message: 'Please provide the required fields.' });
+		throw new CustomError('Please fill in all the required fields.', 400);
 
-	try {
-		const existingSemester = await getSemesterByType(type);
-		if (existingSemester) {
-			return res
-				.status(409)
-				.json({ message: `Seems like the ${type} semester is already defined.` });
-		} else {
-			try {
-				const semester = await createSemester({
-					type,
-					grading,
-					startDate,
-					endDate,
-					status: 'new',
-				});
-				return res.status(201).json(semester);
-			} catch (error) {
-				console.error('❌ Error while defining semester: ', error);
-				return res.status(500).json({
-					message: 'Something went wrong, unfortunately the semester did not defined.',
-				});
-			}
-		}
-	} catch (error) {
-		console.error('❌ Error while checking if semester already defined: ', error);
-		return res.status(500).json({ message: 'Something went wrong, try again later.' });
-	}
-};
+	const existingSemester = await getSemesterByType(type);
+	if (existingSemester)
+		throw new CustomError(`Seems like the ${type} semester is already defined.`, 409);
 
-export const viewSemester = async (_: Request, res: Response) => {
-	try {
-		const currentDate = new Date();
-		const semester = await getCurrentSemester(currentDate);
-		if (!semester)
-			return res
-				.status(404)
-				.json({ message: 'Seems like there is no defined semester for this period.' });
-		else return res.status(200).json(semester);
-	} catch (error) {
-		console.error('❌ Error while finding current semester: ', error);
-		return res.status(500).json({ message: 'Something went wrong, try again later.' });
-	}
-};
+	const semester = await createSemester({
+		type,
+		grading,
+		startDate,
+		endDate,
+		status: 'new',
+	});
 
-export const viewSemesters = async (_: Request, res: Response) => {
-	try {
-		const semesters = await getSemesters();
-		if (!semesters)
-			return res.status(404).json({ message: 'Seems like there are no defined semesters.' });
-		else return res.status(200).json(semesters);
-	} catch (error) {
-		console.error('❌ Error while finding existing semesters: ', error);
-		return res.status(500).json({ message: 'Something went wrong, try again later.' });
-	}
-};
+	return res.status(201).json(semester);
+});
 
-export const updateSemester = async (req: Request, res: Response) => {
+export const viewSemester = tryCatch(async (_: Request, res: Response) => {
+	const semester = await getCurrentSemester(new Date());
+	if (!semester)
+		throw new CustomError('Seems like there is no defined semester for this period.', 404);
+
+	return res.status(200).json(semester);
+});
+
+export const viewSemesters = tryCatch(async (_: Request, res: Response) => {
+	const semesters = await getSemesters();
+	if (!semesters) throw new CustomError('Seems like there are no defined semesters.', 404);
+
+	return res.status(200).json(semesters);
+});
+
+export const updateSemester = tryCatch(async (req: Request, res: Response) => {
 	const { grading, startDate, endDate } = req.body;
 
 	if (!grading || !startDate || !endDate)
-		return res.status(400).json({ message: 'Please provide the required fields.' });
+		throw new CustomError('Please provide all the required fields.', 400);
 
-	try {
-		const { id } = req.params;
-		const updatedSemester = await updateSemesterById(id, {
-			...req.body,
-		});
-		if (!updatedSemester)
-			return res.status(404).json({
-				message: 'Seems like there is no defined semester for this period.',
-			});
-		else return res.status(200).json(updatedSemester);
-	} catch (error) {
-		console.error('❌ Error while updating current semester: ', error);
-		return res.status(500).json({
-			message: 'Something went wrong, unfortunately the semester did not updated.',
-		});
-	}
-};
+	const { id } = req.params;
+	const updatedSemester = await updateSemesterById(id, {
+		...req.body,
+	});
+	if (!updatedSemester)
+		throw new CustomError(
+			'Seems like the semester that you are trying to update does not exist.',
+			404
+		);
 
-export const deleteSemester = async (req: Request, res: Response) => {
-	try {
-		const { id } = req.params;
-		await deleteSemesterById(id);
-		return res.status(200).json({ message: 'Current semester deleted.' });
-	} catch (error) {
-		console.error('❌ Error while deleting current semester: ', error);
-		return res.status(500).json({
-			message: 'Something went wrong, unfortuantely the current semester did not deleted.',
-		});
-	}
-};
+	return res.status(200).json(updatedSemester);
+});
 
-export const deleteAllSemesters = async (_: Request, res: Response) => {
-	try {
-		await deleteSemesters();
-		return res.status(200).json({ message: 'Defined semesters deleted.' });
-	} catch (error) {
-		console.error('❌ Error while deleting defined semesters: ', error);
-		return res.status(500).json({
-			message: 'Something went wrong, unfortunately defined semesters did not deleted.',
-		});
-	}
-};
+export const deleteSemester = tryCatch(async (req: Request, res: Response) => {
+	const { id } = req.params;
+	const semesterToDelete = await deleteSemesterById(id);
+	if (!semesterToDelete)
+		throw new CustomError(
+			'Seems like the semester that you are trying to delete does not exist.',
+			404
+		);
+
+	return res.status(200).json({ message: 'Defined semester deleted.' });
+});
+
+export const deleteAllSemesters = tryCatch(async (_: Request, res: Response) => {
+	await deleteSemesters();
+	return res.status(200).json({ message: 'Defined semesters deleted.' });
+});

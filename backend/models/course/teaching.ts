@@ -1,6 +1,18 @@
 import { Schema, model } from 'mongoose';
 import { Course } from './course';
 
+export interface TeachingProps {
+	labWeight: number;
+	theoryWeight: number;
+	theoryGrade: number;
+	labGrade: number;
+	theoryGradeThreshold: number;
+	labGradeThreshold: number;
+	books: string[];
+	course: string;
+	semester: string;
+}
+
 const teachingSchema = new Schema({
 	labWeight: {
 		type: Number,

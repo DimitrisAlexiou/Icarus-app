@@ -1,15 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { FormGroup, Label, Row, Col, Button } from 'reactstrap';
+import { FormGroup, Label, Row, Col, Button, Spinner } from 'reactstrap';
 import { PasswordSchema } from '../../schemas/auth/ResetPassword';
 import { resetPassword, reset } from '../../features/auth/authSlice';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye, faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import { Toast } from '../../constants/sweetAlertNotification';
 import FormErrorMessage from '../FormErrorMessage';
-import SubmitButton from '../buttons/SubmitButton';
-import Spinner from '../boilerplate/Spinner';
+import CustomSpinner from '../boilerplate/Spinner';
 
 export default function ResetPassword() {
 	const { user, isLoading, isError, isSuccess, message } = useSelector((state) => state.auth);
@@ -38,9 +37,7 @@ export default function ResetPassword() {
 		dispatch(reset());
 	}, [dispatch, isError, isSuccess, message]);
 
-	if (isLoading) {
-		return <Spinner />;
-	}
+	if (isLoading) return <CustomSpinner />;
 
 	return (
 		<>
@@ -215,12 +212,21 @@ export default function ResetPassword() {
 													Clear
 												</Button>
 											</Col>
-											<Col className="text-sm-right text-center mt-sm-0 mt-3 px-0">
-												<SubmitButton
-													color={'primary'}
-													message={'Reset'}
-													disabled={isSubmitting}
-												/>
+											<Col className="text-sm-right text-center mt-sm-0 mt-3">
+												<Button
+													type="submit"
+													color="primary"
+													disabled={isSubmitting || isLoading}
+												>
+													{isSubmitting ? (
+														<>
+															Please wait{' '}
+															<Spinner type="grow" size="sm" />
+														</>
+													) : (
+														'Reset'
+													)}
+												</Button>
 											</Col>
 										</Row>
 									</Form>

@@ -12,6 +12,7 @@ import {
 	FormGroup,
 	Label,
 	Input,
+	Spinner,
 } from 'reactstrap';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -26,9 +27,8 @@ import {
 	reset,
 } from '../../features/admin/userSlice';
 import { Toast } from '../../constants/sweetAlertNotification';
-import SubmitButton from '../../components/buttons/SubmitButton';
 import FormErrorMessage from '../../components/FormErrorMessage';
-import Spinner from '../../components/boilerplate/Spinner';
+import CustomSpinner from '../../components/boilerplate/Spinner';
 
 export default function Users() {
 	const { users, isLoading } = useSelector((state) => state.users);
@@ -371,16 +371,20 @@ export default function Users() {
 											Clear
 										</Button>
 									</Col>
-									<Col className="text-sm-right text-center mt-sm-0 mt-3 px-0">
-										<SubmitButton
-											// onClick={update}
-											color={'primary'}
-											message={'Update'}
-											disabled={isSubmitting}
-										/>
-										{/* <Button color="primary" onClick={update}>
-											Update
-										</Button> */}
+									<Col className="text-sm-right text-center mt-sm-0 mt-3">
+										<Button
+											type="submit"
+											color="primary"
+											disabled={isSubmitting || isLoading}
+										>
+											{isSubmitting ? (
+												<>
+													Updating <Spinner type="grow" size="sm" />
+												</>
+											) : (
+												'Update'
+											)}
+										</Button>
 									</Col>
 								</Row>
 							</Form>
@@ -391,9 +395,7 @@ export default function Users() {
 		);
 	});
 
-	if (isLoading) {
-		return <Spinner />;
-	}
+	if (isLoading) return <CustomSpinner />;
 
 	return (
 		<>
@@ -428,7 +430,7 @@ export default function Users() {
 								{renderItemsPerPageOptions}
 							</select>
 						</Col>
-						{usersFound && (
+						{usersFound ? (
 							<Col
 								xs="2"
 								sm="1"
@@ -445,7 +447,7 @@ export default function Users() {
 									<FontAwesomeIcon icon={faTrashAlt} />
 								</Button>
 							</Col>
-						)}
+						) : null}
 					</Row>
 					{usersFound.length === 0 ? (
 						<span className="mt-4 mb-4 text-gray-500 font-weight-bold">

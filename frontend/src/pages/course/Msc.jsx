@@ -10,7 +10,7 @@ import BreadcrumbNav from '../../components/boilerplate/Breadcrumb';
 import Spinner from '../../components/boilerplate/Spinner';
 
 export default function MscCourses() {
-	const { courses, isLoading, isError } = useSelector((state) => state.courses);
+	const { courses, isLoading } = useSelector((state) => state.courses);
 	const {
 		cycles,
 		isLoading: cyclesIsLoading,
@@ -24,9 +24,7 @@ export default function MscCourses() {
 		dispatch(getCourses());
 	}, [dispatch]);
 
-	if (isLoading) {
-		return <Spinner />;
-	}
+	if (isLoading) return <Spinner />;
 
 	return (
 		<>

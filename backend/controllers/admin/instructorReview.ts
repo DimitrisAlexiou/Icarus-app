@@ -3,25 +3,21 @@ import {
 	getInstructorReviews,
 	deleteInstructorReviews,
 } from '../../models/review/instructorReview';
+import { tryCatch } from '../../utils/tryCatch';
+import CustomError from '../../utils/CustomError';
 
-export const getAllInstructorReviews = async (_: Request, res: Response) => {
-	try {
-		const instructorReviews = await getInstructorReviews();
-		if (!instructorReviews)
-			return res.status(404).json({ message: 'Seems like there are no instructor reviews.' });
-		else return res.status(200).json(instructorReviews);
-	} catch (error) {
-		console.error('❌ Error while finding instructor reviews: ', error);
-		return res.status(500).json({ message: 'Something went wrong, try again later.' });
-	}
-};
+export const getAllInstructorReviews = tryCatch(async (_: Request, res: Response) => {
+	const instructorReviews = await getInstructorReviews();
+	if (!instructorReviews)
+		throw new CustomError(
+			'Seems like there are no instructor reviews registered in the system.',
+			404
+		);
 
-export const deleteAllInstructorReviews = async (_: Request, res: Response) => {
-	try {
-		await deleteInstructorReviews();
-		return res.status(200).json({ message: 'All instructor reviews deleted.' });
-	} catch (error) {
-		console.error('❌ Error while deleting all instructor reviews: ', error);
-		return res.status(500).json({ message: 'Something went wrong, try again later.' });
-	}
-};
+	return res.status(200).json(instructorReviews);
+});
+
+export const deleteAllInstructorReviews = tryCatch(async (_: Request, res: Response) => {
+	await deleteInstructorReviews();
+	return res.status(200).json({ message: 'Instructor reviews existing in the system deleted.' });
+});

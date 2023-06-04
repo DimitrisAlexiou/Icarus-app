@@ -1,5 +1,12 @@
 import { Schema, model } from 'mongoose';
 
+export interface StudentProps {
+	studentId: string;
+	studentType: string;
+	entranceYear: number;
+	user: string;
+}
+
 const studentSchema = new Schema(
 	{
 		studentId: {

@@ -1,5 +1,14 @@
 import { Schema, model } from 'mongoose';
 
+export interface GeneralReviewProps {
+	course_opinion: string;
+	instructor_opinion: string;
+	likes: string;
+	dislikes: string;
+	user: string;
+	teaching: string;
+}
+
 const generalReviewSchema = new Schema(
 	{
 		course_opinion: {

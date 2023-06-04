@@ -7,10 +7,7 @@ import eventService from './eventService';
 const initialState = {
 	events: [],
 	event: {},
-	isError: false,
-	isSuccess: false,
 	isLoading: false,
-	message: '',
 };
 
 export const getEvents = createAsyncThunk(API_URL_CALENDAR, async (_, thunkAPI) => {
@@ -55,7 +52,7 @@ export const eventSlice = createSlice({
 	name: 'event',
 	initialState,
 	reducers: {
-		reset: () => initialState,
+		resetCalendar: () => initialState,
 	},
 	extraReducers: (builder) => {
 		builder
@@ -68,8 +65,11 @@ export const eventSlice = createSlice({
 			})
 			.addCase(getEvents.rejected, (state, action) => {
 				state.isLoading = false;
-				state.isError = true;
-				state.message = action.payload;
+				Toast.fire({
+					title: 'Something went wrong!',
+					text: action.payload,
+					icon: 'error',
+				});
 			})
 			.addCase(addEvent.pending, (state) => {
 				state.isLoading = true;
@@ -85,8 +85,11 @@ export const eventSlice = createSlice({
 			})
 			.addCase(addEvent.rejected, (state, action) => {
 				state.isLoading = false;
-				state.isError = true;
-				state.message = action.payload;
+				Toast.fire({
+					title: 'Something went wrong!',
+					text: action.payload,
+					icon: 'error',
+				});
 			})
 			.addCase(deleteEvent.pending, (state) => {
 				state.isLoading = true;
@@ -101,14 +104,17 @@ export const eventSlice = createSlice({
 				// state.events = state.events.filter((event) => event._id !== deletedEventId);
 				Toast.fire({
 					title: 'Success',
-					text: 'Event deleted!',
+					text: action.payload,
 					icon: 'success',
 				});
 			})
 			.addCase(deleteEvent.rejected, (state, action) => {
 				state.isLoading = false;
-				state.isError = true;
-				state.message = action.payload;
+				Toast.fire({
+					title: 'Something went wrong!',
+					text: action.payload,
+					icon: 'error',
+				});
 			})
 			.addCase(deleteEvents.pending, (state) => {
 				state.isLoading = true;
@@ -117,17 +123,20 @@ export const eventSlice = createSlice({
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
-					text: 'Events deleted!',
+					text: action.payload,
 					icon: 'success',
 				});
 			})
 			.addCase(deleteEvents.rejected, (state, action) => {
 				state.isLoading = false;
-				state.isError = true;
-				state.message = action.payload;
+				Toast.fire({
+					title: 'Something went wrong!',
+					text: action.payload,
+					icon: 'error',
+				});
 			});
 	},
 });
 
-export const { reset } = eventSlice.actions;
+export const { resetCalendar } = eventSlice.actions;
 export default eventSlice.reducer;

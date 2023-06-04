@@ -14,6 +14,12 @@ import {
 import { extractErrorMessage } from '../../utils/errorMessage';
 import { Toast } from '../../constants/sweetAlertNotification';
 import authService from './authService';
+import { resetCalendar } from '../calendar/eventSlice';
+import { resetCourses } from '../courses/courseSlice';
+import { resetNotes } from '../notes/noteSlice';
+import { resetGeneralReview } from '../reviews/generalReviewSlice';
+import { resetInstructorReview } from '../reviews/instructorReviewSlice';
+import { resetTeachingReview } from '../reviews/teachingReviewSlice';
 
 const initialState = {
 	user: getUserFromLocalStorage(),
@@ -51,27 +57,37 @@ export const forgotPassword = createAsyncThunk(API_URL_FORGOT_PASSWORD, async (u
 	}
 });
 
-export const getProfile = createAsyncThunk(API_URL_USER, async (user, thunkAPI) => {
+export const getProfile = createAsyncThunk(API_URL_USER, async (_, thunkAPI) => {
 	try {
-		const token = thunkAPI.getState().auth.user.token;
-		const userId = user.user._id;
-		return await authService.getProfile(userId, token);
+		return await authService.getProfile();
 	} catch (error) {
 		return thunkAPI.rejectWithValue(extractErrorMessage(error));
 	}
 });
 
-export const updateProfile = createAsyncThunk(
-	API_URL_USER + '/update',
-	async ({ userId, user }, thunkAPI) => {
-		try {
-			const token = thunkAPI.getState().auth.user.token;
-			return await authService.updateProfile(userId, user, token);
-		} catch (error) {
-			return thunkAPI.rejectWithValue(extractErrorMessage(error));
-		}
+export const updateProfile = createAsyncThunk(API_URL_USER + '/update', async (user, thunkAPI) => {
+	try {
+		return await authService.updateProfile(user);
+	} catch (error) {
+		return thunkAPI.rejectWithValue(extractErrorMessage(error));
 	}
-);
+});
+
+export const clearStore = createAsyncThunk(API_URL_USER + '/clearStore', async (thunkAPI) => {
+	try {
+		await thunkAPI.dispatch(resetCalendar());
+		await thunkAPI.dispatch(resetCourses());
+		await thunkAPI.dispatch(resetNotes());
+		await thunkAPI.dispatch(resetInstructorReview());
+		await thunkAPI.dispatch(resetGeneralReview());
+		await thunkAPI.dispatch(resetTeachingReview());
+		// thunkAPI.dispatch(reset());
+		// thunkAPI.dispatch(reset());
+		// thunkAPI.dispatch(reset());
+	} catch (error) {
+		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+	}
+});
 
 export const authSlice = createSlice({
 	name: 'auth',
@@ -139,7 +155,6 @@ export const authSlice = createSlice({
 			})
 			.addCase(getProfile.fulfilled, (state, action) => {
 				state.isLoading = false;
-				state.isSuccess = true;
 				state.user = action.payload;
 			})
 			.addCase(getProfile.rejected, (state, action) => {
@@ -153,13 +168,16 @@ export const authSlice = createSlice({
 			.addCase(updateProfile.fulfilled, (state, action) => {
 				state.isLoading = false;
 				state.isSuccess = true;
-				if (state.auth.user) {
-					console.log(state.auth.user);
-					state.auth.user = state.auth.user.map((user) =>
-						user._id === action.payload._id ? action.payload : user
-					);
-				}
-				return { ...state };
+				const { user } = action.payload;
+				state.auth.user = user;
+				addUserToLocalStorage(user);
+				// if (state.auth.user) {
+				// 	console.log(state.auth.user);
+				// 	state.auth.user = state.auth.user.map((user) =>
+				// 		user._id === action.payload._id ? action.payload : user
+				// 	);
+				// }
+				// return { ...state };
 			})
 			.addCase(updateProfile.rejected, (state, action) => {
 				state.isLoading = false;

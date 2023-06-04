@@ -20,7 +20,7 @@ const getSemester = async () => {
 };
 
 const updateSemester = async (semesterId, data) => {
-	const response = await axiosFetch.put(API_URL_ADMIN + '/semester' + semesterId, data);
+	const response = await axiosFetch.put(API_URL_ADMIN + '/semester/' + semesterId, data);
 
 	return response.data;
 };

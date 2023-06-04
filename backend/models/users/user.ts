@@ -2,7 +2,7 @@ import mongoose, { Schema, model, Document } from 'mongoose';
 import { Note } from '../note';
 import { Calendar } from '../calendar';
 
-export interface IUser extends Document {
+export interface UserProps extends Document {
 	name: string;
 	surname: string;
 	email: string;
@@ -98,7 +98,7 @@ const userSchema = new Schema(
 	}
 );
 
-// userSchema.pre<IUser>('create', async function (next) {
+// userSchema.pre<UserProps>('create', async function (next) {
 // 	if (this.isAdmin) {
 // 		const existingAdmin = await this.constructor.findOne({ isAdmin: true });
 // 		if (existingAdmin && !this.isNew) {
@@ -130,7 +130,7 @@ userSchema.pre('findOneAndDelete', async function (next) {
 });
 
 //TODO Pre 'remove' middleware to remove associated student/instructor when a user is removed
-userSchema.pre<IUser>('deleteOne', async function (next) {
+userSchema.pre<UserProps>('deleteOne', async function (next) {
 	try {
 		if (this.student) await model('Student').findByIdAndDelete(this.student).exec();
 

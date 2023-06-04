@@ -5,25 +5,24 @@ import { NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShieldHalved } from '@fortawesome/free-solid-svg-icons';
 import { faAddressCard } from '@fortawesome/free-regular-svg-icons';
-import ProfileCard1 from '../../components/user/ProfileCard1';
-import ProfileCard2 from '../../components/user/ProfileCard2';
+import ProfileInfoCard from '../../components/user/ProfileInfoCard';
+import ProfileUpdateCard from '../../components/user/ProfileUpdateCard';
 import ProfileCard3 from '../../components/user/ProfileCard3';
 import ResetPassword from '../../components/auth/ResetPassword';
 import Spinner from '../../components/boilerplate/Spinner';
+import moment from 'moment';
 import undraw_account from '../../assets/images/undraw_account.svg';
 
 export default function Profile() {
 	const { user, isLoading } = useSelector((state) => state.auth);
 	const [selectedNavItem, setSelectedNavItem] = useState('overview');
 
-	if (isLoading) {
-		return <Spinner />;
-	}
+	if (isLoading) return <Spinner />;
 
 	const renderComponent = () => {
 		switch (selectedNavItem) {
 			case 'overview':
-				return <ProfileCard2 user={user} />;
+				return <ProfileUpdateCard />;
 			case 'security':
 				return <ResetPassword />;
 			default:
@@ -37,7 +36,7 @@ export default function Profile() {
 
 			<Row className="animated--grow-in">
 				<Col>
-					<ProfileCard1 user={user} />
+					<ProfileInfoCard user={user} />
 				</Col>
 				<Col md="12" xl="7">
 					<Nav className="justify-content-between navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow sticky-top">
@@ -79,17 +78,7 @@ export default function Profile() {
 			<Row className="mb-5 animated--grow-in">
 				<Col className="d-flex justify-content-end">
 					<span className="text-xs text-gray-500">
-						Last login:{' '}
-						{new Date(user.user.lastLogin)
-							.toLocaleString('en-GB', {
-								day: '2-digit',
-								month: '2-digit',
-								year: 'numeric',
-								hour: 'numeric',
-								minute: 'numeric',
-								second: 'numeric',
-							})
-							.replace(',', '')}
+						Last login: {moment(user.user.lastLogin).fromNow()}
 					</span>
 				</Col>
 			</Row>

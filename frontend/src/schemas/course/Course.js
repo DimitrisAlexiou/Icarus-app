@@ -29,8 +29,8 @@ export const CourseSchema = Yup.object().shape({
 		.min(1, 'ECTS must be at least 1.')
 		.positive('Number must be positive.')
 		.required('ECTS value is required.'),
-	year: Yup.string()
-		.oneOf(['1', '2', '3', '4', '5'], 'Year should be one of the following: [1, 2, 3, 4, 5]')
+	year: Yup.number()
+		.oneOf([1, 2, 3, 4, 5], 'Year should be one of the following: [1, 2, 3, 4, 5]')
 		.required('Please select the course year.'),
 	cycle: Yup.string().when('isObligatory', {
 		is: false,

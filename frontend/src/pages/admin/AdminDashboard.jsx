@@ -40,9 +40,7 @@ export default function AdminDashboard() {
 		dispatch(getUserNotes());
 	}, [dispatch]);
 
-	if (isLoading || cyclesIsLoading || semesterIsLoading || notesIsLoading) {
-		return <Spinner />;
-	}
+	if (isLoading || cyclesIsLoading || semesterIsLoading || notesIsLoading) return <Spinner />;
 
 	return (
 		<>
@@ -100,9 +98,9 @@ export default function AdminDashboard() {
 										Cycles
 									</div>
 									<div className="h5 mb-0 font-weight-bold text-gray-800">
-										{cycles.names && cycles.names.length
+										{/* {cycles.names && cycles.names.length
 											? cycles.names.length
-											: 0}
+											: 0} */}
 									</div>
 								</Col>
 								<div className="col-auto">
