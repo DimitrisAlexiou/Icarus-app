@@ -1,5 +1,5 @@
 import express from 'express';
-import { viewProfile, updateProfile, deleteUser } from '../controllers/user';
+import { viewProfile, updateProfile } from '../controllers/user';
 import {
 	getAllUserTeachingReviews,
 	viewUserTeachingReview,
@@ -76,6 +76,5 @@ export default (router: express.Router) => {
 	router
 		.route('/user/profile')
 		.get(authorize, isOwner, viewProfile)
-		.delete(authorize, isOwner, deleteUser)
 		.put(authorize, isOwner, validateProfile, updateProfile);
 };

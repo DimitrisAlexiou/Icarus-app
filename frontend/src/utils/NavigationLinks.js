@@ -97,7 +97,7 @@ export const sidebarStudentLinks = [
 	{
 		id: 8,
 		text: 'Statistics & Reports',
-		path: '/reports',
+		path: '/statistics-reports',
 		icon: <FontAwesomeIcon icon={faChartBar} />,
 	},
 ];
@@ -130,7 +130,7 @@ export const sidebarInstructorLinks = [
 	{
 		id: 5,
 		text: 'Statistics & Reports',
-		path: '/reports',
+		path: '/statistics-reports',
 		icon: <FontAwesomeIcon icon={faChartBar} />,
 	},
 ];

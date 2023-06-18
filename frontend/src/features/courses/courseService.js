@@ -1,6 +1,5 @@
 import axiosFetch from '../../utils/axios';
 import { API_URL_COURSE } from '../../constants/config';
-const TEACHING = `${API_URL_COURSE}/:courseId/teaching`;
 
 const createCourse = async (data) => {
 	const response = await axiosFetch.post(API_URL_COURSE + '/new', data);
@@ -9,7 +8,7 @@ const createCourse = async (data) => {
 };
 
 const updateCourse = async (courseId, data) => {
-	const response = await axiosFetch.put(API_URL_COURSE + '/' + courseId + '/edit', data);
+	const response = await axiosFetch.put(API_URL_COURSE + '/' + courseId, data);
 
 	return response.data;
 };
@@ -20,16 +19,20 @@ const getCourse = async (courseId) => {
 	return response.data;
 };
 
-const deleteCourse = async (courseId) => {
-	const response = await axiosFetch.delete(API_URL_COURSE + '/' + courseId);
+const deleteCourse = async (course) => {
+	await axiosFetch.delete(API_URL_COURSE + '/' + course._id);
+
+	return course;
+};
+
+const activateCourse = async (courseId) => {
+	const response = await axiosFetch.put(API_URL_COURSE + '/' + courseId + '/activate');
 
 	return response.data;
 };
 
-const activateCourse = async (courseId) => {
-	const response = await axiosFetch.put(API_URL_COURSE + '/' + courseId + '/activate', {
-		isActive: true,
-	});
+const deActivateCourse = async (courseId) => {
+	const response = await axiosFetch.put(API_URL_COURSE + '/' + courseId + '/deactivate');
 
 	return response.data;
 };
@@ -46,22 +49,15 @@ const deleteCourses = async () => {
 	return response.data;
 };
 
-const createTeaching = async (data) => {
-	// const response = await axiosFetch.post(API_URL_COURSE + courseId + '/teaching', data);
-	const response = await axiosFetch.post(TEACHING, data);
-
-	return response.data;
-};
-
 const courseService = {
 	createCourse,
 	updateCourse,
 	getCourse,
 	deleteCourse,
 	activateCourse,
+	deActivateCourse,
 	getCourses,
 	deleteCourses,
-	createTeaching,
 };
 
 export default courseService;

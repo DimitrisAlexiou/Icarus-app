@@ -11,7 +11,7 @@ import { getCurrentSemester } from '../../models/admin/semester';
 import { tryCatch } from '../../utils/tryCatch';
 import CustomError from '../../utils/CustomError';
 
-export const defineAssessment = tryCatch(async (req: Request, res: Response) => {
+export const defineAssessment = tryCatch(async (req: Request, res: Response): Promise<Response> => {
 	const { vaccineStartDate, vaccineEndDate, period } = req.body;
 
 	if (!vaccineStartDate || !vaccineEndDate || !period)
@@ -43,13 +43,17 @@ export const defineAssessment = tryCatch(async (req: Request, res: Response) => 
 	return res.status(201).json(assessment);
 });
 
-export const viewAssessment = tryCatch(async (req: Request, res: Response) => {
+export const viewAssessment = tryCatch(async (req: Request, res: Response): Promise<Response> => {
 	const semester = await getCurrentSemester(new Date());
 	if (!semester)
 		throw new CustomError(
 			'Seems like there is no defined semester for current period. Define a semester first in order to define assessment statement configuration.',
 			404
 		);
+	// return res.status(404).json({
+	// 	message:
+	// 		'Seems like there is no defined semester for current period. Define a semester first in order to define assessment statement configuration.',
+	// });
 
 	const semesterId = semester._id.toString();
 	const assessment = await getAssessmentBySemester(semesterId);
@@ -58,11 +62,15 @@ export const viewAssessment = tryCatch(async (req: Request, res: Response) => {
 			'Seems like there is no assessment statement configuration defined for this semester.',
 			404
 		);
+	// return res.status(404).json({
+	// 	message:
+	// 		'Seems like there is no assessment statement configuration defined for this semester.',
+	// });
 
 	return res.status(200).json(assessment);
 });
 
-export const updateAssessment = tryCatch(async (req: Request, res: Response) => {
+export const updateAssessment = tryCatch(async (req: Request, res: Response): Promise<Response> => {
 	const { period, startDate, endDate } = req.body;
 
 	if (!period || !startDate || !endDate)
@@ -81,7 +89,7 @@ export const updateAssessment = tryCatch(async (req: Request, res: Response) => 
 	return res.status(200).json(updatedAssessment);
 });
 
-export const deleteAssessment = tryCatch(async (req: Request, res: Response) => {
+export const deleteAssessment = tryCatch(async (req: Request, res: Response): Promise<Response> => {
 	const { id } = req.params;
 	const assessmentToDelete = await deleteAssessmentById(id);
 	if (!assessmentToDelete)
@@ -95,7 +103,7 @@ export const deleteAssessment = tryCatch(async (req: Request, res: Response) => 
 	});
 });
 
-export const viewAssessments = tryCatch(async (_: Request, res: Response) => {
+export const viewAssessments = tryCatch(async (_: Request, res: Response): Promise<Response> => {
 	const assessments = await getAssessments();
 	if (!assessments)
 		throw new CustomError(
@@ -106,9 +114,11 @@ export const viewAssessments = tryCatch(async (_: Request, res: Response) => {
 	return res.status(200).json(assessments);
 });
 
-export const deleteAllAssessments = tryCatch(async (_: Request, res: Response) => {
-	await deleteAssessments();
-	return res
-		.status(200)
-		.json({ message: 'Defined assessment statement configurations deleted.' });
-});
+export const deleteAllAssessments = tryCatch(
+	async (_: Request, res: Response): Promise<Response> => {
+		await deleteAssessments();
+		return res
+			.status(200)
+			.json({ message: 'Defined assessment statement configurations deleted.' });
+	}
+);

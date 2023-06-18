@@ -3,8 +3,8 @@ import { FormGroup, Label, Row, Col, Button, Spinner } from 'reactstrap';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { AssessmentSchema } from '../../schemas/admin/Assessment';
 import { defineAssessment, updateAssessment } from '../../features/admin/assessmentSlice';
-import FormErrorMessage from '../FormErrorMessage';
-import DatePickerField from '../DatePickerField';
+import FormErrorMessage from '../form/FormErrorMessage';
+import DatePickerField from '../form/DatePickerField';
 
 export default function AssessmentForm({
 	assessment,

@@ -1,72 +1,47 @@
-import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Dashboard, LandingPage, NotFound } from './pages/index';
-import SharedLayout from './components/boilerplate/SharedLayout';
-import ProtectedRoute from './components/ProtectedRoute';
-import Unauthorized from './pages/auth/UnAuthorized';
-import Forbidden from './pages/auth/Forbidden';
-import Register from './pages/auth/Register';
-import Login from './pages/auth/Login';
-import ForgotPassword from './pages/auth/ForgotPassword';
-import Courses from './pages/course/Courses';
-import Studies from './pages/course/Studies';
-import Undergraduate from './pages/course/Undergraduate';
-import Msc from './pages/course/Msc';
-import Phd from './pages/course/Phd';
-import Course from './pages/course/Course';
-import NewCourse from './pages/course/NewCourse';
-import CourseEdit from './pages/course/CourseEdit';
-import Teaching from './pages/course/Teaching';
-import Reviews from './pages/review/Reviews';
-import TeachingReview from './pages/review/TeachingReview';
-import InstructorReview from './pages/review/InstructorReview';
-import GeneralReview from './pages/review/GeneralReview';
-import TeachingReviews from './pages/review/TeachingReviews';
-import InstructorReviews from './pages/review/InstructorReviews';
-import GeneralReviews from './pages/review/GeneralReviews';
-import Portfolio from './pages/user/Portfolio';
-import Profile from './pages/user/Profile';
+import { UnAuthorized, Forbidden, Register, Login, ForgotPassword } from './pages/auth/index';
+import {
+	Courses,
+	Studies,
+	Undergraduate,
+	Msc,
+	Phd,
+	Course,
+	NewCourse,
+	CourseEdit,
+	Teaching,
+	MyCourses,
+	CourseGrading,
+} from './pages/course/index';
+import {
+	Reviews,
+	TeachingReview,
+	InstructorReview,
+	GeneralReview,
+	TeachingReviews,
+	InstructorReviews,
+	GeneralReviews,
+} from './pages/review/index';
+import { Configuration, AdminDashboard, Users, Professors, Students } from './pages/admin/index';
+import {
+	Portfolio,
+	Profile,
+	Messages,
+	Statements,
+	DegreeCompletion,
+	StatisticsReports,
+} from './pages/user/index';
 import Notes from './pages/note/Notes';
 import Calendar from './components/calendar/calendar';
-import Configuration from './pages/admin/Configuration';
-import AdminDashboard from './pages/admin/AdminDashboard';
-import Users from './pages/admin/Users';
-import Professors from './pages/admin/Professors';
-import Students from './pages/admin/Students';
-import { checkTokenExpiration } from './utils/axios';
-import { addLastPageToLocalStorage } from './utils/localStorage';
+import SharedLayout from './components/boilerplate/SharedLayout';
+import ProtectedRoute from './components/boilerplate/ProtectedRoute';
 import { ThemeProvider } from '@mui/material';
 import { ColorModeContext, useMode } from './theme';
+import { UserType } from './constants/enums';
 
 export default function App() {
 	const [theme, colorMode] = useMode();
-	const { user } = useSelector((state) => state.auth);
-	// const [lastPage, setLastPage] = useState(localStorage.getItem('lastPage'));
-	// const location = useLocation();
-
-	// useEffect(() => {
-	// 	const interval = setInterval(() => {
-	// 		console.log('EXECUTING EVERY 15 MINUTES');
-	// 		checkTokenExpiration();
-	// 	}, 10 * 60 * 1000);
-	// 	addLastPageToLocalStorage();
-	// 	return () => clearInterval(interval);
-	// }, []);
-
-	// useEffect(() => {
-	// 	localStorage.setItem('lastPage', location.pathname);
-	// }, [location]);
-
-	// useEffect(() => {
-	// 	const storageListener = () => {
-	// 		setLastPage(localStorage.getItem('lastPage'));
-	// 	};
-	// 	window.addEventListener('storage', storageListener);
-	// 	return () => {
-	// 		window.removeEventListener('storage', storageListener);
-	// 	};
-	// }, []);
 
 	return (
 		<>
@@ -87,7 +62,7 @@ export default function App() {
 								<Route
 									path="/admin/configuration"
 									element={
-										<ProtectedRoute allowedRoles={['Admin']}>
+										<ProtectedRoute allowedRoles={[UserType.admin]}>
 											<Configuration />
 										</ProtectedRoute>
 									}
@@ -95,7 +70,7 @@ export default function App() {
 								<Route
 									path="/admin/dashboard"
 									element={
-										<ProtectedRoute allowedRoles={['Admin']}>
+										<ProtectedRoute allowedRoles={[UserType.admin]}>
 											<AdminDashboard />
 										</ProtectedRoute>
 									}
@@ -103,7 +78,7 @@ export default function App() {
 								<Route
 									path="/users"
 									element={
-										<ProtectedRoute allowedRoles={['Admin']}>
+										<ProtectedRoute allowedRoles={[UserType.admin]}>
 											<Users />
 										</ProtectedRoute>
 									}
@@ -111,7 +86,7 @@ export default function App() {
 								<Route
 									path="/professors"
 									element={
-										<ProtectedRoute allowedRoles={['Admin']}>
+										<ProtectedRoute allowedRoles={[UserType.admin]}>
 											<Professors />
 										</ProtectedRoute>
 									}
@@ -119,7 +94,7 @@ export default function App() {
 								<Route
 									path="/students"
 									element={
-										<ProtectedRoute allowedRoles={['Admin']}>
+										<ProtectedRoute allowedRoles={[UserType.admin]}>
 											<Students />
 										</ProtectedRoute>
 									}
@@ -137,6 +112,14 @@ export default function App() {
 									element={
 										<ProtectedRoute>
 											<Courses />
+										</ProtectedRoute>
+									}
+								/>
+								<Route
+									path="/my-courses"
+									element={
+										<ProtectedRoute>
+											<MyCourses />
 										</ProtectedRoute>
 									}
 								/>
@@ -167,7 +150,7 @@ export default function App() {
 								<Route
 									path="/course/new"
 									element={
-										<ProtectedRoute allowedRoles={['Admin']}>
+										<ProtectedRoute allowedRoles={[UserType.admin]}>
 											<NewCourse />
 										</ProtectedRoute>
 									}
@@ -183,7 +166,9 @@ export default function App() {
 								<Route
 									path="/course/:courseId/edit"
 									element={
-										<ProtectedRoute allowedRoles={['Admin', 'Instructor']}>
+										<ProtectedRoute
+											allowedRoles={[UserType.admin, UserType.instructor]}
+										>
 											<CourseEdit />
 										</ProtectedRoute>
 									}
@@ -191,7 +176,9 @@ export default function App() {
 								<Route
 									path="/course/:courseId/teaching"
 									element={
-										<ProtectedRoute allowedRoles={['Admin', 'Instructor']}>
+										<ProtectedRoute
+											allowedRoles={[UserType.admin, UserType.instructor]}
+										>
 											<Teaching />
 										</ProtectedRoute>
 									}
@@ -207,7 +194,9 @@ export default function App() {
 								<Route
 									path="/review/teaching"
 									element={
-										<ProtectedRoute allowedRoles={['Admin', 'Student']}>
+										<ProtectedRoute
+											allowedRoles={[UserType.admin, UserType.student]}
+										>
 											<TeachingReview />
 										</ProtectedRoute>
 									}
@@ -223,7 +212,9 @@ export default function App() {
 								<Route
 									path="/review/instructor"
 									element={
-										<ProtectedRoute allowedRoles={['Admin', 'Student']}>
+										<ProtectedRoute
+											allowedRoles={[UserType.admin, UserType.student]}
+										>
 											<InstructorReview />
 										</ProtectedRoute>
 									}
@@ -239,7 +230,9 @@ export default function App() {
 								<Route
 									path="/review/general"
 									element={
-										<ProtectedRoute allowedRoles={['Admin', 'Student']}>
+										<ProtectedRoute
+											allowedRoles={[UserType.admin, UserType.student]}
+										>
 											<GeneralReview />
 										</ProtectedRoute>
 									}
@@ -249,6 +242,46 @@ export default function App() {
 									element={
 										<ProtectedRoute>
 											<GeneralReviews />
+										</ProtectedRoute>
+									}
+								/>
+								<Route
+									path="/messages"
+									element={
+										<ProtectedRoute>
+											<Messages />
+										</ProtectedRoute>
+									}
+								/>
+								<Route
+									path="/statements"
+									element={
+										<ProtectedRoute>
+											<Statements />
+										</ProtectedRoute>
+									}
+								/>
+								<Route
+									path="/degree-completion"
+									element={
+										<ProtectedRoute>
+											<DegreeCompletion />
+										</ProtectedRoute>
+									}
+								/>
+								<Route
+									path="/statistics-reports"
+									element={
+										<ProtectedRoute>
+											<StatisticsReports />
+										</ProtectedRoute>
+									}
+								/>
+								<Route
+									path="/course-grading"
+									element={
+										<ProtectedRoute>
+											<CourseGrading />
 										</ProtectedRoute>
 									}
 								/>
@@ -276,7 +309,7 @@ export default function App() {
 										</ProtectedRoute>
 									}
 								/>
-								<Route path="/unauthorized" element={<Unauthorized />} />
+								<Route path="/unauthorized" element={<UnAuthorized />} />
 							</Route>
 						</Routes>
 					</Router>

@@ -3,8 +3,8 @@ import { FormGroup, Label, Row, Col, Button, Spinner } from 'reactstrap';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { ReviewSchema } from '../../schemas/admin/Review';
 import { defineReview, updateReview } from '../../features/admin/reviewSlice';
-import FormErrorMessage from '../FormErrorMessage';
-import DatePickerField from '../DatePickerField';
+import FormErrorMessage from '../form/FormErrorMessage';
+import DatePickerField from '../form/DatePickerField';
 
 export default function ReviewForm({ review, isEditingReview, editReviewId, semester }) {
 	const dispatch = useDispatch();

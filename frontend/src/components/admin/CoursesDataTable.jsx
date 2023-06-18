@@ -1,24 +1,28 @@
 import { useState, forwardRef, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Row, Col, Table, Button, Modal, ModalHeader, ModalBody, Input } from 'reactstrap';
-import { deleteCourse, activateCourse, setEditCourse } from '../../features/courses/courseSlice';
+import { Row, Col, Button, Modal, ModalHeader, ModalBody } from 'reactstrap';
+import {
+	deleteCourse,
+	activateCourse,
+	deActivateCourse,
+	setEditCourse,
+} from '../../features/courses/courseSlice';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheck } from '@fortawesome/free-solid-svg-icons';
 import { faEdit, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
+import { deleteAlert } from '../../constants/sweetAlertNotification';
+import { useThunk } from '../../hooks/use-thunk';
+import { Toast } from '../../constants/sweetAlertNotification';
+import DataTable from '../DataTable';
+import Switch from 'react-switch';
 import CourseForm from '../../components/course/CourseForm';
 import Spinner from '../../components/boilerplate/Spinner';
 
 export default function CoursesDataTable({ courses, cycles, semesters }) {
 	const { isLoading, isEditingCourse, editCourseId } = useSelector((state) => state.courses);
+	const [doDeleteCourse, isDeletingCourse, deletingCourseError] = useThunk(deleteCourse);
 
 	const modalRef = useRef(null);
-
-	const [searchQuery, setSearchQuery] = useState('');
-	const [sortColumn, setSortColumn] = useState('courseId');
-	const [sortOrder, setSortOrder] = useState('asc');
-	const [currentPage, setCurrentPage] = useState(0);
-	const [itemsPerPage, setItemsPerPage] = useState(10);
 	const [modal, setModal] = useState(false);
 	const [currentCourse, setCurrentCourse] = useState({
 		courseId: '',
@@ -39,162 +43,27 @@ export default function CoursesDataTable({ courses, cycles, semesters }) {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
-	const toggle = () => setModal(!modal);
-
-	const viewCourse = (course) => {
-		navigate(`/course/${course}`);
+	const toggle = () => {
+		setModal(!modal);
+		dispatch(
+			setEditCourse({
+				isEditingCourse: false,
+				editCourseId: '',
+			})
+		);
 	};
 
-	const activateC = (course) => {
-		dispatch(activateCourse(course._id));
-	};
-
-	const deleteC = (course) => {
-		dispatch(deleteCourse(course._id));
-	};
-
-	const handlePageClick = (event) => {
-		setCurrentPage(Number(event.target.id));
-	};
-
-	const handleItemsPerPageChange = (event) => {
-		setItemsPerPage(Number(event.target.value));
-		setCurrentPage(0);
-	};
-
-	const handleSearchQueryChange = (e) => {
-		setSearchQuery(e.target.value);
-	};
-
-	const handleSort = (column) => {
-		if (sortColumn === column) {
-			setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+	const handleSwitchToggle = (courseId, checked) => {
+		if (checked) {
+			dispatch(activateCourse(courseId));
 		} else {
-			setSortColumn(column);
-			setSortOrder('asc');
+			dispatch(deActivateCourse(courseId));
 		}
 	};
 
-	const sortedCourses = [...courses].sort((a, b) => {
-		if (sortOrder === 'asc') {
-			return a[sortColumn].localeCompare(b[sortColumn]);
-		}
-		return b[sortColumn].localeCompare(a[sortColumn]);
-	});
-
-	const filteredCourses = sortedCourses.filter((course) => {
-		const matchTitle = course.title.toLowerCase().includes(searchQuery.toLowerCase());
-		const matchID = course.courseId.toLowerCase().includes(searchQuery.toLowerCase());
-		return matchTitle || matchID;
-	});
-
-	const indexOfLastItem = (currentPage + 1) * itemsPerPage;
-	const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-	const currentCourses = filteredCourses.slice(indexOfFirstItem, indexOfLastItem);
-
-	const pageNumbers = [];
-	for (let i = 0; i < Math.ceil(filteredCourses.length / itemsPerPage); i++) {
-		pageNumbers.push(i);
-	}
-
-	const renderPageNumbers = pageNumbers.map((number) => {
-		return (
-			<Button
-				className="text-gray-500"
-				key={number}
-				id={number}
-				color="null"
-				onClick={handlePageClick}
-			>
-				{number + 1}
-			</Button>
-		);
-	});
-
-	const itemsPerPageOptions = [10, 25, 50, 100];
-	const renderItemsPerPageOptions = itemsPerPageOptions.map((option) => {
-		return (
-			<option key={option} value={option}>
-				{option}
-			</option>
-		);
-	});
-
-	const coursesFound = currentCourses.map((course) => {
-		return (
-			<tr key={course._id} onClick={() => viewCourse(course._id)}>
-				<th
-					scope="row"
-					onClick={(e) => {
-						e.stopPropagation();
-						handleSort('courseId');
-					}}
-				>
-					{course.courseId}
-				</th>
-				<td
-					onClick={(e) => {
-						e.stopPropagation();
-						handleSort('title');
-					}}
-				>
-					{course.title}
-				</td>
-				<td>{course.type}</td>
-				<td>{course.hasPrerequisites ? 'Yes' : 'No'}</td>
-				<td>{course.hasLab ? 'Yes' : 'No'}</td>
-				<td>{course.isObligatory ? 'Yes' : 'No'}</td>
-				<td>{course.isActive ? 'Yes' : 'No'}</td>
-				<td>
-					<Row style={{ width: '150px' }}>
-						{!course.isActive ? (
-							<>
-								<Col xs="6" sm="4" className="mb-2">
-									<Button
-										className="btn btn-light"
-										onClick={(e) => {
-											e.stopPropagation();
-											activateC(course);
-										}}
-									>
-										<FontAwesomeIcon icon={faCheck} />
-									</Button>
-								</Col>
-							</>
-						) : null}
-						<Col xs="6" sm="4" className="mb-2">
-							<Button
-								className="btn btn-light"
-								onClick={(e) => {
-									e.stopPropagation();
-									dispatch(
-										setEditCourse({
-											editCourseId: course._id,
-										})
-									);
-									setModal(true);
-									setCurrentCourse(course);
-								}}
-							>
-								<FontAwesomeIcon icon={faEdit} />
-							</Button>
-						</Col>
-						<Col sm="4">
-							<Button
-								className="btn btn-light"
-								onClick={(e) => {
-									e.stopPropagation();
-									deleteC(course);
-								}}
-							>
-								<FontAwesomeIcon icon={faTrashAlt} />
-							</Button>
-						</Col>
-					</Row>
-				</td>
-			</tr>
-		);
-	});
+	const handleCourseRowClick = (course) => {
+		navigate(`/course/${course._id}`);
+	};
 
 	const ModalComponent = forwardRef((props, ref) => {
 		const { modalRef } = props;
@@ -216,82 +85,117 @@ export default function CoursesDataTable({ courses, cycles, semesters }) {
 		);
 	});
 
+	const dataTableConfig = [
+		{
+			name: 'courseId',
+			label: 'Course ID',
+			render: (course) => course.courseId,
+		},
+		{
+			name: 'title',
+			label: 'Title',
+			render: (course) => course.title,
+		},
+		{
+			name: 'type',
+			label: 'Type',
+			render: (course) => course.type,
+		},
+		{
+			name: 'hasPrerequisites',
+			label: 'Prerequisites',
+			render: (course) => (course.hasPrerequisites ? 'Yes' : 'No'),
+		},
+		{
+			name: 'hasLab',
+			label: 'Lab',
+			render: (course) => (course.hasLab ? 'Yes' : 'No'),
+		},
+		{
+			name: 'isObligatory',
+			label: 'Obligatory',
+			render: (course) => (course.isObligatory ? 'Yes' : 'No'),
+		},
+		{
+			name: 'isActive',
+			label: 'Active',
+			render: (course) => (
+				<Switch
+					onChange={(checked, event) => {
+						event.stopPropagation();
+						handleSwitchToggle(course._id, checked);
+					}}
+					checked={course.isActive}
+					uncheckedIcon={false}
+					checkedIcon={false}
+					onColor="#3ea37d"
+					offColor="#bfcbd9"
+				/>
+			),
+		},
+		{
+			name: 'actions',
+			label: 'Actions',
+			render: (course) => (
+				<Row style={{ width: '150px' }}>
+					<Col xs="6" sm="4" className="mb-2">
+						<Button
+							className="btn btn-light"
+							onClick={(e) => {
+								e.stopPropagation();
+								dispatch(setEditCourse({ editCourseId: course._id }));
+								setCurrentCourse(course);
+								setModal(true);
+							}}
+						>
+							<FontAwesomeIcon icon={faEdit} />
+						</Button>
+					</Col>
+					<Col sm="4">
+						<Button
+							className="btn btn-light"
+							onClick={(e) => {
+								e.stopPropagation();
+								doDeleteCourse(course);
+								// deleteAlert(dispatch(deleteCourse(course._id)));
+							}}
+						>
+							<FontAwesomeIcon icon={faTrashAlt} />
+						</Button>
+					</Col>
+				</Row>
+			),
+		},
+	];
+
 	if (isLoading) return <Spinner />;
+
+	if (deletingCourseError)
+		Toast.fire({
+			title: 'Something went wrong!',
+			text: 'Course did not deleted. Please try again later.',
+			// text: deletingCourseError,
+			icon: 'error',
+		});
 
 	return (
 		<>
-			<Row>
-				<Col>
-					<Input
-						type="text"
-						placeholder="Search by username or surname . . ."
-						value={searchQuery}
-						onChange={handleSearchQueryChange}
-					/>
-				</Col>
-				<Col xs="3" sm="2" md="2" lg="2" xl="1" className="d-flex justify-content-end">
-					<select
-						value={itemsPerPage}
-						onChange={handleItemsPerPageChange}
-						className="form-control"
-					>
-						{renderItemsPerPageOptions}
-					</select>
-				</Col>
-			</Row>
-			{coursesFound.length < 1 ? (
-				<span className="mt-4 mb-4 text-gray-500 font-weight-bold">
-					There are no entries for your current search
-				</span>
-			) : (
-				<Table className="mt-3" responsive hover>
-					<thead>
-						<tr>
-							<th>ID</th>
-							<th>Title</th>
-							<th>Type</th>
-							<th>Prerequisites</th>
-							<th>Lab</th>
-							<th>Obligatory</th>
-							<th>Active</th>
-							<th>Actions</th>
-						</tr>
-					</thead>
-					<tbody>{coursesFound}</tbody>
-				</Table>
-			)}
-			<Row>
-				<Col sm="6" xs="6" md="6">
-					<span className="text-gray-500">
-						Showing {indexOfFirstItem + 1} to{' '}
-						{Math.min(indexOfLastItem, filteredCourses.length)} of{' '}
-						{filteredCourses.length} entries
-					</span>
-				</Col>
-				<Col className="d-flex justify-content-end">
-					<span id="page-numbers">{renderPageNumbers}</span>
-				</Col>
-			</Row>
-			{isEditingCourse ? <ModalComponent modalRef={modalRef} /> : null}
+			<div className="card card-body">
+				{isDeletingCourse ? (
+					<Spinner card />
+				) : (
+					<>
+						<DataTable
+							data={courses}
+							config={dataTableConfig}
+							sortColumns={['courseId', 'title']}
+							searchMessage={'by Title or ID'}
+							onRowClick={(course) => handleCourseRowClick(course)}
+						/>
+						{isEditingCourse ? <ModalComponent modalRef={modalRef} /> : null}
+					</>
+				)}
+			</div>
 		</>
 	);
-}
-
-{
-	/* <Modal className="modal-dialog modal-content" isOpen={showDelete} toggle={toggleDelete}>
-				<ModalHeader className="modal-header modal-title">
-					Are you sure you want to delete this course?
-				</ModalHeader>
-				<ModalBody className="modal-body">
-					If you confrim this action will delete this course permanently from the system.
-				</ModalBody>
-				<ModalFooter className="modal-footer">
-					<Button
-						className="btn btn-danger align-self-center"
-						onClick={() => handleDeleteCourse()}
-					>
-						Confirm
-					</Button>
-				</ModalFooter>
-			</Modal> */
 }

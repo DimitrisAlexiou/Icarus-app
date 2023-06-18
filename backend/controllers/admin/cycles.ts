@@ -3,7 +3,7 @@ import { createCycles, updateCyclesById, deleteCycles, getCycles } from '../../m
 import { tryCatch } from '../../utils/tryCatch';
 import CustomError from '../../utils/CustomError';
 
-export const defineCycles = tryCatch(async (req: Request, res: Response) => {
+export const defineCycles = tryCatch(async (req: Request, res: Response): Promise<Response> => {
 	const { names } = req.body;
 
 	if (!names) throw new CustomError('Please fill in all the required fields.', 400);
@@ -29,14 +29,14 @@ export const defineCycles = tryCatch(async (req: Request, res: Response) => {
 	return res.status(201).json(cycles);
 });
 
-export const viewCycles = tryCatch(async (_: Request, res: Response) => {
+export const viewCycles = tryCatch(async (_: Request, res: Response): Promise<Response> => {
 	const cycles = await getCycles();
 	if (!cycles) throw new CustomError('Seems like there are no defined cycles.', 404);
 
 	return res.status(200).json(cycles);
 });
 
-export const updateCycles = tryCatch(async (req: Request, res: Response) => {
+export const updateCycles = tryCatch(async (req: Request, res: Response): Promise<Response> => {
 	const { names } = req.body;
 
 	if (!names) throw new CustomError('Please fill in all the required fields.', 400);
@@ -50,7 +50,7 @@ export const updateCycles = tryCatch(async (req: Request, res: Response) => {
 	return res.status(200).json(updatedCycles);
 });
 
-export const deleteAllCycles = tryCatch(async (_: Request, res: Response) => {
+export const deleteAllCycles = tryCatch(async (_: Request, res: Response): Promise<Response> => {
 	await deleteCycles();
 	return res.status(200).json({ message: 'Defined cycles deleted.' });
 });

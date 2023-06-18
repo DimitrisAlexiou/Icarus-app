@@ -16,7 +16,9 @@
 		"@fullcalendar/react": "^6.1.4",
 		"@fullcalendar/timegrid": "^6.1.4",
 		"@mui/material": "^5.11.13",
-		"@reduxjs/toolkit": "^1.8.0",
+		"@reduxjs/toolkit": "^1.9.5",
+		"@tanstack/react-query": "^4.29.14",
+		"@tanstack/react-query-devtools": "^4.29.14",
 		"@testing-library/jest-dom": "^4.2.4",
 		"@testing-library/react": "^9.5.0",
 		"@testing-library/user-event": "^7.2.1",
@@ -35,16 +37,16 @@
 		"react-idle-timer": "^5.5.3",
 		"react-live-clock": "^5.7.0",
 		"react-modal": "^3.14.4",
-		"react-redux": "^7.2.6",
+		"react-redux": "^7.2.9",
 		"react-router-dom": "^6.2.2",
 		"react-scripts": "5.0.0",
 		"react-select": "^5.7.0",
+		"react-switch": "^7.0.0",
 		"react-time-picker": "^5.2.0",
-		"react-toastify": "^8.2.0",
-		"reactstrap": "^9.0.2",
+		"reactstrap": "^9.2.0",
 		"sass": "^1.49.9",
 		"scrollreveal": "^4.0.9",
-		"sweetalert2": "^11.4.8",
+		"sweetalert2": "^11.7.12",
 		"sweetalert2-react-content": "^4.2.0",
 		"yup": "^0.32.11"
 	},
@@ -68,5 +70,8 @@
 			"last 1 firefox version",
 			"last 1 safari version"
 		]
+	},
+	"devDependencies": {
+		"@tanstack/eslint-plugin-query": "^4.29.9"
 	}
 }

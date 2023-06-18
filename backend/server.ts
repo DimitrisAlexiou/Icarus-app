@@ -9,9 +9,9 @@ import mongoSanitize from 'express-mongo-sanitize';
 // import helmet from 'helmet';
 import connectDB from './database/db';
 import router from './routes';
+import setCache from './middleware/cache';
 import errorHandler from './middleware/errorHandler';
 import CustomError from './utils/CustomError';
-import { setCache } from './middleware/cache';
 
 const PORT: number | string = process.env.PORT || 4000;
 

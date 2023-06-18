@@ -1,13 +1,26 @@
 import * as Yup from 'yup';
+import { SemesterType } from '../../constants/enums';
 
 export const SemesterSchema = Yup.object().shape({
 	type: Yup.string()
 		.oneOf(
-			['Winter', 'Spring', 'Any'],
-			'Type should be one of the following: [Winter, Spring, Any]'
+			[SemesterType.Winter, SemesterType.Spring, SemesterType.Any],
+			`Type should be one of the following: [${SemesterType.Winter}, ${SemesterType.Spring}, ${SemesterType.Any}]`
 		)
 		.required('Please select the semester type.'),
-	grading: Yup.number().min(1).required('Please select the grading duration period.'),
-	startDate: Yup.date().required('Please select starting date.'),
-	endDate: Yup.date().required('Please select ending date.'),
+	grading: Yup.number().when('type', {
+		is: (type) => type !== SemesterType.Any,
+		then: Yup.number().min(1).required('Please select the grading duration period.'),
+		otherwise: Yup.number().notRequired(),
+	}),
+	startDate: Yup.date().when('type', {
+		is: (type) => type !== SemesterType.Any,
+		then: Yup.date().required('Please select starting date.'),
+		otherwise: Yup.date().notRequired(),
+	}),
+	endDate: Yup.date().when('type', {
+		is: (type) => type !== SemesterType.Any,
+		then: Yup.date().required('Please select ending date.'),
+		otherwise: Yup.date().notRequired(),
+	}),
 });

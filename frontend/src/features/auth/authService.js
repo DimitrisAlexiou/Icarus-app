@@ -67,6 +67,24 @@ const forgotPassword = async (data) => {
 	return response.data;
 };
 
+const changePassword = async (data) => {
+	const config = {
+		headers: { headers },
+	};
+
+	const response = await axios.post(API_URL_USER, data, config);
+
+	// if (response.data) {
+	// 	localStorage.setItem('user', JSON.stringify(response.data));
+	// 	if (getLastPageFromLocalStorage()) {
+	// 		window.location.href = getLastPageFromLocalStorage();
+	// 		removeLastPageFromLocalStorage();
+	// 	}
+	// }
+
+	return response.data;
+};
+
 const getProfile = async () => {
 	const response = await axiosFetch.get(API_URL_USER);
 
@@ -97,6 +115,7 @@ const authService = {
 	login,
 	logout,
 	forgotPassword,
+	changePassword,
 	getProfile,
 	updateProfile,
 };

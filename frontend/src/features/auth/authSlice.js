@@ -12,14 +12,13 @@ import {
 	removeUserFromLocalStorage,
 } from '../../utils/localStorage';
 import { extractErrorMessage } from '../../utils/errorMessage';
-import { Toast } from '../../constants/sweetAlertNotification';
-import authService from './authService';
 import { resetCalendar } from '../calendar/eventSlice';
 import { resetCourses } from '../courses/courseSlice';
 import { resetNotes } from '../notes/noteSlice';
 import { resetGeneralReview } from '../reviews/generalReviewSlice';
 import { resetInstructorReview } from '../reviews/instructorReviewSlice';
 import { resetTeachingReview } from '../reviews/teachingReviewSlice';
+import authService from './authService';
 
 const initialState = {
 	user: getUserFromLocalStorage(),
@@ -56,6 +55,17 @@ export const forgotPassword = createAsyncThunk(API_URL_FORGOT_PASSWORD, async (u
 		return thunkAPI.rejectWithValue(extractErrorMessage(error));
 	}
 });
+
+export const changePassword = createAsyncThunk(
+	API_URL_USER + '/change-password',
+	async (user, thunkAPI) => {
+		try {
+			return await authService.changePassword(user);
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
+	}
+);
 
 export const getProfile = createAsyncThunk(API_URL_USER, async (_, thunkAPI) => {
 	try {
@@ -146,6 +156,20 @@ export const authSlice = createSlice({
 				// addUserToLocalStorage(state.user);
 			})
 			.addCase(forgotPassword.rejected, (state, action) => {
+				state.isLoading = false;
+				state.isError = true;
+				state.message = action.payload;
+			})
+			.addCase(changePassword.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(changePassword.fulfilled, (state, action) => {
+				state.isLoading = false;
+				state.isSuccess = true;
+				state.user = action.payload;
+				addUserToLocalStorage(state.user);
+			})
+			.addCase(changePassword.rejected, (state, action) => {
 				state.isLoading = false;
 				state.isError = true;
 				state.message = action.payload;

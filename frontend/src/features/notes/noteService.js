@@ -8,7 +8,7 @@ const getUserNotes = async () => {
 };
 
 const getUserNote = async (noteId) => {
-	const response = await axiosFetch.get(API_URL_NOTE + noteId);
+	const response = await axiosFetch.get(API_URL_NOTE + '/' + noteId);
 
 	return response.data;
 };
@@ -20,26 +20,26 @@ const createUserNote = async (data) => {
 };
 
 const updateUserNote = async (noteId, data) => {
-	const response = await axiosFetch.put(API_URL_NOTE + noteId, data);
+	const response = await axiosFetch.put(API_URL_NOTE + '/' + noteId, data);
 
 	return response.data;
 };
 
 const updateImportance = async (noteId) => {
-	const currentNote = await axiosFetch.get(API_URL_NOTE + noteId);
+	const currentNote = await axiosFetch.get(API_URL_NOTE + '/' + noteId);
 
 	const updatedNote = {
 		...currentNote.data,
 		importance: !currentNote.data.importance,
 	};
 
-	const response = await axiosFetch.put(API_URL_NOTE + noteId, updatedNote);
+	const response = await axiosFetch.put(API_URL_NOTE + '/' + noteId, updatedNote);
 
 	return response.data;
 };
 
 const deleteUserNote = async (noteId) => {
-	const response = axiosFetch.delete(API_URL_NOTE + noteId);
+	const response = axiosFetch.delete(API_URL_NOTE + '/' + noteId);
 
 	return response.data;
 };

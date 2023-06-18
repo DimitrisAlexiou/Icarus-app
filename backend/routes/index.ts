@@ -9,6 +9,7 @@ import note from './note';
 import generalReview from './review/generalReview';
 import instructorReview from './review/instructorReview';
 import teachingReview from './review/teachingReview';
+import teaching from './teaching';
 
 const router = express.Router();
 
@@ -22,6 +23,7 @@ export default (): express.Router => {
 	generalReview(router);
 	instructorReview(router);
 	teachingReview(router);
+	teaching(router);
 
 	return router;
 };

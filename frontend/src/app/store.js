@@ -7,6 +7,7 @@ import { degreeRulesSlice } from '../features/admin/degreeRulesSlice';
 import { assessmentSlice } from '../features/admin/assessmentSlice';
 import { cyclesSlice } from '../features/admin/cyclesSlice';
 import { courseSlice } from '../features/courses/courseSlice';
+import { teachingSlice } from '../features/courses/teachingSlice';
 import { noteSlice } from '../features/notes/noteSlice';
 import { eventSlice } from '../features/calendar/eventSlice';
 import { teachingReviewSlice } from '../features/reviews/teachingReviewSlice';
@@ -18,6 +19,7 @@ export const store = configureStore({
 		auth: authSlice.reducer,
 		users: userSlice.reducer,
 		courses: courseSlice.reducer,
+		teachings: teachingSlice.reducer,
 		notes: noteSlice.reducer,
 		events: eventSlice.reducer,
 		cycles: cyclesSlice.reducer,

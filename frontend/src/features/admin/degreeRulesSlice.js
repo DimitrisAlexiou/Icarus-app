@@ -81,7 +81,7 @@ export const degreeRulesSlice = createSlice({
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: action.payload,
+					text: action.payload.message,
 					icon: 'error',
 				});
 			})
@@ -97,7 +97,7 @@ export const degreeRulesSlice = createSlice({
 				if (action.payload !== 'Seems like there are no defined degree rules.')
 					Toast.fire({
 						title: 'Something went wrong!',
-						text: action.payload,
+						text: action.payload.message,
 						icon: 'error',
 					});
 			})
@@ -121,7 +121,7 @@ export const degreeRulesSlice = createSlice({
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: action.payload,
+					text: action.payload.message,
 					icon: 'error',
 				});
 			})
@@ -132,7 +132,7 @@ export const degreeRulesSlice = createSlice({
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
-					text: action.payload,
+					text: action.payload.message,
 					icon: 'success',
 				});
 			})
@@ -140,7 +140,7 @@ export const degreeRulesSlice = createSlice({
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: action.payload,
+					text: action.payload.message,
 					icon: 'error',
 				});
 			});

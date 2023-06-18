@@ -4,7 +4,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { TeachingReviewSchema } from '../../schemas/review/TeachingReview';
 import { createTeachingReview } from '../../features/reviews/teachingReviewSlice';
 import RangeSlider from 'react-bootstrap-range-slider';
-import FormErrorMessage from '../FormErrorMessage';
+import FormErrorMessage from '../form/FormErrorMessage';
 
 export default function TeachingReviewForm() {
 	const dispatch = useDispatch();

@@ -79,7 +79,7 @@ export const cyclesSlice = createSlice({
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: action.payload,
+					text: action.payload.message,
 					icon: 'error',
 				});
 			})
@@ -99,7 +99,7 @@ export const cyclesSlice = createSlice({
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: action.payload,
+					text: action.payload.message,
 					icon: 'error',
 				});
 			})
@@ -115,7 +115,7 @@ export const cyclesSlice = createSlice({
 				if (action.payload !== 'Seems like there are no defined cycles.')
 					Toast.fire({
 						title: 'Something went wrong!',
-						text: action.payload,
+						text: action.payload.message,
 						icon: 'error',
 					});
 			})
@@ -126,7 +126,7 @@ export const cyclesSlice = createSlice({
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
-					text: action.payload,
+					text: action.payload.message,
 					icon: 'success',
 				});
 			})
@@ -134,7 +134,7 @@ export const cyclesSlice = createSlice({
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: action.payload,
+					text: action.payload.message,
 					icon: 'error',
 				});
 			});

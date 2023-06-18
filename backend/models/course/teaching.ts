@@ -1,5 +1,4 @@
-import { Schema, model } from 'mongoose';
-import { Course } from './course';
+import mongoose, { ClientSession, Schema, model } from 'mongoose';
 
 export interface TeachingProps {
 	labWeight: number;
@@ -8,77 +7,82 @@ export interface TeachingProps {
 	labGrade: number;
 	theoryGradeThreshold: number;
 	labGradeThreshold: number;
-	books: string[];
-	course: string;
-	semester: string;
+	books?: string[];
+	course: mongoose.Types.ObjectId;
+	semester: mongoose.Types.ObjectId;
+	instructor?: mongoose.Types.ObjectId[];
 }
 
-const teachingSchema = new Schema({
-	labWeight: {
-		type: Number,
-		required: true,
-		default: 0,
-	},
-	theoryWeight: {
-		type: Number,
-		required: true,
-		default: 100,
-	},
-	theoryGrade: {
-		type: Number,
-		required: true,
-		default: 4,
-	},
-	labGrade: {
-		type: Number,
-		required: true,
-		default: 4,
-	},
-	theoryGradeThreshold: {
-		type: Number,
-		required: true,
-		default: 5,
-	},
-	labGradeThreshold: {
-		type: Number,
-		required: true,
-		default: 0,
-	},
-	books: [
-		{
-			type: String,
+const teachingSchema = new Schema<TeachingProps>(
+	{
+		labWeight: {
+			type: Number,
+			required: true,
+			default: 0,
 		},
-	],
-	course: {
-		type: Schema.Types.ObjectId,
-		required: true,
-		ref: 'Course',
+		theoryWeight: {
+			type: Number,
+			required: true,
+			default: 100,
+		},
+		theoryGrade: {
+			type: Number,
+			required: true,
+			default: 4,
+		},
+		labGrade: {
+			type: Number,
+			required: true,
+			default: 4,
+		},
+		theoryGradeThreshold: {
+			type: Number,
+			required: true,
+			default: 5,
+		},
+		labGradeThreshold: {
+			type: Number,
+			required: true,
+			default: 0,
+		},
+		books: [
+			{
+				type: String,
+			},
+		],
+		course: {
+			type: Schema.Types.ObjectId,
+			ref: 'Course',
+			required: true,
+		},
+		semester: {
+			type: Schema.Types.ObjectId,
+			ref: 'Semester',
+			required: true,
+		},
+		instructor: [
+			{
+				type: Schema.Types.ObjectId,
+				ref: 'Instructor',
+			},
+		],
 	},
-	semester: {
-		type: Schema.Types.ObjectId,
-		required: true,
-		ref: 'Semester',
-	},
-});
-
-teachingSchema.pre('save', async function (next) {
-	const course = await Course.findById(this.course);
-	if (course.hasLab === true) {
-		this.labWeight = 40;
-		this.theoryWeight = 60;
-		this.theoryGradeThreshold = 5;
-		this.labGradeThreshold = 5;
+	{
+		timestamps: true,
 	}
-	next();
-});
+);
 
-export const Teaching = model('Teaching', teachingSchema);
+export const Teaching = model<TeachingProps>('Teaching', teachingSchema);
 
-export const getTeachings = () => Teaching.find();
-export const getTeachingById = (id: string) => Teaching.findById(id);
-export const createTeaching = (values: Record<string, any>) =>
-	new Teaching(values).save().then((teaching) => teaching.toObject());
-export const updateTeachingById = (id: string, values: Record<string, any>) =>
-	Teaching.findByIdAndUpdate(id, values);
+export const getTeachings = () => Teaching.find().populate('course').populate('semester');
+export const getTeachingById = (id: string) =>
+	Teaching.findById(id).populate('course').populate('semester');
+export const createTeaching = (teaching: Record<string, any>, options?: Record<string, any>) =>
+	new Teaching(teaching).save().then((teaching) => teaching.toObject());
+export const updateTeachingById = (id: string, teaching: TeachingProps) =>
+	Teaching.findByIdAndUpdate(id, teaching, { new: true });
 export const deleteTeachingById = (id: string) => Teaching.findByIdAndDelete(id);
+export const deleteTeachingByCourseId = (courseId: string, session: ClientSession) => {
+	return Teaching.findOneAndDelete({ course: courseId }).session(session);
+};
 export const deleteTeachings = () => Teaching.deleteMany();

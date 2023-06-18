@@ -2,9 +2,9 @@ import { useDispatch } from 'react-redux';
 import { FormGroup, Label, Row, Col, Button, Spinner } from 'reactstrap';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { DegreeRulesSchema } from '../../schemas/admin/DegreeRules';
-import { FormCheckbox } from '../FormCheckbox';
+import { FormCheckbox } from '../form/FormCheckbox';
 import { defineDegreeRules, updateDegreeRules } from '../../features/admin/degreeRulesSlice';
-import FormErrorMessage from '../FormErrorMessage';
+import FormErrorMessage from '../form/FormErrorMessage';
 
 export default function DegreeRulesForm({ degreeRules, isEditingDegreeRules, editDegreeRulesId }) {
 	const dispatch = useDispatch();

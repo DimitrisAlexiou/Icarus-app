@@ -18,7 +18,7 @@ interface AuthenticatedRequest extends Request {
 }
 
 export const getAllUserInstructorReviews = tryCatch(
-	async (req: AuthenticatedRequest, res: Response) => {
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const userId = req.user.id;
 		const userInstructorReviews = await getUserInstructorReviews(userId);
 
@@ -33,7 +33,7 @@ export const getAllUserInstructorReviews = tryCatch(
 );
 
 export const viewUserInstructorReview = tryCatch(
-	async (req: AuthenticatedRequest, res: Response) => {
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const { id } = req.params;
 		const instructorReview = await getInstructorReviewById(id);
 
@@ -49,7 +49,7 @@ export const viewUserInstructorReview = tryCatch(
 
 //TODO
 export const createUserInstructorReview = tryCatch(
-	async (req: AuthenticatedRequest, res: Response) => {
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const {
 			good_organization,
 			clear_comprehensive_answers,
@@ -109,7 +109,7 @@ export const createUserInstructorReview = tryCatch(
 );
 
 export const updateUserInstructorReview = tryCatch(
-	async (req: AuthenticatedRequest, res: Response) => {
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const {
 			good_organization,
 			clear_comprehensive_answers,
@@ -161,7 +161,7 @@ export const updateUserInstructorReview = tryCatch(
 );
 
 export const deleteUserInstructorReview = tryCatch(
-	async (req: AuthenticatedRequest, res: Response) => {
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const { id } = req.params;
 		const instructorReviewToDelete = await deleteInstructorReviewById(id);
 

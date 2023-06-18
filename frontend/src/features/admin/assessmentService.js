@@ -20,7 +20,7 @@ const updateAssessment = async (assessmentId, data) => {
 };
 
 const deleteAssessment = async (assessmentId) => {
-	const response = axiosFetch.delete(API_URL_ADMIN + '/assessment/' + assessmentId);
+	const response = await axiosFetch.delete(API_URL_ADMIN + '/assessment/' + assessmentId);
 
 	return response.data;
 };

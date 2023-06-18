@@ -7,7 +7,6 @@ import {
 	deleteUserNotes,
 	setEditNote,
 } from '../../features/notes/noteSlice';
-import { Toast } from '../../constants/sweetAlertNotification';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faCircleExclamation, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { faNoteSticky } from '@fortawesome/free-regular-svg-icons';
@@ -16,15 +15,25 @@ import NoteItem from '../../components/note/NoteItem';
 import Spinner from '../../components/boilerplate/Spinner';
 
 export default function Notes() {
-	const { notes, isLoading } = useSelector((state) => state.notes);
+	const { notes, isLoading, isEditingNote, editNoteId } = useSelector((state) => state.notes);
 	const { user } = useSelector((state) => state.auth);
-	const [mode, setMode] = useState(null);
+
 	const [selectedNote, setSelectedNote] = useState(null);
 	const [selectedCategory, setSelectedCategory] = useState(null);
 	const [showImportant, setShowImportant] = useState(false);
+
 	const myRef = useRef(null);
 	const [modal, setModal] = useState(false);
-	const toggle = () => setModal(!modal);
+
+	const toggle = () => {
+		setModal(!modal);
+		dispatch(
+			setEditNote({
+				isEditingNote: false,
+				editNoteId: '',
+			})
+		);
+	};
 
 	const dispatch = useDispatch();
 
@@ -34,30 +43,16 @@ export default function Notes() {
 
 	const ModalComponent = forwardRef(({ note, ...props }, ref) => {
 		return (
-			<Modal
-				ref={ref}
-				isOpen={modal}
-				toggle={() => {
-					setMode(null);
-					toggle();
-				}}
-				className="modal-lg"
-			>
-				<ModalHeader
-					toggle={() => {
-						setMode(null);
-						toggle();
-					}}
-				>
-					{mode === 'edit' ? 'Edit Note' : 'Fill the form below to post a new note'}
+			<Modal ref={ref} isOpen={modal} toggle={toggle} className="modal-lg">
+				<ModalHeader toggle={toggle}>
+					{isEditingNote ? 'Edit Note' : 'Fill the form below to post a new note'}
 				</ModalHeader>
 				<ModalBody>
 					<NoteForm
 						note={note}
 						user={user.user}
-						mode={mode}
-						modal={modal}
-						setModal={setModal}
+						isEditingNote={isEditingNote}
+						editNoteId={editNoteId}
 						setSelectedCategory={setSelectedCategory}
 					/>
 				</ModalBody>
@@ -92,9 +87,7 @@ export default function Notes() {
 		<>
 			<Row className="mb-5 animated--grow-in">
 				<Col sm="6" xs="6" md="6">
-					<h1 className="h3 mb-3 text-gray-800 font-weight-bold animated--grow-in">
-						Notes
-					</h1>
+					<h3 className="mb-3 text-gray-800 font-weight-bold animated--grow-in">Notes</h3>
 				</Col>
 				<Col className="px-3 d-flex justify-content-end">
 					<Button
@@ -181,7 +174,12 @@ export default function Notes() {
 				</>
 			) : null}
 
-			<ModalComponent ref={myRef} mode={mode} toggle={toggle} note={selectedNote} />
+			<ModalComponent
+				ref={myRef}
+				isEditingNote={isEditingNote}
+				toggle={toggle}
+				note={selectedNote}
+			/>
 
 			{filteredNotesByCategory.length ? (
 				<Row className="animated--grow-in">
@@ -194,16 +192,9 @@ export default function Notes() {
 							lg="3"
 							xl="3"
 							onClick={() => {
-								dispatch(
-									setEditNote({
-										editNoteId: note._id,
-										note,
-									})
-								);
+								dispatch(setEditNote({ editNoteId: note._id }));
 								setSelectedNote(note);
-								setMode('edit');
-								toggle();
-								console.log(note);
+								setModal(true);
 							}}
 						>
 							<NoteItem

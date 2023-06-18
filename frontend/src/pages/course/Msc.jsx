@@ -4,6 +4,7 @@ import { Col, Row } from 'reactstrap';
 import { getCourses } from '../../features/courses/courseSlice';
 import { faBook } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { CourseType } from '../../constants/enums';
 import CourseItem from '../../components/course/CourseItem';
 import Notification from '../../components/boilerplate/Notification';
 import BreadcrumbNav from '../../components/boilerplate/Breadcrumb';
@@ -49,7 +50,7 @@ export default function MscCourses() {
 							xl="5"
 							className="mb-3 mx-auto"
 						>
-							{course.type === 'Master' && course.isObligatory ? (
+							{course.type === CourseType.Master && course.isObligatory ? (
 								<CourseItem key={course._id} course={course} />
 							) : (
 								<CourseItem key={course._id} course={course} cycles={cycles} />

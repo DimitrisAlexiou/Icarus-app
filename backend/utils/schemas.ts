@@ -1,97 +1,95 @@
 import Joi from 'joi';
+import {
+	courseIdRegex,
+	courseTitleRegex,
+	nameRegex,
+	passwordRegex,
+	studentIdRegex,
+	surnameRegex,
+	usernameRegex,
+} from './constants';
+import { UserType } from '../models/users/user';
+import { StudentType } from '../models/users/student';
+import { CourseType, PrerequisiteType } from '../models/course/course';
+import { SemesterType } from '../models/admin/semester';
+import { Degree, FacultyType } from '../models/users/instructor';
 
 export const userSchema = Joi.object({
-	name: Joi.string()
-		.max(40)
-		.pattern(new RegExp(/^[A-Za-z]+$/))
-		.required(),
-	surname: Joi.string()
-		.max(40)
-		.pattern(new RegExp(/^[A-Za-z]+$/))
-		.required(),
-	username: Joi.string()
-		.pattern(new RegExp(/^icsd[0-9]{5}$/))
-		.required(),
+	name: Joi.string().max(40).pattern(new RegExp(nameRegex)).required(),
+	surname: Joi.string().max(40).pattern(new RegExp(surnameRegex)).required(),
+	username: Joi.string().pattern(new RegExp(usernameRegex)).required(),
 	email: Joi.string()
 		.email({ minDomainSegments: 2, tlds: { allow: ['com', 'net', 'gr'] } })
+		.lowercase()
 		.required(),
-	password: Joi.string()
-		.min(8)
-		.pattern(new RegExp(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z])(?=.*[!@#$%^&*]).{8,}$/))
-		.required(),
-	type: Joi.string().valid('Student', 'Instructor').required(),
+	password: Joi.string().min(8).pattern(new RegExp(passwordRegex)).required(),
+	type: Joi.string().valid(UserType.student, UserType.instructor).required(),
 	studentId: Joi.string().when('type', {
-		is: 'Student',
-		then: Joi.string()
-			.pattern(new RegExp(/^321\/\d{7}$/))
-			.required(),
+		is: UserType.student,
+		then: Joi.string().pattern(new RegExp(studentIdRegex)).required(),
 		otherwise: Joi.string(),
 	}),
 	entranceYear: Joi.number().when('type', {
-		is: 'Student',
+		is: UserType.student,
 		then: Joi.number().min(1980).max(new Date().getFullYear()).required(),
 		otherwise: Joi.number(),
 	}),
 	studentType: Joi.string().when('type', {
-		is: 'Student',
-		then: Joi.string().valid('Undergraduate', 'Master', 'PhD').required(),
+		is: UserType.student,
+		then: Joi.string()
+			.valid(StudentType.Undergraduate, StudentType.Master, StudentType.PhD)
+			.required(),
 		otherwise: Joi.string(),
 	}),
 	facultyType: Joi.string().when('type', {
-		is: 'Instructor',
-		then: Joi.string().valid('DEP', 'EDIP', 'ETEP').required(),
+		is: UserType.instructor,
+		then: Joi.string().valid(FacultyType.DEP, FacultyType.EDIP, FacultyType.ETEP).required(),
 		otherwise: Joi.string(),
 	}),
 	degree: Joi.string().when('type', {
-		is: 'Instructor',
-		then: Joi.string().valid('Assistant', 'Associate', 'Professor'),
+		is: UserType.instructor,
+		then: Joi.string().valid(Degree.Assistant, Degree.Associate, Degree.Professor),
 		otherwise: Joi.string(),
 	}),
 	instructorEntranceYear: Joi.number().when('type', {
-		is: 'Instructor',
+		is: UserType.instructor,
 		then: Joi.number().min(1980).max(new Date().getFullYear()),
 		otherwise: Joi.number(),
 	}),
 });
 
 export const profileSchema = Joi.object({
-	name: Joi.string()
-		.max(40)
-		.pattern(new RegExp(/^[A-Za-z]+$/)),
-	surname: Joi.string()
-		.max(40)
-		.pattern(new RegExp(/^[A-Za-z]+$/)),
-	username: Joi.string().pattern(new RegExp(/^icsd[0-9]{5}$/)),
-	email: Joi.string().email({ minDomainSegments: 2, tlds: { allow: ['com', 'net', 'gr'] } }),
+	name: Joi.string().max(40).pattern(new RegExp(nameRegex)),
+	surname: Joi.string().max(40).pattern(new RegExp(surnameRegex)),
+	username: Joi.string().pattern(new RegExp(usernameRegex)),
+	email: Joi.string()
+		.lowercase()
+		.email({ minDomainSegments: 2, tlds: { allow: ['com', 'net', 'gr'] } }),
 });
 
 export const courseSchema = Joi.object({
-	courseId: Joi.string()
-		.max(9)
-		.pattern(/^([3][2][1])\/[0-9][0-9][0-9][0-9][0-9]*$/)
+	courseId: Joi.string().max(9).pattern(courseIdRegex).required(),
+	title: Joi.string().max(40).pattern(courseTitleRegex).required(),
+	type: Joi.string()
+		.valid(CourseType.Undergraduate, CourseType.Master, CourseType.Mixed)
 		.required(),
-	title: Joi.string()
-		.max(40)
-		.pattern(/^[A-Za-z ]+$/)
-		.required(),
-	type: Joi.string().valid('Undergraduate', 'Master', 'Mixed').required(),
 	isObligatory: Joi.boolean().default(true).required(),
 	hasPrerequisites: Joi.boolean().default(false).required(),
 	hasLab: Joi.boolean().default(false).required(),
-	description: Joi.string(),
+	description: Joi.string().allow(''),
 	semester: Joi.string().required(),
 	ects: Joi.number().min(1).required(),
 	year: Joi.number()
 		.valid(1, 2, 3, 4, 5)
 		.when('type', {
-			is: 'Master',
+			is: CourseType.Master,
 			then: Joi.valid(1, 2).required(),
 			otherwise: Joi.valid(1, 2, 3, 4, 5).required(),
 		}),
 	cycle: Joi.when('isObligatory', {
 		is: false,
 		then: Joi.string().required(),
-		otherwise: Joi.string().allow(''),
+		otherwise: Joi.string().allow(null),
 	}),
 	prerequisites: Joi.array().items(
 		Joi.object({
@@ -102,11 +100,15 @@ export const courseSchema = Joi.object({
 			}),
 			prerequisiteType: Joi.string().when('hasPrerequisites', {
 				is: true,
-				then: Joi.string().valid('Hard', 'Soft').required(),
+				then: Joi.string().valid(PrerequisiteType.Hard, PrerequisiteType.Soft).required(),
 				otherwise: Joi.string().allow(''),
 			}),
 		})
 	),
+	isActive: Joi.boolean().default(false).required(),
+});
+
+export const courseActivationSchema = Joi.object({
 	isActive: Joi.boolean().default(false).required(),
 });
 
@@ -153,10 +155,22 @@ export const generalReviewSchema = Joi.object({
 });
 
 export const semesterSchema = Joi.object({
-	type: Joi.string().valid('Winter', 'Spring', 'Any').required(),
-	startDate: Joi.date().required(),
-	endDate: Joi.date().greater(Joi.ref('startDate')).required(),
-	grading: Joi.number().min(1).required(),
+	type: Joi.string().valid(SemesterType.Winter, SemesterType.Spring, SemesterType.Any).required(),
+	startDate: Joi.date().when('type', {
+		is: SemesterType.Any,
+		then: Joi.optional().allow(null),
+		otherwise: Joi.date().required(),
+	}),
+	endDate: Joi.date().when('type', {
+		is: SemesterType.Any,
+		then: Joi.optional().allow(null),
+		otherwise: Joi.date().greater(Joi.ref('startDate')).required(),
+	}),
+	grading: Joi.number().when('type', {
+		is: SemesterType.Any,
+		then: Joi.optional(),
+		otherwise: Joi.number().min(1).required(),
+	}),
 });
 
 export const assessmentSchema = Joi.object({

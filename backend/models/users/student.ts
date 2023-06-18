@@ -1,13 +1,20 @@
-import { Schema, model } from 'mongoose';
+import mongoose, { Schema, model, ClientSession } from 'mongoose';
 
-export interface StudentProps {
-	studentId: string;
-	studentType: string;
-	entranceYear: number;
-	user: string;
+export enum StudentType {
+	Undergraduate = 'Undergraduate',
+	Master = 'Master',
+	PhD = 'PhD',
 }
 
-const studentSchema = new Schema(
+export interface StudentProps extends Document {
+	studentId: string;
+	studentType: StudentType;
+	entranceYear: number;
+	user: mongoose.Types.ObjectId;
+	enrolledCourses?: Array<mongoose.Types.ObjectId>;
+}
+
+const studentSchema = new Schema<StudentProps>(
 	{
 		studentId: {
 			type: String,
@@ -15,7 +22,7 @@ const studentSchema = new Schema(
 		},
 		studentType: {
 			type: String,
-			enum: ['Undergraduate', 'Master', 'PhD'],
+			enum: Object.values(StudentType),
 			required: true,
 		},
 		entranceYear: {
@@ -29,12 +36,28 @@ const studentSchema = new Schema(
 			required: true,
 			ref: 'User',
 		},
+		enrolledCourses: [
+			{
+				type: Schema.Types.ObjectId,
+				ref: 'Course',
+			},
+		],
 	},
 	{
 		timestamps: true,
 	}
 );
 
-export const Student = model('Student', studentSchema);
+export const Student = model<StudentProps>('Student', studentSchema);
 
-export const getStudents = () => Student.find();
+export const getStudents = () =>
+	Student.find().populate({
+		path: 'user',
+		select: 'name surname email',
+	});
+export const getStudentById = (id: mongoose.Types.ObjectId) =>
+	Student.findById(id).populate('user');
+export const deleteStudentByUserId = (id: string, session: ClientSession) => {
+	return Student.findOneAndDelete({ user: id }).session(session);
+};
+export const deleteStudents = () => Student.deleteMany();

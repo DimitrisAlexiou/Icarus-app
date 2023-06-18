@@ -6,6 +6,7 @@ import { Toast } from '../../constants/sweetAlertNotification';
 import { Col, Row } from 'reactstrap';
 import { faBook } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { CourseType } from '../../constants/enums';
 import CourseItem from '../../components/course/CourseItem';
 import Spinner from '../../components/boilerplate/Spinner';
 import BreadcrumbNav from '../../components/boilerplate/Breadcrumb';
@@ -98,7 +99,7 @@ export default function UndergraduateCourses() {
 								lg="5"
 								className="mb-3 mx-auto"
 							>
-								{course.type === 'Undergraduate' && course.isObligatory ? (
+								{course.type === CourseType.Undergraduate && course.isObligatory ? (
 									<CourseItem key={course._id} course={course} />
 								) : (
 									<CourseItem key={course._id} course={course} cycles={cycles} />

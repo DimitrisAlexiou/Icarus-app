@@ -6,8 +6,9 @@ const API_URL_FORGOT_PASSWORD = `${BASE_URL}/auth/forgot-password`;
 const API_URL_ADMIN = `${BASE_URL}/admin/configuration`;
 const API_URL_USERS = `${BASE_URL}/admin/users`;
 const API_URL_COURSE = `${BASE_URL}/course`;
+const API_URL_TEACHING = `${BASE_URL}/course/teaching`;
 const API_URL_REVIEW = `${BASE_URL}/review`;
-const API_URL_NOTE = `${BASE_URL}/note/`;
+const API_URL_NOTE = `${BASE_URL}/note`;
 const API_URL_CALENDAR = `${BASE_URL}/calendar`;
 const API_URL_USER = `${BASE_URL}/user/profile`;
 const headers = {
@@ -23,6 +24,7 @@ export {
 	API_URL_ADMIN,
 	API_URL_USERS,
 	API_URL_COURSE,
+	API_URL_TEACHING,
 	API_URL_REVIEW,
 	API_URL_NOTE,
 	API_URL_CALENDAR,

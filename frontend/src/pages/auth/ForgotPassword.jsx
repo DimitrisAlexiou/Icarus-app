@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { EmailSchema } from '../../schemas/auth/ForgotPassword';
 import { Toast } from '../../constants/sweetAlertNotification';
-import FormErrorMessage from '../../components/FormErrorMessage';
+import FormErrorMessage from '../../components/form/FormErrorMessage';
 import Spinner from '../../components/boilerplate/Spinner';
 
 export default function ForgotPassword() {

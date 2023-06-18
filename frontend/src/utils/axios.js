@@ -16,6 +16,8 @@ axiosFetch.interceptors.request.use((config) => {
 	if (user) {
 		config.headers['Content-Type'] = 'application/json';
 		config.headers['Authorization'] = `Bearer ${user.token}`;
+		// Retrieve the JWT token from the cookie (assuming it's named 'token')
+		// const token = document.cookie.replace(/(?:(?:^|.*;\s*)token\s*=\s*([^;]*).*$)|^.*$/, '$1');
 	}
 	return config;
 });

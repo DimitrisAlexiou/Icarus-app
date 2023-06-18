@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { FormGroup, Label, Row, Col, Button, Spinner } from 'reactstrap';
 import { Formik, Form, Field, ErrorMessage, FieldArray } from 'formik';
 import { TeachingSchema } from '../../schemas/course/Teaching';
-import FormErrorMessage from '../FormErrorMessage';
+import FormErrorMessage from '../form/FormErrorMessage';
 
 export default function TeachingForm({ courseId }) {
 	const dispatch = useDispatch();

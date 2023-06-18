@@ -8,7 +8,7 @@ import { faAddressCard } from '@fortawesome/free-regular-svg-icons';
 import ProfileInfoCard from '../../components/user/ProfileInfoCard';
 import ProfileUpdateCard from '../../components/user/ProfileUpdateCard';
 import ProfileCard3 from '../../components/user/ProfileCard3';
-import ResetPassword from '../../components/auth/ResetPassword';
+import ChangePassword from '../../components/user/ChangePassword';
 import Spinner from '../../components/boilerplate/Spinner';
 import moment from 'moment';
 import undraw_account from '../../assets/images/undraw_account.svg';
@@ -22,9 +22,11 @@ export default function Profile() {
 	const renderComponent = () => {
 		switch (selectedNavItem) {
 			case 'overview':
+				// return null;
 				return <ProfileUpdateCard />;
 			case 'security':
-				return <ResetPassword />;
+				// return null;
+				return <ChangePassword />;
 			default:
 				return null;
 		}
@@ -32,7 +34,25 @@ export default function Profile() {
 
 	return (
 		<>
-			<h1 className="h3 mb-5 text-gray-800 font-weight-bold animated--grow-in">Profile</h1>
+			<Row className="mb-5 animated--grow-in">
+				<Col sm="6" xs="9" md="6">
+					<h3 className="mb-5 text-gray-800 font-weight-bold animated--grow-in">
+						Profile
+					</h3>
+				</Col>
+				<Col className="d-flex justify-content-end">
+					<p className="text-xs text-gray-500">
+						{!user.user.isActive && !user.user.lastLogin ? (
+							<span>
+								account is not yet active, it will be available soon. (Not yet
+								logged in after registration)
+							</span>
+						) : (
+							<span>account is active</span>
+						)}
+					</p>
+				</Col>
+			</Row>
 
 			<Row className="animated--grow-in">
 				<Col>
@@ -82,6 +102,7 @@ export default function Profile() {
 					</span>
 				</Col>
 			</Row>
+			{/* <ChangePassword /> */}
 		</>
 	);
 }

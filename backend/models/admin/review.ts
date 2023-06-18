@@ -1,13 +1,13 @@
-import { Schema, model } from 'mongoose';
+import mongoose, { Schema, model } from 'mongoose';
 
 export interface ReviewProps {
 	startDate: Date;
 	endDate: Date;
 	startAfter: number;
-	semester: string;
+	semester: mongoose.Types.ObjectId;
 }
 
-const reviewSchema = new Schema(
+const reviewSchema = new Schema<ReviewProps>(
 	{
 		startDate: {
 			type: Date,
@@ -34,13 +34,14 @@ const reviewSchema = new Schema(
 	}
 );
 
-export const Review = model('Review', reviewSchema);
+export const Review = model<ReviewProps>('Review', reviewSchema);
 
-export const getReviewBySemester = (semesterId: string) => Review.findOne({ semester: semesterId });
+export const getReviewBySemester = (semesterId: string) =>
+	Review.findOne({ semester: semesterId }).populate('semester');
 export const getReview = () => Review.find();
 export const createReview = (values: Record<string, any>) =>
 	new Review(values).save().then((review) => review.toObject());
-export const updateReviewById = (id: string, values: Record<string, any>) =>
-	Review.findByIdAndUpdate(id, values);
+export const updateReviewById = (id: string, review: Record<string, any>) =>
+	Review.findByIdAndUpdate(id, review, { new: true });
 export const deleteReviewById = (id: string) => Review.findByIdAndDelete(id);
 export const deleteReview = () => Review.deleteMany();

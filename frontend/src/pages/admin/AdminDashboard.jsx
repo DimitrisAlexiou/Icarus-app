@@ -10,12 +10,15 @@ import {
 	faLayerGroup,
 	faClockRotateLeft,
 	faSpinner,
+	faChalkboard,
+	faListCheck,
 } from '@fortawesome/free-solid-svg-icons';
 import { faNoteSticky, faComment } from '@fortawesome/free-regular-svg-icons';
 import CoursesDataTable from '../../components/admin/CoursesDataTable';
 import SemestersDataTable from '../../components/admin/SemestersDataTable';
 import Spinner from '../../components/boilerplate/Spinner';
 import { getCourses } from '../../features/courses/courseSlice';
+import { getTeachings } from '../../features/courses/teachingSlice';
 import { getSemesters } from '../../features/admin/semesterSlice';
 import { getCycles } from '../../features/admin/cyclesSlice';
 import { getInstructors, getStudents, getUsers } from '../../features/admin/userSlice';
@@ -23,15 +26,26 @@ import { getUserNotes } from '../../features/notes/noteSlice';
 
 export default function AdminDashboard() {
 	const { courses, isLoading } = useSelector((state) => state.courses);
+	const { teachings, isLoading: teachingsIsLoading } = useSelector((state) => state.teachings);
 	const { users, students, instructors } = useSelector((state) => state.users);
 	const { cycles, isLoading: cyclesIsLoading } = useSelector((state) => state.cycles);
 	const { semesters, isLoading: semesterIsLoading } = useSelector((state) => state.semesters);
 	const { notes, isLoading: notesIsLoading } = useSelector((state) => state.notes);
+	const { teachingReviews, isLoading: teachingReviewsIsLoading } = useSelector(
+		(state) => state.teachingReview
+	);
+	const { instructorReviews, isLoading: instructorReviewsIsLoading } = useSelector(
+		(state) => state.instructorReview
+	);
+	const { generalReviews, isLoading: generalReviewsIsLoading } = useSelector(
+		(state) => state.generalReview
+	);
 
 	const dispatch = useDispatch();
 
 	useEffect(() => {
 		dispatch(getCourses());
+		// dispatch(getTeachings());
 		dispatch(getSemesters());
 		dispatch(getCycles());
 		dispatch(getUsers());
@@ -40,7 +54,17 @@ export default function AdminDashboard() {
 		dispatch(getUserNotes());
 	}, [dispatch]);
 
-	if (isLoading || cyclesIsLoading || semesterIsLoading || notesIsLoading) return <Spinner />;
+	if (
+		isLoading ||
+		teachingsIsLoading ||
+		cyclesIsLoading ||
+		semesterIsLoading ||
+		notesIsLoading ||
+		teachingReviewsIsLoading ||
+		instructorReviewsIsLoading ||
+		generalReviewsIsLoading
+	)
+		return <Spinner />;
 
 	return (
 		<>
@@ -60,6 +84,50 @@ export default function AdminDashboard() {
 								<div className="col-auto">
 									<i className="fa-2x text-gray-300">
 										<FontAwesomeIcon icon={faBook} />
+									</i>
+								</div>
+							</Row>
+						</div>
+					</div>
+				</Col>
+
+				<Col xl="3" md="6" className="mb-4">
+					<div className="card border-left-success shadow h-100 py-2">
+						<div className="card-body">
+							<Row className="no-gutters align-items-center">
+								<Col className="mr-2">
+									<div className="text-xs font-weight-bold text-success text-uppercase mb-1">
+										Active Teachings
+									</div>
+									<div className="h5 mb-0 font-weight-bold text-gray-800">
+										{teachings && teachings.length ? teachings.length : 0}
+									</div>
+								</Col>
+								<div className="col-auto">
+									<i className="fa-2x text-gray-300">
+										<FontAwesomeIcon icon={faChalkboard} />
+									</i>
+								</div>
+							</Row>
+						</div>
+					</div>
+				</Col>
+
+				<Col xl="3" md="6" className="mb-4">
+					<div className="card border-left-success shadow h-100 py-2">
+						<div className="card-body">
+							<Row className="no-gutters align-items-center">
+								<Col className="mr-2">
+									<div className="text-xs font-weight-bold text-success text-uppercase mb-1">
+										Student Course Statements
+									</div>
+									<div className="h5 mb-0 font-weight-bold text-gray-800">
+										{/* {teachings && teachings.length ? teachings.length : 0} */}
+									</div>
+								</Col>
+								<div className="col-auto">
+									<i className="fa-2x text-gray-300">
+										<FontAwesomeIcon icon={faListCheck} />
 									</i>
 								</div>
 							</Row>
@@ -98,9 +166,9 @@ export default function AdminDashboard() {
 										Cycles
 									</div>
 									<div className="h5 mb-0 font-weight-bold text-gray-800">
-										{/* {cycles.names && cycles.names.length
+										{cycles && cycles.names.length > 0
 											? cycles.names.length
-											: 0} */}
+											: 0}
 									</div>
 								</Col>
 								<div className="col-auto">
@@ -220,7 +288,9 @@ export default function AdminDashboard() {
 										Teaching Reviews
 									</div>
 									<div className="h5 mb-0 font-weight-bold text-gray-800">
-										{/* {notes && notes.length ? notes.length : 0} */}
+										{teachingReviews && teachingReviews.length
+											? teachingReviews.length
+											: 0}
 									</div>
 								</Col>
 								<div className="col-auto">
@@ -242,7 +312,9 @@ export default function AdminDashboard() {
 										Instructor Reviews
 									</div>
 									<div className="h5 mb-0 font-weight-bold text-gray-800">
-										{/* {instructors && instructors.length ? instructors.length : 0} */}
+										{instructorReviews && instructorReviews.length
+											? instructorReviews.length
+											: 0}
 									</div>
 								</Col>
 								<div className="col-auto">
@@ -264,7 +336,9 @@ export default function AdminDashboard() {
 										General Reviews
 									</div>
 									<div className="h5 mb-0 font-weight-bold text-gray-800">
-										{/* {instructors && instructors.length ? instructors.length : 0} */}
+										{generalReviews && generalReviews.length
+											? generalReviews.length
+											: 0}
 									</div>
 								</Col>
 								<div className="col-auto">
@@ -284,13 +358,7 @@ export default function AdminDashboard() {
 			{courses.length ? (
 				<Row className="justify-content-center animated--grow-in mb-3">
 					<Col xs="12" sm="12" md="12" lg="12" xl="12">
-						<div className="card card-body">
-							<CoursesDataTable
-								courses={courses}
-								cycles={cycles}
-								semesters={semesters}
-							/>
-						</div>
+						<CoursesDataTable courses={courses} cycles={cycles} semesters={semesters} />
 					</Col>
 				</Row>
 			) : (
@@ -323,9 +391,7 @@ export default function AdminDashboard() {
 			{semesters.length ? (
 				<Row className="justify-content-center animated--grow-in mb-3">
 					<Col xs="12" sm="12" md="12" lg="12" xl="12">
-						<div className="card card-body">
-							<SemestersDataTable semesters={semesters} />
-						</div>
+						<SemestersDataTable semesters={semesters} />
 					</Col>
 				</Row>
 			) : (

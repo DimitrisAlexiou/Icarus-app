@@ -19,20 +19,20 @@ const getInstructors = async () => {
 	return response.data;
 };
 
-const addUser = async (data) => {
-	const response = await axiosFetch.post(API_URL_USERS + '/add', data);
-
-	return response.data;
-};
-
 const updateUser = async (userId, data) => {
-	const response = await axiosFetch.put(API_URL_USERS + '/' + userId + '/edit', data);
+	const response = await axiosFetch.put(API_URL_USERS + '/' + userId, data);
 
 	return response.data;
 };
 
-const activateUser = async (userId, data) => {
-	const response = await axiosFetch.put(API_URL_USERS + '/' + userId + '/activate', data);
+const activateUser = async (userId) => {
+	const response = await axiosFetch.put(API_URL_USERS + '/' + userId + '/activate');
+
+	return response.data;
+};
+
+const deActivateUser = async (userId) => {
+	const response = await axiosFetch.put(API_URL_USERS + '/' + userId + '/deactivate');
 
 	return response.data;
 };
@@ -53,9 +53,9 @@ const userService = {
 	getUsers,
 	getStudents,
 	getInstructors,
-	addUser,
 	updateUser,
 	activateUser,
+	deActivateUser,
 	deleteUser,
 	deleteUsers,
 };

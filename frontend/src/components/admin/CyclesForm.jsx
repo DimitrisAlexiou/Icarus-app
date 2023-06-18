@@ -3,7 +3,7 @@ import { FormGroup, Label, Row, Col, Button, Spinner } from 'reactstrap';
 import { Formik, Form, Field, FieldArray, ErrorMessage } from 'formik';
 import { CyclesSchema } from '../../schemas/admin/Cycles';
 import { defineCycles, updateCycles } from '../../features/admin/cyclesSlice';
-import FormErrorMessage from '../FormErrorMessage';
+import FormErrorMessage from '../form/FormErrorMessage';
 
 export default function CyclesForm({ cycles, isEditingCycles, editCyclesId }) {
 	const dispatch = useDispatch();

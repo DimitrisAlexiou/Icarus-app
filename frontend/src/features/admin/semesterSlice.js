@@ -91,7 +91,7 @@ export const semesterSlice = createSlice({
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: action.payload,
+					text: action.payload.message,
 					icon: 'error',
 				});
 			})
@@ -107,7 +107,7 @@ export const semesterSlice = createSlice({
 				if (action.payload !== 'Seems like there are no defined semesters.')
 					Toast.fire({
 						title: 'Something went wrong!',
-						text: action.payload,
+						text: action.payload.message,
 						icon: 'error',
 					});
 			})
@@ -123,7 +123,7 @@ export const semesterSlice = createSlice({
 				if (action.payload !== 'Seems like there is no defined semester for this period.')
 					Toast.fire({
 						title: 'Something went wrong!',
-						text: action.payload,
+						text: action.payload.message,
 						icon: 'error',
 					});
 			})
@@ -145,7 +145,7 @@ export const semesterSlice = createSlice({
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: action.payload,
+					text: action.payload.message,
 					icon: 'error',
 				});
 			})
@@ -156,7 +156,7 @@ export const semesterSlice = createSlice({
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
-					text: action.payload,
+					text: action.payload.message,
 					icon: 'success',
 				});
 				state.semester = null;
@@ -165,7 +165,7 @@ export const semesterSlice = createSlice({
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: action.payload,
+					text: action.payload.message,
 					icon: 'error',
 				});
 			});

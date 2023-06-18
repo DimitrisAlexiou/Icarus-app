@@ -1,21 +1,20 @@
 import * as Yup from 'yup';
+import { CourseType, PrerequisiteType } from '../../constants/enums';
+import { courseIdRegex, courseTitleRegex } from '../../constants/regex';
 
 export const CourseSchema = Yup.object().shape({
 	courseId: Yup.string()
 		.max(9, 'Course ID must be 8 digits or less.')
-		.matches(
-			/^([3][2][1])\/[0-9][0-9][0-9][0-9][0-9]*$/,
-			'Course ID must follow the pattern: 321/xxxx OR 321/xxxxx.'
-		)
+		.matches(courseIdRegex, 'Course ID must follow the pattern: 321/xxxx OR 321/xxxxx.')
 		.required('Course ID is required.'),
 	title: Yup.string()
 		.max(40, 'Course title must be 40 characters or less.')
-		.matches(/^[A-Z a-z]+$/, 'Course title must be alphabetic.')
+		.matches(courseTitleRegex, 'Course title must be alphabetic.')
 		.required('Course title is required.'),
 	type: Yup.string()
 		.oneOf(
-			['Undergraduate', 'Master', 'Mixed'],
-			'Course type should be one of the following: [Undergraduate, Master, Mixed]'
+			[CourseType.Undergraduate, CourseType.Master, CourseType.Mixed],
+			`Course type should be one of the following: [${CourseType.Undergraduate}, ${CourseType.Master}, ${CourseType.Mixed}]`
 		)
 		.required('Please select the course type.'),
 	isObligatory: Yup.boolean().required(),
@@ -47,7 +46,10 @@ export const CourseSchema = Yup.object().shape({
 	// 		prerequisiteType: Yup.string().when('hasPrerequisites', {
 	// 			is: true,
 	// 			then: Yup.string()
-	// 				.oneOf(['Hard', 'Soft'], 'Type should be one of the following: [Hard, Soft]')
+	// 				.oneOf(
+	// 					[PrerequisiteType.Hard, PrerequisiteType.Soft],
+	// 					`Type should be one of the following: [${PrerequisiteType.Hard}, ${PrerequisiteType.Soft}]`
+	// 				)
 	// 				.required('Please select the prerequisite type.'),
 	// 			otherwise: Yup.string(),
 	// 		}),
@@ -61,7 +63,10 @@ export const CourseSchema = Yup.object().shape({
 	// prerequisiteType: Yup.string().when('hasPrerequisites', {
 	// 	is: true,
 	// 	then: Yup.string()
-	// 		.oneOf(['Hard', 'Soft'], 'Type should be one of the following: [Hard, Soft]')
+	// 		.oneOf(
+	// 			[PrerequisiteType.Hard, PrerequisiteType.Soft],
+	// 			`Type should be one of the following: [${PrerequisiteType.Hard}, ${PrerequisiteType.Soft}]`
+	// 		)
 	// 		.required('Please select the prerequisite type.'),
 	// 	otherwise: Yup.string(),
 	// }),

@@ -6,7 +6,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import { UserSchema } from '../../schemas/auth/User';
 import { register } from '../../features/auth/authSlice';
-import FormErrorMessage from '../FormErrorMessage';
+import { UserType, StudentType, Degree, FacultyType } from '../../constants/enums';
+import FormErrorMessage from '../form/FormErrorMessage';
 
 export default function RegisterForm() {
 	const [showPassword, setShowPassword] = useState(false);
@@ -34,9 +35,9 @@ export default function RegisterForm() {
 					<FormGroup className="form-floating mb-3" floating>
 						<Field as="select" className="form-control" name="studentType">
 							<option default>Select student type</option>
-							<option value={'Undergraduate'}>Undergraduate</option>
-							<option value={'Master'}>Master</option>
-							<option value={'PhD'}>PhD</option>
+							<option value={StudentType.Undergraduate}>Undergraduate</option>
+							<option value={StudentType.Master}>Master</option>
+							<option value={StudentType.PhD}>PhD</option>
 						</Field>
 						<Label for="studentType" className="text-gray-600">
 							Student Type
@@ -66,9 +67,9 @@ export default function RegisterForm() {
 					<FormGroup className="form-floating mb-3" floating>
 						<Field as="select" className="form-control" name="facultyType">
 							<option default>Select faculty type</option>
-							<option value={'DEP'}>DEP</option>
-							<option value={'EDIP'}>EDIP</option>
-							<option value={'ETEP'}>ETEP</option>
+							<option value={FacultyType.DEP}>DEP</option>
+							<option value={FacultyType.EDIP}>EDIP</option>
+							<option value={FacultyType.ETEP}>ETEP</option>
 						</Field>
 						<Label for="facultyType" className="text-gray-600">
 							Faculty Type
@@ -80,9 +81,9 @@ export default function RegisterForm() {
 					<FormGroup className="form-floating mb-3" floating>
 						<Field as="select" className="form-control" name="degree">
 							<option default>Select degree type</option>
-							<option value={'Assistant'}>Assistant</option>
-							<option value={'Associate'}>Associate</option>
-							<option value={'Professor'}>Professor</option>
+							<option value={Degree.Assistant}>Assistant</option>
+							<option value={Degree.Associate}>Associate</option>
+							<option value={Degree.Professor}>Professor</option>
 						</Field>
 						<Label for="degree" className="text-gray-600">
 							Degree
@@ -130,7 +131,7 @@ export default function RegisterForm() {
 				}}
 				validationSchema={UserSchema}
 				onSubmit={(values, { setSubmitting }) => {
-					if (values.type === 'Student') {
+					if (values.type === UserType.student) {
 						const user = {
 							name: values.name,
 							surname: values.surname,
@@ -144,7 +145,7 @@ export default function RegisterForm() {
 						};
 						dispatch(register(user));
 						setSubmitting(false);
-					} else if (values.type === 'Instructor') {
+					} else if (values.type === UserType.instructor) {
 						const user = {
 							name: values.name,
 							surname: values.surname,
@@ -264,8 +265,8 @@ export default function RegisterForm() {
 										<option className="text-gray-300" default>
 											Select your role
 										</option>
-										<option value={'Student'}>Student</option>
-										<option value={'Instructor'}>Instructor</option>
+										<option value={UserType.student}>Student</option>
+										<option value={UserType.instructor}>Instructor</option>
 									</Field>
 									<Label for="type" className="text-gray-600">
 										Type
@@ -274,8 +275,8 @@ export default function RegisterForm() {
 								</FormGroup>
 							</Col>
 						</Row>
-						{selectedType === 'Student' ? studentFields : null}
-						{selectedType === 'Instructor' ? instructorFields : null}
+						{selectedType === UserType.student ? studentFields : null}
+						{selectedType === UserType.instructor ? instructorFields : null}
 						<Row className="">
 							<Col md="6" sm="6" xs="12" className="text-sm-left text-center">
 								<Button

@@ -1,6 +1,6 @@
 import { Input } from 'reactstrap';
 import { ErrorMessage } from 'formik';
-import FormErrorMessage from '../components/FormErrorMessage';
+import FormErrorMessage from './FormErrorMessage';
 
 export const FormCheckbox = ({ field, form: { touched, errors }, ...props }) => (
 	<div>

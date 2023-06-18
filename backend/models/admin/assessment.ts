@@ -1,13 +1,13 @@
-import { Schema, model } from 'mongoose';
+import mongoose, { Schema, model } from 'mongoose';
 
 export interface AssessmentProps {
 	period: number;
 	vaccineStartDate: Date;
 	vaccineEndDate: Date;
-	semester: string;
+	semester: mongoose.Types.ObjectId;
 }
 
-const assessmentSchema = new Schema(
+const assessmentSchema = new Schema<AssessmentProps>(
 	{
 		period: {
 			type: Number,
@@ -34,14 +34,14 @@ const assessmentSchema = new Schema(
 	}
 );
 
-export const Assessment = model('Assessment', assessmentSchema);
+export const Assessment = model<AssessmentProps>('Assessment', assessmentSchema);
 
 export const getAssessments = () => Assessment.find();
 export const getAssessmentBySemester = (semesterId: string) =>
-	Assessment.findOne({ semester: semesterId });
+	Assessment.findOne({ semester: semesterId }).populate('semester');
 export const createAssessment = (values: Record<string, any>) =>
 	new Assessment(values).save().then((assessment) => assessment.toObject());
-export const updateAssessmentById = (id: string, values: Record<string, any>) =>
-	Assessment.findByIdAndUpdate(id, values);
+export const updateAssessmentById = (id: string, assessment: Record<string, any>) =>
+	Assessment.findByIdAndUpdate(id, assessment, { new: true });
 export const deleteAssessmentById = (id: string) => Assessment.findByIdAndDelete(id);
 export const deleteAssessments = () => Assessment.deleteMany();

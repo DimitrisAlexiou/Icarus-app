@@ -11,6 +11,8 @@ const initialState = {
 	numOfPages: 1,
 	page: 1,
 	isLoading: false,
+	isSuccess: false,
+	error: null,
 	isEditingCourse: false,
 	editCourseId: '',
 };
@@ -44,10 +46,10 @@ export const getCourse = createAsyncThunk(API_URL_COURSE + '/get', async (course
 
 export const deleteCourse = createAsyncThunk(
 	API_URL_COURSE + '/delete',
-	async (courseId, thunkAPI) => {
+	async (course, thunkAPI) => {
 		try {
-			await courseService.deleteCourse(courseId);
-			return thunkAPI.dispatch(getCourses());
+			await courseService.deleteCourse(course);
+			// return thunkAPI.dispatch(getCourses());
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -58,7 +60,20 @@ export const activateCourse = createAsyncThunk(
 	API_URL_COURSE + '/activate',
 	async (courseId, thunkAPI) => {
 		try {
-			return await courseService.activateCourse(courseId);
+			await courseService.activateCourse(courseId);
+			return thunkAPI.dispatch(getCourses());
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
+	}
+);
+
+export const deActivateCourse = createAsyncThunk(
+	API_URL_COURSE + '/deactivate',
+	async (courseId, thunkAPI) => {
+		try {
+			await courseService.deActivateCourse(courseId);
+			return thunkAPI.dispatch(getCourses());
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -115,13 +130,13 @@ export const courseSlice = createSlice({
 					text: 'Course created!',
 					icon: 'success',
 				});
-				state.courses = [...state.courses, action.payload];
+				state.courses.push(action.payload);
 			})
 			.addCase(createCourse.rejected, (state, action) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: action.payload,
+					text: action.payload.message,
 					icon: 'error',
 				});
 			})
@@ -143,7 +158,7 @@ export const courseSlice = createSlice({
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: action.payload,
+					text: action.payload.message,
 					icon: 'error',
 				});
 			})
@@ -156,10 +171,13 @@ export const courseSlice = createSlice({
 			})
 			.addCase(getCourse.rejected, (state, action) => {
 				state.isLoading = false;
-				if (action.payload !== 'Seems like there is no course with this ID.')
+				if (
+					action.payload.message !==
+					'Seems like the course that you are trying to view does not exist.'
+				)
 					Toast.fire({
 						title: 'Something went wrong!',
-						text: action.payload,
+						text: action.payload.message,
 						icon: 'error',
 					});
 			})
@@ -168,24 +186,29 @@ export const courseSlice = createSlice({
 			})
 			.addCase(deleteCourse.fulfilled, (state, action) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Success',
-					text: action.payload,
-					icon: 'success',
+				state.isSuccess = true;
+				state.courses = state.courses.filter((course) => {
+					return course._id !== action.payload.id;
 				});
-				// state.filter((course) => course._id !== action.payload);
+				// Toast.fire({
+				// 	title: 'Success',
+				// 	// text: action.payload.message,
+				// 	text: 'Course Deleted!',
+				// 	icon: 'success',
+				// });
 				// state.courses = [
 				// 	...state.courses,
-				// 	state.courses.filter((course) => course._id !== action.payload._id),
+				// 	state.courses.filter((course) => course._id !== action.payload),
 				// ];
 			})
 			.addCase(deleteCourse.rejected, (state, action) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: action.payload,
-					icon: 'error',
-				});
+				state.error = action.error;
+				// Toast.fire({
+				// 	title: 'Something went wrong!',
+				// 	text: action.payload.message,
+				// 	icon: 'error',
+				// });
 			})
 			.addCase(activateCourse.pending, (state) => {
 				state.isLoading = true;
@@ -197,15 +220,41 @@ export const courseSlice = createSlice({
 					text: 'Course activated!',
 					icon: 'success',
 				});
-				state.courses.map((course) =>
-					course._id === action.payload._id ? (course.isActive = true) : course
-				);
+				// state.course = action.payload;
+				// state.courses = state.courses.map((course) =>
+				// 	course._id === action.payload._id ? action.payload : course
+				// );
+				// state.courses.map((course) =>
+				// 	course._id === action.payload._id ? (course.isActive = true) : course
+				// );
 			})
 			.addCase(activateCourse.rejected, (state, action) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: action.payload,
+					text: action.payload.message,
+					icon: 'error',
+				});
+			})
+			.addCase(deActivateCourse.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(deActivateCourse.fulfilled, (state, action) => {
+				state.isLoading = false;
+				Toast.fire({
+					title: 'Success',
+					text: 'Course deactivated!',
+					icon: 'success',
+				});
+				// state.courses.map((course) =>
+				// 	course._id === action.payload._id ? (course.isActive = true) : course
+				// );
+			})
+			.addCase(deActivateCourse.rejected, (state, action) => {
+				state.isLoading = false;
+				Toast.fire({
+					title: 'Something went wrong!',
+					text: action.payload.message,
 					icon: 'error',
 				});
 			})
@@ -216,13 +265,13 @@ export const courseSlice = createSlice({
 				state.isLoading = false;
 				state.courses = action.payload;
 				state.numOfPages = action.payload.numOfPages;
-				state.totalJobs = action.payload.totalJobs;
+				state.totalCourses = action.payload.totalCourses;
 			})
 			.addCase(getCourses.rejected, (state, action) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: action.payload,
+					text: action.payload.message,
 					icon: 'error',
 				});
 			})
@@ -233,7 +282,7 @@ export const courseSlice = createSlice({
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
-					text: action.payload,
+					text: action.payload.message,
 					icon: 'success',
 				});
 			})
@@ -241,7 +290,7 @@ export const courseSlice = createSlice({
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: action.payload,
+					text: action.payload.message,
 					icon: 'error',
 				});
 			});

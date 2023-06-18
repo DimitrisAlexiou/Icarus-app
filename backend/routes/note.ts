@@ -9,7 +9,7 @@ import {
 } from '../controllers/note';
 import { validateNote } from '../middleware/validations';
 import { authorize, isOwner } from '../middleware/authMiddleware';
-import { upload } from '../utils/upload';
+import { noteFileUpload } from '../utils/multer/noteFileUpload';
 
 export default (router: express.Router) => {
 	// @desc    Get / Post / Delete User Notes
@@ -18,7 +18,7 @@ export default (router: express.Router) => {
 	router
 		.route('/note')
 		.get(authorize, isOwner, getUserNotes)
-		.post(authorize, upload.single('file'), validateNote, createUserNote)
+		.post(authorize, noteFileUpload.single('file'), validateNote, createUserNote)
 		.delete(authorize, isOwner, deleteUserNotes);
 
 	// @desc    Get / Update / Delete User Note by ID
@@ -27,7 +27,7 @@ export default (router: express.Router) => {
 	router
 		.route('/note/:id')
 		.get(authorize, isOwner, viewUserNote)
-		.put(authorize, isOwner, upload.single('file'), validateNote, updateUserNote)
+		.put(authorize, isOwner, noteFileUpload.single('file'), validateNote, updateUserNote)
 		.delete(authorize, isOwner, deleteUserNote);
 
 	router.route('/note/:id/importance').put(authorize, isOwner, validateNote, updateUserNote);

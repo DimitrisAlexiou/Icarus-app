@@ -12,6 +12,7 @@ import {
 } from '../../utils/NavigationLinks';
 import '../../App.css';
 import { useSelector } from 'react-redux';
+import { UserType } from '../../constants/enums';
 
 export default function Sidebar({ isSidebarCollapsed, setSidebarCollapsed, smallSidebar }) {
 	const { user } = useSelector((state) => state.auth);
@@ -151,7 +152,7 @@ export default function Sidebar({ isSidebarCollapsed, setSidebarCollapsed, small
 
 				<div className="sidebar-heading">Data</div>
 
-				{user && user.user.type === 'Student' ? (
+				{user && user.user.type === UserType.student ? (
 					<NavItem className="nav-item">
 						{sidebarStudentLinks.map((sidebarStudentLink) => {
 							const { id, text, path, icon } = sidebarStudentLink;
@@ -168,7 +169,7 @@ export default function Sidebar({ isSidebarCollapsed, setSidebarCollapsed, small
 							);
 						})}
 					</NavItem>
-				) : user && user.user.type === 'Instructor' ? (
+				) : user && user.user.type === UserType.instructor ? (
 					<NavItem className="nav-item">
 						{sidebarInstructorLinks.map((sidebarInstructorLink) => {
 							const { id, text, path, icon } = sidebarInstructorLink;

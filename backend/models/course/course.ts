@@ -1,28 +1,40 @@
-import { Schema, model } from 'mongoose';
-import { Teaching } from './teaching';
+import mongoose, { ClientSession, Schema, model } from 'mongoose';
+import { Teaching, deleteTeachingById } from './teaching';
+
+export enum CourseType {
+	Undergraduate = 'Undergraduate',
+	Master = 'Master',
+	Mixed = 'Mixed',
+}
+
+export enum PrerequisiteType {
+	Hard = 'Hard',
+	Soft = 'Soft',
+}
 
 export interface CourseProps {
 	courseId: string;
 	title: string;
-	type: string;
+	type: CourseType;
 	description: string;
 	prerequisites: [
 		{
-			prerequisite: string;
-			prerequisiteType: string;
+			prerequisite: mongoose.Types.ObjectId;
+			prerequisiteType: PrerequisiteType;
 		}
 	];
-	semester: string;
-	cycle: string;
+	semester: mongoose.Types.ObjectId;
+	cycle: mongoose.Types.ObjectId;
 	year: number;
 	ects: number;
 	hasLab: boolean;
 	isObligatory: boolean;
 	hasPrerequisites: boolean;
 	isActive: boolean;
+	teaching?: mongoose.Types.ObjectId | null;
 }
 
-const courseSchema = new Schema(
+const courseSchema = new Schema<CourseProps>(
 	{
 		courseId: {
 			type: String,
@@ -34,7 +46,7 @@ const courseSchema = new Schema(
 		},
 		type: {
 			type: String,
-			enum: ['Undergraduate', 'Master', 'Mixed'],
+			enum: Object.values(CourseType),
 			required: true,
 		},
 		description: {
@@ -54,7 +66,7 @@ const courseSchema = new Schema(
 					},
 					prerequisiteType: {
 						type: String,
-						enum: ['Hard', 'Soft'],
+						enum: Object.values(PrerequisiteType),
 					},
 				},
 			],
@@ -94,30 +106,28 @@ const courseSchema = new Schema(
 			required: true,
 			default: false,
 		},
+		teaching: {
+			type: Schema.Types.ObjectId,
+			ref: 'Teaching',
+		},
 	},
 	{
 		timestamps: true,
 	}
 );
 
-courseSchema.pre('findOneAndDelete', async function (next) {
-	try {
-		const courseId = this.getQuery()['_id'];
-		await Teaching.deleteOne({ course: courseId });
-		next();
-	} catch (error) {
-		next(error);
-	}
-});
-
-export const Course = model('Course', courseSchema);
+export const Course = model<CourseProps>('Course', courseSchema);
 
 export const getCourses = () => Course.find();
-export const getCourseById = (id: string) => Course.findById(id);
+export const getCourseById = (id: string) => Course.findById(id).populate('semester');
 export const getCourseByCourseId = (courseId: string) => Course.findOne({ courseId });
 export const createCourse = (values: Record<string, any>) =>
 	new Course(values).save().then((course) => course.toObject());
-export const updateCourseById = (id: string, values: Record<string, any>) =>
-	Course.findByIdAndUpdate(id, values);
-export const deleteCourseById = (id: string) => Course.findByIdAndDelete(id);
+export const updateCourseById = (
+	id: string,
+	course: Record<string, any>,
+	options?: Record<string, any>
+) => Course.findByIdAndUpdate(id, course, { new: true });
+export const deleteCourseById = (id: string, session: ClientSession) =>
+	Course.findByIdAndDelete(id).session(session);
 export const deleteCourses = () => Course.deleteMany();

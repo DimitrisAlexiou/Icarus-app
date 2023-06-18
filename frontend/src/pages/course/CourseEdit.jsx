@@ -7,8 +7,8 @@ import { getCourse, updateCourse, reset } from '../../features/courses/courseSli
 import { Toast } from '../../constants/sweetAlertNotification';
 import { CourseSchema } from '../../schemas/course/Course';
 import { Field, ErrorMessage } from 'formik';
-import FormErrorMessage from '../../components/FormErrorMessage';
-import FormCheckbox from '../../components/FormCheckbox';
+import FormErrorMessage from '../../components/form/FormErrorMessage';
+import FormCheckbox from '../../components/form/FormCheckbox';
 import BackButton from '../../components/buttons/BackButton';
 import CustomSpinner from '../../components/boilerplate/Spinner';
 

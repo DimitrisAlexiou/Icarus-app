@@ -3,11 +3,29 @@ import { FormGroup, Label, Row, Col, Button, Spinner } from 'reactstrap';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { SemesterSchema } from '../../schemas/admin/Semester';
 import { defineSemester, updateSemester } from '../../features/admin/semesterSlice';
-import FormErrorMessage from '../FormErrorMessage';
-import DatePickerField from '../DatePickerField';
+import FormErrorMessage from '../form/FormErrorMessage';
+import DatePickerField from '../form/DatePickerField';
+import { SemesterType } from '../../constants/enums';
 
 export default function SemesterForm({ semester, isEditingSemester, editSemesterId }) {
 	const dispatch = useDispatch();
+
+	const renderDatePickerFields = (type) => {
+		if (type !== SemesterType.Any) return <DatePickerField />;
+	};
+
+	const renderGradingField = (type) => {
+		if (type !== SemesterType.Any)
+			return (
+				<FormGroup className="form-floating mb-3" floating>
+					<Field type="number" min="1" className="form-control" name="grading" />
+					<Label for="grading" className="text-gray-600">
+						Grading period
+					</Label>
+					<ErrorMessage name="grading" component={FormErrorMessage} />
+				</FormGroup>
+			);
+	};
 
 	return (
 		<>
@@ -23,9 +41,13 @@ export default function SemesterForm({ semester, isEditingSemester, editSemester
 					const semester = {
 						type: values.type,
 						grading: values.grading,
-						startDate: values.startDate,
-						endDate: values.endDate,
 					};
+					if (values.type !== SemesterType.Any) {
+						semester.startDate = values.startDate;
+						semester.endDate = values.endDate;
+					}
+					// startDate: values.type !== SemesterType.Any ? values.startDate : null,
+					// endDate: values.type !== SemesterType.Any ? values.endDate : null,
 					if (isEditingSemester) {
 						dispatch(
 							updateSemester({
@@ -41,7 +63,7 @@ export default function SemesterForm({ semester, isEditingSemester, editSemester
 				}}
 				validateOnMount
 			>
-				{({ isSubmitting, dirty, handleReset }) => (
+				{({ isSubmitting, dirty, handleReset, values }) => (
 					<Form>
 						<Row>
 							<Col md="8">
@@ -58,24 +80,9 @@ export default function SemesterForm({ semester, isEditingSemester, editSemester
 									<ErrorMessage name="type" component={FormErrorMessage} />
 								</FormGroup>
 							</Col>
-							<Col>
-								<FormGroup className="form-floating mb-3" floating>
-									<Field
-										type="number"
-										min="1"
-										className="form-control"
-										name="grading"
-									/>
-									<Label for="grading" className="text-gray-600">
-										Grading period
-									</Label>
-									<ErrorMessage name="grading" component={FormErrorMessage} />
-								</FormGroup>
-							</Col>
+							<Col>{renderGradingField(values.type)}</Col>
 						</Row>
-						<Row>
-							<DatePickerField />
-						</Row>
+						<Row>{renderDatePickerFields(values.type)}</Row>
 						<Row className="mb-3">
 							<Col sm="6" md="6" xs="12" className="text-sm-left text-center">
 								<Button onClick={handleReset} disabled={!dirty || isSubmitting}>

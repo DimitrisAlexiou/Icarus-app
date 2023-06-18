@@ -18,7 +18,7 @@ interface AuthenticatedRequest extends Request {
 }
 
 export const getAllUserTeachingReviews = tryCatch(
-	async (req: AuthenticatedRequest, res: Response) => {
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const userId = req.user.id;
 		const userTeachingReviews = await getUserTeachingReviews(userId);
 
@@ -32,24 +32,26 @@ export const getAllUserTeachingReviews = tryCatch(
 	}
 );
 
-export const viewUserTeachingReview = tryCatch(async (req: AuthenticatedRequest, res: Response) => {
-	const { id } = req.params;
-	const teachingReview = await getTeachingReviewById(id);
+export const viewUserTeachingReview = tryCatch(
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
+		const { id } = req.params;
+		const teachingReview = await getTeachingReviewById(id);
 
-	if (!teachingReview)
-		throw new CustomError(
-			'Seems like the teaching review that you are trying to view does not exist.',
-			404
-		);
+		if (!teachingReview)
+			throw new CustomError(
+				'Seems like the teaching review that you are trying to view does not exist.',
+				404
+			);
 
-	return res.status(200).json(teachingReview);
-});
+		return res.status(200).json(teachingReview);
+	}
+);
 
 // * WE ACCESS THE TEACHING REVIEW FORM BY SELECTING A TEACHING(COURSE) WHERE THE USER IS ENROLLED
 // * THE PAGE RENDERS ALL THE TEACHINGS(COURSES) THAT THE USER IS ENROLLED IN, THEN BY SELECTING ONE OF THEM,
 // * THE TEACHING REVIEW FORM IS RENDERED WITH THE TEACHINGID ALREADY PASSED, THE USER ID IS PASSED THROUGH REQ.USER
 export const createUserTeachingReview = tryCatch(
-	async (req: AuthenticatedRequest, res: Response) => {
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const {
 			clear_course_objectives,
 			course_material,
@@ -114,7 +116,7 @@ export const createUserTeachingReview = tryCatch(
 );
 
 export const updateUserTeachingReview = tryCatch(
-	async (req: AuthenticatedRequest, res: Response) => {
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const {
 			clear_course_objectives,
 			course_material,
@@ -168,7 +170,7 @@ export const updateUserTeachingReview = tryCatch(
 );
 
 export const deleteUserTeachingReview = tryCatch(
-	async (req: AuthenticatedRequest, res: Response) => {
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const { id } = req.params;
 		const teachingReviewToDelete = await deleteTeachingReviewById(id);
 

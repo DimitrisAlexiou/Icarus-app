@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import mongoose, { Schema, model } from 'mongoose';
 
 export interface InstructorReviewProps {
 	good_organization: number;
@@ -6,11 +6,11 @@ export interface InstructorReviewProps {
 	student_participation: number;
 	course_consistency: number;
 	instructor_approachable: number;
-	user: string;
-	teaching: string;
+	user: mongoose.Types.ObjectId;
+	teaching: mongoose.Types.ObjectId;
 }
 
-const instructorReviewSchema = new Schema(
+const instructorReviewSchema = new Schema<InstructorReviewProps>(
 	{
 		good_organization: {
 			type: Number,
@@ -48,16 +48,21 @@ const instructorReviewSchema = new Schema(
 	}
 );
 
-export const InstructorReview = model('InstructorReview', instructorReviewSchema);
+export const InstructorReview = model<InstructorReviewProps>(
+	'InstructorReview',
+	instructorReviewSchema
+);
 
 export const getInstructorReviews = () => InstructorReview.find();
 export const deleteInstructorReviews = () => InstructorReview.deleteMany();
-export const getUserInstructorReviews = (userId: string) => InstructorReview.find({ user: userId });
+export const getUserInstructorReviews = (userId: string) =>
+	InstructorReview.find({ user: userId }).populate('teaching');
 export const getUserSubmittedInstructorReview = (userId: string) =>
 	InstructorReview.findOne({ user: userId });
-export const getInstructorReviewById = (id: string) => InstructorReview.findById(id);
+export const getInstructorReviewById = (id: string) =>
+	InstructorReview.findById(id).populate('teaching');
 export const createInstructorReview = (values: Record<string, any>) =>
 	new InstructorReview(values).save().then((instructorReview) => instructorReview.toObject());
-export const updateInstructorReviewById = (id: string, values: Record<string, any>) =>
-	InstructorReview.findByIdAndUpdate(id, values);
+export const updateInstructorReviewById = (id: string, instructorReview: Record<string, any>) =>
+	InstructorReview.findByIdAndUpdate(id, instructorReview, { new: true });
 export const deleteInstructorReviewById = (id: string) => InstructorReview.findByIdAndDelete(id);

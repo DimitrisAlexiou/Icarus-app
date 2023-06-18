@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import mongoose, { ClientSession, Schema, model } from 'mongoose';
 
 export interface CalendarProps {
 	eventId: string;
@@ -6,10 +6,10 @@ export interface CalendarProps {
 	start: Date;
 	end: Date;
 	allDay: boolean;
-	owner: string;
+	owner: mongoose.Types.ObjectId;
 }
 
-const calendarSchema = new Schema(
+const calendarSchema = new Schema<CalendarProps>(
 	{
 		eventId: {
 			type: String,
@@ -43,11 +43,12 @@ const calendarSchema = new Schema(
 	}
 );
 
-export const Calendar = model('Calendar', calendarSchema);
+export const Calendar = model<CalendarProps>('Calendar', calendarSchema);
 
 export const createEvent = (values: Record<string, any>) =>
 	new Calendar(values).save().then((event) => event.toObject());
 export const getEventByEventId = (eventId: string) => Calendar.findOne({ eventId });
 export const getEvents = (userId: string) => Calendar.find({ owner: userId });
 export const deleteEvent = (id: string) => Calendar.findByIdAndDelete(id);
-export const deleteEvents = (userId: string) => Calendar.deleteMany({ owner: userId });
+export const deleteEvents = (userId: string, session: ClientSession) =>
+	Calendar.deleteMany({ owner: userId }).session(session);

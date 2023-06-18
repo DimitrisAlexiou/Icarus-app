@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Col, Row } from 'reactstrap';
 
-export default function Unauthorized() {
+export default function UnAuthorized() {
 	return (
 		<div className="container-fluid animated--grow-in mt-5">
 			<div className="text-center">

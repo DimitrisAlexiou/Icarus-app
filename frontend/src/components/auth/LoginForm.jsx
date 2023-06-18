@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import { LoginSchema } from '../../schemas/auth/Login';
 import { login } from '../../features/auth/authSlice';
-import FormErrorMessage from '../FormErrorMessage';
+import FormErrorMessage from '../form/FormErrorMessage';
 
 export default function LoginForm() {
 	const [showPassword, setShowPassword] = useState(false);

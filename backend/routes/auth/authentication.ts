@@ -2,9 +2,11 @@ import express from 'express';
 import { register } from '../../controllers/auth/register';
 import { login } from '../../controllers/auth/login';
 // import { forgotPassword } from '../../controllers/auth/forgotPassword';
-import { resetPassword } from '../../controllers/auth/resetPassword';
+import { changePassword } from '../../controllers/auth/changePassword';
 import { resetPasswordLimiter } from '../../middleware/authMiddleware';
 import { validateUser } from '../../middleware/validations';
+import { revokeToken } from '../../controllers/auth/authToken';
+// import { refreshToken } from '../../controllers/auth/authToken';
 
 export default (router: express.Router) => {
 	// @desc    Register User
@@ -23,7 +25,18 @@ export default (router: express.Router) => {
 	// router.route('/auth/forgot-password').post(resetPasswordLimiter, forgotPassword);
 
 	// @desc    Change User Password
-	// @route   POST /api/user/profile/reset-password
+	// @route   POST /api/user/profile
 	// @access  Private
-	router.route('/user/profile/reset-password').post(resetPasswordLimiter, resetPassword);
+	router.route('/user/profile').post(changePassword);
+	// router.route('/user/profile').post(resetPasswordLimiter, changePassword);
+
+	// @desc    Route to revoke a token
+	// @route   POST /api/auth/revoke-token
+	// @access  Private
+	router.route('/auth/revoke-token').post(revokeToken);
+
+	// @desc    Route to refresh the access token
+	// @route   POST /api/auth/refresh-token
+	// @access  Private
+	// router.route('/auth/refresh-token').post(refreshToken);
 };

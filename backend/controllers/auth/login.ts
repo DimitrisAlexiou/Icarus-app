@@ -1,13 +1,11 @@
 import bcrypt from 'bcryptjs';
 import { Request, Response } from 'express';
-import { getUserByUsername } from '../../models/users/user';
-import { Student } from '../../models/users/student';
-import { Instructor } from '../../models/users/instructor';
+import { UserType, getUserByUsername } from '../../models/users/user';
 import { generateToken } from '../../middleware/authMiddleware';
 import { tryCatch } from '../../utils/tryCatch';
 import CustomError from '../../utils/CustomError';
 
-export const login = tryCatch(async (req: Request, res: Response) => {
+export const login = tryCatch(async (req: Request, res: Response): Promise<Response> => {
 	const { username, password } = req.body;
 
 	if (!username || !password)
@@ -23,12 +21,10 @@ export const login = tryCatch(async (req: Request, res: Response) => {
 			user.lastLogin = new Date();
 			user.loginFailedAttempts = 0;
 			await user.save();
-			let userType;
-			if (user.type === 'Student')
-				userType = await Student.findOne({ _id: user.student }).select('-_id');
-			else if (user.type === 'Instructor')
-				userType = await Instructor.findOne({ _id: user.instructor }).select('-_id');
-			return res.status(200).json({ user, userType, token: generateToken({ id: user._id }) });
+			if (user.type === UserType.student) await user.populate('student', '-_id');
+			else if (user.type === UserType.instructor) await user.populate('instructor', '-_id');
+			return res.status(200).json({ user, token: generateToken({ id: user._id }) });
+			// return res.status(200).json({ user, token: generateToken(res, { id: user._id }) });
 		}
 	} else {
 		if (user && user.lastLogin !== null && user.isActive === true) {

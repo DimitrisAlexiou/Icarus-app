@@ -18,7 +18,7 @@ interface AuthenticatedRequest extends Request {
 }
 
 export const getAllUserGeneralReviews = tryCatch(
-	async (req: AuthenticatedRequest, res: Response) => {
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const userId = req.user.id;
 		const userGeneralReviews = await getUserGeneralReviews(userId);
 
@@ -32,21 +32,23 @@ export const getAllUserGeneralReviews = tryCatch(
 	}
 );
 
-export const viewUserGeneralReview = tryCatch(async (req: AuthenticatedRequest, res: Response) => {
-	const { id } = req.params;
-	const generalReview = await getGeneralReviewById(id);
+export const viewUserGeneralReview = tryCatch(
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
+		const { id } = req.params;
+		const generalReview = await getGeneralReviewById(id);
 
-	if (!generalReview)
-		throw new CustomError(
-			'Seems like the general review that you are trying to view does not exist.',
-			404
-		);
+		if (!generalReview)
+			throw new CustomError(
+				'Seems like the general review that you are trying to view does not exist.',
+				404
+			);
 
-	return res.status(200).json(generalReview);
-});
+		return res.status(200).json(generalReview);
+	}
+);
 
 export const createUserGeneralReview = tryCatch(
-	async (req: AuthenticatedRequest, res: Response) => {
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const { course_opinion, instructor_opinion, likes, dislikes } = req.body;
 
 		if (!course_opinion || !instructor_opinion || !likes || !dislikes)
@@ -93,7 +95,7 @@ export const createUserGeneralReview = tryCatch(
 );
 
 export const updateUserGeneralReview = tryCatch(
-	async (req: AuthenticatedRequest, res: Response) => {
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const { course_opinion, instructor_opinion, likes, dislikes } = req.body;
 
 		if (!course_opinion || !instructor_opinion || !likes || !dislikes)
@@ -131,7 +133,7 @@ export const updateUserGeneralReview = tryCatch(
 );
 
 export const deleteUserGeneralReview = tryCatch(
-	async (req: AuthenticatedRequest, res: Response) => {
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const { id } = req.params;
 		const generalReviewToDelete = await deleteGeneralReviewById(id);
 

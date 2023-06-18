@@ -28,6 +28,7 @@ export const getAssessment = createAsyncThunk(
 		try {
 			return await assessmentService.getAssessment();
 		} catch (error) {
+			console.log(error);
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
 	}
@@ -81,9 +82,10 @@ export const assessmentSlice = createSlice({
 			})
 			.addCase(defineAssessment.rejected, (state, action) => {
 				state.isLoading = false;
+				console.log(action.payload.message);
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: action.payload,
+					text: action.payload.message,
 					icon: 'error',
 				});
 			})
@@ -96,33 +98,31 @@ export const assessmentSlice = createSlice({
 			})
 			.addCase(getAssessment.rejected, (state, action) => {
 				state.isLoading = false;
-				if (
-					action.payload !==
-					'Seems like there is no assessment statement duration period defined for current semester.'
-				)
-					Toast.fire({
-						title: 'Something went wrong!',
-						text: action.payload,
-						icon: 'error',
-					});
+				Toast.fire({
+					title: 'Something went wrong!',
+					text: action.payload.message,
+					icon: 'error',
+				});
+
+				console.log(action.payload);
 			})
 			.addCase(updateAssessment.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(updateAssessment.fulfilled, (state) => {
+			.addCase(updateAssessment.fulfilled, (state, action) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
 					text: 'Assessment configuration updated!',
 					icon: 'success',
 				});
-				// state.assessment = action.payload;
+				state.assessment = action.payload;
 			})
 			.addCase(updateAssessment.rejected, (state, action) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: action.payload,
+					text: action.payload.message,
 					icon: 'error',
 				});
 			})
@@ -133,15 +133,19 @@ export const assessmentSlice = createSlice({
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
-					text: action.payload,
+					text: action.payload.message,
 					icon: 'success',
 				});
+				state.assessment = null;
+				// state.assessment = state.assessment.filter((assessment) => {
+				// 	return assessment._id !== action.payload._id;
+				// });
 			})
 			.addCase(deleteAssessment.rejected, (state, action) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: action.payload,
+					text: action.payload.message,
 					icon: 'error',
 				});
 			});

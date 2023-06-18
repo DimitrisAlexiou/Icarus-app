@@ -1,22 +1,34 @@
 import * as Yup from 'yup';
+import { Degree, FacultyType, StudentType, UserType } from '../../constants/enums';
+import {
+	nameRegex,
+	passwordRegex,
+	studentIdRegex,
+	surnameRegex,
+	usernameRegex,
+} from '../../constants/regex';
 
 export const UserSchema = Yup.object().shape({
 	name: Yup.string()
 		.max(40, 'Name must be up to 40 characters or less.')
-		.matches(/^[A-Za-z]+$/, 'Name must be alphabetic.')
+		.matches(nameRegex, 'Name must be alphabetic.')
 		.required('Please provide your name.'),
 	surname: Yup.string()
 		.max(40, 'Surname must be up to 40 characters or less.')
-		.matches(/^[A-Za-z]+$/, 'Surname must be alphabetic.')
+		.matches(surnameRegex, 'Surname must be alphabetic.')
 		.required('Please provide your surname.'),
-	username: Yup.string()
-		.matches(/^icsd[0-9]{5}$/, 'Username must follow the pattern: icsdxxxxx.')
-		.required('Username is required.'),
+	username: Yup.string().when('type', {
+		is: UserType.admin,
+		then: Yup.string().required('Username is required.'),
+		otherwise: Yup.string()
+			.matches(usernameRegex, 'Username must follow the pattern: icsdxxxxx.')
+			.required('Username is required.'),
+	}),
 	email: Yup.string().email().required('Email is required.'),
 	password: Yup.string()
 		.min(8, 'Password is too short - should be 8 chars minimum.')
 		.matches(
-			/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z])(?=.*[!@#$%^&*]).{8,}$/,
+			passwordRegex,
 			`Password must have minimum eight characters, at least one digit, one lowercase letter, one uppercase letter, one letter(uppercase/lowercase) and one special character.`
 		)
 		.required('Please provide a password.'),
@@ -25,19 +37,19 @@ export const UserSchema = Yup.object().shape({
 		.required('Please confirm password.'),
 	type: Yup.string()
 		.oneOf(
-			['Student', 'Instructor'],
+			[UserType.student, UserType.instructor],
 			'Type should be one of the following: [Student, Instructor]'
 		)
 		.required('Please select the user type.'),
 	studentId: Yup.string().when('type', {
-		is: 'Student',
+		is: UserType.student,
 		then: Yup.string()
-			.matches(/^321\/\d{7}$/, 'StudentId must follow the pattern: 321/xxxxxxx.')
+			.matches(studentIdRegex, 'StudentId must follow the pattern: 321/xxxxxxx.')
 			.required('Student ID is required.'),
 		otherwise: Yup.string(),
 	}),
 	entranceYear: Yup.number().when('type', {
-		is: 'Student',
+		is: UserType.student,
 		then: Yup.number()
 			.min(1980, 'Entrance year must be at least 1980.')
 			.max(new Date().getFullYear(), 'Entrance year can be up to current year.')
@@ -51,35 +63,35 @@ export const UserSchema = Yup.object().shape({
 		otherwise: Yup.number(),
 	}),
 	studentType: Yup.string().when('type', {
-		is: 'Student',
+		is: UserType.student,
 		then: Yup.string()
 			.oneOf(
-				['Undergraduate', 'Master', 'PhD'],
-				'Student type should be one of the following: [Undergraduate, Master, PhD]'
+				[StudentType.Undergraduate, StudentType.Master, StudentType.PhD],
+				`Student type should be one of the following: [${StudentType.Undergraduate}, ${StudentType.Master}, ${StudentType.PhD}]`
 			)
 			.required('Please select the student type.'),
 		otherwise: Yup.string(),
 	}),
 	facultyType: Yup.string().when('type', {
-		is: 'Instructor',
+		is: UserType.instructor,
 		then: Yup.string()
 			.oneOf(
-				['DEP', 'EDIP', 'ETEP'],
-				'Faculty type should be one of the following: [DEP, EDIP, ETEP]'
+				[FacultyType.DEP, FacultyType.EDIP, FacultyType.ETEP],
+				`Faculty type should be one of the following: [${FacultyType.DEP}, ${FacultyType.EDIP}, ${FacultyType.ETEP}]`
 			)
 			.required('Please select the faculty type.'),
 		otherwise: Yup.string(),
 	}),
 	degree: Yup.string().when('type', {
-		is: 'Instructor',
+		is: UserType.instructor,
 		then: Yup.string().oneOf(
-			['Assistant', 'Associate', 'Professor'],
-			'Degree type should be one of the following: [Assistant, Associate, Professor]'
+			[Degree.Assistant, Degree.Associate, Degree.Professor],
+			`Degree type should be one of the following: [${Degree.Assistant}, ${Degree.Associate}, ${Degree.Professor}]`
 		),
 		otherwise: Yup.string(),
 	}),
 	instructorEntranceYear: Yup.number().when('type', {
-		is: 'Instructor',
+		is: UserType.instructor,
 		then: Yup.number()
 			.min(1980, 'Entrance year must be at least 1980.')
 			.max(new Date().getFullYear(), 'Entrance year can be up to current year.')

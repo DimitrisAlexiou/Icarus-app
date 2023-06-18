@@ -1,12 +1,13 @@
-import { useState, useRef, forwardRef } from 'react';
+import { useState, useRef, forwardRef, useEffect, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { FormGroup, Label, Row, Col, Button, Tooltip, Spinner } from 'reactstrap';
 import { Formik, Form, Field, FieldArray, ErrorMessage } from 'formik';
 import { CourseSchema } from '../../schemas/course/Course';
 import { createCourse, updateCourse } from '../../features/courses/courseSlice';
-import { FormCheckbox } from '../FormCheckbox';
-import FormErrorMessage from '../FormErrorMessage';
+import { FormCheckbox } from '../form/FormCheckbox';
+import { CourseType, PrerequisiteType } from '../../constants/enums';
+import FormErrorMessage from '../form/FormErrorMessage';
 
 export default function CourseForm({
 	course,
@@ -16,46 +17,37 @@ export default function CourseForm({
 	isEditingCourse,
 	editCourseId,
 }) {
-	const courseYear = (type) => {
-		return new Promise((resolve, reject) => {
-			switch (type) {
-				case 'Undergraduate':
-				case 'Mixed':
-					resolve([
-						{ value: 1, label: '1' },
-						{ value: 2, label: '2' },
-						{ value: 3, label: '3' },
-						{ value: 4, label: '4' },
-						{ value: 5, label: '5' },
-					]);
-					break;
-				case 'Master':
-					resolve([
-						{ value: 1, label: '1' },
-						{ value: 2, label: '2' },
-					]);
-					break;
-				default:
-					resolve([]);
-			}
-		});
-	};
+	const courseYearOptions = useMemo(
+		() => ({
+			[CourseType.Undergraduate]: [
+				{ value: 1, label: '1' },
+				{ value: 2, label: '2' },
+				{ value: 3, label: '3' },
+				{ value: 4, label: '4' },
+				{ value: 5, label: '5' },
+			],
+			[CourseType.Mixed]: [
+				{ value: 1, label: '1' },
+				{ value: 2, label: '2' },
+				{ value: 3, label: '3' },
+				{ value: 4, label: '4' },
+				{ value: 5, label: '5' },
+			],
+			[CourseType.Master]: [
+				{ value: 1, label: '1' },
+				{ value: 2, label: '2' },
+			],
+		}),
+		[]
+	);
 
 	const ctc = useRef(null);
-	const ytc = useRef(null);
-
 	const [tooltipIdOpen, setTooltipIdOpen] = useState(false);
 	const tooltipId = () => {
 		setTooltipIdOpen(!tooltipIdOpen);
 	};
 
-	const [tooltipYearOpen, setTooltipYearOpen] = useState(false);
-	const tooltipYear = () => {
-		setTooltipYearOpen(!tooltipYearOpen);
-	};
-
 	const [hasPrerequisites, setHasPrerequisites] = useState(false);
-
 	const [isObligatory, setIsObligatory] = useState(true);
 
 	const handlePrerequisites = () => {
@@ -68,7 +60,6 @@ export default function CourseForm({
 
 	const CourseTooltipComponent = forwardRef((props, ref) => {
 		const { ctc } = props;
-
 		return (
 			<Tooltip
 				ref={ctc}
@@ -82,21 +73,9 @@ export default function CourseForm({
 		);
 	});
 
-	const YearTooltipComponent = forwardRef((props, ref) => {
-		const { ytc } = props;
-
-		return (
-			<Tooltip
-				ref={ytc}
-				placement="top"
-				isOpen={tooltipYearOpen}
-				target="courseYearTooltip"
-				toggle={tooltipYear}
-			>
-				You must select the course type first in order to assign year for the course
-			</Tooltip>
-		);
-	});
+	useEffect(() => {
+		setHasPrerequisites(course && course.prerequisites && course.prerequisites.length > 0);
+	}, [course]);
 
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -117,11 +96,11 @@ export default function CourseForm({
 					year: course ? course.year : '',
 					cycle: course ? course.cycle : '',
 					prerequisites: course ? course.prerequisites : [],
-					isActive: course ? course.isActive : false,
 				}}
+				enableReinitialize={true}
 				validationSchema={CourseSchema}
 				onSubmit={(values, { setSubmitting }) => {
-					const course = {
+					const courseData = {
 						courseId: values.courseId,
 						title: values.title,
 						type: values.type,
@@ -136,15 +115,16 @@ export default function CourseForm({
 						prerequisites: values.prerequisites.some(Boolean)
 							? values.prerequisites
 							: [],
-						isActive: values.isActive,
+						isActive: course ? course.isActive : false,
 					};
 					if (isEditingCourse) {
-						dispatch(updateCourse({ courseId: editCourseId, data: course }));
+						console.log(courseData);
+						dispatch(updateCourse({ courseId: editCourseId, data: courseData }));
 						setSubmitting(false);
 						return;
 					}
-					console.log(course);
-					dispatch(createCourse(course));
+					console.log(courseData);
+					dispatch(createCourse(courseData));
 					setSubmitting(false);
 					navigate('/course');
 				}}
@@ -188,16 +168,18 @@ export default function CourseForm({
 										value={values.type}
 										onChange={async (e) => {
 											const { value } = e.target;
-											const _years = await courseYear(value);
+											const _years = courseYearOptions[value] || [];
 											setFieldValue('type', value);
 											setFieldValue('year', '');
 											setFieldValue('years', _years);
 										}}
 									>
 										<option default>Select course type</option>
-										<option value={'Undergraduate'}>Undergraduate</option>
-										<option value={'Master'}>Master</option>
-										<option value={'Mixed'}>Mixed</option>
+										{Object.entries(courseYearOptions).map(([type, years]) => (
+											<option key={type} value={type}>
+												{type}
+											</option>
+										))}
 									</Field>
 									<Label for="type" className="text-gray-600">
 										Course Type
@@ -299,24 +281,28 @@ export default function CourseForm({
 										className="form-control"
 										name="year"
 										value={values.year}
+										disabled={!values.type}
 									>
 										<option default>Select course year</option>
-										{values.years &&
+										{course ? (
+											<option>{course.year}</option>
+										) : (
+											values.years &&
 											values.years.map((y) => (
 												<option key={y.value} value={y.value}>
 													{y.label}
 												</option>
-											))}
+											))
+										)}
 									</Field>
 									<Label for="year" className="text-gray-600">
 										Course Year
 									</Label>
 									<ErrorMessage name="year" component={FormErrorMessage} />
 								</FormGroup>
-								<YearTooltipComponent ytc={ytc} />
 							</Col>
 							<Col md="6">
-								{!isObligatory && (
+								{!isObligatory || (course && course.cycle) ? (
 									<>
 										<FormGroup className="form-floating mb-3" floating>
 											<Field
@@ -340,11 +326,11 @@ export default function CourseForm({
 											/>
 										</FormGroup>
 									</>
-								)}
+								) : null}
 							</Col>
 						</Row>
 
-						{hasPrerequisites && (
+						{hasPrerequisites ? (
 							<>
 								<FormGroup className="form-floating mb-3" floating>
 									<FieldArray
@@ -437,10 +423,18 @@ export default function CourseForm({
 																			<option default>
 																				Select type
 																			</option>
-																			<option value={'Hard'}>
+																			<option
+																				value={
+																					PrerequisiteType.Hard
+																				}
+																			>
 																				Hard
 																			</option>
-																			<option value={'Soft'}>
+																			<option
+																				value={
+																					PrerequisiteType.Soft
+																				}
+																			>
 																				Soft
 																			</option>
 																		</Field>
@@ -470,15 +464,17 @@ export default function CourseForm({
 									/>
 								</FormGroup>
 							</>
-						)}
+						) : null}
 
 						<Row>
 							<Col sm="6" md="6" xs="12" className="text-sm-left text-center">
 								<Button
 									onClick={() => {
 										handleReset();
-										setHasPrerequisites(false);
-										setIsObligatory(true);
+										if (!course) {
+											setHasPrerequisites(false);
+											setIsObligatory(true);
+										}
 									}}
 									disabled={!dirty || isSubmitting}
 								>

@@ -8,7 +8,7 @@ const initialState = {
 	notes: [],
 	note: {},
 	isLoading: false,
-	isEditing: false,
+	isEditingNote: false,
 	editNoteId: '',
 };
 
@@ -20,7 +20,7 @@ export const getUserNotes = createAsyncThunk(API_URL_NOTE, async (_, thunkAPI) =
 	}
 });
 
-export const getUserNote = createAsyncThunk(API_URL_NOTE + 'get', async (noteId, thunkAPI) => {
+export const getUserNote = createAsyncThunk(API_URL_NOTE + '/get', async (noteId, thunkAPI) => {
 	try {
 		return await noteService.getUserNote(noteId);
 	} catch (error) {
@@ -28,7 +28,7 @@ export const getUserNote = createAsyncThunk(API_URL_NOTE + 'get', async (noteId,
 	}
 });
 
-export const createUserNote = createAsyncThunk(API_URL_NOTE + 'create', async (data, thunkAPI) => {
+export const createUserNote = createAsyncThunk(API_URL_NOTE + '/create', async (data, thunkAPI) => {
 	try {
 		return await noteService.createUserNote(data);
 	} catch (error) {
@@ -37,7 +37,7 @@ export const createUserNote = createAsyncThunk(API_URL_NOTE + 'create', async (d
 });
 
 export const updateUserNote = createAsyncThunk(
-	API_URL_NOTE + 'update',
+	API_URL_NOTE + '/update',
 	async ({ noteId, data }, thunkAPI) => {
 		try {
 			return await noteService.updateUserNote(noteId, data);
@@ -49,7 +49,7 @@ export const updateUserNote = createAsyncThunk(
 );
 
 export const updateImportance = createAsyncThunk(
-	API_URL_NOTE + 'update_importance',
+	API_URL_NOTE + '/update_importance',
 	async (noteId, thunkAPI) => {
 		try {
 			const updatedNote = await noteService.updateImportance(noteId);
@@ -61,7 +61,7 @@ export const updateImportance = createAsyncThunk(
 );
 
 export const deleteUserNote = createAsyncThunk(
-	API_URL_NOTE + 'delete',
+	API_URL_NOTE + '/delete',
 	async (noteId, thunkAPI) => {
 		try {
 			await noteService.deleteUserNote(noteId);
@@ -73,7 +73,7 @@ export const deleteUserNote = createAsyncThunk(
 );
 
 export const deleteUserNotes = createAsyncThunk(
-	API_URL_NOTE + 'delete_all',
+	API_URL_NOTE + '/delete_all',
 	async (_, thunkAPI) => {
 		try {
 			await noteService.deleteUserNotes();
@@ -90,7 +90,7 @@ export const noteSlice = createSlice({
 	reducers: {
 		resetNotes: () => initialState,
 		setEditNote: (state, { payload }) => {
-			return { ...state, isEditing: true, ...payload };
+			return { ...state, isEditingNote: true, ...payload };
 		},
 	},
 	extraReducers: (builder) => {
@@ -106,7 +106,7 @@ export const noteSlice = createSlice({
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: action.payload,
+					text: action.payload.message,
 					icon: 'error',
 				});
 			})
@@ -121,7 +121,7 @@ export const noteSlice = createSlice({
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: action.payload,
+					text: action.payload.message,
 					icon: 'error',
 				});
 			})
@@ -135,13 +135,13 @@ export const noteSlice = createSlice({
 					text: 'Note posted!',
 					icon: 'success',
 				});
-				state.notes = [...state.notes, action.payload];
+				state.notes.push(action.payload);
 			})
 			.addCase(createUserNote.rejected, (state, action) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: action.payload,
+					text: action.payload.message,
 					icon: 'error',
 				});
 			})
@@ -170,7 +170,7 @@ export const noteSlice = createSlice({
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: action.payload,
+					text: action.payload.message,
 					icon: 'error',
 				});
 			})
@@ -187,40 +187,41 @@ export const noteSlice = createSlice({
 				});
 				state.note = action.payload;
 				state.notes = state.notes.map((note) => {
-					if (note._id === noteId) {
+					if (note._id === noteId)
 						return {
 							...note,
 							importance: !updatedNote.importance,
 						};
-					} else {
-						return note;
-					}
+
+					return note;
 				});
 			})
 			.addCase(updateImportance.rejected, (state, action) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: action.payload,
+					text: action.payload.message,
 					icon: 'error',
 				});
 			})
 			.addCase(deleteUserNote.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(deleteUserNote.fulfilled, (state) => {
+			.addCase(deleteUserNote.fulfilled, (state, action) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
 					text: 'Note deleted!',
 					icon: 'success',
 				});
+				const index = state.indexOf(action.payload);
+				state.splice(index, 1);
 			})
 			.addCase(deleteUserNote.rejected, (state, action) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: action.payload,
+					text: action.payload.message,
 					icon: 'error',
 				});
 			})
@@ -239,7 +240,7 @@ export const noteSlice = createSlice({
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: action.payload,
+					text: action.payload.message,
 					icon: 'error',
 				});
 			});

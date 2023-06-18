@@ -2,6 +2,7 @@ import express from 'express';
 import { createUserGeneralReview } from '../../controllers/review/generalReview';
 import { validateGeneralReview } from '../../middleware/validations';
 import { authorize, checkUserRole } from '../../middleware/authMiddleware';
+import { UserType } from '../../models/users/user';
 
 export default (router: express.Router) => {
 	// @desc    Create General Review
@@ -11,7 +12,7 @@ export default (router: express.Router) => {
 		.route('/review/general')
 		.post(
 			authorize,
-			checkUserRole(['Admin', 'Student']),
+			checkUserRole([UserType.admin, UserType.student]),
 			validateGeneralReview,
 			createUserGeneralReview
 		);

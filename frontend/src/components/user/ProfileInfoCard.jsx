@@ -2,6 +2,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Col, Badge } from 'reactstrap';
 import { faUserTie, faCertificate, faGraduationCap } from '@fortawesome/free-solid-svg-icons';
 import { faCalendarCheck, faIdBadge } from '@fortawesome/free-regular-svg-icons';
+import { UserType } from '../../constants/enums';
 import img from '../../assets/images/undraw_profile.svg';
 
 export default function ProfileInfoCard({ user }) {
@@ -13,7 +14,11 @@ export default function ProfileInfoCard({ user }) {
 						<img
 							src={img}
 							alt="profile_picture"
-							className="rounded-circle p-1 bg-primary mb-1"
+							className={
+								user.user.type === UserType.admin
+									? `rounded-circle p-1 bg-danger mb-1`
+									: `rounded-circle p-1 bg-primary mb-1`
+							}
 							width="70"
 						/>
 						<Col>
@@ -29,11 +34,13 @@ export default function ProfileInfoCard({ user }) {
 						</Col>
 						<Col className="mt-3">
 							<h6>{user.user.email}</h6>
-							<p className="text-secondary mb-1">{user.user.type}</p>
-							<p className="text-muted mt-3">University of Aegean</p>
+							<p className="text-secondary font-weight-bold mt-2 mb-1">
+								{user.user.type}
+							</p>
+							<p className="text-star-command-blue mt-3">University of Aegean</p>
 						</Col>
 					</div>
-					{user.user.type === 'Student' ? (
+					{user.user.type === UserType.student ? (
 						<>
 							<hr />
 							<ul className="list-group list-group-flush">
@@ -46,7 +53,7 @@ export default function ProfileInfoCard({ user }) {
 										Reg. number
 									</h6>
 									<span className="text-secondary">
-										{user.userType.studentId}
+										{user.user.student.studentId}
 									</span>
 								</li>
 							</ul>
@@ -60,7 +67,7 @@ export default function ProfileInfoCard({ user }) {
 										Admission Year
 									</h6>
 									<span className="text-secondary">
-										{user.userType.entranceYear}
+										{user.user.student.entranceYear}
 									</span>
 								</li>
 							</ul>
@@ -74,12 +81,12 @@ export default function ProfileInfoCard({ user }) {
 										Student Type
 									</h6>
 									<span className="text-secondary">
-										{user.userType.studentType}
+										{user.user.student.studentType}
 									</span>
 								</li>
 							</ul>
 						</>
-					) : user.user.type === 'Instructor' ? (
+					) : user.user.type === UserType.instructor ? (
 						<>
 							<hr />
 							<ul className="list-group list-group-flush">
@@ -92,7 +99,7 @@ export default function ProfileInfoCard({ user }) {
 										Faculty Type
 									</h6>
 									<span className="text-secondary">
-										{user.userType.facultyType}
+										{user.user.instructor.facultyType}
 									</span>
 								</li>
 							</ul>
@@ -105,7 +112,9 @@ export default function ProfileInfoCard({ user }) {
 										/>
 										Degree
 									</h6>
-									<span className="text-secondary">{user.userType.degree}</span>
+									<span className="text-secondary">
+										{user.user.instructor.degree}
+									</span>
 								</li>
 							</ul>
 							<ul className="list-group list-group-flush">
@@ -118,7 +127,7 @@ export default function ProfileInfoCard({ user }) {
 										Entrance Year
 									</h6>
 									<span className="text-secondary">
-										{user.userType.instructorEntranceYear}
+										{user.user.instructor.instructorEntranceYear}
 									</span>
 								</li>
 							</ul>

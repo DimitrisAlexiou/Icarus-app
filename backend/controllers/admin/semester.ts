@@ -7,14 +7,17 @@ import {
 	updateSemesterById,
 	deleteSemesterById,
 	deleteSemesters,
+	SemesterType,
 } from '../../models/admin/semester';
 import { tryCatch } from '../../utils/tryCatch';
 import CustomError from '../../utils/CustomError';
 
-export const defineSemester = tryCatch(async (req: Request, res: Response) => {
+export const defineSemester = tryCatch(async (req: Request, res: Response): Promise<Response> => {
 	const { type, grading, startDate, endDate } = req.body;
 
-	if (!type || !grading || !startDate || !endDate)
+	if (!type) throw new CustomError('Please provide a semester type.', 400);
+
+	if (type !== SemesterType.Any && (!startDate || !endDate || !grading))
 		throw new CustomError('Please fill in all the required fields.', 400);
 
 	const existingSemester = await getSemesterByType(type);
@@ -23,16 +26,16 @@ export const defineSemester = tryCatch(async (req: Request, res: Response) => {
 
 	const semester = await createSemester({
 		type,
-		grading,
-		startDate,
-		endDate,
+		grading: type === SemesterType.Any ? null : grading,
+		startDate: type === SemesterType.Any ? null : startDate,
+		endDate: type === SemesterType.Any ? null : endDate,
 		status: 'new',
 	});
 
 	return res.status(201).json(semester);
 });
 
-export const viewSemester = tryCatch(async (_: Request, res: Response) => {
+export const viewSemester = tryCatch(async (_: Request, res: Response): Promise<Response> => {
 	const semester = await getCurrentSemester(new Date());
 	if (!semester)
 		throw new CustomError('Seems like there is no defined semester for this period.', 404);
@@ -40,14 +43,14 @@ export const viewSemester = tryCatch(async (_: Request, res: Response) => {
 	return res.status(200).json(semester);
 });
 
-export const viewSemesters = tryCatch(async (_: Request, res: Response) => {
+export const viewSemesters = tryCatch(async (_: Request, res: Response): Promise<Response> => {
 	const semesters = await getSemesters();
 	if (!semesters) throw new CustomError('Seems like there are no defined semesters.', 404);
 
 	return res.status(200).json(semesters);
 });
 
-export const updateSemester = tryCatch(async (req: Request, res: Response) => {
+export const updateSemester = tryCatch(async (req: Request, res: Response): Promise<Response> => {
 	const { grading, startDate, endDate } = req.body;
 
 	if (!grading || !startDate || !endDate)
@@ -66,7 +69,7 @@ export const updateSemester = tryCatch(async (req: Request, res: Response) => {
 	return res.status(200).json(updatedSemester);
 });
 
-export const deleteSemester = tryCatch(async (req: Request, res: Response) => {
+export const deleteSemester = tryCatch(async (req: Request, res: Response): Promise<Response> => {
 	const { id } = req.params;
 	const semesterToDelete = await deleteSemesterById(id);
 	if (!semesterToDelete)
@@ -78,7 +81,7 @@ export const deleteSemester = tryCatch(async (req: Request, res: Response) => {
 	return res.status(200).json({ message: 'Defined semester deleted.' });
 });
 
-export const deleteAllSemesters = tryCatch(async (_: Request, res: Response) => {
+export const deleteAllSemesters = tryCatch(async (_: Request, res: Response): Promise<Response> => {
 	await deleteSemesters();
 	return res.status(200).json({ message: 'Defined semesters deleted.' });
 });

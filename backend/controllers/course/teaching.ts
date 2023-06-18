@@ -70,8 +70,7 @@ export const deleteTeaching = tryCatch(async (req: Request, res: Response): Prom
 });
 
 export const viewTeachings = tryCatch(async (_: Request, res: Response): Promise<Response> => {
-	const teachings = await getTeachings().populate('course');
-
+	const teachings = await getTeachings();
 	if (!teachings)
 		throw new CustomError(
 			'Seems like there are no active course teachings registered in the system.',

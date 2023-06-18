@@ -14,26 +14,21 @@ const CourseCard = ({ course }) => {
 
 	useEffect(() => {
 		dispatch(getCycles());
-		if (isError) {
+		if (isError)
 			Toast.fire({
 				title: 'Something went wrong!',
 				text: message,
 				icon: 'error',
 			});
-		}
 	}, [dispatch, isError, message]);
 
 	useEffect(() => {
-		if (course.cycle) {
+		if (cycles && cycles.names && cycles.names.length > 0 && course.cycle) {
 			const cycle = cycles.names.find((c) => c._id === course.cycle);
-			if (cycle) {
-				setCycle(cycle.cycle);
-			}
+			if (cycle) setCycle(cycle.cycle);
 		}
-		if (course.semester) {
-			setSemester(course.semester.type);
-		}
-	}, [course.cycle, course.semester, cycles.names]);
+		if (course.semester) setSemester(course.semester.type);
+	}, [cycles, course.cycle, course.semester]);
 
 	return (
 		<>

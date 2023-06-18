@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import mongoose, { ClientSession, Schema, model } from 'mongoose';
 
 export interface NoteProps {
 	title: string;
@@ -6,10 +6,10 @@ export interface NoteProps {
 	file: string;
 	categories: string[];
 	importance: boolean;
-	owner: string;
+	owner: mongoose.Types.ObjectId;
 }
 
-const noteSchema = new Schema(
+const noteSchema = new Schema<NoteProps>(
 	{
 		title: {
 			type: String,
@@ -42,7 +42,7 @@ const noteSchema = new Schema(
 	}
 );
 
-export const Note = model('Note', noteSchema);
+export const Note = model<NoteProps>('Note', noteSchema);
 
 export const createNote = (values: Record<string, any>) =>
 	new Note(values).save().then((note) => note.toObject());
@@ -50,8 +50,9 @@ export const getNotes = (userId: string) => Note.find({ owner: userId });
 export const getAllNotes = () => Note.find();
 export const getNoteByTitle = (title: string) => Note.findOne({ title });
 export const getNoteById = (id: string) => Note.findById(id);
-export const updateNoteById = (id: string, values: Record<string, any>) =>
-	Note.findByIdAndUpdate(id, values);
+export const updateNoteById = (id: string, note: Record<string, any>) =>
+	Note.findByIdAndUpdate(id, note, { new: true });
 export const deleteNote = (id: string) => Note.findByIdAndDelete(id);
-export const deleteNotes = (userId: string) => Note.deleteMany({ owner: userId });
+export const deleteNotes = (userId: string, session: ClientSession) =>
+	Note.deleteMany({ owner: userId }).session(session);
 export const deleteAllNotes = () => Note.deleteMany();

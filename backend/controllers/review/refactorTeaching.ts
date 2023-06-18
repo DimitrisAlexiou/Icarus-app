@@ -15,7 +15,10 @@ interface AuthenticatedRequest extends Request {
 	user?: UserProps;
 }
 
-export const getAllUserTeachingReviews = async (req: AuthenticatedRequest, res: Response) => {
+export const getAllUserTeachingReviews = async (
+	req: AuthenticatedRequest,
+	res: Response
+): Promise<Response> => {
 	try {
 		const userId = req.user.id;
 		const userTeachingReviews = await getUserTeachingReviews(userId);
@@ -33,7 +36,10 @@ export const getAllUserTeachingReviews = async (req: AuthenticatedRequest, res: 
 	}
 };
 
-export const viewUserTeachingReview = async (req: AuthenticatedRequest, res: Response) => {
+export const viewUserTeachingReview = async (
+	req: AuthenticatedRequest,
+	res: Response
+): Promise<Response> => {
 	try {
 		const { id } = req.params;
 		const teachingReview = await getTeachingReviewById(id);
@@ -55,7 +61,10 @@ export const viewUserTeachingReview = async (req: AuthenticatedRequest, res: Res
 // * THE PAGE RENDERS ALL THE TEACHINGS(COURSES) THAT THE USER IS ENROLLED IN, THEN BY SELECTING ONE OF THEM,
 // * THE TEACHING REVIEW FORM IS RENDERED WITH THE TEACHINGID ALREADY PASSED, THE USER ID IS PASSED THROUGH REQ.USER
 
-export const createUserTeachingReview = async (req: AuthenticatedRequest, res: Response) => {
+export const createUserTeachingReview = async (
+	req: AuthenticatedRequest,
+	res: Response
+): Promise<Response> => {
 	const {
 		clear_course_objectives,
 		course_material,
@@ -147,7 +156,10 @@ export const createUserTeachingReview = async (req: AuthenticatedRequest, res: R
 	}
 };
 
-export const updateUserTeachingReview = async (req: AuthenticatedRequest, res: Response) => {
+export const updateUserTeachingReview = async (
+	req: AuthenticatedRequest,
+	res: Response
+): Promise<Response> => {
 	const {
 		clear_course_objectives,
 		course_material,
@@ -212,7 +224,10 @@ export const updateUserTeachingReview = async (req: AuthenticatedRequest, res: R
 	}
 };
 
-export const deleteUserTeachingReview = async (req: AuthenticatedRequest, res: Response) => {
+export const deleteUserTeachingReview = async (
+	req: AuthenticatedRequest,
+	res: Response
+): Promise<Response> => {
 	try {
 		const { id } = req.params;
 		await deleteTeachingReviewById(id);

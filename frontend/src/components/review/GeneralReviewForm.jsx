@@ -3,7 +3,7 @@ import { FormGroup, Label, Row, Col, Button, Spinner } from 'reactstrap';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { GeneralReviewSchema } from '../../schemas/review/GeneralReview';
 import { createGeneralReview } from '../../features/reviews/generalReviewSlice';
-import FormErrorMessage from '../../components/FormErrorMessage';
+import FormErrorMessage from '../../components/form/FormErrorMessage';
 
 export default function GeneralReviewForm() {
 	const dispatch = useDispatch();

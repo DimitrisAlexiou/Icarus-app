@@ -1,6 +1,11 @@
-import mongoose, { Schema, model, Document } from 'mongoose';
-import { Note } from '../note';
-import { Calendar } from '../calendar';
+import mongoose, { Schema, model, Document, ClientSession } from 'mongoose';
+import { passwordRegex, emailRegex } from '../../utils/constants';
+
+export enum UserType {
+	student = 'Student',
+	instructor = 'Instructor',
+	admin = 'Admin',
+}
 
 export interface UserProps extends Document {
 	name: string;
@@ -8,19 +13,19 @@ export interface UserProps extends Document {
 	email: string;
 	username: string;
 	password: string;
-	type: 'Student' | 'Instructor' | 'Admin';
+	type: UserType;
 	isActive: boolean;
 	isAdmin: boolean;
 	loginFailedAttempts: number;
 	lastLogin: Date | null;
 	tokenVersion: number;
-	student: string | null;
-	instructor: string | null;
+	student: mongoose.Types.ObjectId | null;
+	instructor: mongoose.Types.ObjectId | null;
 	notes?: Array<mongoose.Types.ObjectId>;
 	events?: Array<mongoose.Types.ObjectId>;
 }
 
-const userSchema = new Schema(
+const userSchema: Schema = new Schema<UserProps>(
 	{
 		name: {
 			type: String,
@@ -34,20 +39,25 @@ const userSchema = new Schema(
 			type: String,
 			required: true,
 			unique: true,
+			lowercase: true,
+			match: emailRegex,
 		},
 		username: {
 			type: String,
 			required: true,
 			unique: true,
+			lowercase: true,
 		},
 		password: {
 			type: String,
 			required: true,
 			select: false,
+			minlength: 8,
+			match: passwordRegex,
 		},
 		type: {
 			type: String,
-			enum: ['Student', 'Instructor', 'Admin'],
+			enum: Object.values(UserType),
 			required: true,
 		},
 		isActive: {
@@ -74,11 +84,11 @@ const userSchema = new Schema(
 		},
 		student: {
 			type: Schema.Types.ObjectId,
-			ref: 'Student',
+			ref: UserType.student,
 		},
 		instructor: {
 			type: Schema.Types.ObjectId,
-			ref: 'Instructor',
+			ref: UserType.instructor,
 		},
 		notes: [
 			{
@@ -109,47 +119,13 @@ const userSchema = new Schema(
 // 	return next();
 // });
 
-userSchema.pre('findOneAndDelete', async function (next) {
-	try {
-		const userId = this.getQuery()['_id'];
-		await Note.deleteMany({ owner: userId });
-		next();
-	} catch (error) {
-		next(error);
-	}
-});
-
-userSchema.pre('findOneAndDelete', async function (next) {
-	try {
-		const userId = this.getQuery()['_id'];
-		await Calendar.deleteMany({ owner: userId });
-		next();
-	} catch (error) {
-		next(error);
-	}
-});
-
-//TODO Pre 'remove' middleware to remove associated student/instructor when a user is removed
-userSchema.pre<UserProps>('deleteOne', async function (next) {
-	try {
-		if (this.student) await model('Student').findByIdAndDelete(this.student).exec();
-
-		if (this.instructor) await model('Instructor').findByIdAndDelete(this.instructor).exec();
-
-		next();
-	} catch (err) {
-		next(err);
-	}
-});
-
-export const User = model('User', userSchema);
+export const User = model<UserProps>('User', userSchema);
 
 export const getUsers = () => User.find();
 export const getUserById = (id: string) => User.findById(id);
 export const getUserByUsername = (username: string) => User.findOne({ username });
-export const createUser = (values: Record<string, any>) =>
-	new User(values).save().then((user) => user.toObject());
-export const updateUserById = (id: string, values: Record<string, any>) =>
-	User.findByIdAndUpdate(id, values);
-export const deleteUserById = (id: string) => User.findByIdAndDelete(id);
+export const updateUserById = (id: string, user: Record<string, any>) =>
+	User.findByIdAndUpdate(id, user, { new: true });
+export const deleteUserById = (id: string, session: ClientSession) =>
+	User.findByIdAndDelete(id).session(session);
 export const deleteUsers = () => User.deleteMany();

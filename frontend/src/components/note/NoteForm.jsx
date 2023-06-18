@@ -11,13 +11,13 @@ import { createUserNote, updateUserNote } from '../../features/notes/noteSlice';
 // import { SketchPicker } from 'react-color';
 // import chroma from 'chroma-js';
 import CreatableSelect from 'react-select/creatable';
-import FormErrorMessage from '../FormErrorMessage';
+import FormErrorMessage from '../form/FormErrorMessage';
 
 export default function NoteForm({
 	note,
 	user,
-	mode,
-	setModal,
+	isEditingNote,
+	editNoteId,
 	setSelectedCategory,
 	setFieldValue,
 }) {
@@ -216,17 +216,15 @@ export default function NoteForm({
 						importance: values.importance,
 						owner: user._id,
 					};
-					if (mode === 'edit') {
+					if (isEditingNote) {
 						console.log(note);
-						dispatch(updateUserNote({ noteId: note._id, data: note }));
+						dispatch(updateUserNote({ noteId: editNoteId, data: note }));
 						setSubmitting(false);
-						setModal(false);
 						return;
 					}
 					console.log(note);
 					dispatch(createUserNote(note));
 					setSubmitting(false);
-					setModal(false);
 					setSelectedCategory(null);
 					navigate('/note');
 				}}
@@ -403,6 +401,8 @@ export default function NoteForm({
 										<>
 											Please wait <Spinner type="grow" size="sm" />
 										</>
+									) : isEditingNote ? (
+										'Update'
 									) : (
 										'Post'
 									)}
