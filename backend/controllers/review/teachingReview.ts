@@ -24,7 +24,7 @@ export const getAllUserTeachingReviews = tryCatch(
 
 		if (!userTeachingReviews)
 			throw new CustomError(
-				`Seems like there are no teaching reviews registered from user: ${req.user.username}.`,
+				`Seems like you haven't submitted any teaching reviews yet.`,
 				404
 			);
 
@@ -59,6 +59,7 @@ export const createUserTeachingReview = tryCatch(
 			examination_method,
 			course_difficulty,
 			course_activities,
+			teaching,
 		} = req.body;
 
 		if (
@@ -90,8 +91,8 @@ export const createUserTeachingReview = tryCatch(
 			);
 
 		const userId = req.user.id;
-		const { teachingId } = req.params;
-		const existingTeachingReview = await getUserSubmittedTeachingReview(userId, teachingId);
+		// const { teachingId } = req.params;
+		const existingTeachingReview = await getUserSubmittedTeachingReview(userId, teaching);
 
 		if (existingTeachingReview)
 			throw new CustomError(
@@ -107,7 +108,7 @@ export const createUserTeachingReview = tryCatch(
 			course_difficulty,
 			course_activities,
 			user: req.user,
-			teaching: teachingId,
+			teaching: teaching,
 			status: 'new',
 		});
 

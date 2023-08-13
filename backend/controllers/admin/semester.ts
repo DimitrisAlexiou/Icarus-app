@@ -32,7 +32,7 @@ export const defineSemester = tryCatch(async (req: Request, res: Response): Prom
 		status: 'new',
 	});
 
-	return res.status(201).json(semester);
+	return res.status(201).json({ message: 'Semester defined!', semester });
 });
 
 export const viewSemester = tryCatch(async (_: Request, res: Response): Promise<Response> => {
@@ -66,7 +66,7 @@ export const updateSemester = tryCatch(async (req: Request, res: Response): Prom
 			404
 		);
 
-	return res.status(200).json(updatedSemester);
+	return res.status(200).json({ message: 'Semester configuration updated!', updatedSemester });
 });
 
 export const deleteSemester = tryCatch(async (req: Request, res: Response): Promise<Response> => {
@@ -78,7 +78,9 @@ export const deleteSemester = tryCatch(async (req: Request, res: Response): Prom
 			404
 		);
 
-	return res.status(200).json({ message: 'Defined semester deleted.' });
+	return res
+		.status(200)
+		.json({ message: 'Defined semester deleted.', semester: semesterToDelete._id });
 });
 
 export const deleteAllSemesters = tryCatch(async (_: Request, res: Response): Promise<Response> => {

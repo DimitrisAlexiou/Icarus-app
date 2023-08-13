@@ -1,16 +1,18 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { API_URL_CALENDAR } from '../../constants/config';
 import { extractErrorMessage } from '../../utils/errorMessage';
 import { Toast } from '../../constants/sweetAlertNotification';
+import { CREATE_EVENT, UPDATE_EVENT, DELETE_EVENT, DELETE_EVENTS, GET_EVENTS } from '../actions';
 import eventService from './eventService';
 
 const initialState = {
 	events: [],
 	event: {},
 	isLoading: false,
+	isEditingEvent: false,
+	editEventId: '',
 };
 
-export const getEvents = createAsyncThunk(API_URL_CALENDAR, async (_, thunkAPI) => {
+export const getEvents = createAsyncThunk(GET_EVENTS, async (_, thunkAPI) => {
 	try {
 		return await eventService.getEvents();
 	} catch (error) {
@@ -18,7 +20,7 @@ export const getEvents = createAsyncThunk(API_URL_CALENDAR, async (_, thunkAPI) 
 	}
 });
 
-export const addEvent = createAsyncThunk(API_URL_CALENDAR + '/add', async (data, thunkAPI) => {
+export const addEvent = createAsyncThunk(CREATE_EVENT, async (data, thunkAPI) => {
 	try {
 		return await eventService.addEvent(data);
 	} catch (error) {
@@ -26,117 +28,144 @@ export const addEvent = createAsyncThunk(API_URL_CALENDAR + '/add', async (data,
 	}
 });
 
-export const deleteEvent = createAsyncThunk(
-	API_URL_CALENDAR + '/delete',
-	async (eventId, thunkAPI) => {
-		try {
-			return await eventService.deleteEvent(eventId);
-		} catch (error) {
-			return thunkAPI.rejectWithValue(extractErrorMessage(error));
-		}
+export const updateEvent = createAsyncThunk(UPDATE_EVENT, async ({ eventId, data }, thunkAPI) => {
+	try {
+		return await eventService.updateEvent(eventId, data);
+	} catch (error) {
+		return thunkAPI.rejectWithValue(extractErrorMessage(error));
 	}
-);
+});
 
-export const deleteEvents = createAsyncThunk(
-	API_URL_CALENDAR + '/delete_all',
-	async (_, thunkAPI) => {
-		try {
-			return await eventService.deleteEvents();
-		} catch (error) {
-			return thunkAPI.rejectWithValue(extractErrorMessage(error));
-		}
+export const deleteEvent = createAsyncThunk(DELETE_EVENT, async (eventId, thunkAPI) => {
+	try {
+		return await eventService.deleteEvent(eventId);
+	} catch (error) {
+		return thunkAPI.rejectWithValue(extractErrorMessage(error));
 	}
-);
+});
+
+export const deleteEvents = createAsyncThunk(DELETE_EVENTS, async (_, thunkAPI) => {
+	try {
+		return await eventService.deleteEvents();
+	} catch (error) {
+		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+	}
+});
 
 export const eventSlice = createSlice({
 	name: 'event',
 	initialState,
 	reducers: {
 		resetCalendar: () => initialState,
+		setEditEvent: (state, { payload }) => {
+			return { ...state, isEditingEvent: true, ...payload };
+		},
 	},
 	extraReducers: (builder) => {
 		builder
 			.addCase(getEvents.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(getEvents.fulfilled, (state, action) => {
+			.addCase(getEvents.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				state.events = action.payload;
+				state.events = payload;
 			})
-			.addCase(getEvents.rejected, (state, action) => {
+			.addCase(getEvents.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: action.payload.message,
+					text: payload,
 					icon: 'error',
 				});
 			})
 			.addCase(addEvent.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(addEvent.fulfilled, (state, action) => {
+			.addCase(addEvent.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
-					text: 'Event added!',
+					text: payload.message,
 					icon: 'success',
 				});
-				state.events = [...state.events, action.payload];
+				state.events = [...state.events, payload.event];
 			})
-			.addCase(addEvent.rejected, (state, action) => {
+			.addCase(addEvent.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: action.payload.message,
+					text: payload,
+					icon: 'error',
+				});
+			})
+			.addCase(updateEvent.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(updateEvent.fulfilled, (state, { payload }) => {
+				state.isLoading = false;
+				Toast.fire({
+					title: 'Success',
+					text: payload.message,
+					icon: 'success',
+				});
+				const updatedEventIndex = state.events.findIndex(
+					(event) => event._id === payload.updatedEvent._id
+				);
+				if (updatedEventIndex !== -1)
+					state.events[updatedEventIndex] = payload.updatedEvent;
+			})
+			.addCase(updateEvent.rejected, (state, { payload }) => {
+				state.isLoading = false;
+				Toast.fire({
+					title: 'Something went wrong!',
+					text: payload,
 					icon: 'error',
 				});
 			})
 			.addCase(deleteEvent.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(deleteEvent.fulfilled, (state, action) => {
+			.addCase(deleteEvent.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				const deletedEventId = action.payload._id;
-				state.events = [
-					...state.events,
-					state.events.filter((event) => event._id !== deletedEventId),
-				];
-				// state.events = state.events.filter((event) => event._id !== deletedEventId);
 				Toast.fire({
 					title: 'Success',
-					text: action.payload.message,
+					text: payload.message,
 					icon: 'success',
 				});
+				state.events = state.events.filter((event) => {
+					return event._id !== payload.event;
+				});
 			})
-			.addCase(deleteEvent.rejected, (state, action) => {
+			.addCase(deleteEvent.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: action.payload.message,
+					text: payload,
 					icon: 'error',
 				});
 			})
 			.addCase(deleteEvents.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(deleteEvents.fulfilled, (state, action) => {
+			.addCase(deleteEvents.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
-					text: action.payload.message,
+					text: payload.message,
 					icon: 'success',
 				});
+				state.events = null;
 			})
-			.addCase(deleteEvents.rejected, (state, action) => {
+			.addCase(deleteEvents.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: action.payload.message,
+					text: payload,
 					icon: 'error',
 				});
 			});
 	},
 });
 
-export const { resetCalendar } = eventSlice.actions;
+export const { resetCalendar, setEditEvent } = eventSlice.actions;
 export default eventSlice.reducer;

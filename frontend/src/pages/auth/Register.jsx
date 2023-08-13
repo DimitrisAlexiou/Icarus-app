@@ -26,15 +26,15 @@ export default function Register() {
 		}
 		if (user) {
 			Toast.fire({
-				title: 'Info',
-				text: 'You are already logged in',
+				title: 'Hey!',
+				text: 'You are already logged in.',
 				icon: 'info',
 			});
 			navigate('/');
 		}
 		if (isSuccess) {
 			Toast.fire({
-				title: 'Success',
+				title: 'Hoorah!',
 				text: 'Account created!',
 				icon: 'success',
 			});
@@ -42,8 +42,6 @@ export default function Register() {
 		}
 		dispatch(reset());
 	}, [dispatch, navigate, isError, isSuccess, user, message]);
-
-	if (isLoading) return <Spinner />;
 
 	return (
 		<>
@@ -85,7 +83,7 @@ export default function Register() {
 													</h4>
 												</div>
 
-												<RegisterForm />
+												{isLoading ? <Spinner card /> : <RegisterForm />}
 
 												<hr />
 												<Row>

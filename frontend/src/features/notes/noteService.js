@@ -1,5 +1,5 @@
 import axiosFetch from '../../utils/axios';
-import { API_URL_NOTE } from '../../constants/config';
+import { API_URL_NOTE } from '../../constants/apiConfig';
 
 const getUserNotes = async () => {
 	const response = await axiosFetch.get(API_URL_NOTE);
@@ -33,7 +33,7 @@ const updateImportance = async (noteId) => {
 		importance: !currentNote.data.importance,
 	};
 
-	const response = await axiosFetch.put(API_URL_NOTE + '/' + noteId, updatedNote);
+	const response = await axiosFetch.patch(API_URL_NOTE + '/' + noteId, updatedNote);
 
 	return response.data;
 };

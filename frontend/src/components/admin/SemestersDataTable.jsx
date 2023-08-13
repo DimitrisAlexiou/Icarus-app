@@ -7,7 +7,7 @@ import { deleteSemester, setEditSemester } from '../../features/admin/semesterSl
 import { deleteAlert } from '../../constants/sweetAlertNotification';
 import moment from 'moment';
 import DataTable from '../DataTable';
-import SemesterForm from '../../components/admin/SemesterForm';
+import SemesterForm from '../../components/admin/forms/SemesterForm';
 import Spinner from '../../components/boilerplate/Spinner';
 
 export default function SemestersDataTable({ semesters }) {
@@ -15,7 +15,7 @@ export default function SemestersDataTable({ semesters }) {
 		(state) => state.semesters
 	);
 
-	const myRef = useRef(null);
+	const modalRef = useRef(null);
 	const [modal, setModal] = useState(false);
 	const [currentSemester, setCurrentSemester] = useState({
 		type: '',
@@ -36,9 +36,9 @@ export default function SemestersDataTable({ semesters }) {
 		);
 	};
 
-	const ModalComponent = forwardRef((props, myRef) => {
+	const ModalComponent = forwardRef((props, ref) => {
 		return (
-			<Modal ref={myRef} isOpen={modal} toggle={toggle} className="modal-lg">
+			<Modal ref={ref} isOpen={modal} toggle={toggle} className="modal-lg">
 				<ModalHeader toggle={toggle}>Edit Semester ({currentSemester.type})</ModalHeader>
 				<ModalBody>
 					<SemesterForm
@@ -92,7 +92,9 @@ export default function SemestersDataTable({ semesters }) {
 					<Col sm="4">
 						<Button
 							className="btn btn-light"
-							onClick={() => dispatch(deleteSemester(semester._id))}
+							onClick={() =>
+								deleteAlert(() => dispatch(deleteSemester(semester._id)))
+							}
 						>
 							<FontAwesomeIcon icon={faTrashAlt} />
 						</Button>
@@ -102,7 +104,7 @@ export default function SemestersDataTable({ semesters }) {
 		},
 	];
 
-	if (isLoading) return <Spinner />;
+	if (isLoading) return <Spinner card />;
 
 	return (
 		<>
@@ -117,7 +119,7 @@ export default function SemestersDataTable({ semesters }) {
 						sortColumns={['type', 'startDate']}
 						searchMessage={'by Start Date'}
 					/>
-					{isEditingSemester ? <ModalComponent ref={myRef} /> : null}
+					{isEditingSemester ? <ModalComponent ref={modalRef} /> : null}
 				</>
 				{/* )} */}
 			</div>

@@ -11,7 +11,6 @@ import ProfileCard3 from '../../components/user/ProfileCard3';
 import ChangePassword from '../../components/user/ChangePassword';
 import Spinner from '../../components/boilerplate/Spinner';
 import moment from 'moment';
-import undraw_account from '../../assets/images/undraw_account.svg';
 
 export default function Profile() {
 	const { user, isLoading } = useSelector((state) => state.auth);
@@ -22,10 +21,8 @@ export default function Profile() {
 	const renderComponent = () => {
 		switch (selectedNavItem) {
 			case 'overview':
-				// return null;
-				return <ProfileUpdateCard />;
+				return <ProfileUpdateCard user={user} isLoading={isLoading} />;
 			case 'security':
-				// return null;
 				return <ChangePassword />;
 			default:
 				return null;
@@ -34,7 +31,7 @@ export default function Profile() {
 
 	return (
 		<>
-			<Row className="mb-5 animated--grow-in">
+			<Row className="animated--grow-in">
 				<Col sm="6" xs="9" md="6">
 					<h3 className="mb-5 text-gray-800 font-weight-bold animated--grow-in">
 						Profile

@@ -6,11 +6,15 @@ import {
 	API_URL_FORGOT_PASSWORD,
 	API_URL_USER,
 	headers,
-} from '../../constants/config';
+} from '../../constants/apiConfig';
 import {
+	addUserToLocalStorage,
 	removeUserFromLocalStorage,
 	getLastPageFromLocalStorage,
 	removeLastPageFromLocalStorage,
+	removeLastAttemptedUsernameFromLocalStorage,
+	removeIsAccountLockedFromLocalStorage,
+	removeLoginFailedAttemptsFromLocalStorage,
 } from '../../utils/localStorage';
 
 const register = async (data) => {
@@ -35,7 +39,7 @@ const login = async (data) => {
 	const response = await axios.post(API_URL_LOGIN, data, config);
 
 	if (response.data) {
-		localStorage.setItem('user', JSON.stringify(response.data));
+		addUserToLocalStorage(response.data);
 		if (getLastPageFromLocalStorage()) {
 			window.location.href = getLastPageFromLocalStorage();
 			removeLastPageFromLocalStorage();
@@ -47,6 +51,9 @@ const login = async (data) => {
 
 const logout = async () => {
 	removeUserFromLocalStorage();
+	removeLoginFailedAttemptsFromLocalStorage();
+	removeIsAccountLockedFromLocalStorage();
+	removeLastAttemptedUsernameFromLocalStorage();
 };
 
 const forgotPassword = async (data) => {
@@ -91,8 +98,8 @@ const getProfile = async () => {
 	return response.data;
 };
 
-const updateProfile = async (data) => {
-	const response = await axiosFetch.put(API_URL_USER, data);
+const updateProfile = async (userId, data) => {
+	const response = await axiosFetch.put(API_URL_USER + '/' + userId, data);
 
 	return response.data;
 };

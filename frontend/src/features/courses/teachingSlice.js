@@ -1,12 +1,23 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { API_URL_TEACHING } from '../../constants/config';
 import { extractErrorMessage } from '../../utils/errorMessage';
 import { Toast } from '../../constants/sweetAlertNotification';
+import {
+	ASSIGN_LAB_INSTRUCTORS,
+	ASSIGN_THEORY_INSTRUCTORS,
+	DELETE_TEACHING,
+	DELETE_TEACHINGS,
+	GET_TEACHING,
+	GET_TEACHINGS,
+	UNASSIGN_THEORY_INSTRUCTORS,
+	UNASSIGN_LAB_INSTRUCTORS,
+	UPDATE_TEACHING,
+	GET_TEACHING_BY_COURSE_ID,
+} from '../actions';
 import teachingService from './teachingService';
 
 const initialState = {
 	teachings: [],
-	teaching: {},
+	teaching: null,
 	totalTeachings: 0,
 	numOfPages: 1,
 	page: 1,
@@ -16,7 +27,7 @@ const initialState = {
 };
 
 export const updateTeaching = createAsyncThunk(
-	API_URL_TEACHING + '/update',
+	UPDATE_TEACHING,
 	async ({ teachingId, data }, thunkAPI) => {
 		try {
 			return await teachingService.updateTeaching(teachingId, data);
@@ -26,30 +37,34 @@ export const updateTeaching = createAsyncThunk(
 	}
 );
 
-export const getTeaching = createAsyncThunk(
-	API_URL_TEACHING + '/get',
-	async (teachingId, thunkAPI) => {
+export const getTeaching = createAsyncThunk(GET_TEACHING, async (teachingId, thunkAPI) => {
+	try {
+		return await teachingService.getTeaching(teachingId);
+	} catch (error) {
+		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+	}
+});
+
+export const getTeachingByCourseId = createAsyncThunk(
+	GET_TEACHING_BY_COURSE_ID,
+	async (courseId, thunkAPI) => {
 		try {
-			return await teachingService.getTeaching(teachingId);
+			return await teachingService.getTeachingByCourseId(courseId);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
 	}
 );
 
-export const deleteTeaching = createAsyncThunk(
-	API_URL_TEACHING + '/delete',
-	async (teachingId, thunkAPI) => {
-		try {
-			await teachingService.deleteTeaching(teachingId);
-			return thunkAPI.dispatch(getTeachings());
-		} catch (error) {
-			return thunkAPI.rejectWithValue(extractErrorMessage(error));
-		}
+export const deleteTeaching = createAsyncThunk(DELETE_TEACHING, async (teachingId, thunkAPI) => {
+	try {
+		return await teachingService.deleteTeaching(teachingId);
+	} catch (error) {
+		return thunkAPI.rejectWithValue(extractErrorMessage(error));
 	}
-);
+});
 
-export const getTeachings = createAsyncThunk(API_URL_TEACHING + '/get_all', async (_, thunkAPI) => {
+export const getTeachings = createAsyncThunk(GET_TEACHINGS, async (_, thunkAPI) => {
 	try {
 		const { page, search, searchStatus, searchType, sort } = thunkAPI.getState().teachings;
 		let url = `?page=${page}`;
@@ -60,11 +75,52 @@ export const getTeachings = createAsyncThunk(API_URL_TEACHING + '/get_all', asyn
 	}
 });
 
-export const deleteTeachings = createAsyncThunk(
-	API_URL_TEACHING + '/delete_all',
-	async (_, thunkAPI) => {
+export const deleteTeachings = createAsyncThunk(DELETE_TEACHINGS, async (_, thunkAPI) => {
+	try {
+		return await teachingService.deleteTeachings();
+	} catch (error) {
+		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+	}
+});
+
+export const assignTheoryInstructors = createAsyncThunk(
+	ASSIGN_THEORY_INSTRUCTORS,
+	async ({ teachingId, data }, thunkAPI) => {
 		try {
-			return await teachingService.deleteTeachings();
+			return await teachingService.assignTheoryInstructors(teachingId, data);
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
+	}
+);
+
+export const unassignTheoryInstructors = createAsyncThunk(
+	UNASSIGN_THEORY_INSTRUCTORS,
+	async (teachingId, thunkAPI) => {
+		try {
+			return await teachingService.unassignTheoryInstructors(teachingId);
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
+	}
+);
+
+export const assignLabInstructors = createAsyncThunk(
+	ASSIGN_LAB_INSTRUCTORS,
+	async ({ teachingId, data }, thunkAPI) => {
+		try {
+			return await teachingService.assignLabInstructors(teachingId, data);
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
+	}
+);
+
+export const unassignLabInstructors = createAsyncThunk(
+	UNASSIGN_LAB_INSTRUCTORS,
+	async (teachingId, thunkAPI) => {
+		try {
+			return await teachingService.unassignLabInstructors(teachingId);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -92,101 +148,218 @@ export const teachingSlice = createSlice({
 			.addCase(updateTeaching.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(updateTeaching.fulfilled, (state, action) => {
+			.addCase(updateTeaching.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
-					text: 'Teaching updated!',
+					text: payload.message,
 					icon: 'success',
 				});
-				state.teachings.map((teaching) =>
-					teaching._id === action.payload._id ? action.payload : teaching
+				const updatedTeachingIndex = state.teachings.findIndex(
+					(teaching) => teaching._id === payload.updatedTeaching._id
 				);
+				if (updatedTeachingIndex !== -1)
+					state.teachings[updatedTeachingIndex] = payload.updatedTeaching;
 			})
-			.addCase(updateTeaching.rejected, (state, action) => {
+			.addCase(updateTeaching.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: action.payload.message,
+					text: payload,
 					icon: 'error',
 				});
 			})
 			.addCase(getTeaching.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(getTeaching.fulfilled, (state, action) => {
+			.addCase(getTeaching.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				state.teaching = action.payload;
+				state.teaching = payload;
 			})
-			.addCase(getTeaching.rejected, (state, action) => {
+			.addCase(getTeaching.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				if (
-					action.payload.message !==
+					payload !==
 					'Seems like the teaching that you are trying to view does not exist.'
 				)
 					Toast.fire({
 						title: 'Something went wrong!',
-						text: action.payload.message,
+						text: payload,
+						icon: 'error',
+					});
+			})
+			.addCase(getTeachingByCourseId.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(getTeachingByCourseId.fulfilled, (state, { payload }) => {
+				state.isLoading = false;
+				state.teaching = payload;
+			})
+			.addCase(getTeachingByCourseId.rejected, (state, { payload }) => {
+				state.isLoading = false;
+				if (
+					payload !==
+					'Seems like the course teaching that you are trying to view does not exist.'
+				)
+					Toast.fire({
+						title: 'Something went wrong!',
+						text: payload,
 						icon: 'error',
 					});
 			})
 			.addCase(deleteTeaching.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(deleteTeaching.fulfilled, (state, action) => {
+			.addCase(deleteTeaching.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
-					text: action.payload.message,
+					text: payload.message,
 					icon: 'success',
 				});
-				// state.filter((teaching) => teaching._id !== action.payload);
-				// state.teachings = [
-				// 	...state.teachings,
-				// 	state.teachings.filter((teaching) => teaching._id !== action.payload._id),
-				// ];
+				state.teachings = state.teachings.filter((teaching) => {
+					return teaching._id !== payload.teaching;
+				});
 			})
-			.addCase(deleteTeaching.rejected, (state, action) => {
+			.addCase(deleteTeaching.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: action.payload.message,
+					text: payload,
 					icon: 'error',
 				});
 			})
 			.addCase(getTeachings.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(getTeachings.fulfilled, (state, action) => {
+			.addCase(getTeachings.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				state.teachings = action.payload;
-				state.numOfPages = action.payload.numOfPages;
-				state.totalTeachings = action.payload.totalTeachings;
+				state.teachings = payload;
+				state.numOfPages = payload.numOfPages;
+				state.totalTeachings = payload.totalTeachings;
 			})
-			.addCase(getTeachings.rejected, (state, action) => {
+			.addCase(getTeachings.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: action.payload.message,
+					text: payload,
 					icon: 'error',
 				});
 			})
 			.addCase(deleteTeachings.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(deleteTeachings.fulfilled, (state, action) => {
+			.addCase(deleteTeachings.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
-					text: action.payload.message,
+					text: payload,
 					icon: 'success',
 				});
 			})
-			.addCase(deleteTeachings.rejected, (state, action) => {
+			.addCase(deleteTeachings.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: action.payload.message,
+					text: payload,
+					icon: 'error',
+				});
+			})
+			.addCase(assignTheoryInstructors.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(assignTheoryInstructors.fulfilled, (state, { payload }) => {
+				state.isLoading = false;
+				Toast.fire({
+					title: 'Success',
+					text: payload.message,
+					icon: 'success',
+				});
+				const assignedInstructorsIndex = state.teachings.findIndex(
+					(teaching) => teaching._id === payload.assignedTheoryInstructors._id
+				);
+				if (assignedInstructorsIndex !== -1)
+					state.teachings[assignedInstructorsIndex].theoryInstructors =
+						payload.assignedTheoryInstructors.theoryInstructors;
+			})
+			.addCase(assignTheoryInstructors.rejected, (state, { payload }) => {
+				state.isLoading = false;
+				Toast.fire({
+					title: 'Something went wrong!',
+					text: payload,
+					icon: 'error',
+				});
+			})
+			.addCase(unassignTheoryInstructors.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(unassignTheoryInstructors.fulfilled, (state, { payload }) => {
+				state.isLoading = false;
+				Toast.fire({
+					title: 'Success',
+					text: payload.message,
+					icon: 'success',
+				});
+				const unassignedInstructorsIndex = state.teachings.findIndex(
+					(teaching) => teaching._id === payload.unassignedTheoryInstructors._id
+				);
+				if (unassignedInstructorsIndex !== -1)
+					state.teachings[unassignedInstructorsIndex].theoryInstructors = [];
+			})
+			.addCase(unassignTheoryInstructors.rejected, (state, { payload }) => {
+				state.isLoading = false;
+				Toast.fire({
+					title: 'Something went wrong!',
+					text: payload,
+					icon: 'error',
+				});
+			})
+			.addCase(assignLabInstructors.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(assignLabInstructors.fulfilled, (state, { payload }) => {
+				state.isLoading = false;
+				Toast.fire({
+					title: 'Success',
+					text: payload.message,
+					icon: 'success',
+				});
+				const assignedInstructorsIndex = state.teachings.findIndex(
+					(teaching) => teaching._id === payload.assignedLabInstructors._id
+				);
+				if (assignedInstructorsIndex !== -1)
+					state.teachings[assignedInstructorsIndex].labInstructors =
+						payload.assignedLabInstructors.labInstructors;
+			})
+			.addCase(assignLabInstructors.rejected, (state, { payload }) => {
+				state.isLoading = false;
+				Toast.fire({
+					title: 'Something went wrong!',
+					text: payload,
+					icon: 'error',
+				});
+			})
+			.addCase(unassignLabInstructors.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(unassignLabInstructors.fulfilled, (state, { payload }) => {
+				state.isLoading = false;
+				Toast.fire({
+					title: 'Success',
+					text: payload.message,
+					icon: 'success',
+				});
+				const unassignedInstructorsIndex = state.teachings.findIndex(
+					(teaching) => teaching._id === payload.unassignedLabInstructors._id
+				);
+				if (unassignedInstructorsIndex !== -1)
+					state.teachings[unassignedInstructorsIndex].labInstructors = [];
+			})
+			.addCase(unassignLabInstructors.rejected, (state, { payload }) => {
+				state.isLoading = false;
+				Toast.fire({
+					title: 'Something went wrong!',
+					text: payload,
 					icon: 'error',
 				});
 			});

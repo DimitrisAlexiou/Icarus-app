@@ -1,5 +1,5 @@
 import axiosFetch from '../../utils/axios';
-import { API_URL_USERS } from '../../constants/config';
+import { API_URL_USERS } from '../../constants/apiConfig';
 
 const getUsers = async () => {
 	const response = await axiosFetch.get(API_URL_USERS);
@@ -19,6 +19,12 @@ const getInstructors = async () => {
 	return response.data;
 };
 
+const addUser = async (data) => {
+	const response = await axiosFetch.post(API_URL_USERS, data);
+
+	return response.data;
+};
+
 const updateUser = async (userId, data) => {
 	const response = await axiosFetch.put(API_URL_USERS + '/' + userId, data);
 
@@ -26,13 +32,13 @@ const updateUser = async (userId, data) => {
 };
 
 const activateUser = async (userId) => {
-	const response = await axiosFetch.put(API_URL_USERS + '/' + userId + '/activate');
+	const response = await axiosFetch.patch(API_URL_USERS + '/' + userId + '/activate');
 
 	return response.data;
 };
 
-const deActivateUser = async (userId) => {
-	const response = await axiosFetch.put(API_URL_USERS + '/' + userId + '/deactivate');
+const deactivateUser = async (userId) => {
+	const response = await axiosFetch.patch(API_URL_USERS + '/' + userId + '/deactivate');
 
 	return response.data;
 };
@@ -53,9 +59,10 @@ const userService = {
 	getUsers,
 	getStudents,
 	getInstructors,
+	addUser,
 	updateUser,
 	activateUser,
-	deActivateUser,
+	deactivateUser,
 	deleteUser,
 	deleteUsers,
 };

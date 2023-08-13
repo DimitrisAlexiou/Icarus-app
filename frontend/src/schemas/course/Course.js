@@ -5,7 +5,7 @@ import { courseIdRegex, courseTitleRegex } from '../../constants/regex';
 export const CourseSchema = Yup.object().shape({
 	courseId: Yup.string()
 		.max(9, 'Course ID must be 8 digits or less.')
-		.matches(courseIdRegex, 'Course ID must follow the pattern: 321/xxxx OR 321/xxxxx.')
+		.matches(courseIdRegex, 'Course ID must follow the pattern: 321-xxxx OR 321-xxxxx.')
 		.required('Course ID is required.'),
 	title: Yup.string()
 		.max(40, 'Course title must be 40 characters or less.')
@@ -20,7 +20,7 @@ export const CourseSchema = Yup.object().shape({
 	isObligatory: Yup.boolean().required(),
 	hasPrerequisites: Yup.boolean().required(),
 	hasLab: Yup.boolean().required(),
-	description: Yup.string().max(800, 'Course description must be 800 characters or less.'),
+	description: Yup.string().max(1500, 'Course description must be 1500 characters or less.'),
 	semester: Yup.string()
 		.notOneOf(['Select course semester'], 'Select semester.')
 		.required('Please select the course semester.'),

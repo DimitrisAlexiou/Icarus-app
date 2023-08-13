@@ -1,11 +1,15 @@
 import { useDispatch } from 'react-redux';
-import { FormGroup, Label, Row, Col, Button, Spinner } from 'reactstrap';
+import { FormGroup, Label, Row, Col, Button, Spinner, Input } from 'reactstrap';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { SemesterSchema } from '../../schemas/admin/Semester';
-import { defineSemester, updateSemester } from '../../features/admin/semesterSlice';
-import FormErrorMessage from '../form/FormErrorMessage';
-import DatePickerField from '../form/DatePickerField';
-import { SemesterType } from '../../constants/enums';
+import { SemesterSchema } from '../../../schemas/admin/Semester';
+import {
+	defineSemester,
+	setEditSemester,
+	updateSemester,
+} from '../../../features/admin/semesterSlice';
+import FormErrorMessage from '../../form/FormErrorMessage';
+import DatePickerField from '../../form/DatePickerField';
+import { SemesterType } from '../../../constants/enums';
 
 export default function SemesterForm({ semester, isEditingSemester, editSemesterId }) {
 	const dispatch = useDispatch();
@@ -33,8 +37,8 @@ export default function SemesterForm({ semester, isEditingSemester, editSemester
 				initialValues={{
 					type: semester ? semester.type : '',
 					grading: semester ? semester.grading : 0,
-					startDate: semester ? semester.startDate : new Date(),
-					endDate: semester ? semester.endDate : new Date(),
+					startDate: semester ? new Date(semester.startDate) : new Date(),
+					endDate: semester ? new Date(semester.endDate) : new Date(),
 				}}
 				validationSchema={SemesterSchema}
 				onSubmit={(values, { setSubmitting }) => {
@@ -56,6 +60,12 @@ export default function SemesterForm({ semester, isEditingSemester, editSemester
 							})
 						);
 						setSubmitting(false);
+						dispatch(
+							setEditSemester({
+								isEditingSemester: false,
+								editSemesterId: '',
+							})
+						);
 						return;
 					}
 					dispatch(defineSemester(semester));
@@ -68,12 +78,27 @@ export default function SemesterForm({ semester, isEditingSemester, editSemester
 						<Row>
 							<Col md="8">
 								<FormGroup className="form-floating mb-3" floating>
-									<Field as="select" className="form-control" name="type">
-										<option default>Select semester type</option>
-										<option value={'Winter'}>Winter</option>
-										<option value={'Spring'}>Spring</option>
-										<option value={'Any'}>Any</option>
-									</Field>
+									{isEditingSemester ? (
+										<Input
+											type="text"
+											className="form-control"
+											value={values.type}
+											disabled
+										/>
+									) : (
+										<Field as="select" className="form-control" name="type">
+											<option default>Select semester type</option>
+											<option value={SemesterType.Winter}>
+												{SemesterType.Winter}
+											</option>
+											<option value={SemesterType.Spring}>
+												{SemesterType.Spring}
+											</option>
+											<option value={SemesterType.Any}>
+												{SemesterType.Any}
+											</option>
+										</Field>
+									)}
 									<Label for="type" className="text-gray-600">
 										Semester type
 									</Label>

@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Row, Col } from 'reactstrap';
-import { Toast } from '../../constants/sweetAlertNotification';
 import { getCourses } from '../../features/courses/courseSlice';
 import { getCycles } from '../../features/admin/cyclesSlice';
 import { getSemesters } from '../../features/admin/semesterSlice';
@@ -11,18 +10,8 @@ import Spinner from '../../components/boilerplate/Spinner';
 
 export default function NewCourse() {
 	const { courses, isLoading: coursesIsLoading } = useSelector((state) => state.courses);
-	const {
-		cycles,
-		isLoading: cyclesIsLoading,
-		isError: cyclesIsError,
-		message: cyclesMessage,
-	} = useSelector((state) => state.cycles);
-	const {
-		semesters,
-		isLoading: semestersIsLoading,
-		isError: semestersIsError,
-		message: semestersMessage,
-	} = useSelector((state) => state.semesters);
+	const { cycles, isLoading: cyclesIsLoading } = useSelector((state) => state.cycles);
+	const { semesters, isLoading: semestersIsLoading } = useSelector((state) => state.semesters);
 
 	const dispatch = useDispatch();
 
@@ -30,21 +19,7 @@ export default function NewCourse() {
 		dispatch(getCourses());
 		dispatch(getCycles());
 		dispatch(getSemesters());
-
-		if (cyclesIsError) {
-			Toast.fire({
-				title: 'Something went wrong!',
-				text: cyclesMessage,
-				icon: 'error',
-			});
-		} else if (semestersIsError) {
-			Toast.fire({
-				title: 'Something went wrong!',
-				text: semestersMessage,
-				icon: 'error',
-			});
-		}
-	}, [dispatch, cyclesIsError, semestersIsError, cyclesMessage, semestersMessage]);
+	}, [dispatch]);
 
 	if (coursesIsLoading || cyclesIsLoading || semestersIsLoading) return <Spinner />;
 

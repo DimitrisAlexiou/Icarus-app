@@ -1,5 +1,10 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { extractErrorMessage } from '../../utils/errorMessage';
+import {
+	CREATE_TEACHING_REVIEW,
+	GET_TEACHING_REVIEWS,
+	GET_USER_TEACHING_REVIEWS,
+} from '../actions';
 import teachingReviewService from './teachingReviewService';
 
 const initialState = {
@@ -12,7 +17,7 @@ const initialState = {
 };
 
 export const createTeachingReview = createAsyncThunk(
-	'api/review/teaching/:teachingId',
+	CREATE_TEACHING_REVIEW,
 	async ({ data, teachingId }, thunkAPI) => {
 		try {
 			return await teachingReviewService.createTeachingReview(data, teachingId);
@@ -23,7 +28,7 @@ export const createTeachingReview = createAsyncThunk(
 );
 
 export const getUserTeachingReviews = createAsyncThunk(
-	'/api/review/teaching',
+	GET_USER_TEACHING_REVIEWS,
 	async (_, thunkAPI) => {
 		try {
 			return await teachingReviewService.getUserTeachingReviews();
@@ -33,16 +38,13 @@ export const getUserTeachingReviews = createAsyncThunk(
 	}
 );
 
-export const getTeachingReviews = createAsyncThunk(
-	'/api/review/teaching/all',
-	async (_, thunkAPI) => {
-		try {
-			return await teachingReviewService.getTeachingReviews();
-		} catch (error) {
-			return thunkAPI.rejectWithValue(extractErrorMessage(error));
-		}
+export const getTeachingReviews = createAsyncThunk(GET_TEACHING_REVIEWS, async (_, thunkAPI) => {
+	try {
+		return await teachingReviewService.getTeachingReviews();
+	} catch (error) {
+		return thunkAPI.rejectWithValue(extractErrorMessage(error));
 	}
-);
+});
 
 export const teachingReviewSlice = createSlice({
 	name: 'teachingReview',
@@ -59,36 +61,36 @@ export const teachingReviewSlice = createSlice({
 				state.isLoading = false;
 				state.isSuccess = true;
 			})
-			.addCase(createTeachingReview.rejected, (state, action) => {
+			.addCase(createTeachingReview.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				state.isError = true;
-				state.message = action.payload;
+				state.message = payload;
 			})
 			.addCase(getUserTeachingReviews.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(getUserTeachingReviews.fulfilled, (state, action) => {
+			.addCase(getUserTeachingReviews.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
 				state.isSuccess = true;
-				state.teachingReviews = action.payload;
+				state.teachingReviews = payload;
 			})
-			.addCase(getUserTeachingReviews.rejected, (state, action) => {
+			.addCase(getUserTeachingReviews.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				state.isError = true;
-				state.message = action.payload;
+				state.message = payload;
 			})
 			.addCase(getTeachingReviews.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(getTeachingReviews.fulfilled, (state, action) => {
+			.addCase(getTeachingReviews.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
 				state.isSuccess = true;
-				state.teachingReviews = action.payload;
+				state.teachingReviews = payload;
 			})
-			.addCase(getTeachingReviews.rejected, (state, action) => {
+			.addCase(getTeachingReviews.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				state.isError = true;
-				state.message = action.payload;
+				state.message = payload;
 			});
 	},
 });

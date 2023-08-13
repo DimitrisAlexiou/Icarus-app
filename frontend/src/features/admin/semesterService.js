@@ -1,8 +1,8 @@
 import axiosFetch from '../../utils/axios';
-import { API_URL_ADMIN } from '../../constants/config';
+import { API_URL_ADMIN, API_URL_ADMIN_SEMESTER } from '../../constants/apiConfig';
 
 const defineSemester = async (data) => {
-	const response = await axiosFetch.post(API_URL_ADMIN + '/semester', data);
+	const response = await axiosFetch.post(API_URL_ADMIN_SEMESTER, data);
 
 	return response.data;
 };
@@ -14,19 +14,19 @@ const getSemesters = async () => {
 };
 
 const getSemester = async () => {
-	const response = await axiosFetch.get(API_URL_ADMIN + '/semester');
+	const response = await axiosFetch.get(API_URL_ADMIN_SEMESTER);
 
 	return response.data;
 };
 
 const updateSemester = async (semesterId, data) => {
-	const response = await axiosFetch.put(API_URL_ADMIN + '/semester/' + semesterId, data);
+	const response = await axiosFetch.put(API_URL_ADMIN_SEMESTER + '/' + semesterId, data);
 
 	return response.data;
 };
 
 const deleteSemester = async (semesterId) => {
-	const response = await axiosFetch.delete(API_URL_ADMIN + '/semester/' + semesterId);
+	const response = await axiosFetch.delete(API_URL_ADMIN_SEMESTER + '/' + semesterId);
 
 	return response.data;
 };

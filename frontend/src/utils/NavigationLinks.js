@@ -12,19 +12,12 @@ import {
 	faListCheck,
 	faBookOpen,
 	faPersonChalkboard,
+	faCalendarDays,
+	faChalkboard,
 } from '@fortawesome/free-solid-svg-icons';
 import { faUser, faNoteSticky, faMessage, faChartBar } from '@fortawesome/free-regular-svg-icons';
 
-export const sidebarLinks = [
-	{
-		id: 1,
-		text: 'Courses',
-		path: '/course',
-		icon: <FontAwesomeIcon icon={faBook} />,
-	},
-];
-
-export const sidebarAdminLinks = [
+export const sidebarAdminSystemLinks = [
 	{
 		id: 1,
 		text: 'Configuration',
@@ -39,8 +32,8 @@ export const sidebarAdminLinks = [
 	},
 	{
 		id: 3,
-		text: 'Professors',
-		path: '/professors',
+		text: 'Instructors',
+		path: '/instructors',
 		icon: <FontAwesomeIcon icon={faChalkboardTeacher} />,
 	},
 	{
@@ -49,20 +42,109 @@ export const sidebarAdminLinks = [
 		path: '/users',
 		icon: <FontAwesomeIcon icon={faUsers} />,
 	},
+	{
+		id: 5,
+		text: 'Courses',
+		path: '/course',
+		icon: <FontAwesomeIcon icon={faBook} />,
+	},
 ];
 
-export const sidebarStudentLinks = [
+export const sidebarAdminDataLinks = [
 	{
-		id: 1,
-		text: 'My Courses',
-		path: '/my-courses',
-		icon: <FontAwesomeIcon icon={faBookOpen} />,
+		id: 6,
+		text: 'Teachings',
+		path: '/teachings',
+		icon: <FontAwesomeIcon icon={faChalkboard} />,
 	},
 	{
-		id: 2,
+		id: 7,
 		text: 'Reviews',
 		path: '/review',
 		icon: <FontAwesomeIcon icon={faBarsProgress} />,
+	},
+	{
+		id: 8,
+		text: 'Statements',
+		path: '/statements',
+		icon: <FontAwesomeIcon icon={faListCheck} />,
+	},
+	{
+		id: 9,
+		text: 'Grade Course',
+		path: '/grade-course',
+		icon: <FontAwesomeIcon icon={faPersonChalkboard} />,
+	},
+	{
+		id: 10,
+		text: 'Degree Completion',
+		path: '/degree-completion',
+		icon: <FontAwesomeIcon icon={faUserGraduate} />,
+	},
+];
+
+export const sidebarAdminUtilityLinks = [
+	{
+		id: 11,
+		text: 'Messages',
+		path: '/messages',
+		icon: <FontAwesomeIcon icon={faMessage} />,
+	},
+	{
+		id: 12,
+		text: 'Notes',
+		path: '/note',
+		icon: <FontAwesomeIcon icon={faNoteSticky} />,
+	},
+	{
+		id: 13,
+		text: 'Statistics & Reports',
+		path: '/statistics-reports',
+		icon: <FontAwesomeIcon icon={faChartBar} />,
+	},
+	{
+		id: 14,
+		text: 'Calendar',
+		path: '/calendar',
+		icon: <FontAwesomeIcon icon={faCalendarDays} />,
+	},
+];
+
+export const sidebarCourseConfigDropDown = [
+	{
+		id: 1,
+		text: 'Add Course',
+		path: 'course/new',
+	},
+	{
+		id: 2,
+		text: 'Assign Instructor',
+		path: 'teaching/assign',
+	},
+	{
+		id: 3,
+		text: 'Teaching Grading',
+		path: 'teaching/grading',
+	},
+	{
+		id: 4,
+		text: 'Statement',
+		path: 'course/statement',
+	},
+];
+
+export const sidebarStudentCourseLinks = [
+	{
+		id: 1,
+		text: 'Courses',
+		path: '/course',
+		icon: <FontAwesomeIcon icon={faBook} />,
+	},
+	{
+		id: 2,
+		text: 'My Courses',
+		path: '/my-courses',
+		icon: <FontAwesomeIcon icon={faBookOpen} />,
 	},
 	{
 		id: 3,
@@ -70,6 +152,78 @@ export const sidebarStudentLinks = [
 		path: '/statements',
 		icon: <FontAwesomeIcon icon={faListCheck} />,
 	},
+];
+
+export const sidebarStudentDataLinks = [
+	{
+		id: 4,
+		text: 'Portfolio',
+		path: '/portfolio',
+		icon: <FontAwesomeIcon icon={faFolderTree} />,
+	},
+	{
+		id: 5,
+		text: 'Reviews',
+		path: '/review',
+		icon: <FontAwesomeIcon icon={faBarsProgress} />,
+	},
+	{
+		id: 6,
+		text: 'Degree Completion',
+		path: '/degree-completion',
+		icon: <FontAwesomeIcon icon={faUserGraduate} />,
+	},
+];
+
+export const sidebarStudentUtilityLinks = [
+	{
+		id: 7,
+		text: 'Messages',
+		path: '/messages',
+		icon: <FontAwesomeIcon icon={faMessage} />,
+	},
+	{
+		id: 8,
+		text: 'Notes',
+		path: '/note',
+		icon: <FontAwesomeIcon icon={faNoteSticky} />,
+	},
+	{
+		id: 9,
+		text: 'Statistics & Reports',
+		path: '/statistics-reports',
+		icon: <FontAwesomeIcon icon={faChartBar} />,
+	},
+	{
+		id: 10,
+		text: 'Calendar',
+		path: '/calendar',
+		icon: <FontAwesomeIcon icon={faCalendarDays} />,
+	},
+];
+
+export const sidebarInstructorCourseLinks = [
+	{
+		id: 1,
+		text: 'Courses',
+		path: '/course',
+		icon: <FontAwesomeIcon icon={faBook} />,
+	},
+	{
+		id: 2,
+		text: 'My Courses',
+		path: '/my-courses',
+		icon: <FontAwesomeIcon icon={faBookOpen} />,
+	},
+	{
+		id: 3,
+		text: 'Course Grading',
+		path: '/course-grading',
+		icon: <FontAwesomeIcon icon={faPersonChalkboard} />,
+	},
+];
+
+export const sidebarInstructorUtilityLinks = [
 	{
 		id: 4,
 		text: 'Messages',
@@ -84,54 +238,15 @@ export const sidebarStudentLinks = [
 	},
 	{
 		id: 6,
-		text: 'Degree Completion',
-		path: '/degree-completion',
-		icon: <FontAwesomeIcon icon={faUserGraduate} />,
+		text: 'Statistics & Reports',
+		path: '/statistics-reports',
+		icon: <FontAwesomeIcon icon={faChartBar} />,
 	},
 	{
 		id: 7,
-		text: 'Portfolio',
-		path: '/portfolio',
-		icon: <FontAwesomeIcon icon={faFolderTree} />,
-	},
-	{
-		id: 8,
-		text: 'Statistics & Reports',
-		path: '/statistics-reports',
-		icon: <FontAwesomeIcon icon={faChartBar} />,
-	},
-];
-
-export const sidebarInstructorLinks = [
-	{
-		id: 1,
-		text: 'My Courses',
-		path: '/my-courses',
-		icon: <FontAwesomeIcon icon={faBookOpen} />,
-	},
-	{
-		id: 2,
-		text: 'Course Grading',
-		path: '/course-grading',
-		icon: <FontAwesomeIcon icon={faPersonChalkboard} />,
-	},
-	{
-		id: 3,
-		text: 'Messages',
-		path: '/messages',
-		icon: <FontAwesomeIcon icon={faMessage} />,
-	},
-	{
-		id: 4,
-		text: 'Notes',
-		path: '/note',
-		icon: <FontAwesomeIcon icon={faNoteSticky} />,
-	},
-	{
-		id: 5,
-		text: 'Statistics & Reports',
-		path: '/statistics-reports',
-		icon: <FontAwesomeIcon icon={faChartBar} />,
+		text: 'Calendar',
+		path: '/calendar',
+		icon: <FontAwesomeIcon icon={faCalendarDays} />,
 	},
 ];
 

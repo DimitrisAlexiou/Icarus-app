@@ -11,8 +11,6 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import { deleteAlert } from '../../constants/sweetAlertNotification';
-import { useThunk } from '../../hooks/use-thunk';
-import { Toast } from '../../constants/sweetAlertNotification';
 import DataTable from '../DataTable';
 import Switch from 'react-switch';
 import CourseForm from '../../components/course/CourseForm';
@@ -20,7 +18,6 @@ import Spinner from '../../components/boilerplate/Spinner';
 
 export default function CoursesDataTable({ courses, cycles, semesters }) {
 	const { isLoading, isEditingCourse, editCourseId } = useSelector((state) => state.courses);
-	const [doDeleteCourse, isDeletingCourse, deletingCourseError] = useThunk(deleteCourse);
 
 	const modalRef = useRef(null);
 	const [modal, setModal] = useState(false);
@@ -66,10 +63,8 @@ export default function CoursesDataTable({ courses, cycles, semesters }) {
 	};
 
 	const ModalComponent = forwardRef((props, ref) => {
-		const { modalRef } = props;
-
 		return (
-			<Modal ref={modalRef} isOpen={modal} toggle={toggle} className="modal-lg">
+			<Modal ref={ref} isOpen={modal} toggle={toggle} className="modal-lg">
 				<ModalHeader toggle={toggle}>Edit Course ({currentCourse.title})</ModalHeader>
 				<ModalBody>
 					<CourseForm
@@ -154,10 +149,9 @@ export default function CoursesDataTable({ courses, cycles, semesters }) {
 					<Col sm="4">
 						<Button
 							className="btn btn-light"
-							onClick={(e) => {
+							onClick={async (e) => {
 								e.stopPropagation();
-								doDeleteCourse(course);
-								// deleteAlert(dispatch(deleteCourse(course._id)));
+								deleteAlert(() => dispatch(deleteCourse(course._id)));
 							}}
 						>
 							<FontAwesomeIcon icon={faTrashAlt} />
@@ -168,20 +162,12 @@ export default function CoursesDataTable({ courses, cycles, semesters }) {
 		},
 	];
 
-	if (isLoading) return <Spinner />;
-
-	if (deletingCourseError)
-		Toast.fire({
-			title: 'Something went wrong!',
-			text: 'Course did not deleted. Please try again later.',
-			// text: deletingCourseError,
-			icon: 'error',
-		});
+	if (isLoading) return <Spinner card />;
 
 	return (
 		<>
 			<div className="card card-body">
-				{isDeletingCourse ? (
+				{isLoading ? (
 					<Spinner card />
 				) : (
 					<>
@@ -192,7 +178,7 @@ export default function CoursesDataTable({ courses, cycles, semesters }) {
 							searchMessage={'by Title or ID'}
 							onRowClick={(course) => handleCourseRowClick(course)}
 						/>
-						{isEditingCourse ? <ModalComponent modalRef={modalRef} /> : null}
+						{isEditingCourse ? <ModalComponent ref={modalRef} /> : null}
 					</>
 				)}
 			</div>

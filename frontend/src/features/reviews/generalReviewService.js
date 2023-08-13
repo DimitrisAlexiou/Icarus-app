@@ -1,10 +1,9 @@
 import axiosFetch from '../../utils/axios';
-import { API_URL_REVIEW } from '../../constants/config';
-const GENERAL = `${API_URL_REVIEW}/general`;
+import { API_URL_REVIEW } from '../../constants/apiConfig';
 const API_URL = '/api/review/general';
 
 const createGeneralReview = async (data) => {
-	const response = await axiosFetch.post(GENERAL, data);
+	const response = await axiosFetch.post(API_URL_REVIEW + '/general', data);
 
 	return response.data;
 };

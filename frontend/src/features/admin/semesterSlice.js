@@ -1,7 +1,13 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { API_URL_ADMIN } from '../../constants/config';
 import { extractErrorMessage } from '../../utils/errorMessage';
 import { Toast } from '../../constants/sweetAlertNotification';
+import {
+	DEFINE_SEMESTER,
+	UPDATE_SEMESTER,
+	GET_SEMESTER,
+	DELETE_SEMESTER,
+	GET_SEMESTERS,
+} from '../actions';
 import semesterService from './semesterService';
 
 const initialState = {
@@ -12,19 +18,16 @@ const initialState = {
 	editSemesterId: '',
 };
 
-export const defineSemester = createAsyncThunk(
-	API_URL_ADMIN + '/defineSemester',
-	async (data, thunkAPI) => {
-		try {
-			return await semesterService.defineSemester(data);
-		} catch (error) {
-			return thunkAPI.rejectWithValue(extractErrorMessage(error));
-		}
+export const defineSemester = createAsyncThunk(DEFINE_SEMESTER, async (data, thunkAPI) => {
+	try {
+		return await semesterService.defineSemester(data);
+	} catch (error) {
+		return thunkAPI.rejectWithValue(extractErrorMessage(error));
 	}
-);
+});
 
 export const updateSemester = createAsyncThunk(
-	API_URL_ADMIN + '/updateSemester',
+	UPDATE_SEMESTER,
 	async ({ semesterId, data }, thunkAPI) => {
 		try {
 			return await semesterService.updateSemester(semesterId, data);
@@ -34,18 +37,15 @@ export const updateSemester = createAsyncThunk(
 	}
 );
 
-export const getSemesters = createAsyncThunk(
-	API_URL_ADMIN + '/getSemesters',
-	async (_, thunkAPI) => {
-		try {
-			return await semesterService.getSemesters();
-		} catch (error) {
-			return thunkAPI.rejectWithValue(extractErrorMessage(error));
-		}
+export const getSemesters = createAsyncThunk(GET_SEMESTERS, async (_, thunkAPI) => {
+	try {
+		return await semesterService.getSemesters();
+	} catch (error) {
+		return thunkAPI.rejectWithValue(extractErrorMessage(error));
 	}
-);
+});
 
-export const getSemester = createAsyncThunk(API_URL_ADMIN + '/getSemester', async (_, thunkAPI) => {
+export const getSemester = createAsyncThunk(GET_SEMESTER, async (_, thunkAPI) => {
 	try {
 		return await semesterService.getSemester();
 	} catch (error) {
@@ -53,16 +53,13 @@ export const getSemester = createAsyncThunk(API_URL_ADMIN + '/getSemester', asyn
 	}
 });
 
-export const deleteSemester = createAsyncThunk(
-	API_URL_ADMIN + '/deleteSemester',
-	async (semesterId, thunkAPI) => {
-		try {
-			return await semesterService.deleteSemester(semesterId);
-		} catch (error) {
-			return thunkAPI.rejectWithValue(extractErrorMessage(error));
-		}
+export const deleteSemester = createAsyncThunk(DELETE_SEMESTER, async (semesterId, thunkAPI) => {
+	try {
+		return await semesterService.deleteSemester(semesterId);
+	} catch (error) {
+		return thunkAPI.rejectWithValue(extractErrorMessage(error));
 	}
-);
+});
 
 export const semesterSlice = createSlice({
 	name: 'semester',
@@ -78,94 +75,125 @@ export const semesterSlice = createSlice({
 			.addCase(defineSemester.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(defineSemester.fulfilled, (state, action) => {
+			.addCase(defineSemester.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
-					text: 'Semester defined!',
+					text: payload.message,
 					icon: 'success',
 				});
-				state.semester = action.payload;
+				state.semester = payload.semester;
 			})
-			.addCase(defineSemester.rejected, (state, action) => {
+			.addCase(defineSemester.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: action.payload.message,
-					icon: 'error',
-				});
+				if (payload.includes('startDate' && 'now'))
+					Toast.fire({
+						title: 'Something went wrong!',
+						text: 'Semester start date must be greater than today.',
+						icon: 'error',
+					});
+				else if (payload.includes('endDate' && 'startDate'))
+					Toast.fire({
+						title: 'Something went wrong!',
+						text: 'Semester end date must be greater than semester start date.',
+						icon: 'error',
+					});
+				else
+					Toast.fire({
+						title: 'Something went wrong!',
+						text: payload,
+						icon: 'error',
+					});
 			})
 			.addCase(getSemesters.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(getSemesters.fulfilled, (state, action) => {
+			.addCase(getSemesters.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				state.semesters = action.payload;
+				state.semesters = payload;
 			})
-			.addCase(getSemesters.rejected, (state, action) => {
+			.addCase(getSemesters.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				if (action.payload !== 'Seems like there are no defined semesters.')
+				if (payload !== 'Seems like there are no defined semesters.')
 					Toast.fire({
 						title: 'Something went wrong!',
-						text: action.payload.message,
+						text: payload,
 						icon: 'error',
 					});
 			})
 			.addCase(getSemester.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(getSemester.fulfilled, (state, action) => {
+			.addCase(getSemester.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				state.semester = action.payload;
+				state.semester = payload;
 			})
-			.addCase(getSemester.rejected, (state, action) => {
+			.addCase(getSemester.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				if (action.payload !== 'Seems like there is no defined semester for this period.')
+				if (payload !== 'Seems like there is no defined semester for this period.')
 					Toast.fire({
 						title: 'Something went wrong!',
-						text: action.payload.message,
+						text: payload,
 						icon: 'error',
 					});
 			})
 			.addCase(updateSemester.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(updateSemester.fulfilled, (state, action) => {
+			.addCase(updateSemester.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
-					text: 'Semester configuration updated!',
+					text: payload.message,
 					icon: 'success',
 				});
-				state.semesters.map((semester) =>
-					semester._id === action.payload._id ? action.payload : semester
+				const updatedSemesterIndex = state.semesters.findIndex(
+					(semester) => semester._id === payload.updatedSemester._id
 				);
+				if (updatedSemesterIndex !== -1)
+					state.semesters[updatedSemesterIndex] = payload.updatedSemester;
 			})
-			.addCase(updateSemester.rejected, (state, action) => {
+			.addCase(updateSemester.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: action.payload.message,
-					icon: 'error',
-				});
+				if (payload.includes('startDate' && 'now'))
+					Toast.fire({
+						title: 'Something went wrong!',
+						text: 'Semester start date must be greater than today.',
+						icon: 'error',
+					});
+				else if (payload.includes('endDate' && 'startDate'))
+					Toast.fire({
+						title: 'Something went wrong!',
+						text: 'Semester end date must be greater than semester start date.',
+						icon: 'error',
+					});
+				else
+					Toast.fire({
+						title: 'Something went wrong!',
+						text: payload,
+						icon: 'error',
+					});
 			})
 			.addCase(deleteSemester.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(deleteSemester.fulfilled, (state, action) => {
+			.addCase(deleteSemester.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
-					text: action.payload.message,
+					text: payload.message,
 					icon: 'success',
 				});
-				state.semester = null;
+				// state.semester = null;
+				state.semesters = state.semesters.filter((semester) => {
+					return semester._id !== payload.semester;
+				});
 			})
-			.addCase(deleteSemester.rejected, (state, action) => {
+			.addCase(deleteSemester.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: action.payload.message,
+					text: payload,
 					icon: 'error',
 				});
 			});

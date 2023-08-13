@@ -1,31 +1,37 @@
 import { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { getCourse } from '../../features/courses/courseSlice';
 import { Row, Col } from 'reactstrap';
+import { getCourse } from '../../features/courses/courseSlice';
+import { getTeachingByCourseId } from '../../features/courses/teachingSlice';
+import { faChalkboard } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import CourseCard from '../../components/course/CourseCard';
 import BackButton from '../../components/buttons/BackButton';
 import Spinner from '../../components/boilerplate/Spinner';
 
 export default function Course() {
 	const { course, isLoading } = useSelector((state) => state.courses);
+	const { teaching, isLoading: isTeachingLoading } = useSelector((state) => state.teachings);
 
 	const { courseId } = useParams();
 	const dispatch = useDispatch();
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		dispatch(getCourse(courseId));
-	}, [dispatch, courseId]);
+		if (course.isActive) dispatch(getTeachingByCourseId(courseId));
+	}, [dispatch, courseId, course.isActive]);
 
-	if (isLoading) return <Spinner />;
+	if (isLoading || isTeachingLoading) return <Spinner />;
 
 	return (
 		<>
-			<Row className="mb-4 animated--grow-in">
+			<Row className="mb-5 animated--grow-in">
 				<Col>
-					<h1 className="h3 text-gray-800 font-weight-bold animated--grow-in">
+					<h3 className="text-gray-800 font-weight-bold animated--grow-in">
 						{course.title}
-					</h1>
+					</h3>
 				</Col>
 				<Col className="text-right px-3">
 					<BackButton url={'/course/undergraduate'} />
@@ -42,6 +48,37 @@ export default function Course() {
 										Course Information
 									</h6>
 								</Col>
+								{course.isActive ? (
+									<Col className="d-flex justify-content-end">
+										<Row>
+											<Col>
+												<FontAwesomeIcon
+													style={{
+														textAlign: 'justify',
+														fontWeight: '700',
+														fontSize: 14,
+													}}
+													icon={faChalkboard}
+												/>
+											</Col>
+											<Col className="d-flex justify-content-end">
+												<small
+													className="text-muted pill-label"
+													style={{
+														textAlign: 'justify',
+														fontWeight: '700',
+														fontSize: 12,
+													}}
+													onClick={() =>
+														navigate('/teaching/' + teaching._id)
+													}
+												>
+													Teaching
+												</small>
+											</Col>
+										</Row>
+									</Col>
+								) : null}
 							</Row>
 						</div>
 						<div className="card-body">

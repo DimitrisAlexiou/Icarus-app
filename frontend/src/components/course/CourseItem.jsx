@@ -4,15 +4,11 @@ import { useNavigate } from 'react-router-dom';
 export default function CourseItem({ course }) {
 	const navigate = useNavigate();
 
-	const viewCourse = () => {
-		navigate(`/course/${course._id}`);
-	};
-
 	return (
 		<>
 			<Card
 				className="card-animate border-left-sky-blue-crayola mb-3"
-				onClick={() => viewCourse()}
+				onClick={() => navigate(`/course/${course._id}`)}
 			>
 				<div className="card-header">
 					<Row>
@@ -58,7 +54,7 @@ export default function CourseItem({ course }) {
 							WebkitBoxOrient: 'vertical',
 						}}
 					>
-						{course.description}
+						{course.description ? course.description : 'No description available.'}
 					</p>
 				</div>
 				{course.hasPrerequisites ? (

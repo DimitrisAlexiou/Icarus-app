@@ -1,6 +1,13 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Dashboard, LandingPage, NotFound } from './pages/index';
-import { UnAuthorized, Forbidden, Register, Login, ForgotPassword } from './pages/auth/index';
+import {
+	UnAuthorized,
+	Forbidden,
+	Register,
+	Login,
+	ForgotPassword,
+	ContactAdmin,
+} from './pages/auth/index';
 import {
 	Courses,
 	Studies,
@@ -9,21 +16,21 @@ import {
 	Phd,
 	Course,
 	NewCourse,
-	CourseEdit,
 	Teaching,
 	MyCourses,
-	CourseGrading,
+	GradeCourse,
+	AssignTeachingInstructor,
+	TeachingGrading,
 } from './pages/course/index';
+import { Reviews, TeachingReview, InstructorReview, GeneralReview } from './pages/review/index';
 import {
-	Reviews,
-	TeachingReview,
-	InstructorReview,
-	GeneralReview,
-	TeachingReviews,
-	InstructorReviews,
-	GeneralReviews,
-} from './pages/review/index';
-import { Configuration, AdminDashboard, Users, Professors, Students } from './pages/admin/index';
+	Configuration,
+	AdminDashboard,
+	Users,
+	Instructors,
+	Students,
+	Teachings,
+} from './pages/admin/index';
 import {
 	Portfolio,
 	Profile,
@@ -53,6 +60,7 @@ export default function App() {
 							<Route path="/auth/register" element={<Register />} />
 							<Route path="/auth/login" element={<Login />} />
 							<Route path="/auth/forgot-password" element={<ForgotPassword />} />
+							<Route path="/auth/contact-admin" element={<ContactAdmin />} />
 							<Route path="/forbidden" element={<Forbidden />} />
 							<Route path="/studies" element={<Studies />} />
 							<Route path="*" element={<NotFound />} />
@@ -84,10 +92,10 @@ export default function App() {
 									}
 								/>
 								<Route
-									path="/professors"
+									path="/instructors"
 									element={
 										<ProtectedRoute allowedRoles={[UserType.admin]}>
-											<Professors />
+											<Instructors />
 										</ProtectedRoute>
 									}
 								/>
@@ -104,6 +112,44 @@ export default function App() {
 									element={
 										<ProtectedRoute>
 											<Profile />
+										</ProtectedRoute>
+									}
+								/>
+								<Route
+									path="/teachings"
+									element={
+										<ProtectedRoute
+											allowedRoles={[UserType.admin, UserType.instructor]}
+										>
+											<Teachings />
+										</ProtectedRoute>
+									}
+								/>
+								<Route
+									path="/teaching/:teachingId"
+									element={
+										<ProtectedRoute
+											allowedRoles={[UserType.admin, UserType.instructor]}
+										>
+											<Teaching />
+										</ProtectedRoute>
+									}
+								/>
+								<Route
+									path="/teaching/assign"
+									element={
+										<ProtectedRoute allowedRoles={[UserType.admin]}>
+											<AssignTeachingInstructor />
+										</ProtectedRoute>
+									}
+								/>
+								<Route
+									path="/teaching/grading"
+									element={
+										<ProtectedRoute
+											allowedRoles={[UserType.admin, UserType.instructor]}
+										>
+											<TeachingGrading />
 										</ProtectedRoute>
 									}
 								/>
@@ -163,17 +209,7 @@ export default function App() {
 										</ProtectedRoute>
 									}
 								/>
-								<Route
-									path="/course/:courseId/edit"
-									element={
-										<ProtectedRoute
-											allowedRoles={[UserType.admin, UserType.instructor]}
-										>
-											<CourseEdit />
-										</ProtectedRoute>
-									}
-								/>
-								<Route
+								{/* <Route
 									path="/course/:courseId/teaching"
 									element={
 										<ProtectedRoute
@@ -182,7 +218,7 @@ export default function App() {
 											<Teaching />
 										</ProtectedRoute>
 									}
-								/>
+								/> */}
 								<Route
 									path="/review"
 									element={
@@ -202,14 +238,6 @@ export default function App() {
 									}
 								/>
 								<Route
-									path="/review/teaching/all"
-									element={
-										<ProtectedRoute>
-											<TeachingReviews />
-										</ProtectedRoute>
-									}
-								/>
-								<Route
 									path="/review/instructor"
 									element={
 										<ProtectedRoute
@@ -220,28 +248,12 @@ export default function App() {
 									}
 								/>
 								<Route
-									path="/review/instructor/all"
-									element={
-										<ProtectedRoute>
-											<InstructorReviews />
-										</ProtectedRoute>
-									}
-								/>
-								<Route
 									path="/review/general"
 									element={
 										<ProtectedRoute
 											allowedRoles={[UserType.admin, UserType.student]}
 										>
 											<GeneralReview />
-										</ProtectedRoute>
-									}
-								/>
-								<Route
-									path="/review/general/all"
-									element={
-										<ProtectedRoute>
-											<GeneralReviews />
 										</ProtectedRoute>
 									}
 								/>
@@ -278,10 +290,10 @@ export default function App() {
 									}
 								/>
 								<Route
-									path="/course-grading"
+									path="/grade-course"
 									element={
 										<ProtectedRoute>
-											<CourseGrading />
+											<GradeCourse />
 										</ProtectedRoute>
 									}
 								/>

@@ -43,7 +43,7 @@ export const createUserNote = tryCatch(
 		});
 		console.log(note);
 
-		return res.status(201).json(note);
+		return res.status(201).json({ message: 'Note posted!', note });
 	}
 );
 
@@ -80,7 +80,7 @@ export const updateUserNote = tryCatch(
 				404
 			);
 
-		return res.status(200).json(updatedNote);
+		return res.status(200).json({ message: 'Note updated!', updatedNote });
 	}
 );
 
@@ -107,7 +107,7 @@ export const deleteUserNote = tryCatch(
 				404
 			);
 
-		return res.status(200).json({ message: 'Note deleted.' });
+		return res.status(200).json({ message: 'Note deleted.', note: noteToDelete._id });
 	}
 );
 
@@ -132,5 +132,5 @@ export const deleteUserNotes = async (
 		session.endSession();
 	}
 
-	return res.status(200).json({ message: 'User notes existing in the system deleted.' });
+	return res.status(200).json({ message: 'User notes deleted.' });
 };

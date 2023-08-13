@@ -9,14 +9,14 @@ export const TeachingSchema = Yup.object().shape({
 		.min(40, 'Theory weight must be at least 40.')
 		.positive('Number must be positive.')
 		.required('Please provide the lab weight.'),
-	theoryGrade: Yup.number()
+	theoryGradeRetentionYears: Yup.number()
 		.min(1, 'Theory grade can be kept at least 1 year.')
 		.positive('Number must be positive.')
-		.required('Please provide the theory grade keeping period'),
-	labGrade: Yup.number()
+		.required('Please provide the theory grade retention period'),
+	labGradeRetentionYears: Yup.number()
 		.min(1, 'Lab grade can be kept at least 1 year.')
 		.positive('Number must be positive.')
-		.required('Please provide the lab grade keeping period.'),
+		.required('Please provide the lab grade retention period.'),
 	theoryGradeThreshold: Yup.number()
 		.min(4, 'Theory grade threshold must be at least 4.')
 		.positive('Number must be positive.')

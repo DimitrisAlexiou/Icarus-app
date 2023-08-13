@@ -57,7 +57,17 @@ export const getStudents = () =>
 	});
 export const getStudentById = (id: mongoose.Types.ObjectId) =>
 	Student.findById(id).populate('user');
+export const getStudentByUserId = (userId: string) => {
+	return Student.findOne({ user: userId });
+};
+export const updateStudentById = (
+	id: string,
+	student: Record<string, any>,
+	options?: Record<string, any>
+) => Student.findByIdAndUpdate(id, student, { new: true });
 export const deleteStudentByUserId = (id: string, session: ClientSession) => {
 	return Student.findOneAndDelete({ user: id }).session(session);
 };
 export const deleteStudents = () => Student.deleteMany();
+export const enrollCourseById = (id: string, teaching: Record<string, any>) =>
+	Student.findByIdAndUpdate(id, teaching, { new: true });

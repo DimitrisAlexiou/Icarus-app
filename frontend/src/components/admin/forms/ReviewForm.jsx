@@ -1,46 +1,47 @@
 import { useDispatch } from 'react-redux';
 import { FormGroup, Label, Row, Col, Button, Spinner } from 'reactstrap';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { AssessmentSchema } from '../../schemas/admin/Assessment';
-import { defineAssessment, updateAssessment } from '../../features/admin/assessmentSlice';
-import FormErrorMessage from '../form/FormErrorMessage';
-import DatePickerField from '../form/DatePickerField';
+import { ReviewSchema } from '../../../schemas/admin/Review';
+import { defineReview, setEditReview, updateReview } from '../../../features/admin/reviewSlice';
+import FormErrorMessage from '../../form/FormErrorMessage';
+import DatePickerField from '../../form/DatePickerField';
 
-export default function AssessmentForm({
-	assessment,
-	isEditingAssessment,
-	editAssessmentId,
-	semester,
-}) {
+export default function ReviewForm({ review, isEditingReview, editReviewId, semester }) {
 	const dispatch = useDispatch();
 
 	return (
 		<>
 			<Formik
 				initialValues={{
-					startDate: assessment ? assessment.startDate : new Date(),
-					endDate: assessment ? assessment.endDate : new Date(),
-					period: assessment ? assessment.period : 0,
+					startDate: review ? new Date(review.startDate) : new Date(),
+					endDate: review ? new Date(review.endDate) : new Date(),
+					startAfter: review ? review.startAfter : 0,
 				}}
-				validationSchema={AssessmentSchema}
+				validationSchema={ReviewSchema}
 				onSubmit={(values, { setSubmitting }) => {
-					const assessment = {
-						vaccineStartDate: values.startDate,
-						vaccineEndDate: values.endDate,
-						period: values.period,
+					const review = {
+						startDate: values.startDate,
+						endDate: values.endDate,
+						startAfter: values.startAfter,
 						semester: semester._id,
 					};
-					if (isEditingAssessment) {
+					if (isEditingReview) {
 						dispatch(
-							updateAssessment({
-								assessmentId: editAssessmentId,
-								data: assessment,
+							updateReview({
+								reviewId: editReviewId,
+								data: review,
 							})
 						);
 						setSubmitting(false);
+						dispatch(
+							setEditReview({
+								isEditingReview: false,
+								editReviewId: '',
+							})
+						);
 						return;
 					}
-					dispatch(defineAssessment(assessment));
+					dispatch(defineReview(review));
 					setSubmitting(false);
 				}}
 				validateOnMount
@@ -54,16 +55,22 @@ export default function AssessmentForm({
 										type="number"
 										min="1"
 										className="form-control"
-										name="period"
+										name="startAfter"
 									/>
-									<Label for="period" className="text-gray-600">
-										Assessment statement period
+									<Label for="startAfter" className="text-gray-600">
+										Review start
 									</Label>
-									<ErrorMessage name="period" component={FormErrorMessage} />
+									<ErrorMessage name="startAfter" component={FormErrorMessage} />
 								</FormGroup>
 							</Col>
 						</Row>
 						<Row>
+							<Label
+								for="period"
+								className="text-gray-300 d-flex justify-content-center"
+							>
+								Review duration
+							</Label>
 							<DatePickerField />
 						</Row>
 						<Row className="mb-3">
@@ -78,7 +85,7 @@ export default function AssessmentForm({
 										<>
 											Please wait <Spinner type="grow" size="sm" />
 										</>
-									) : isEditingAssessment ? (
+									) : isEditingReview ? (
 										'Update'
 									) : (
 										'Configure'

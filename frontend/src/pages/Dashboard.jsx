@@ -13,8 +13,7 @@ export default function Dashboard() {
 						<h3 className="mb-5 animated--grow-in text-gray-800 font-weight-bold">
 							Dashboard
 						</h3>
-						{user.user.isAdmin ? <AdminDashboard /> : null}
-						<Calendar />
+						{user.user.isAdmin ? <AdminDashboard /> : <Calendar />}
 					</>
 				) : null
 				// <h3 className="mb-5 text-gray-800 font-weight-bold animated--grow-in">Dashboard</h3>

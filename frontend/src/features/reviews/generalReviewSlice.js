@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { extractErrorMessage } from '../../utils/errorMessage';
+import { CREATE_GENERAL_REVIEW, GET_GENERAL_REVIEWS } from '../actions';
 import generalReviewService from './generalReviewService';
 
 const initialState = {
@@ -12,7 +13,7 @@ const initialState = {
 };
 
 export const createGeneralReview = createAsyncThunk(
-	'api/review/general',
+	CREATE_GENERAL_REVIEW,
 	async (data, thunkAPI) => {
 		try {
 			return await generalReviewService.createGeneralReview(data);
@@ -22,16 +23,13 @@ export const createGeneralReview = createAsyncThunk(
 	}
 );
 
-export const getGeneralReviews = createAsyncThunk(
-	'/api/review/general/all',
-	async (_, thunkAPI) => {
-		try {
-			return await generalReviewService.getGeneralReviews();
-		} catch (error) {
-			return thunkAPI.rejectWithValue(extractErrorMessage(error));
-		}
+export const getGeneralReviews = createAsyncThunk(GET_GENERAL_REVIEWS, async (_, thunkAPI) => {
+	try {
+		return await generalReviewService.getGeneralReviews();
+	} catch (error) {
+		return thunkAPI.rejectWithValue(extractErrorMessage(error));
 	}
-);
+});
 
 export const generalReviewSlice = createSlice({
 	name: 'generalReview',
@@ -48,23 +46,23 @@ export const generalReviewSlice = createSlice({
 				state.isLoading = false;
 				state.isSuccess = true;
 			})
-			.addCase(createGeneralReview.rejected, (state, action) => {
+			.addCase(createGeneralReview.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				state.isError = true;
-				state.message = action.payload;
+				state.message = payload;
 			})
 			.addCase(getGeneralReviews.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(getGeneralReviews.fulfilled, (state, action) => {
+			.addCase(getGeneralReviews.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
 				state.isSuccess = true;
-				state.teachingReviews = action.payload;
+				state.teachingReviews = payload;
 			})
-			.addCase(getGeneralReviews.rejected, (state, action) => {
+			.addCase(getGeneralReviews.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				state.isError = true;
-				state.message = action.payload;
+				state.message = payload;
 			});
 	},
 });

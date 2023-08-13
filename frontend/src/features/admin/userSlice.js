@@ -1,7 +1,17 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { API_URL_USERS } from '../../constants/config';
 import { extractErrorMessage } from '../../utils/errorMessage';
 import { Toast } from '../../constants/sweetAlertNotification';
+import {
+	ACTIVATE_USER,
+	DEACTIVATE_USER,
+	DELETE_USER,
+	DELETE_USERS,
+	GET_INSTRUCTORS,
+	GET_STUDENTS,
+	GET_USERS,
+	UPDATE_USER,
+	ADD_USER,
+} from '../actions';
 import userService from './userService';
 
 const initialState = {
@@ -14,7 +24,7 @@ const initialState = {
 	editUserId: '',
 };
 
-export const getUsers = createAsyncThunk(API_URL_USERS, async (_, thunkAPI) => {
+export const getUsers = createAsyncThunk(GET_USERS, async (_, thunkAPI) => {
 	try {
 		return await userService.getUsers();
 	} catch (error) {
@@ -22,7 +32,7 @@ export const getUsers = createAsyncThunk(API_URL_USERS, async (_, thunkAPI) => {
 	}
 });
 
-export const getStudents = createAsyncThunk(API_URL_USERS + '/students', async (_, thunkAPI) => {
+export const getStudents = createAsyncThunk(GET_STUDENTS, async (_, thunkAPI) => {
 	try {
 		return await userService.getStudents();
 	} catch (error) {
@@ -30,62 +40,55 @@ export const getStudents = createAsyncThunk(API_URL_USERS + '/students', async (
 	}
 });
 
-export const getInstructors = createAsyncThunk(
-	API_URL_USERS + '/instructors',
-	async (_, thunkAPI) => {
-		try {
-			return await userService.getInstructors();
-		} catch (error) {
-			return thunkAPI.rejectWithValue(extractErrorMessage(error));
-		}
-	}
-);
-
-export const updateUser = createAsyncThunk(
-	API_URL_USERS + '/update',
-	async ({ userId, data }, thunkAPI) => {
-		try {
-			return await userService.updateUser(userId, data);
-		} catch (error) {
-			return thunkAPI.rejectWithValue(extractErrorMessage(error));
-		}
-	}
-);
-
-export const activateUser = createAsyncThunk(
-	API_URL_USERS + '/activate',
-	async (userId, thunkAPI) => {
-		try {
-			await userService.activateUser(userId);
-			return thunkAPI.dispatch(getUsers());
-		} catch (error) {
-			return thunkAPI.rejectWithValue(extractErrorMessage(error));
-		}
-	}
-);
-
-export const deActivateUser = createAsyncThunk(
-	API_URL_USERS + '/deactivate',
-	async (userId, thunkAPI) => {
-		try {
-			await userService.deActivateUser(userId);
-			return thunkAPI.dispatch(getUsers());
-		} catch (error) {
-			return thunkAPI.rejectWithValue(extractErrorMessage(error));
-		}
-	}
-);
-
-export const deleteUser = createAsyncThunk(API_URL_USERS + '/delete', async (userId, thunkAPI) => {
+export const getInstructors = createAsyncThunk(GET_INSTRUCTORS, async (_, thunkAPI) => {
 	try {
-		await userService.deleteUser(userId);
-		return thunkAPI.dispatch(getUsers());
+		return await userService.getInstructors();
 	} catch (error) {
 		return thunkAPI.rejectWithValue(extractErrorMessage(error));
 	}
 });
 
-export const deleteUsers = createAsyncThunk(API_URL_USERS + '/delete_all', async (_, thunkAPI) => {
+export const addUser = createAsyncThunk(ADD_USER, async (user, thunkAPI) => {
+	try {
+		return await userService.addUser(user);
+	} catch (error) {
+		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+	}
+});
+
+export const updateUser = createAsyncThunk(UPDATE_USER, async ({ userId, data }, thunkAPI) => {
+	try {
+		return await userService.updateUser(userId, data);
+	} catch (error) {
+		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+	}
+});
+
+export const activateUser = createAsyncThunk(ACTIVATE_USER, async (userId, thunkAPI) => {
+	try {
+		return await userService.activateUser(userId);
+	} catch (error) {
+		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+	}
+});
+
+export const deactivateUser = createAsyncThunk(DEACTIVATE_USER, async (userId, thunkAPI) => {
+	try {
+		return await userService.deactivateUser(userId);
+	} catch (error) {
+		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+	}
+});
+
+export const deleteUser = createAsyncThunk(DELETE_USER, async (userId, thunkAPI) => {
+	try {
+		return await userService.deleteUser(userId);
+	} catch (error) {
+		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+	}
+});
+
+export const deleteUsers = createAsyncThunk(DELETE_USERS, async (_, thunkAPI) => {
 	try {
 		return await userService.deleteUsers();
 	} catch (error) {
@@ -107,119 +110,176 @@ export const userSlice = createSlice({
 			.addCase(getUsers.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(getUsers.fulfilled, (state, action) => {
+			.addCase(getUsers.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				state.users = action.payload;
+				state.users = payload;
 			})
-			.addCase(getUsers.rejected, (state, action) => {
+			.addCase(getUsers.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: action.payload.message,
+					text: payload,
 					icon: 'error',
 				});
 			})
 			.addCase(getStudents.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(getStudents.fulfilled, (state, action) => {
+			.addCase(getStudents.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				state.students = action.payload;
+				state.students = payload;
 			})
-			.addCase(getStudents.rejected, (state, action) => {
+			.addCase(getStudents.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: action.payload.message,
+					text: payload,
 					icon: 'error',
 				});
 			})
 			.addCase(getInstructors.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(getInstructors.fulfilled, (state, action) => {
+			.addCase(getInstructors.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				state.instructors = action.payload;
+				state.instructors = payload;
 			})
-			.addCase(getInstructors.rejected, (state, action) => {
+			.addCase(getInstructors.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: action.payload.message,
+					text: payload,
+					icon: 'error',
+				});
+			})
+			.addCase(addUser.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(addUser.fulfilled, (state, { payload }) => {
+				state.isLoading = false;
+				Toast.fire({
+					title: 'Success',
+					text: payload.message,
+					icon: 'success',
+				});
+				state.users = [...state.users, payload.user];
+			})
+			.addCase(addUser.rejected, (state, { payload }) => {
+				state.isLoading = false;
+				Toast.fire({
+					title: 'Something went wrong!',
+					text: payload,
 					icon: 'error',
 				});
 			})
 			.addCase(updateUser.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(updateUser.fulfilled, (state, action) => {
+			.addCase(updateUser.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				state.users.map((user) =>
-					user._id === action.payload._id ? action.payload : user
+				Toast.fire({
+					title: 'Success',
+					text: payload.message,
+					icon: 'success',
+				});
+				const updatedUserIndex = state.users.findIndex(
+					(user) => user._id === payload.updatedUser._id
 				);
+				if (updatedUserIndex !== -1) state.users[updatedUserIndex] = payload.updatedUser;
 			})
-			.addCase(updateUser.rejected, (state, action) => {
+			.addCase(updateUser.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: action.payload.message,
+					text: payload,
 					icon: 'error',
 				});
 			})
 			.addCase(activateUser.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(activateUser.fulfilled, (state, action) => {
+			.addCase(activateUser.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				state.users.map((user) =>
-					user._id === action.payload._id ? action.payload : user
+				Toast.fire({
+					title: 'Success',
+					text: payload.message,
+					icon: 'success',
+				});
+				const activatedUserIndex = state.users.findIndex(
+					(user) => user._id === payload.activatedUser._id
 				);
+				if (activatedUserIndex !== -1) state.users[activatedUserIndex].isActive = true;
 			})
-			.addCase(activateUser.rejected, (state, action) => {
+			.addCase(activateUser.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: action.payload.message,
+					text: payload,
+					icon: 'error',
+				});
+			})
+			.addCase(deactivateUser.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(deactivateUser.fulfilled, (state, { payload }) => {
+				state.isLoading = false;
+				Toast.fire({
+					title: 'Success',
+					text: payload.message,
+					icon: 'success',
+				});
+				const deactivatedUserIndex = state.users.findIndex(
+					(user) => user._id === payload.deactivatedUser._id
+				);
+				if (deactivatedUserIndex !== -1) state.users[deactivatedUserIndex].isActive = false;
+			})
+			.addCase(deactivateUser.rejected, (state, { payload }) => {
+				state.isLoading = false;
+				Toast.fire({
+					title: 'Something went wrong!',
+					text: payload,
 					icon: 'error',
 				});
 			})
 			.addCase(deleteUser.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(deleteUser.fulfilled, (state) => {
+			.addCase(deleteUser.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
-					text: 'User deleted!',
+					text: payload.message,
 					icon: 'success',
 				});
+				state.users = state.users.filter((user) => {
+					return user._id !== payload.user;
+				});
 			})
-			.addCase(deleteUser.rejected, (state, action) => {
+			.addCase(deleteUser.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: 'User did not deleted!',
-					// text: action.payload.message,
+					text: payload,
 					icon: 'error',
 				});
 			})
 			.addCase(deleteUsers.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(deleteUsers.fulfilled, (state) => {
+			.addCase(deleteUsers.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
-					text: 'Users deleted!',
+					text: payload,
 					icon: 'success',
 				});
+				state.users = [];
 			})
-			.addCase(deleteUsers.rejected, (state, action) => {
+			.addCase(deleteUsers.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: 'Users did not deleted!',
-					// text: action.payload.message,
+					text: payload,
 					icon: 'error',
 				});
 			});

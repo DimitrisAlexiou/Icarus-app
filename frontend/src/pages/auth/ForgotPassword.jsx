@@ -38,8 +38,6 @@ export default function ForgotPassword() {
 		dispatch(reset());
 	}, [isError, isSuccess, user, message, navigate, dispatch]);
 
-	if (isLoading) return <Spinner />;
-
 	return (
 		<>
 			<div className="bg-gradient-primary">
@@ -83,57 +81,61 @@ export default function ForgotPassword() {
 														link to reset your password!
 													</p>
 												</div>
-												<Formik
-													initialValues={{
-														email: '',
-													}}
-													validationSchema={EmailSchema}
-													onSubmit={(values, { setSubmitting }) => {
-														const email = {
-															email: values.email,
-														};
-														dispatch(forgotPassword(user));
-														setSubmitting(false);
-													}}
-													validateOnMount
-												>
-													{({ isSubmitting }) => (
-														<Form>
-															<FormGroup
-																className="form-group mb-3"
-																floating
-															>
-																<Field
-																	type="email"
-																	className="form-control"
-																	name="email"
-																/>
-																<Label
-																	for="email"
-																	className="text-gray-600"
+												{isLoading ? (
+													<Spinner card />
+												) : (
+													<Formik
+														initialValues={{
+															email: '',
+														}}
+														validationSchema={EmailSchema}
+														onSubmit={(values, { setSubmitting }) => {
+															const email = {
+																email: values.email,
+															};
+															dispatch(forgotPassword(user));
+															setSubmitting(false);
+														}}
+														validateOnMount
+													>
+														{({ isSubmitting }) => (
+															<Form>
+																<FormGroup
+																	className="form-group mb-3"
+																	floating
 																>
-																	Email
-																</Label>
-																<ErrorMessage
-																	name="email"
-																	component={FormErrorMessage}
-																/>
-															</FormGroup>
-															<Row className="mt-4">
-																<Col className="text-center">
-																	<Button
-																		type="submit"
-																		className="btn-block"
-																		color="primary"
-																		disabled={isSubmitting}
+																	<Field
+																		type="email"
+																		className="form-control"
+																		name="email"
+																	/>
+																	<Label
+																		for="email"
+																		className="text-gray-600"
 																	>
-																		Send Reset Link
-																	</Button>
-																</Col>
-															</Row>
-														</Form>
-													)}
-												</Formik>
+																		Email
+																	</Label>
+																	<ErrorMessage
+																		name="email"
+																		component={FormErrorMessage}
+																	/>
+																</FormGroup>
+																<Row className="mt-4">
+																	<Col className="text-center">
+																		<Button
+																			type="submit"
+																			className="btn-block"
+																			color="primary"
+																			disabled={isSubmitting}
+																		>
+																			Send Reset Link
+																		</Button>
+																	</Col>
+																</Row>
+															</Form>
+														)}
+													</Formik>
+												)}
 												<Row>
 													<Col className="text-center mt-4">
 														<hr />

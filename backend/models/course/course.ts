@@ -84,7 +84,7 @@ const courseSchema = new Schema<CourseProps>(
 		},
 		cycle: {
 			type: Schema.Types.ObjectId,
-			ref: 'Cycles',
+			ref: 'Cycle',
 			default: null,
 		},
 		ects: {
@@ -121,6 +121,8 @@ export const Course = model<CourseProps>('Course', courseSchema);
 export const getCourses = () => Course.find();
 export const getCourseById = (id: string) => Course.findById(id).populate('semester');
 export const getCourseByCourseId = (courseId: string) => Course.findOne({ courseId });
+export const getCourseByTeachingId = (teachingId: string) =>
+	Course.findOne({ teaching: teachingId });
 export const createCourse = (values: Record<string, any>) =>
 	new Course(values).save().then((course) => course.toObject());
 export const updateCourseById = (

@@ -1,6 +1,16 @@
 import { useEffect, useState, useRef, forwardRef, useMemo } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Modal, ModalHeader, ModalBody, Button, Row, Col, Badge } from 'reactstrap';
+import {
+	Modal,
+	ModalHeader,
+	ModalBody,
+	Button,
+	Row,
+	Col,
+	Badge,
+	NavItem,
+	NavLink,
+} from 'reactstrap';
 import {
 	getUserNotes,
 	deleteUserNote,
@@ -8,8 +18,9 @@ import {
 	setEditNote,
 } from '../../features/notes/noteSlice';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faCircleExclamation, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faCircleExclamation, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { faNoteSticky } from '@fortawesome/free-regular-svg-icons';
+import { deleteAlert } from '../../constants/sweetAlertNotification';
 import NoteForm from '../../components/note/NoteForm';
 import NoteItem from '../../components/note/NoteItem';
 import Spinner from '../../components/boilerplate/Spinner';
@@ -63,9 +74,8 @@ export default function Notes() {
 	const allCategories = Array.from(new Set(notes.flatMap((note) => note.categories)));
 
 	const filteredNotesByCategory = useMemo(() => {
-		if (showImportant) {
-			return notes.filter((note) => note.importance);
-		}
+		if (showImportant) return notes.filter((note) => note.importance);
+
 		return selectedCategory
 			? notes.filter((note) => note.categories.includes(selectedCategory))
 			: notes;
@@ -98,56 +108,65 @@ export default function Notes() {
 						color="null"
 						className="btn btn-light-cornflower-blue align-self-center"
 					>
-						Note <FontAwesomeIcon icon={faPlus} beatFade />
+						new note
 					</Button>
 				</Col>
 			</Row>
 
 			{notes.length > 0 ? (
 				<>
-					<Col className="animated--grow-in">
-						<Col className="nav nav-pills p-2 bg-white mb-3 rounded-pill align-items-center">
-							<Badge
-								color="primary"
-								pill
-								style={{ fontSize: '0.8rem' }}
-								className={`mx-1 d-flex align-items-center ${
-									!selectedCategory ? 'active' : ''
-								}`}
-								onClick={() => {
-									setSelectedCategory(null);
-									setShowImportant(false);
-								}}
-							>
-								<span className="d-none d-md-block">All Notes</span>
-							</Badge>
-							<span className="topbar-divider"></span>
-							{allCategories.map((category) => (
-								<Badge
-									color="info"
-									pill
-									style={{ fontSize: '0.8rem' }}
-									key={category}
-									className={`mx-1 d-flex align-items-center ${
-										selectedCategory === category ? 'active' : ''
+					<Row className="animated--grow-in">
+						<Col
+							md="8"
+							lg="9"
+							xl="10"
+							className="nav nav-pills p-2 bg-white mb-3 rounded-pill align-items-center"
+						>
+							<NavItem className="nav-item mx-1">
+								<NavLink
+									style={{ padding: '0.4rem', fontSize: '0.9rem' }}
+									className={`mx-1 d-flex align-items-center nav-link ${
+										selectedCategory === null && !showImportant
+											? 'font-weight-bold text-gray-600'
+											: 'text-gray-500'
 									}`}
 									onClick={() => {
-										setSelectedCategory(category);
+										setSelectedCategory(null);
 										setShowImportant(false);
 									}}
 								>
-									<span className="d-none d-md-block">{category}</span>
-								</Badge>
+									Notes
+								</NavLink>
+							</NavItem>
+							<span className="topbar-divider"></span>
+							{allCategories.map((category) => (
+								<NavItem className="nav-item mx-1">
+									<NavLink
+										key={category}
+										style={{ padding: '0.4rem', fontSize: '0.9rem' }}
+										className={`nav-link ${
+											selectedCategory === category
+												? 'font-weight-bold text-gray-600'
+												: 'text-gray-500'
+										}`}
+										onClick={() => {
+											setSelectedCategory(category);
+											setShowImportant(false);
+										}}
+									>
+										{category}
+									</NavLink>
+								</NavItem>
 							))}
+						</Col>
+						<Col className="nav nav-pills p-2 bg-white mb-3 rounded-pill d-flex justify-content-center mx-4">
 							{hasImportantNotes ? (
 								<>
 									<Badge
 										color="warning"
 										pill
-										style={{ fontSize: '0.8rem' }}
-										className={`mx-1 ml-auto d-flex align-items-center ${
-											showImportant ? 'active' : ''
-										}`}
+										style={{ padding: '0.6rem', fontSize: '0.9rem' }}
+										className={`mx-1 ml-auto d-flex align-items-center`}
 										onClick={() => {
 											setSelectedCategory(null);
 											setShowImportant(!showImportant);
@@ -160,17 +179,15 @@ export default function Notes() {
 							) : null}
 							<Badge
 								color="danger"
-								className={`${
-									hasImportantNotes
-										? 'mx-1'
-										: 'mx-1 ml-auto d-flex align-items-center'
-								}`}
-								onClick={() => dispatch(deleteUserNotes())}
+								pill
+								style={{ padding: '0.6rem', fontSize: '0.9rem' }}
+								className={`mx-1 d-flex align-items-center`}
+								onClick={() => deleteAlert(() => dispatch(deleteUserNotes()))}
 							>
-								<FontAwesomeIcon icon={faXmark} />
+								<FontAwesomeIcon icon={faTrashAlt} />
 							</Badge>
 						</Col>
-					</Col>
+					</Row>
 				</>
 			) : null}
 
@@ -189,7 +206,7 @@ export default function Notes() {
 							xs="12"
 							sm="12"
 							md="6"
-							lg="3"
+							lg="4"
 							xl="3"
 							onClick={() => {
 								dispatch(setEditNote({ editNoteId: note._id }));

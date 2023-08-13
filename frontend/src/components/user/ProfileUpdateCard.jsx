@@ -1,33 +1,9 @@
-import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import { Row, Col } from 'reactstrap';
-import { Toast } from '../../constants/sweetAlertNotification';
 import { UserType } from '../../constants/enums';
-import CustomSpinner from '../../components/boilerplate/Spinner';
+import Spinner from '../../components/boilerplate/Spinner';
 import UpdateProfileForm from '../../components/auth/UpdateProfileForm';
 
-export default function ProfileUpdateCard() {
-	const { user, isLoading, isError, isSuccess, message } = useSelector((state) => state.auth);
-
-	useEffect(() => {
-		if (isError) {
-			Toast.fire({
-				title: 'Something went wrong!',
-				text: message,
-				icon: 'error',
-			});
-		}
-		if (isSuccess) {
-			Toast.fire({
-				title: 'Success',
-				text: 'Profile updated!',
-				icon: 'success',
-			});
-		}
-	}, [isError, isSuccess, message]);
-
-	if (isLoading) return <CustomSpinner />;
-
+export default function ProfileUpdateCard({ user, isLoading }) {
 	return (
 		<>
 			<div className="profile_card  animated--grow-in">
@@ -83,7 +59,7 @@ export default function ProfileUpdateCard() {
 							</Row>
 						</>
 					) : null}
-					<UpdateProfileForm user={user} />
+					{isLoading ? <Spinner card /> : <UpdateProfileForm user={user} />}
 				</div>
 			</div>
 		</>

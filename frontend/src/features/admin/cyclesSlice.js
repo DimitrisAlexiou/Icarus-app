@@ -1,39 +1,49 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { API_URL_ADMIN } from '../../constants/config';
 import { extractErrorMessage } from '../../utils/errorMessage';
 import { Toast } from '../../constants/sweetAlertNotification';
+import {
+	DEFINE_CYCLES,
+	DELETE_CYCLE,
+	DELETE_CYCLES,
+	GET_CYCLE,
+	GET_CYCLES,
+	UPDATE_CYCLES,
+} from '../actions';
 import cyclesService from './cyclesService';
 
 const initialState = {
-	cycles: null,
+	cycles: [],
+	cycle: {},
 	isLoading: false,
-	isEditingCycles: false,
-	editCyclesId: '',
+	isEditingCycle: false,
+	editCycleId: '',
 };
 
-export const defineCycles = createAsyncThunk(
-	API_URL_ADMIN + '/defineCycles',
-	async (data, thunkAPI) => {
-		try {
-			return await cyclesService.defineCycles(data);
-		} catch (error) {
-			return thunkAPI.rejectWithValue(extractErrorMessage(error));
-		}
+export const defineCycle = createAsyncThunk(DEFINE_CYCLES, async (data, thunkAPI) => {
+	try {
+		return await cyclesService.defineCycle(data);
+	} catch (error) {
+		return thunkAPI.rejectWithValue(extractErrorMessage(error));
 	}
-);
+});
 
-export const updateCycles = createAsyncThunk(
-	API_URL_ADMIN + '/updateCycles',
-	async ({ cyclesId, data }, thunkAPI) => {
-		try {
-			return await cyclesService.updateCycles(cyclesId, data);
-		} catch (error) {
-			return thunkAPI.rejectWithValue(extractErrorMessage(error));
-		}
+export const updateCycle = createAsyncThunk(UPDATE_CYCLES, async ({ cycleId, data }, thunkAPI) => {
+	try {
+		return await cyclesService.updateCycle(cycleId, data);
+	} catch (error) {
+		return thunkAPI.rejectWithValue(extractErrorMessage(error));
 	}
-);
+});
 
-export const getCycles = createAsyncThunk(API_URL_ADMIN + '/getCycles', async (_, thunkAPI) => {
+export const getCycle = createAsyncThunk(GET_CYCLE, async (cycleId, thunkAPI) => {
+	try {
+		return await cyclesService.getCycle(cycleId);
+	} catch (error) {
+		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+	}
+});
+
+export const getCycles = createAsyncThunk(GET_CYCLES, async (_, thunkAPI) => {
 	try {
 		return await cyclesService.getCycles();
 	} catch (error) {
@@ -41,105 +51,153 @@ export const getCycles = createAsyncThunk(API_URL_ADMIN + '/getCycles', async (_
 	}
 });
 
-export const deleteCycles = createAsyncThunk(
-	API_URL_ADMIN + '/deleteCycles',
-	async (cyclesId, thunkAPI) => {
-		try {
-			return await cyclesService.deleteCycles(cyclesId);
-		} catch (error) {
-			return thunkAPI.rejectWithValue(extractErrorMessage(error));
-		}
+export const deleteCycle = createAsyncThunk(DELETE_CYCLE, async (cycleId, thunkAPI) => {
+	try {
+		return await cyclesService.deleteCycle(cycleId);
+	} catch (error) {
+		return thunkAPI.rejectWithValue(extractErrorMessage(error));
 	}
-);
+});
+
+export const deleteCycles = createAsyncThunk(DELETE_CYCLES, async (thunkAPI) => {
+	try {
+		return await cyclesService.deleteCycles();
+	} catch (error) {
+		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+	}
+});
 
 export const cyclesSlice = createSlice({
 	name: 'cycle',
 	initialState,
 	reducers: {
 		resetCycles: () => initialState,
-		setEditCycles: (state, { payload }) => {
-			return { ...state, isEditingCycles: true, ...payload };
+		setEditCycle: (state, { payload }) => {
+			return { ...state, isEditingCycle: true, ...payload };
 		},
 	},
 	extraReducers: (builder) => {
 		builder
-			.addCase(defineCycles.pending, (state) => {
+			.addCase(defineCycle.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(defineCycles.fulfilled, (state, action) => {
+			.addCase(defineCycle.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
-					text: 'Cycles configuration defined!',
+					text: payload.message,
 					icon: 'success',
 				});
-				state.cycles = action.payload;
+				state.cycles = [...state.cycles, ...payload.cycles];
 			})
-			.addCase(defineCycles.rejected, (state, action) => {
+			.addCase(defineCycle.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: action.payload.message,
+					text: payload,
 					icon: 'error',
 				});
 			})
-			.addCase(updateCycles.pending, (state) => {
+			.addCase(updateCycle.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(updateCycles.fulfilled, (state) => {
+			.addCase(updateCycle.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
-					text: 'Cycles configuration updated!',
+					text: payload.message,
 					icon: 'success',
 				});
-				// state.cycles = action.payload;
+				const updatedCycleIndex = state.cycles.findIndex(
+					(cycle) => cycle._id === payload.updatedCycle._id
+				);
+				if (updatedCycleIndex !== -1)
+					state.cycles[updatedCycleIndex] = payload.updatedCycle;
 			})
-			.addCase(updateCycles.rejected, (state, action) => {
+			.addCase(updateCycle.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: action.payload.message,
+					text: payload,
 					icon: 'error',
 				});
+			})
+			.addCase(getCycle.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(getCycle.fulfilled, (state, { payload }) => {
+				state.isLoading = false;
+				state.cycle = payload;
+			})
+			.addCase(getCycle.rejected, (state, { payload }) => {
+				state.isLoading = false;
+				if (payload !== 'Seems like the cycle that you are trying to view does not exist.')
+					Toast.fire({
+						title: 'Something went wrong!',
+						text: payload,
+						icon: 'error',
+					});
 			})
 			.addCase(getCycles.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(getCycles.fulfilled, (state, action) => {
+			.addCase(getCycles.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				state.cycles = action.payload;
+				state.cycles = payload;
 			})
-			.addCase(getCycles.rejected, (state, action) => {
+			.addCase(getCycles.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				if (action.payload !== 'Seems like there are no defined cycles.')
+				if (payload !== 'Seems like there are no defined cycles.')
 					Toast.fire({
 						title: 'Something went wrong!',
-						text: action.payload.message,
+						text: payload,
 						icon: 'error',
 					});
+			})
+			.addCase(deleteCycle.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(deleteCycle.fulfilled, (state, { payload }) => {
+				state.isLoading = false;
+				Toast.fire({
+					title: 'Success',
+					text: payload.message,
+					icon: 'success',
+				});
+				state.cycles = state.cycles.filter((cycle) => {
+					return cycle._id !== payload.cycle;
+				});
+			})
+			.addCase(deleteCycle.rejected, (state, { payload }) => {
+				state.isLoading = false;
+				Toast.fire({
+					title: 'Something went wrong!',
+					text: payload.message,
+					icon: 'error',
+				});
 			})
 			.addCase(deleteCycles.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(deleteCycles.fulfilled, (state, action) => {
+			.addCase(deleteCycles.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
-					text: action.payload.message,
+					text: payload.message,
 					icon: 'success',
 				});
+				state.cycles = [];
 			})
-			.addCase(deleteCycles.rejected, (state, action) => {
+			.addCase(deleteCycles.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: action.payload.message,
+					text: payload.message,
 					icon: 'error',
 				});
 			});
 	},
 });
 
-export const { resetCycles, setEditCycles } = cyclesSlice.actions;
+export const { resetCycles, setEditCycle } = cyclesSlice.actions;
 export default cyclesSlice.reducer;

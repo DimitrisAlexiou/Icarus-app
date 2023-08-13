@@ -14,6 +14,6 @@ export const getAllUsersNotes = tryCatch(async (_: Request, res: Response): Prom
 export const deleteAllUsersNotes = tryCatch(
 	async (_: Request, res: Response): Promise<Response> => {
 		await deleteAllNotes();
-		return res.status(200).json('Notes existing in the system deleted.');
+		return res.status(200).json({ message: 'Notes existing in the system deleted.' });
 	}
 );

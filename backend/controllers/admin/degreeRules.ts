@@ -27,7 +27,9 @@ export const defineDegreeRules = tryCatch(
 			status: 'new',
 		});
 
-		return res.status(201).json(degreeRules);
+		return res
+			.status(201)
+			.json({ message: 'Degree rules configuration assigned!', degreeRules });
 	}
 );
 
@@ -52,7 +54,9 @@ export const updateDegreeRules = tryCatch(
 		if (!updatedDegreeRules)
 			throw new CustomError('Seems like there are no defined degree rules to update.', 404);
 
-		return res.status(200).json(updatedDegreeRules);
+		return res
+			.status(200)
+			.json({ message: 'Degree rules configuration updated!', updatedDegreeRules });
 	}
 );
 

@@ -55,6 +55,14 @@ export const getInstructors = () =>
 	});
 export const getInstructorById = (id: mongoose.Types.ObjectId) =>
 	Instructor.findById(id).populate('user');
+export const getInstructorByUserId = (userId: string) => {
+	return Instructor.findOne({ user: userId });
+};
+export const updateInstructorById = (
+	id: string,
+	instructor: Record<string, any>,
+	options?: Record<string, any>
+) => Instructor.findByIdAndUpdate(id, instructor, { new: true });
 export const deleteInstructorByUserId = (id: string, session: ClientSession) => {
 	return Instructor.findOneAndDelete({ user: id }).session(session);
 };

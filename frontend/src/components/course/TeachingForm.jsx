@@ -1,62 +1,52 @@
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import { FormGroup, Label, Row, Col, Button, Spinner } from 'reactstrap';
-import { Formik, Form, Field, ErrorMessage, FieldArray } from 'formik';
+import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { updateTeaching } from '../../features/courses/teachingSlice';
 import { TeachingSchema } from '../../schemas/course/Teaching';
 import FormErrorMessage from '../form/FormErrorMessage';
 
-export default function TeachingForm({ courseId }) {
+export default function TeachingForm({ teaching, isEditingTeaching, editTeachingId }) {
 	const dispatch = useDispatch();
-	const navigate = useNavigate();
 
 	return (
 		<>
 			<Formik
 				initialValues={{
-					labWeight: 0,
-					theoryWeight: 0,
-					theoryGrade: 0,
-					labGrade: 0,
-					theoryGradeThreshold: 0,
-					labGradeThreshold: 0,
-					books: [''],
+					theoryWeight: teaching ? teaching.theoryWeight : 0,
+					labWeight: teaching ? teaching.labWeight : 0,
+					theoryGradeRetentionYears: teaching ? teaching.theoryGradeRetentionYears : 0,
+					labGradeRetentionYears: teaching ? teaching.labGradeRetentionYears : 0,
+					theoryGradeThreshold: teaching ? teaching.theoryGradeThreshold : 0,
+					labGradeThreshold: teaching ? teaching.labGradeThreshold : 0,
+					books: teaching ? teaching.books : [],
 				}}
+				enableReinitialize={true}
 				validationSchema={TeachingSchema}
 				onSubmit={(values, { setSubmitting }) => {
-					const teaching = {
-						labWeight: values.labWeight,
+					const teachingData = {
 						theoryWeight: values.theoryWeight,
-						theoryGrade: values.theoryGrade,
-						labGrade: values.labGrade,
+						labWeight: values.labWeight,
+						theoryGradeRetentionYears: values.theoryGradeRetentionYears,
+						labGradeRetentionYears: values.labGradeRetentionYears,
 						theoryGradeThreshold: values.theoryGradeThreshold,
 						labGradeThreshold: values.labGradeThreshold,
-						books: values.books,
+						books: values.books.some(Boolean) ? values.books : [],
 					};
-					console.log(teaching);
-					// dispatch(configureTeaching(teaching));
-					setSubmitting(false);
-					navigate('/course/' + courseId);
+					if (isEditingTeaching) {
+						console.log(teachingData);
+						dispatch(
+							updateTeaching({ teachingId: editTeachingId, data: teachingData })
+						);
+						setSubmitting(false);
+						return;
+					}
 				}}
 				validateOnMount
 			>
-				{({ isSubmitting, dirty, values, handleReset }) => (
+				{({ isSubmitting, dirty, values, handleReset, setFieldValue }) => (
 					<Form>
 						<Row>
 							<Col md="12" lg="6">
-								<FormGroup className="form-floating mb-3" floating>
-									<Field
-										type="number"
-										min="0"
-										className="form-control"
-										name="labWeight"
-									/>
-									<Label for="labWeight" className="text-gray-600">
-										Lab Weight
-									</Label>
-									<ErrorMessage name="labWeight" component={FormErrorMessage} />
-								</FormGroup>
-							</Col>
-							<Col>
 								<FormGroup className="form-floating mb-3" floating>
 									<Field
 										type="number"
@@ -73,8 +63,21 @@ export default function TeachingForm({ courseId }) {
 									/>
 								</FormGroup>
 							</Col>
+							<Col>
+								<FormGroup className="form-floating mb-3" floating>
+									<Field
+										type="number"
+										min="0"
+										className="form-control"
+										name="labWeight"
+									/>
+									<Label for="labWeight" className="text-gray-600">
+										Lab Weight
+									</Label>
+									<ErrorMessage name="labWeight" component={FormErrorMessage} />
+								</FormGroup>
+							</Col>
 						</Row>
-
 						<Row>
 							<Col md="12" lg="6">
 								<FormGroup className="form-floating mb-3" floating>
@@ -82,12 +85,18 @@ export default function TeachingForm({ courseId }) {
 										type="number"
 										min="0"
 										className="form-control"
-										name="theoryGrade"
+										name="theoryGradeRetentionYears"
 									/>
-									<Label for="theoryGrade" className="text-gray-600">
-										Theory Grade
+									<Label
+										for="theoryGradeRetentionYears"
+										className="text-gray-600"
+									>
+										Theory Grade Retention Years
 									</Label>
-									<ErrorMessage name="theoryGrade" component={FormErrorMessage} />
+									<ErrorMessage
+										name="theoryGradeRetentionYears"
+										component={FormErrorMessage}
+									/>
 								</FormGroup>
 							</Col>
 							<Col>
@@ -96,16 +105,18 @@ export default function TeachingForm({ courseId }) {
 										type="number"
 										min="0"
 										className="form-control"
-										name="labGrade"
+										name="labGradeRetentionYears"
 									/>
-									<Label for="labGrade" className="text-gray-600">
-										Lab Grade
+									<Label for="labGradeRetentionYears" className="text-gray-600">
+										Lab Grade Retention Years
 									</Label>
-									<ErrorMessage name="labGrade" component={FormErrorMessage} />
+									<ErrorMessage
+										name="labGradeRetentionYears"
+										component={FormErrorMessage}
+									/>
 								</FormGroup>
 							</Col>
 						</Row>
-
 						<Row>
 							<Col md="12" lg="6">
 								<FormGroup className="form-floating mb-3" floating>
@@ -142,70 +153,80 @@ export default function TeachingForm({ courseId }) {
 								</FormGroup>
 							</Col>
 						</Row>
-
-						<Label for="books" className="text-gray-600">
+						<small
+							className="text-muted pill-label mb-3"
+							style={{
+								textAlign: 'justify',
+								fontWeight: '700',
+								fontSize: 12,
+							}}
+						>
 							Recommended Books
-						</Label>
+						</small>
+						{/* {isEditingTeaching && !teaching.books.length > 0 ? (
+							<Row className="mb-3">
+								<Col className="mx-3">
+									<small
+										style={{
+											textAlign: 'justify',
+											fontWeight: '700',
+											fontSize: 13,
+										}}
+									>
+										No books available
+									</small>
+								</Col>
+							</Row>
+						) : ( */}
 						<FormGroup className="form-floating mb-3" floating>
-							<FieldArray
-								name="books"
-								render={(arrayHelpers) => (
-									<Row>
-										<Col md="8" lg="6">
-											{values.books.length > 0
-												? values.books.map((index) => (
-														<FormGroup
-															className="form-floating mb-3"
-															key={index}
-															floating
-														>
-															<Field
-																type="text"
-																className="form-control"
-																name={`books.${index}`}
-															/>
-															<Label
-																for={`books.${index}`}
-																className="text-gray-600"
-															>
-																Book {index + 1}
-															</Label>
-															<ErrorMessage
-																name={`books.${index}`}
-																component={FormErrorMessage}
-															/>
-														</FormGroup>
-												  ))
-												: null}
-										</Col>
-										<Col
-											xs="10"
-											sm="10"
-											md="2"
-											lg="5"
-											className="text-right mb-3"
-										>
-											{values.books.length > 1 ? (
-												<Button
-													color="warning"
-													onClick={() => arrayHelpers.pop()}
-												>
-													-
-												</Button>
-											) : null}
-										</Col>
-										<Col xs="2" sm="2" md="2" lg="1" className="mb-3">
+							{values.books.map((_, index) => (
+								<Row key={index}>
+									<Col xs="10" sm="10" md="10">
+										<Field
+											type="text"
+											className="form-control mb-3"
+											name={`books[${index}]`}
+											placeholder={`Book ${index + 1}`}
+										/>
+										<ErrorMessage
+											name={`books[${index}]`}
+											component={FormErrorMessage}
+										/>
+									</Col>
+									{index === 0 && (
+										<Col xs="2" sm="2" md="2" className="mb-3 text-right">
 											<Button
+												type="button"
 												color="info"
-												onClick={() => arrayHelpers.push('')}
+												onClick={() =>
+													setFieldValue('books', [...values.books, ''])
+												}
+												disabled={isSubmitting}
 											>
 												+
 											</Button>
 										</Col>
-									</Row>
-								)}
-							/>
+									)}
+									{index > 0 && (
+										<Col xs="2" sm="2" md="2" className="mb-3 text-right">
+											<Button
+												type="button"
+												color="warning"
+												onClick={() =>
+													setFieldValue(
+														'books',
+														values.books.filter((_, i) => i !== index)
+													)
+												}
+											>
+												-
+											</Button>
+										</Col>
+									)}
+								</Row>
+							))}
 						</FormGroup>
+						{/* )} */}
 						<Row>
 							<Col sm="6" md="6" xs="12" className="text-sm-left text-center">
 								<Button onClick={handleReset} disabled={!dirty || isSubmitting}>
@@ -218,6 +239,8 @@ export default function TeachingForm({ courseId }) {
 										<>
 											Please wait <Spinner type="grow" size="sm" />
 										</>
+									) : isEditingTeaching ? (
+										'Update'
 									) : (
 										'Configure'
 									)}

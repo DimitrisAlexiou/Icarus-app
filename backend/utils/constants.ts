@@ -1,9 +1,9 @@
 export const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z])(?=.*[!@#$%^&*]).{8,}$/;
 export const usernameRegex = /^icsd[0-9]{5}$/;
-export const surnameRegex = /^[A-Za-z]+$/;
-export const nameRegex = /^[A-Za-z]+$/;
+export const surnameRegex = /^[A-Za-z ]+$/;
+export const nameRegex = /^[A-Za-z ]+$/;
 export const studentIdRegex = /^321\/\d{7}$/;
-export const courseIdRegex = /^([3][2][1])\/[0-9][0-9][0-9][0-9][0-9]*$/;
+export const courseIdRegex = /^321-\d{4,5}$/;
 export const courseTitleRegex = /^[A-Za-z ]+$/;
 export const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 export const allowedFileTypes = [

@@ -16,7 +16,7 @@ export default (router: express.Router) => {
 	router.route('/calendar/:id').delete(authorize, isOwner, deleteUserEvent);
 
 	// @desc    Delete Events
-	// @route   DELETE /api/calendar/delete_all
+	// @route   DELETE /api/calendar/delete
 	// @access  Private
-	router.route('/calendar/delete_all').delete(authorize, isOwner, deleteUserEvents);
+	router.route('/calendar/delete').delete(authorize, isOwner, deleteUserEvents);
 };

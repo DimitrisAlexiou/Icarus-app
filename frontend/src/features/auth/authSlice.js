@@ -1,15 +1,14 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import {
-	API_URL_REGISTER,
-	API_URL_LOGIN,
-	API_URL_LOGOUT,
-	API_URL_FORGOT_PASSWORD,
-	API_URL_USER,
-} from '../../constants/config';
-import {
 	getUserFromLocalStorage,
 	addUserToLocalStorage,
 	removeUserFromLocalStorage,
+	getLoginFailedAttemptsFromLocalStorage,
+	getIsAccountLockedFromLocalStorage,
+	setLoginFailedAttemptsToLocalStorage,
+	setIsAccountLockedToLocalStorage,
+	getLastAttemptedUsernameFromLocalStorage,
+	setLastAttemptedUsernameToLocalStorage,
 } from '../../utils/localStorage';
 import { extractErrorMessage } from '../../utils/errorMessage';
 import { resetCalendar } from '../calendar/eventSlice';
@@ -18,6 +17,17 @@ import { resetNotes } from '../notes/noteSlice';
 import { resetGeneralReview } from '../reviews/generalReviewSlice';
 import { resetInstructorReview } from '../reviews/instructorReviewSlice';
 import { resetTeachingReview } from '../reviews/teachingReviewSlice';
+import {
+	CHANGE_PASSWORD,
+	FORGOT_PASSWORD,
+	GET_PROFILE,
+	LOGIN,
+	LOGOUT,
+	REGISTER,
+	RESET,
+	UPDATE_PROFILE,
+} from '../actions';
+import { Toast } from '../../constants/sweetAlertNotification';
 import authService from './authService';
 
 const initialState = {
@@ -26,9 +36,12 @@ const initialState = {
 	isSuccess: false,
 	isLoading: false,
 	message: '',
+	loginFailedAttempts: getLoginFailedAttemptsFromLocalStorage(),
+	isAccountLocked: getIsAccountLockedFromLocalStorage(),
+	lastAttemptedUsername: getLastAttemptedUsernameFromLocalStorage(),
 };
 
-export const register = createAsyncThunk(API_URL_REGISTER, async (user, thunkAPI) => {
+export const register = createAsyncThunk(REGISTER, async (user, thunkAPI) => {
 	try {
 		return await authService.register(user);
 	} catch (error) {
@@ -36,19 +49,94 @@ export const register = createAsyncThunk(API_URL_REGISTER, async (user, thunkAPI
 	}
 });
 
-export const login = createAsyncThunk(API_URL_LOGIN, async (user, thunkAPI) => {
+export const login = createAsyncThunk(LOGIN, async (user, thunkAPI) => {
 	try {
-		return await authService.login(user);
+		// return await authService.login(user);
+		const state = thunkAPI.getState();
+		const { lastAttemptedUsername } = state.auth;
+
+		if (lastAttemptedUsername !== user.username) {
+			thunkAPI.dispatch(
+				updateLoginStatus({
+					loginFailedAttempts: 0,
+					isAccountLocked: false,
+					lastAttemptedUsername: user.username,
+				})
+			);
+			setLoginFailedAttemptsToLocalStorage(0);
+			setIsAccountLockedToLocalStorage(false);
+			setLastAttemptedUsernameToLocalStorage(user.username);
+		}
+
+		const response = await authService.login(user);
+
+		if (response) {
+			thunkAPI.dispatch(
+				updateLoginStatus({
+					loginFailedAttempts: 0,
+					isAccountLocked: false,
+					lastAttemptedUsername: null,
+				})
+			);
+			setLoginFailedAttemptsToLocalStorage(0);
+			setIsAccountLockedToLocalStorage(false);
+			setLastAttemptedUsernameToLocalStorage(null);
+			return response;
+		}
 	} catch (error) {
-		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		if (
+			error.response.status === 400 &&
+			error.response.message ===
+				'Account is deactivated due to three login failed attempts, please contact the admin.'
+		) {
+			thunkAPI.dispatch(
+				updateLoginStatus({
+					loginFailedAttempts: 3,
+					isAccountLocked: true,
+					lastAttemptedUsername: user.username,
+				})
+			);
+			setLoginFailedAttemptsToLocalStorage(3);
+			setIsAccountLockedToLocalStorage(true);
+			setLastAttemptedUsernameToLocalStorage(user.username);
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		} else {
+			const state = thunkAPI.getState();
+			const { loginFailedAttempts } = state.auth;
+
+			if (loginFailedAttempts + 1 === 3) {
+				thunkAPI.dispatch(
+					updateLoginStatus({
+						loginFailedAttempts: 3,
+						isAccountLocked: true,
+						lastAttemptedUsername: user.username,
+					})
+				);
+				setLoginFailedAttemptsToLocalStorage(3);
+				setIsAccountLockedToLocalStorage(true);
+				setLastAttemptedUsernameToLocalStorage(user.username);
+			} else {
+				thunkAPI.dispatch(
+					updateLoginStatus({
+						loginFailedAttempts: loginFailedAttempts + 1,
+						isAccountLocked: false,
+						lastAttemptedUsername: user.username,
+					})
+				);
+				setLoginFailedAttemptsToLocalStorage(loginFailedAttempts + 1);
+				setIsAccountLockedToLocalStorage(false);
+				setLastAttemptedUsernameToLocalStorage(user.username);
+			}
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
 	}
 });
 
-export const logout = createAsyncThunk(API_URL_LOGOUT, async () => {
+export const logout = createAsyncThunk(LOGOUT, async () => {
 	await authService.logout();
 });
 
-export const forgotPassword = createAsyncThunk(API_URL_FORGOT_PASSWORD, async (user, thunkAPI) => {
+export const forgotPassword = createAsyncThunk(FORGOT_PASSWORD, async (user, thunkAPI) => {
 	try {
 		return await authService.forgotPassword(user);
 	} catch (error) {
@@ -56,18 +144,15 @@ export const forgotPassword = createAsyncThunk(API_URL_FORGOT_PASSWORD, async (u
 	}
 });
 
-export const changePassword = createAsyncThunk(
-	API_URL_USER + '/change-password',
-	async (user, thunkAPI) => {
-		try {
-			return await authService.changePassword(user);
-		} catch (error) {
-			return thunkAPI.rejectWithValue(extractErrorMessage(error));
-		}
+export const changePassword = createAsyncThunk(CHANGE_PASSWORD, async (user, thunkAPI) => {
+	try {
+		return await authService.changePassword(user);
+	} catch (error) {
+		return thunkAPI.rejectWithValue(extractErrorMessage(error));
 	}
-);
+});
 
-export const getProfile = createAsyncThunk(API_URL_USER, async (_, thunkAPI) => {
+export const getProfile = createAsyncThunk(GET_PROFILE, async (_, thunkAPI) => {
 	try {
 		return await authService.getProfile();
 	} catch (error) {
@@ -75,15 +160,18 @@ export const getProfile = createAsyncThunk(API_URL_USER, async (_, thunkAPI) => 
 	}
 });
 
-export const updateProfile = createAsyncThunk(API_URL_USER + '/update', async (user, thunkAPI) => {
-	try {
-		return await authService.updateProfile(user);
-	} catch (error) {
-		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+export const updateProfile = createAsyncThunk(
+	UPDATE_PROFILE,
+	async ({ userId, data }, thunkAPI) => {
+		try {
+			return await authService.updateProfile(userId, data);
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
 	}
-});
+);
 
-export const clearStore = createAsyncThunk(API_URL_USER + '/clearStore', async (thunkAPI) => {
+export const clearStore = createAsyncThunk(RESET, async (thunkAPI) => {
 	try {
 		await thunkAPI.dispatch(resetCalendar());
 		await thunkAPI.dispatch(resetCourses());
@@ -109,37 +197,47 @@ export const authSlice = createSlice({
 			state.isSuccess = false;
 			state.message = '';
 		},
+		updateLoginStatus(state, { payload }) {
+			state.loginFailedAttempts = payload.loginFailedAttempts;
+			state.isAccountLocked = payload.isAccountLocked;
+			state.lastAttemptedUsername = payload.lastAttemptedUsername;
+		},
+		resetLoginStatus(state) {
+			state.loginFailedAttempts = 0;
+			state.isAccountLocked = false;
+			state.lastAttemptedUsername = null;
+		},
 	},
 	extraReducers: (builder) => {
 		builder
 			.addCase(register.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(register.fulfilled, (state, action) => {
+			.addCase(register.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
 				state.isSuccess = true;
-				state.user = action.payload;
-				addUserToLocalStorage(state.user);
+				state.user = payload;
+				addUserToLocalStorage(payload);
 			})
-			.addCase(register.rejected, (state, action) => {
+			.addCase(register.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				state.isError = true;
-				state.message = action.payload;
+				state.message = payload;
 				state.user = null;
 			})
 			.addCase(login.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(login.fulfilled, (state, action) => {
+			.addCase(login.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
 				state.isSuccess = true;
-				state.user = action.payload;
-				addUserToLocalStorage(state.user);
+				state.user = payload;
+				addUserToLocalStorage(payload);
 			})
-			.addCase(login.rejected, (state, action) => {
+			.addCase(login.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				state.isError = true;
-				state.message = action.payload;
+				state.message = payload;
 				state.user = null;
 			})
 			.addCase(logout.fulfilled, (state) => {
@@ -149,67 +247,66 @@ export const authSlice = createSlice({
 			.addCase(forgotPassword.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(forgotPassword.fulfilled, (state, action) => {
+			.addCase(forgotPassword.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
 				state.isSuccess = true;
-				// state.user = action.payload;
-				// addUserToLocalStorage(state.user);
+				// state.user = payload;
+				// addUserToLocalStorage(payload);
 			})
-			.addCase(forgotPassword.rejected, (state, action) => {
+			.addCase(forgotPassword.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				state.isError = true;
-				state.message = action.payload;
+				state.message = payload;
 			})
 			.addCase(changePassword.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(changePassword.fulfilled, (state, action) => {
+			.addCase(changePassword.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
 				state.isSuccess = true;
-				state.user = action.payload;
-				addUserToLocalStorage(state.user);
+				state.user = payload;
+				addUserToLocalStorage(payload);
 			})
-			.addCase(changePassword.rejected, (state, action) => {
+			.addCase(changePassword.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				state.isError = true;
-				state.message = action.payload;
+				state.message = payload;
 			})
 			.addCase(getProfile.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(getProfile.fulfilled, (state, action) => {
+			.addCase(getProfile.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				state.user = action.payload;
+				state.user = payload;
 			})
-			.addCase(getProfile.rejected, (state, action) => {
+			.addCase(getProfile.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				state.isError = true;
-				state.message = action.payload;
+				state.message = payload;
 			})
 			.addCase(updateProfile.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(updateProfile.fulfilled, (state, action) => {
+			.addCase(updateProfile.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				state.isSuccess = true;
-				const { user } = action.payload;
-				state.auth.user = user;
-				addUserToLocalStorage(user);
-				// if (state.auth.user) {
-				// 	console.log(state.auth.user);
-				// 	state.auth.user = state.auth.user.map((user) =>
-				// 		user._id === action.payload._id ? action.payload : user
-				// 	);
-				// }
-				// return { ...state };
+				Toast.fire({
+					title: 'Success',
+					text: payload.message,
+					icon: 'success',
+				});
+				state.auth.user.user = payload.updatedUser;
+				addUserToLocalStorage(payload.updatedUser);
 			})
-			.addCase(updateProfile.rejected, (state, action) => {
+			.addCase(updateProfile.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				state.isError = true;
-				state.message = action.payload;
+				Toast.fire({
+					title: 'Something went wrong!',
+					text: payload,
+					icon: 'error',
+				});
 			});
 	},
 });
 
-export const { reset } = authSlice.actions;
+export const { reset, updateLoginStatus, resetLoginStatus } = authSlice.actions;
 export default authSlice.reducer;

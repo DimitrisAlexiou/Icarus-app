@@ -1,7 +1,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { API_URL_ADMIN } from '../../constants/config';
 import { extractErrorMessage } from '../../utils/errorMessage';
 import { Toast } from '../../constants/sweetAlertNotification';
+import {
+	DEFINE_DEGREE_RULES,
+	DELETE_DEGREE_RULES,
+	GET_DEGREE_RULES,
+	UPDATE_DEGREE_RULES,
+} from '../actions';
 import degreeRulesService from './degreeRulesService';
 
 const initialState = {
@@ -11,18 +16,15 @@ const initialState = {
 	editDegreeRulesId: '',
 };
 
-export const defineDegreeRules = createAsyncThunk(
-	API_URL_ADMIN + '/define',
-	async (data, thunkAPI) => {
-		try {
-			return await degreeRulesService.defineDegreeRules(data);
-		} catch (error) {
-			return thunkAPI.rejectWithValue(extractErrorMessage(error));
-		}
+export const defineDegreeRules = createAsyncThunk(DEFINE_DEGREE_RULES, async (data, thunkAPI) => {
+	try {
+		return await degreeRulesService.defineDegreeRules(data);
+	} catch (error) {
+		return thunkAPI.rejectWithValue(extractErrorMessage(error));
 	}
-);
+});
 
-export const getDegreeRules = createAsyncThunk(API_URL_ADMIN + '/get', async (_, thunkAPI) => {
+export const getDegreeRules = createAsyncThunk(GET_DEGREE_RULES, async (_, thunkAPI) => {
 	try {
 		return await degreeRulesService.getDegreeRules();
 	} catch (error) {
@@ -31,11 +33,10 @@ export const getDegreeRules = createAsyncThunk(API_URL_ADMIN + '/get', async (_,
 });
 
 export const updateDegreeRules = createAsyncThunk(
-	API_URL_ADMIN + '/update',
+	UPDATE_DEGREE_RULES,
 	async ({ degreeRulesId, data }, thunkAPI) => {
 		try {
-			await degreeRulesService.updateDegreeRules(degreeRulesId, data);
-			return thunkAPI.dispatch(getDegreeRules());
+			return await degreeRulesService.updateDegreeRules(degreeRulesId, data);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -43,11 +44,10 @@ export const updateDegreeRules = createAsyncThunk(
 );
 
 export const deleteDegreeRules = createAsyncThunk(
-	API_URL_ADMIN + '/delete',
+	DELETE_DEGREE_RULES,
 	async (degreeRulesId, thunkAPI) => {
 		try {
-			await degreeRulesService.deleteDegreeRules(degreeRulesId);
-			return thunkAPI.dispatch(getDegreeRules());
+			return await degreeRulesService.deleteDegreeRules(degreeRulesId);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -68,79 +68,76 @@ export const degreeRulesSlice = createSlice({
 			.addCase(defineDegreeRules.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(defineDegreeRules.fulfilled, (state, action) => {
+			.addCase(defineDegreeRules.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
-					text: 'Degree rules assigned!',
+					text: payload.message,
 					icon: 'success',
 				});
-				state.degreeRules = action.payload;
+				state.degreeRules = payload.degreeRules;
 			})
-			.addCase(defineDegreeRules.rejected, (state, action) => {
+			.addCase(defineDegreeRules.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: action.payload.message,
+					text: payload,
 					icon: 'error',
 				});
 			})
 			.addCase(getDegreeRules.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(getDegreeRules.fulfilled, (state, action) => {
+			.addCase(getDegreeRules.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				state.degreeRules = action.payload;
+				state.degreeRules = payload;
 			})
-			.addCase(getDegreeRules.rejected, (state, action) => {
+			.addCase(getDegreeRules.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				if (action.payload !== 'Seems like there are no defined degree rules.')
+				if (payload !== 'Seems like there are no defined degree rules.')
 					Toast.fire({
 						title: 'Something went wrong!',
-						text: action.payload.message,
+						text: payload,
 						icon: 'error',
 					});
 			})
 			.addCase(updateDegreeRules.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(updateDegreeRules.fulfilled, (state) => {
+			.addCase(updateDegreeRules.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
-					text: 'Degree Rules updated!',
+					text: payload.message,
 					icon: 'success',
 				});
-				// state.degreeRules = state.degreeRules.map((degreeRule) => {
-				// 	if (degreeRule.action.payload.id === action.payload.id)
-				// 		return { ...degreeRule, ...action.payload };
-				// 	return degreeRule;
-				// });
+				state.degreeRules = payload.updatedDegreeRules;
 			})
-			.addCase(updateDegreeRules.rejected, (state, action) => {
+			.addCase(updateDegreeRules.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: action.payload.message,
+					text: payload,
 					icon: 'error',
 				});
 			})
 			.addCase(deleteDegreeRules.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(deleteDegreeRules.fulfilled, (state, action) => {
+			.addCase(deleteDegreeRules.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
-					text: action.payload.message,
+					text: payload.message,
 					icon: 'success',
 				});
+				state.degreeRules = null;
 			})
-			.addCase(deleteDegreeRules.rejected, (state, action) => {
+			.addCase(deleteDegreeRules.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: action.payload.message,
+					text: payload,
 					icon: 'error',
 				});
 			});

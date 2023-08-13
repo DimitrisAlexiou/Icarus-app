@@ -6,10 +6,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import { UserSchema } from '../../schemas/auth/User';
 import { register } from '../../features/auth/authSlice';
+import { addUser } from '../../features/admin/userSlice';
 import { UserType, StudentType, Degree, FacultyType } from '../../constants/enums';
 import FormErrorMessage from '../form/FormErrorMessage';
 
-export default function RegisterForm() {
+export default function RegisterForm({ newUser, setNewUser }) {
 	const [showPassword, setShowPassword] = useState(false);
 	const [selectedType, setSelectedType] = useState('');
 
@@ -35,9 +36,11 @@ export default function RegisterForm() {
 					<FormGroup className="form-floating mb-3" floating>
 						<Field as="select" className="form-control" name="studentType">
 							<option default>Select student type</option>
-							<option value={StudentType.Undergraduate}>Undergraduate</option>
-							<option value={StudentType.Master}>Master</option>
-							<option value={StudentType.PhD}>PhD</option>
+							<option value={StudentType.Undergraduate}>
+								{StudentType.Undergraduate}
+							</option>
+							<option value={StudentType.Master}>{StudentType.Master}</option>
+							<option value={StudentType.PhD}>{StudentType.PhD}</option>
 						</Field>
 						<Label for="studentType" className="text-gray-600">
 							Student Type
@@ -67,9 +70,9 @@ export default function RegisterForm() {
 					<FormGroup className="form-floating mb-3" floating>
 						<Field as="select" className="form-control" name="facultyType">
 							<option default>Select faculty type</option>
-							<option value={FacultyType.DEP}>DEP</option>
-							<option value={FacultyType.EDIP}>EDIP</option>
-							<option value={FacultyType.ETEP}>ETEP</option>
+							<option value={FacultyType.DEP}>{FacultyType.DEP}</option>
+							<option value={FacultyType.EDIP}>{FacultyType.EDIP}</option>
+							<option value={FacultyType.ETEP}>{FacultyType.ETEP}</option>
 						</Field>
 						<Label for="facultyType" className="text-gray-600">
 							Faculty Type
@@ -81,9 +84,9 @@ export default function RegisterForm() {
 					<FormGroup className="form-floating mb-3" floating>
 						<Field as="select" className="form-control" name="degree">
 							<option default>Select degree type</option>
-							<option value={Degree.Assistant}>Assistant</option>
-							<option value={Degree.Associate}>Associate</option>
-							<option value={Degree.Professor}>Professor</option>
+							<option value={Degree.Assistant}>{Degree.Assistant}</option>
+							<option value={Degree.Associate}>{Degree.Associate}</option>
+							<option value={Degree.Professor}>{Degree.Professor}</option>
 						</Field>
 						<Label for="degree" className="text-gray-600">
 							Degree
@@ -143,6 +146,12 @@ export default function RegisterForm() {
 							studentType: values.studentType,
 							entranceYear: values.entranceYear,
 						};
+						if (newUser) {
+							dispatch(addUser(user));
+							setSubmitting(false);
+							setNewUser(false);
+							return;
+						}
 						dispatch(register(user));
 						setSubmitting(false);
 					} else if (values.type === UserType.instructor) {
@@ -157,6 +166,12 @@ export default function RegisterForm() {
 							degree: values.degree,
 							instructorEntranceYear: values.instructorEntranceYear,
 						};
+						if (newUser) {
+							dispatch(addUser(user));
+							setSubmitting(false);
+							setNewUser(false);
+							return;
+						}
 						dispatch(register(user));
 						setSubmitting(false);
 					}
@@ -265,8 +280,10 @@ export default function RegisterForm() {
 										<option className="text-gray-300" default>
 											Select your role
 										</option>
-										<option value={UserType.student}>Student</option>
-										<option value={UserType.instructor}>Instructor</option>
+										<option value={UserType.student}>{UserType.student}</option>
+										<option value={UserType.instructor}>
+											{UserType.instructor}
+										</option>
 									</Field>
 									<Label for="type" className="text-gray-600">
 										Type
@@ -296,6 +313,8 @@ export default function RegisterForm() {
 										<>
 											Please wait <Spinner type="grow" size="sm" />
 										</>
+									) : newUser ? (
+										'Add User'
 									) : (
 										'Register'
 									)}

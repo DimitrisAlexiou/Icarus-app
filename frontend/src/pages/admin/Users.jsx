@@ -8,14 +8,14 @@ import {
 	deleteUser,
 	deleteUsers,
 	activateUser,
-	deActivateUser,
+	deactivateUser,
 	resetUsers,
 	setEditUser,
 } from '../../features/admin/userSlice';
 import { deleteAlert } from '../../constants/sweetAlertNotification';
 import DataTable from '../../components/DataTable';
 import Switch from 'react-switch';
-import UserForm from '../../components/admin/UserForm';
+import UserForm from '../../components/admin/forms/UserForm';
 import RegisterForm from '../../components/auth/RegisterForm';
 import CustomSpinner from '../../components/boilerplate/Spinner';
 
@@ -24,8 +24,10 @@ export default function Users() {
 
 	const modalRef = useRef(null);
 	const newUserRef = useRef(null);
+
 	const [modal, setModal] = useState(false);
 	const [newUser, setNewUser] = useState(false);
+
 	const [currentUser, setCurrentUser] = useState({
 		username: '',
 		name: '',
@@ -46,7 +48,7 @@ export default function Users() {
 		if (checked) {
 			dispatch(activateUser(userId));
 		} else {
-			dispatch(deActivateUser(userId));
+			dispatch(deactivateUser(userId));
 		}
 	};
 
@@ -62,10 +64,8 @@ export default function Users() {
 	const toggleNewUser = () => setNewUser(!newUser);
 
 	const ModalComponent = forwardRef((props, ref) => {
-		const { modalRef } = props;
-
 		return (
-			<Modal modalRef={modalRef} isOpen={modal} toggle={toggle} className="modal-lg">
+			<Modal ref={ref} isOpen={modal} toggle={toggle} className="modal-lg">
 				<ModalHeader toggle={toggle}>Edit User ({currentUser.username})</ModalHeader>
 				<ModalBody>
 					<UserForm
@@ -81,16 +81,14 @@ export default function Users() {
 
 	const NewUserComponent = forwardRef((props, ref) => {
 		return (
-			<Modal ref={newUserRef} isOpen={newUser} toggle={toggleNewUser} className="modal-lg">
+			<Modal ref={ref} isOpen={newUser} toggle={toggleNewUser} className="modal-lg">
 				<ModalHeader toggle={toggleNewUser}>New User</ModalHeader>
 				<ModalBody>
-					<RegisterForm />
+					<RegisterForm newUser={newUser} setNewUser={setNewUser} />
 				</ModalBody>
 			</Modal>
 		);
 	});
-
-	if (isLoading) return <CustomSpinner />;
 
 	const dataTableConfig = [
 		{
@@ -156,7 +154,7 @@ export default function Users() {
 							className="btn btn-light"
 							onClick={() => {
 								// doDeleteUser(user);
-								deleteAlert(dispatch(deleteUser(user._id)));
+								deleteAlert(() => dispatch(deleteUser(user._id)));
 							}}
 						>
 							<FontAwesomeIcon icon={faTrashAlt} />
@@ -189,7 +187,7 @@ export default function Users() {
 						<Button
 							className="btn btn-red align-self-center"
 							color="null"
-							onClick={() => deleteAlert(dispatch(deleteUsers()))}
+							onClick={() => deleteAlert(() => dispatch(deleteUsers()))}
 							// onClick={() => dispatch(deleteUsers())}
 						>
 							<FontAwesomeIcon icon={faTrashAlt} /> Delete Users
@@ -200,16 +198,24 @@ export default function Users() {
 
 			<Row className="justify-content-center animated--grow-in">
 				<Col className="card card-body mb-4" xs="12" sm="12" md="12" lg="12" xl="12">
-					<DataTable
-						data={users}
-						config={dataTableConfig}
-						sortColumns={['username', 'name', 'surname']}
-						searchMessage={'by Username or Surname'}
-					/>
+					{isLoading ? (
+						<CustomSpinner />
+					) : users.length > 0 ? (
+						<DataTable
+							data={users}
+							config={dataTableConfig}
+							sortColumns={['username', 'name', 'surname']}
+							searchMessage={'by Username or Surname'}
+						/>
+					) : (
+						<span className="mt-4 mb-4 text-gray-500 font-weight-bold">
+							There are no users registered in the system.
+						</span>
+					)}
 				</Col>
 			</Row>
 
-			{isEditingUser ? <ModalComponent modalRef={modalRef} toggle={toggle} /> : null}
+			{isEditingUser ? <ModalComponent ref={modalRef} toggle={toggle} /> : null}
 			<NewUserComponent ref={newUserRef} toggleNewUser={toggleNewUser} />
 		</>
 	);

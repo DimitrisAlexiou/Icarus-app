@@ -16,7 +16,10 @@ export const login = tryCatch(async (req: Request, res: Response): Promise<Respo
 		if (user.lastLogin === null && user.isActive === false) {
 			throw new CustomError('Account is not yet active, it will be available soon.', 400);
 		} else if (user.lastLogin !== null && user.isActive === false) {
-			throw new CustomError('Account is deactivated, please contact the admin.', 400);
+			throw new CustomError(
+				'Account is deactivated due to three login failed attempts, please contact the admin.',
+				400
+			);
 		} else {
 			user.lastLogin = new Date();
 			user.loginFailedAttempts = 0;
@@ -29,10 +32,21 @@ export const login = tryCatch(async (req: Request, res: Response): Promise<Respo
 	} else {
 		if (user && user.lastLogin !== null && user.isActive === true) {
 			user.loginFailedAttempts++;
-			if (user.loginFailedAttempts >= 3) user.isActive = false;
-			await user.save();
+			if (user.loginFailedAttempts >= 3) {
+				user.isActive = false;
+				await user.save();
+				throw new CustomError(
+					'Account is deactivated due to three login failed attempts, please contact the admin.',
+					400
+				);
+			} else {
+				await user.save();
+			}
 		} else if (user && user.lastLogin !== null && user.isActive === false) {
-			throw new CustomError('Account is deactivated, please contact the admin.', 400);
+			throw new CustomError(
+				'Account is deactivated due to three login failed attempts, please contact the admin.',
+				400
+			);
 		}
 		throw new CustomError('Invalid user credentials.', 401);
 	}

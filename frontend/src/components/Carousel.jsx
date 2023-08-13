@@ -1,21 +1,8 @@
-import { useState, useMemo } from 'react';
-import { useDispatch } from 'react-redux';
-import {
-	Row,
-	Col,
-	Carousel,
-	CarouselItem,
-	CarouselIndicators,
-	Card,
-	CardBody,
-	CardTitle,
-	CardText,
-} from 'reactstrap';
-import { enrollAlert } from '../constants/sweetAlertNotification';
+import { useState, useMemo, useRef } from 'react';
+import { Row, Col, Carousel, CarouselItem, CarouselIndicators, Card, CardBody } from 'reactstrap';
 
-export default function CarouselComponent({ objects, title, description, subtext }) {
-	const dispatch = useDispatch();
-
+export default function CarouselComponent({ objects, renderItem, onObjectClick }) {
+	const ref = useRef(null);
 	const itemsPerPage = 6;
 	const [activeIndex, setActiveIndex] = useState(0);
 	const [animating, setAnimating] = useState(false);
@@ -50,6 +37,18 @@ export default function CarouselComponent({ objects, title, description, subtext
 		setActiveIndex(newIndex);
 	};
 
+	const renderCarouselItem = (object) => {
+		return (
+			<Card className="card-note mb-4">
+				<CardBody>{renderItem(object)}</CardBody>
+			</Card>
+		);
+	};
+
+	const indicatorItems = objectPages.map((page, pageIndex) => ({
+		key: `indicator-${pageIndex}`,
+	}));
+
 	return (
 		<>
 			<Carousel
@@ -58,68 +57,34 @@ export default function CarouselComponent({ objects, title, description, subtext
 				activeIndex={activeIndex}
 				next={next}
 				previous={previous}
+				ref={ref}
 			>
 				<CarouselIndicators
-					items={objectPages}
+					items={indicatorItems}
 					activeIndex={activeIndex}
 					onClickHandler={goToIndex}
 				/>
-				{objectPages.map((page) => (
+				{objectPages.map((page, pageIndex) => (
 					<CarouselItem
 						className="mb-4"
-						key={page}
+						key={pageIndex}
 						onExiting={() => setAnimating(true)}
 						onExited={() => setAnimating(false)}
 					>
 						<Row>
 							{page.map((object) => (
 								<Col
-									xs="6"
-									sm="6"
-									md="4"
-									lg="3"
-									xl="2"
+									xs="12"
+									sm="12"
+									md="6"
+									lg="6"
+									xl="4"
 									key={object._id}
-									// onClick={() => enrollAlert(dispatch(enrollCourse(object._id)))}
-									// onClick={dispatch(enrollCourse(object._id))}
+									onClick={() => {
+										if (onObjectClick) onObjectClick(object);
+									}}
 								>
-									<Card className="card-note mb-4">
-										<CardBody>
-											<CardTitle
-												style={{
-													textAlign: 'justify',
-													fontWeight: '700',
-													fontSize: 15,
-												}}
-												className="text-light-cornflower-blue mb-2"
-											>
-												{object[title]}
-											</CardTitle>
-											<CardText>
-												<small
-													className="text-muted"
-													style={{
-														textAlign: 'justify',
-														fontWeight: '700',
-														fontSize: 13,
-													}}
-												>
-													{object[description] === true
-														? 'Obligatory'
-														: 'Optional'}
-												</small>
-											</CardText>
-											<CardText
-												style={{
-													textAlign: 'justify',
-													fontWeight: '600',
-													fontSize: 11,
-												}}
-											>
-												{object[subtext]}
-											</CardText>
-										</CardBody>
-									</Card>
+									{renderCarouselItem(object)}
 								</Col>
 							))}
 						</Row>

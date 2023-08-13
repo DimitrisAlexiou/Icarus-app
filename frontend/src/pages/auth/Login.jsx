@@ -5,37 +5,62 @@ import { Row, Col, Nav } from 'reactstrap';
 import { faGoogle, faGithub } from '@fortawesome/free-brands-svg-icons';
 import { FaStudiovinari } from 'react-icons/fa';
 import { Toast } from '../../constants/sweetAlertNotification';
-import { reset } from '../../features/auth/authSlice';
+import { reset, resetLoginStatus } from '../../features/auth/authSlice';
 import LoginForm from '../../components/auth/LoginForm';
+import ContactAdminForm from '../../components/auth/ContactAdminForm';
 import SignUpInButton from '../../components/buttons/SignUpInButton';
 import Spinner from '../../components/boilerplate/Spinner';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 
 export default function Login() {
-	const { user, isError, isLoading, isSuccess, message } = useSelector((state) => state.auth);
+	const { user, isAccountLocked, isError, isLoading, isSuccess, message } = useSelector(
+		(state) => state.auth
+	);
 
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
 	useEffect(() => {
 		if (isError) {
-			Toast.fire({
-				title: 'Something went wrong!',
-				text: message,
-				icon: 'error',
-			});
+			if (message === 'Account is not yet active, it will be available soon.') {
+				Toast.fire({
+					title: 'Oops!',
+					text: message,
+					icon: 'info',
+				});
+			}
+			// else if (
+			// 	message ===
+			// 	'Account is deactivated due to three login failed attempts, please contact the admin.'
+			// ) {
+			// 	Toast.fire({
+			// 		title: 'Oops!',
+			// 		text: message,
+			// 		icon: 'warning',
+			// 	});
+			// 	navigate('/auth/contact-admin');
+			// }
+			else {
+				Toast.fire({
+					title: 'Something went wrong!',
+					text: message,
+					icon: 'error',
+				});
+			}
 		}
 		if (user) {
 			Toast.fire({
-				title: 'Info',
-				text: 'You are already logged in',
+				title: 'Hey!',
+				text: 'You are already logged in.',
 				icon: 'info',
 			});
 			navigate('/');
 		}
 		if (isSuccess) {
 			Toast.fire({
-				title: 'Success',
-				text: `Welcome Back ${user.user.name}`,
+				title: 'Hello!',
+				text: `Welcome Back ${user.user.name}!`,
 				icon: 'success',
 			});
 			navigate('/');
@@ -43,8 +68,6 @@ export default function Login() {
 
 		dispatch(reset());
 	}, [isError, isSuccess, user, message, navigate, dispatch]);
-
-	if (isLoading) return <Spinner />;
 
 	return (
 		<>
@@ -72,68 +95,116 @@ export default function Login() {
 						<Col xl="10" lg="12" md="10" sm="12" xs="12">
 							<div className="card o-hidden border-0 shadow-lg my-4 animated--grow-in">
 								<div className="card-body p-0">
-									<Row>
-										<Col
-											lg="5"
-											xl="4"
-											className="d-none d-lg-block bg-login-image"
-										></Col>
-										<Col lg="7" xl="8">
-											<div className="p-5">
-												<div className="text-center">
-													<h4 className="text-gray-900 mb-4 justify-content-center">
-														Welcome Back !
-													</h4>
+									{isAccountLocked ? (
+										<Row>
+											<Col
+												lg="5"
+												xl="5"
+												className="d-none d-lg-block bg-password-image"
+											></Col>
+											<Col lg="7" xl="7">
+												<div className="p-5">
+													<div className="text-center">
+														<h1 className="h4 text-gray-900 mb-4">
+															Locked Out?
+														</h1>
+														<p className="mb-5">
+															No need to to worry about it. Just enter
+															your email address and username below
+															and we'll activate your account!
+														</p>
+													</div>
+													{isLoading ? (
+														<Spinner card />
+													) : (
+														<ContactAdminForm />
+													)}
+													<Row>
+														<Col className="text-center mt-4">
+															<hr />
+															<Link
+																className="nav-item align-self-center text-gray-500"
+																to="/auth/login"
+																style={{
+																	textDecoration: 'none',
+																}}
+																onClick={() => {
+																	dispatch(resetLoginStatus());
+																}}
+															>
+																<FontAwesomeIcon
+																	className="mx-2"
+																	icon={faChevronLeft}
+																/>
+																Back to Login
+															</Link>
+														</Col>
+													</Row>
 												</div>
-
-												<LoginForm />
-
-												<hr />
-												<Row>
-													<Col
-														sm="6"
-														md="6"
-														xs="12"
-														className="text-sm-left text-center"
-													>
-														<SignUpInButton
-															message={'Continue with'}
-															icon={faGoogle}
-														/>
-													</Col>
-													<Col className="text-sm-right text-center mt-sm-0 mt-3">
-														<SignUpInButton
-															message={'Continue with'}
-															icon={faGithub}
-														/>
-													</Col>
-												</Row>
-												<hr />
-												<Row className="d-flex justify-content-center">
-													<Col md="6" sm="6" xs="6">
-														<Link
-															className="nav-item align-self-center text-gray-500"
-															to="/auth/forgot-password"
-															style={{ textDecoration: 'none' }}
+											</Col>
+										</Row>
+									) : (
+										<Row>
+											<Col
+												lg="5"
+												xl="4"
+												className="d-none d-lg-block bg-login-image"
+											></Col>
+											<Col lg="7" xl="8">
+												<div className="p-5">
+													<div className="text-center">
+														<h4 className="text-gray-900 mb-4 justify-content-center">
+															Welcome Back !
+														</h4>
+													</div>
+													{isLoading ? <Spinner card /> : <LoginForm />}
+													<hr />
+													<Row>
+														<Col
+															sm="6"
+															md="6"
+															xs="12"
+															className="text-sm-left text-center"
 														>
-															Forgot Password?
-														</Link>
-													</Col>
-													<Col className="text-right">
-														<Link
-															className="nav-item align-self-center text-gray-500"
-															to="/auth/register"
-															style={{
-																textDecoration: 'none',
-															}}
-														>
-															Create Account!
-														</Link>
-													</Col>
-												</Row>
-											</div>
-										</Col>
-									</Row>
+															<SignUpInButton
+																message={'Continue with'}
+																icon={faGoogle}
+															/>
+														</Col>
+														<Col className="text-sm-right text-center mt-sm-0 mt-3">
+															<SignUpInButton
+																message={'Continue with'}
+																icon={faGithub}
+															/>
+														</Col>
+													</Row>
+													<hr />
+													<Row className="d-flex justify-content-center">
+														<Col md="6" sm="6" xs="6">
+															<Link
+																className="nav-item align-self-center text-gray-500"
+																to="/auth/forgot-password"
+																style={{ textDecoration: 'none' }}
+															>
+																Forgot Password?
+															</Link>
+														</Col>
+														<Col className="text-right">
+															<Link
+																className="nav-item align-self-center text-gray-500"
+																to="/auth/register"
+																style={{
+																	textDecoration: 'none',
+																}}
+															>
+																Create Account!
+															</Link>
+														</Col>
+													</Row>
+												</div>
+											</Col>
+										</Row>
+									)}
 								</div>
 							</div>
 						</Col>

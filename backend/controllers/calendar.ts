@@ -42,7 +42,7 @@ export const addEvent = tryCatch(
 		});
 		console.log(event);
 
-		return res.status(201).json(event);
+		return res.status(201).json({ message: 'Event added!', event });
 	}
 );
 
@@ -68,7 +68,7 @@ export const deleteUserEvent = tryCatch(
 				404
 			);
 
-		return res.status(200).json({ message: 'Event deleted.' });
+		return res.status(200).json({ message: 'Event deleted.', event: eventToDelete._id });
 	}
 );
 

@@ -18,7 +18,7 @@ export const Toast = MySwal.mixin({
 export const enrollAlert = (callback) => {
 	Swal.fire({
 		title: 'Enroll to Course?',
-		text: "You won't be able to revert this!",
+		text: 'You will be enrolled to this course if accept!',
 		icon: 'info',
 		showCancelButton: true,
 		confirmButtonColor: '#3085d6',

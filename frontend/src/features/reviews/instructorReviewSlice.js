@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { extractErrorMessage } from '../../utils/errorMessage';
+import { CREATE_INSTRUCTOR_REVIEW, GET_INSTRUCTOR_REVIEWS } from '../actions';
 import instructorReviewService from './instructorReviewService';
 
 const initialState = {
@@ -12,10 +13,10 @@ const initialState = {
 };
 
 export const createInstructorReview = createAsyncThunk(
-	'api/review/instructor',
-	async (instructorReviewData, thunkAPI) => {
+	CREATE_INSTRUCTOR_REVIEW,
+	async (data, thunkAPI) => {
 		try {
-			return await instructorReviewService.createInstructorReview(instructorReviewData);
+			return await instructorReviewService.createInstructorReview(data);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -23,7 +24,7 @@ export const createInstructorReview = createAsyncThunk(
 );
 
 export const getInstructorReviews = createAsyncThunk(
-	'/api/review/instructor/all',
+	GET_INSTRUCTOR_REVIEWS,
 	async (_, thunkAPI) => {
 		try {
 			return await instructorReviewService.getInstructorReviews();
@@ -48,23 +49,23 @@ export const instructorReviewSlice = createSlice({
 				state.isLoading = false;
 				state.isSuccess = true;
 			})
-			.addCase(createInstructorReview.rejected, (state, action) => {
+			.addCase(createInstructorReview.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				state.isError = true;
-				state.message = action.payload;
+				state.message = payload;
 			})
 			.addCase(getInstructorReviews.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(getInstructorReviews.fulfilled, (state, action) => {
+			.addCase(getInstructorReviews.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
 				state.isSuccess = true;
-				state.teachingReviews = action.payload;
+				state.teachingReviews = payload;
 			})
-			.addCase(getInstructorReviews.rejected, (state, action) => {
+			.addCase(getInstructorReviews.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				state.isError = true;
-				state.message = action.payload;
+				state.message = payload;
 			});
 	},
 });

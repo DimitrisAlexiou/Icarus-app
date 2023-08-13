@@ -65,6 +65,17 @@ export const profileSchema = Joi.object({
 	email: Joi.string()
 		.lowercase()
 		.email({ minDomainSegments: 2, tlds: { allow: ['com', 'net', 'gr'] } }),
+	type: Joi.string().valid(UserType.student, UserType.instructor),
+	degree: Joi.string().when('type', {
+		is: UserType.instructor,
+		then: Joi.string().valid(
+			Degree.Assistant,
+			Degree.Associate,
+			Degree.Professor,
+			`Degree type should be one of the following: [${Degree.Assistant}, ${Degree.Associate}, ${Degree.Professor}]`
+		),
+		otherwise: Joi.string(),
+	}),
 });
 
 export const courseSchema = Joi.object({
@@ -103,7 +114,7 @@ export const courseSchema = Joi.object({
 				then: Joi.string().valid(PrerequisiteType.Hard, PrerequisiteType.Soft).required(),
 				otherwise: Joi.string().allow(''),
 			}),
-		})
+		}).unknown()
 	),
 	isActive: Joi.boolean().default(false).required(),
 });
@@ -115,14 +126,19 @@ export const courseActivationSchema = Joi.object({
 export const teachingSchema = Joi.object({
 	labWeight: Joi.number().min(0).required(),
 	theoryWeight: Joi.number().max(100).required(),
-	theoryGrade: Joi.number().min(0).required(),
-	labGrade: Joi.number().min(0).required(),
+	theoryGradeRetentionYears: Joi.number().min(0).required(),
+	labGradeRetentionYears: Joi.number().min(0).required(),
 	theoryGradeThreshold: Joi.number().min(4).required(),
 	labGradeThreshold: Joi.number().min(4).required(),
 	books: Joi.array().items(Joi.string()),
 	course: Joi.string().required(),
 	semester: Joi.string().required(),
 });
+
+export const instructorsAssignmentSchema = Joi.array()
+	.items(Joi.string().required())
+	.min(1)
+	.required();
 
 export const teachingReviewSchema = Joi.object({
 	clear_course_objectives: Joi.number().required(),
@@ -194,14 +210,8 @@ export const degreeRulesSchema = Joi.object({
 	practice: Joi.boolean().default(false).required(),
 });
 
-export const cyclesSchema = Joi.object({
-	names: Joi.array()
-		.items(
-			Joi.object({
-				cycle: Joi.string().required(),
-			})
-		)
-		.required(),
+export const cycleSchema = Joi.object({
+	cycle: Joi.string().required(),
 });
 
 export const noteSchema = Joi.object({

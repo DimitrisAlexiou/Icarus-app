@@ -1,27 +1,18 @@
-import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Nav, NavItem } from 'reactstrap';
+import { useSelector } from 'react-redux';
+import { Nav, NavItem } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { FaStudiovinari } from 'react-icons/fa';
-import { faUniversity, faWrench, faBarsStaggered } from '@fortawesome/free-solid-svg-icons';
-import {
-	sidebarLinks,
-	sidebarAdminLinks,
-	sidebarStudentLinks,
-	sidebarInstructorLinks,
-} from '../../utils/NavigationLinks';
-import '../../App.css';
-import { useSelector } from 'react-redux';
+import { faUniversity, faBarsStaggered } from '@fortawesome/free-solid-svg-icons';
 import { UserType } from '../../constants/enums';
+import AdminSidebar from './AdminSidebar';
+import InstructorSidebar from './InstructorSidebar';
+import StudentSidebar from './StudentSidebar';
 
 export default function Sidebar({ isSidebarCollapsed, setSidebarCollapsed, smallSidebar }) {
 	const { user } = useSelector((state) => state.auth);
-	const [dropdownOpen, setDropdownOpen] = useState(false);
-	const toggle = () => setDropdownOpen((prevState) => !prevState);
 	const smallToggled = () => {
-		if (smallSidebar) {
-			setSidebarCollapsed(true);
-		}
+		if (smallSidebar) setSidebarCollapsed(true);
 	};
 
 	return (
@@ -53,198 +44,16 @@ export default function Sidebar({ isSidebarCollapsed, setSidebarCollapsed, small
 					</NavLink>
 				</NavItem>
 
-				{user && user.user.isAdmin ? (
-					<>
-						<div className="sidebar-heading">Admin</div>
-
-						<NavItem className="nav-item">
-							{sidebarAdminLinks.map((sidebarAdminLink) => {
-								const { id, text, path, icon } = sidebarAdminLink;
-								return (
-									<NavLink
-										className="nav-link nav-links-animate"
-										to={path}
-										key={id}
-									>
-										{icon}
-										<span className="ml-2">{text}</span>
-									</NavLink>
-								);
-							})}
-						</NavItem>
-					</>
-				) : null}
-
-				{user && user.user.isAdmin ? (
-					<>
-						<div className="sidebar-heading">System Interface</div>
-
-						<NavItem className="nav-item">
-							<Dropdown
-								variant="muted"
-								direction={isSidebarCollapsed ? 'end' : null}
-								isOpen={dropdownOpen}
-								toggle={toggle}
-							>
-								<DropdownToggle className="nav-link" color="null">
-									<FontAwesomeIcon icon={faWrench} />
-									<span className="ml-2">Course Utilities</span>
-								</DropdownToggle>
-								<DropdownMenu
-									className={`collapse ${isSidebarCollapsed ? 'mx-4' : ''}`}
-								>
-									<DropdownItem
-										className="nav-links-animate animated--grow-in text-gray-600"
-										style={{ backgroundColor: 'transparent' }}
-									>
-										<NavLink
-											to="course/new"
-											style={{
-												textDecoration: 'none',
-												color: 'inherit',
-											}}
-											onClick={smallSidebar ? smallToggled : null}
-										>
-											Add Course
-										</NavLink>
-									</DropdownItem>
-									<DropdownItem
-										className="nav-links-animate animated--grow-in text-gray-600"
-										style={{ backgroundColor: 'transparent' }}
-									>
-										<NavLink
-											to="courses/assign"
-											style={{ textDecoration: 'none', color: 'inherit' }}
-											onClick={smallSidebar ? smallToggled : null}
-										>
-											Assign Course
-										</NavLink>
-									</DropdownItem>
-									<DropdownItem
-										className="nav-links-animate animated--grow-in text-gray-600"
-										style={{ backgroundColor: 'transparent' }}
-									>
-										<NavLink
-											to="subjectGrading"
-											style={{ textDecoration: 'none', color: 'inherit' }}
-											onClick={smallSidebar ? smallToggled : null}
-										>
-											Grade Course
-										</NavLink>
-									</DropdownItem>
-									<DropdownItem
-										className="nav-links-animate animated--grow-in text-gray-600"
-										style={{ backgroundColor: 'transparent' }}
-									>
-										<NavLink
-											to="subjectStatement"
-											style={{ textDecoration: 'none', color: 'inherit' }}
-											onClick={smallSidebar ? smallToggled : null}
-										>
-											Statement
-										</NavLink>
-									</DropdownItem>
-								</DropdownMenu>
-							</Dropdown>
-						</NavItem>
-					</>
-				) : null}
-
-				<div className="sidebar-heading">Data</div>
-
 				{user && user.user.type === UserType.student ? (
-					<NavItem className="nav-item">
-						{sidebarStudentLinks.map((sidebarStudentLink) => {
-							const { id, text, path, icon } = sidebarStudentLink;
-							return (
-								<NavLink
-									className="nav-link nav-links-animate"
-									to={path}
-									key={id}
-									onClick={smallSidebar ? smallToggled : null}
-								>
-									{icon}
-									<span className="ml-2">{text}</span>
-								</NavLink>
-							);
-						})}
-					</NavItem>
+					<StudentSidebar smallSidebar={smallSidebar} smallToggled={smallToggled} />
 				) : user && user.user.type === UserType.instructor ? (
-					<NavItem className="nav-item">
-						{sidebarInstructorLinks.map((sidebarInstructorLink) => {
-							const { id, text, path, icon } = sidebarInstructorLink;
-							return (
-								<NavLink
-									className="nav-link nav-links-animate"
-									to={path}
-									key={id}
-									onClick={smallSidebar ? smallToggled : null}
-								>
-									{icon}
-									<span className="ml-2">{text}</span>
-								</NavLink>
-							);
-						})}
-					</NavItem>
-				) : (
-					<NavItem className="nav-item">
-						{sidebarLinks.map((sidebarLink) => {
-							const { id, text, path, icon } = sidebarLink;
-							return (
-								<NavLink
-									className="nav-link nav-links-animate"
-									to={path}
-									key={id}
-									onClick={smallSidebar ? smallToggled : null}
-								>
-									{icon}
-									<span className="ml-2">{text}</span>
-								</NavLink>
-							);
-						})}
-					</NavItem>
-				)}
-
-				{user && user.user.isAdmin ? (
-					<>
-						<div className="sidebar-heading">Instructor</div>
-
-						<NavItem className="nav-item">
-							{sidebarInstructorLinks.map((sidebarInstructorLink) => {
-								const { id, text, path, icon } = sidebarInstructorLink;
-								return (
-									<NavLink
-										className="nav-link nav-links-animate"
-										to={path}
-										key={id}
-										onClick={smallSidebar ? smallToggled : null}
-									>
-										{icon}
-										<span className="ml-2">{text}</span>
-									</NavLink>
-								);
-							})}
-						</NavItem>
-
-						<div className="sidebar-heading">Student</div>
-
-						<NavItem className="nav-item">
-							{sidebarStudentLinks.map((sidebarStudentLink) => {
-								const { id, text, path, icon } = sidebarStudentLink;
-								return (
-									<NavLink
-										className="nav-link nav-links-animate"
-										to={path}
-										key={id}
-										onClick={smallSidebar ? smallToggled : null}
-									>
-										{icon}
-										<span className="ml-2">{text}</span>
-									</NavLink>
-								);
-							})}
-						</NavItem>
-					</>
+					<InstructorSidebar smallSidebar={smallSidebar} smallToggled={smallToggled} />
+				) : user && user.user.isAdmin ? (
+					<AdminSidebar
+						smallSidebar={smallSidebar}
+						smallToggled={smallToggled}
+						isSidebarCollapsed={isSidebarCollapsed}
+					/>
 				) : null}
 
 				<NavItem className="nav-item">

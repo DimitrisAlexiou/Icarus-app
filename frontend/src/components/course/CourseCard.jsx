@@ -1,35 +1,6 @@
-import { useState, useEffect } from 'react';
 import { Row, Col, Badge } from 'reactstrap';
-import { useSelector, useDispatch } from 'react-redux';
-import { getCycles } from '../../features/admin/cyclesSlice';
-import { Toast } from '../../constants/sweetAlertNotification';
 
 const CourseCard = ({ course }) => {
-	const { cycles, isError, message } = useSelector((state) => state.cycles);
-
-	const [cycle, setCycle] = useState(null);
-	const [semester, setSemester] = useState(null);
-
-	const dispatch = useDispatch();
-
-	useEffect(() => {
-		dispatch(getCycles());
-		if (isError)
-			Toast.fire({
-				title: 'Something went wrong!',
-				text: message,
-				icon: 'error',
-			});
-	}, [dispatch, isError, message]);
-
-	useEffect(() => {
-		if (cycles && cycles.names && cycles.names.length > 0 && course.cycle) {
-			const cycle = cycles.names.find((c) => c._id === course.cycle);
-			if (cycle) setCycle(cycle.cycle);
-		}
-		if (course.semester) setSemester(course.semester.type);
-	}, [cycles, course.cycle, course.semester]);
-
 	return (
 		<>
 			<Row className="mb-3">
@@ -60,7 +31,9 @@ const CourseCard = ({ course }) => {
 					<label>
 						<b>Course Semester</b>
 					</label>
-					<p style={{ textAlign: 'justify' }}>{semester ? semester : 'Not available'}</p>
+					<p style={{ textAlign: 'justify' }}>
+						{course.semester ? course.semester.type : 'Not available'}
+					</p>
 					<hr />
 				</Col>
 			</Row>
@@ -76,7 +49,9 @@ const CourseCard = ({ course }) => {
 					<label>
 						<b>Course Cycle</b>
 					</label>
-					<p style={{ textAlign: 'justify' }}>{cycle ? cycle : 'Course is obligatory'}</p>
+					<p style={{ textAlign: 'justify' }}>
+						{course.cycle ? course.cycle.cycle : 'Course is obligatory'}
+					</p>
 					<hr />
 				</Col>
 			</Row>

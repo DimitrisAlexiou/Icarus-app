@@ -38,3 +38,10 @@ export const SemesterType = {
 	Spring: 'Spring',
 	Any: 'Any',
 };
+
+export const ExaminationType = {
+	Progress: 'Progress',
+	Final: 'Final',
+	Exercise: 'Exercise',
+	Project: 'Project',
+};

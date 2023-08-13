@@ -100,7 +100,7 @@ export const register = async (req: Request, res: Response): Promise<Response> =
 		await session.abortTransaction();
 		session.endSession();
 		console.error('❌ ', error);
-		throw new CustomError('Account did not deleted.', 500);
+		throw new CustomError('Account did not created.', 500);
 	}
 };
 

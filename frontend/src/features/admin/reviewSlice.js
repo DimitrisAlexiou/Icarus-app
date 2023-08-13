@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { API_URL_ADMIN } from '../../constants/config';
 import { extractErrorMessage } from '../../utils/errorMessage';
 import { Toast } from '../../constants/sweetAlertNotification';
+import { DEFINE_REVIEW, DELETE_REVIEW, GET_REVIEW, UPDATE_REVIEW } from '../actions';
 import reviewService from './reviewService';
 
 const initialState = {
@@ -11,18 +11,15 @@ const initialState = {
 	editReviewId: '',
 };
 
-export const defineReview = createAsyncThunk(
-	API_URL_ADMIN + '/defineReview',
-	async (data, thunkAPI) => {
-		try {
-			return await reviewService.defineReview(data);
-		} catch (error) {
-			return thunkAPI.rejectWithValue(extractErrorMessage(error));
-		}
+export const defineReview = createAsyncThunk(DEFINE_REVIEW, async (data, thunkAPI) => {
+	try {
+		return await reviewService.defineReview(data);
+	} catch (error) {
+		return thunkAPI.rejectWithValue(extractErrorMessage(error));
 	}
-);
+});
 
-export const getReview = createAsyncThunk(API_URL_ADMIN + '/getReview', async (_, thunkAPI) => {
+export const getReview = createAsyncThunk(GET_REVIEW, async (_, thunkAPI) => {
 	try {
 		return await reviewService.getReview();
 	} catch (error) {
@@ -31,27 +28,23 @@ export const getReview = createAsyncThunk(API_URL_ADMIN + '/getReview', async (_
 });
 
 export const updateReview = createAsyncThunk(
-	API_URL_ADMIN + '/updateReview',
+	UPDATE_REVIEW,
 	async ({ reviewId, data }, thunkAPI) => {
 		try {
-			await reviewService.updateAssessment(reviewId, data);
-			return thunkAPI.dispatch(getReview());
+			return await reviewService.updateReview(reviewId, data);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
 	}
 );
 
-export const deleteReview = createAsyncThunk(
-	API_URL_ADMIN + '/deleteReview',
-	async (reviewId, thunkAPI) => {
-		try {
-			return await reviewService.deleteReview(reviewId);
-		} catch (error) {
-			return thunkAPI.rejectWithValue(extractErrorMessage(error));
-		}
+export const deleteReview = createAsyncThunk(DELETE_REVIEW, async (reviewId, thunkAPI) => {
+	try {
+		return await reviewService.deleteReview(reviewId);
+	} catch (error) {
+		return thunkAPI.rejectWithValue(extractErrorMessage(error));
 	}
-);
+});
 
 export const reviewSlice = createSlice({
 	name: 'review',
@@ -67,75 +60,105 @@ export const reviewSlice = createSlice({
 			.addCase(defineReview.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(defineReview.fulfilled, (state, action) => {
+			.addCase(defineReview.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
-					text: 'Review configuration defined!',
+					text: payload.message,
 					icon: 'success',
 				});
-				state.review = action.payload;
+				state.review = payload.review;
 			})
-			.addCase(defineReview.rejected, (state, action) => {
+			.addCase(defineReview.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: action.payload.message,
-					icon: 'error',
-				});
+				if (payload.includes('startDate' && 'now'))
+					Toast.fire({
+						title: 'Something went wrong!',
+						text: 'Semester start date must be greater than today.',
+						icon: 'error',
+					});
+				else if (payload.includes('endDate' && 'startDate'))
+					Toast.fire({
+						title: 'Something went wrong!',
+						text: 'Semester end date must be greater than semester start date.',
+						icon: 'error',
+					});
+				else
+					Toast.fire({
+						title: 'Something went wrong!',
+						text: payload,
+						icon: 'error',
+					});
 			})
 			.addCase(getReview.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(getReview.fulfilled, (state, action) => {
+			.addCase(getReview.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				state.review = action.payload;
+				state.review = payload;
 			})
-			.addCase(getReview.rejected, (state, action) => {
+			.addCase(getReview.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				if (action.payload !== 'Seems like there is no review statement period defined.')
+				if (
+					payload !==
+					'Seems like there is no review statement configuration defined for this semester.'
+				)
 					Toast.fire({
 						title: 'Something went wrong!',
-						text: action.payload.message,
+						text: payload,
 						icon: 'error',
 					});
 			})
 			.addCase(updateReview.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(updateReview.fulfilled, (state) => {
+			.addCase(updateReview.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
-					text: 'Review configuration updated!',
+					text: payload.message,
 					icon: 'success',
 				});
-				// state.review = action.payload;
+				state.review = payload.updatedReview;
 			})
-			.addCase(updateReview.rejected, (state, action) => {
+			.addCase(updateReview.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: action.payload.message,
-					icon: 'error',
-				});
+				if (payload.includes('startDate' && 'now'))
+					Toast.fire({
+						title: 'Something went wrong!',
+						text: 'Semester start date must be greater than today.',
+						icon: 'error',
+					});
+				else if (payload.includes('endDate' && 'startDate'))
+					Toast.fire({
+						title: 'Something went wrong!',
+						text: 'Semester end date must be greater than semester start date.',
+						icon: 'error',
+					});
+				else
+					Toast.fire({
+						title: 'Something went wrong!',
+						text: payload,
+						icon: 'error',
+					});
 			})
 			.addCase(deleteReview.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(deleteReview.fulfilled, (state, action) => {
+			.addCase(deleteReview.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
-					text: action.payload.message,
+					text: payload.message,
 					icon: 'success',
 				});
+				state.review = null;
 			})
-			.addCase(deleteReview.rejected, (state, action) => {
+			.addCase(deleteReview.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: action.payload.message,
+					text: payload,
 					icon: 'error',
 				});
 			});

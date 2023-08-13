@@ -10,18 +10,19 @@ import {
 	semesterSchema,
 	assessmentSchema,
 	reviewSchema,
-	cyclesSchema,
+	cycleSchema,
 	degreeRulesSchema,
 	noteSchema,
 	calendarSchema,
 	courseActivationSchema,
+	instructorsAssignmentSchema,
 } from '../utils/schemas';
 import CustomError from '../utils/CustomError';
 
 export const validateUser = (req: Request, _: Response, next: NextFunction) => {
 	const { error } = userSchema.validate(req.body);
 	if (error) {
-		console.error('❌ User schema validation', error);
+		console.error('❌ User schema validation: ', error);
 		throw new CustomError(error.message, 400);
 	}
 
@@ -31,7 +32,7 @@ export const validateUser = (req: Request, _: Response, next: NextFunction) => {
 export const validateProfile = (req: Request, _: Response, next: NextFunction) => {
 	const { error } = profileSchema.validate(req.body);
 	if (error) {
-		console.error('❌ Profile schema validation', error);
+		console.error('❌ Profile schema validation: ', error);
 		throw new CustomError(error.message, 400);
 	}
 
@@ -41,7 +42,7 @@ export const validateProfile = (req: Request, _: Response, next: NextFunction) =
 export const validateCourse = (req: Request, _: Response, next: NextFunction) => {
 	const { error } = courseSchema.validate(req.body);
 	if (error) {
-		console.error('❌ Course schema validation', error);
+		console.error('❌ Course schema validation: ', error);
 		throw new CustomError(error.message, 400);
 	}
 
@@ -51,7 +52,7 @@ export const validateCourse = (req: Request, _: Response, next: NextFunction) =>
 export const validateCourseActivation = (req: Request, _: Response, next: NextFunction) => {
 	const { error } = courseActivationSchema.validate(req.body);
 	if (error) {
-		console.error('❌ Course activation schema validation', error);
+		console.error('❌ Course activation schema validation: ', error);
 		throw new CustomError(error.message, 400);
 	}
 
@@ -61,7 +62,17 @@ export const validateCourseActivation = (req: Request, _: Response, next: NextFu
 export const validateTeaching = (req: Request, _: Response, next: NextFunction) => {
 	const { error } = teachingSchema.validate(req.body);
 	if (error) {
-		console.error('❌ Teaching schema validation', error);
+		console.error('❌ Teaching schema validation: ', error);
+		throw new CustomError(error.message, 400);
+	}
+
+	next();
+};
+
+export const validateInstructorsAssignment = (req: Request, _: Response, next: NextFunction) => {
+	const { error } = instructorsAssignmentSchema.validate(req.body);
+	if (error) {
+		console.error('❌ Instructors assignment schema validation: ', error);
 		throw new CustomError(error.message, 400);
 	}
 
@@ -71,7 +82,7 @@ export const validateTeaching = (req: Request, _: Response, next: NextFunction) 
 export const validateTeachingReview = (req: Request, _: Response, next: NextFunction) => {
 	const { error } = teachingReviewSchema.validate(req.body);
 	if (error) {
-		console.error('❌ Teaching review schema validation', error);
+		console.error('❌ Teaching review schema validation: ', error);
 		throw new CustomError(error.message, 400);
 	}
 
@@ -81,7 +92,7 @@ export const validateTeachingReview = (req: Request, _: Response, next: NextFunc
 export const validateInstructorReview = (req: Request, _: Response, next: NextFunction) => {
 	const { error } = instructorReviewSchema.validate(req.body);
 	if (error) {
-		console.error('❌ Instructor review schema validation', error);
+		console.error('❌ Instructor review schema validation: ', error);
 		throw new CustomError(error.message, 400);
 	}
 
@@ -91,7 +102,7 @@ export const validateInstructorReview = (req: Request, _: Response, next: NextFu
 export const validateGeneralReview = (req: Request, _: Response, next: NextFunction) => {
 	const { error } = generalReviewSchema.validate(req.body);
 	if (error) {
-		console.error('❌ General review schema validation', error);
+		console.error('❌ General review schema validation: ', error);
 		throw new CustomError(error.message, 400);
 	}
 
@@ -101,7 +112,7 @@ export const validateGeneralReview = (req: Request, _: Response, next: NextFunct
 export const validateSemester = (req: Request, _: Response, next: NextFunction) => {
 	const { error } = semesterSchema.validate(req.body);
 	if (error) {
-		console.error('❌ Semester configuration schema validation', error);
+		console.error('❌ Semester configuration schema validation: ', error);
 		throw new CustomError(error.message, 400);
 	}
 
@@ -111,7 +122,7 @@ export const validateSemester = (req: Request, _: Response, next: NextFunction) 
 export const validateAssessment = (req: Request, _: Response, next: NextFunction) => {
 	const { error } = assessmentSchema.validate(req.body);
 	if (error) {
-		console.error('❌ Assessment statement configuration schema validation', error);
+		console.error('❌ Assessment statement configuration schema validation: ', error);
 		throw new CustomError(error.message, 400);
 	}
 
@@ -121,17 +132,7 @@ export const validateAssessment = (req: Request, _: Response, next: NextFunction
 export const validateReview = (req: Request, _: Response, next: NextFunction) => {
 	const { error } = reviewSchema.validate(req.body);
 	if (error) {
-		console.error('❌ Review configuration schema validation', error);
-		throw new CustomError(error.message, 400);
-	}
-
-	next();
-};
-
-export const validateCycles = (req: Request, _: Response, next: NextFunction) => {
-	const { error } = cyclesSchema.validate(req.body);
-	if (error) {
-		console.error('❌ Cycles schema validation', error);
+		console.error('❌ Review configuration schema validation: ', error);
 		throw new CustomError(error.message, 400);
 	}
 
@@ -141,7 +142,7 @@ export const validateCycles = (req: Request, _: Response, next: NextFunction) =>
 export const validateDegreeRules = (req: Request, _: Response, next: NextFunction) => {
 	const { error } = degreeRulesSchema.validate(req.body);
 	if (error) {
-		console.error('❌ Degree rules schema validation', error);
+		console.error('❌ Degree rules schema validation: ', error);
 		throw new CustomError(error.message, 400);
 	}
 
@@ -151,7 +152,7 @@ export const validateDegreeRules = (req: Request, _: Response, next: NextFunctio
 export const validateNote = (req: Request, _: Response, next: NextFunction) => {
 	const { error } = noteSchema.validate(req.body);
 	if (error) {
-		console.error('❌ Note schema validation', error);
+		console.error('❌ Note schema validation: ', error);
 		throw new CustomError(error.message, 400);
 	}
 
@@ -161,7 +162,7 @@ export const validateNote = (req: Request, _: Response, next: NextFunction) => {
 export const validateCalendar = (req: Request, _: Response, next: NextFunction) => {
 	const { error } = calendarSchema.validate(req.body);
 	if (error) {
-		console.error('❌ Calendar schema validation', error);
+		console.error('❌ Calendar schema validation: ', error);
 		throw new CustomError(error.message, 400);
 	}
 

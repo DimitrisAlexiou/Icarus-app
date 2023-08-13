@@ -1,7 +1,12 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { API_URL_ADMIN } from '../../constants/config';
 import { extractErrorMessage } from '../../utils/errorMessage';
 import { Toast } from '../../constants/sweetAlertNotification';
+import {
+	DEFINE_ASSESSMENT,
+	DELETE_ASSESSMENT,
+	GET_ASSESSMENT,
+	UPDATE_ASSESSMENT,
+} from '../actions';
 import assessmentService from './assessmentService';
 
 const initialState = {
@@ -11,35 +16,27 @@ const initialState = {
 	editAssessmentId: '',
 };
 
-export const defineAssessment = createAsyncThunk(
-	API_URL_ADMIN + '/defineAssessment',
-	async (data, thunkAPI) => {
-		try {
-			return await assessmentService.defineAssessment(data);
-		} catch (error) {
-			return thunkAPI.rejectWithValue(extractErrorMessage(error));
-		}
+export const defineAssessment = createAsyncThunk(DEFINE_ASSESSMENT, async (data, thunkAPI) => {
+	try {
+		return await assessmentService.defineAssessment(data);
+	} catch (error) {
+		return thunkAPI.rejectWithValue(extractErrorMessage(error));
 	}
-);
+});
 
-export const getAssessment = createAsyncThunk(
-	API_URL_ADMIN + '/getAssessment',
-	async (_, thunkAPI) => {
-		try {
-			return await assessmentService.getAssessment();
-		} catch (error) {
-			console.log(error);
-			return thunkAPI.rejectWithValue(extractErrorMessage(error));
-		}
+export const getAssessment = createAsyncThunk(GET_ASSESSMENT, async (_, thunkAPI) => {
+	try {
+		return await assessmentService.getAssessment();
+	} catch (error) {
+		return thunkAPI.rejectWithValue(extractErrorMessage(error));
 	}
-);
+});
 
 export const updateAssessment = createAsyncThunk(
-	API_URL_ADMIN + '/updateAssessment',
+	UPDATE_ASSESSMENT,
 	async ({ assessmentId, data }, thunkAPI) => {
 		try {
-			await assessmentService.updateAssessment(assessmentId, data);
-			return thunkAPI.dispatch(getAssessment());
+			return await assessmentService.updateAssessment(assessmentId, data);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -47,7 +44,7 @@ export const updateAssessment = createAsyncThunk(
 );
 
 export const deleteAssessment = createAsyncThunk(
-	API_URL_ADMIN + '/deleteAssessment',
+	DELETE_ASSESSMENT,
 	async (assessmentId, thunkAPI) => {
 		try {
 			return await assessmentService.deleteAssessment(assessmentId);
@@ -71,81 +68,105 @@ export const assessmentSlice = createSlice({
 			.addCase(defineAssessment.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(defineAssessment.fulfilled, (state, action) => {
+			.addCase(defineAssessment.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
-					text: 'Assessment configuration defined!',
+					text: payload.message,
 					icon: 'success',
 				});
-				state.assessment = action.payload;
+				state.assessment = payload.assessment;
 			})
-			.addCase(defineAssessment.rejected, (state, action) => {
+			.addCase(defineAssessment.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				console.log(action.payload.message);
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: action.payload.message,
-					icon: 'error',
-				});
+				if (payload.includes('vaccineStartDate' && 'now'))
+					Toast.fire({
+						title: 'Something went wrong!',
+						text: 'Vaccine start date must be greater than today.',
+						icon: 'error',
+					});
+				else if (payload.includes('vaccineEndDate' && 'vaccineStartDate'))
+					Toast.fire({
+						title: 'Something went wrong!',
+						text: 'Vaccine end date must be greater than vaccine start date.',
+						icon: 'error',
+					});
+				else
+					Toast.fire({
+						title: 'Something went wrong!',
+						text: payload,
+						icon: 'error',
+					});
 			})
 			.addCase(getAssessment.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(getAssessment.fulfilled, (state, action) => {
+			.addCase(getAssessment.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				state.assessment = action.payload;
+				state.assessment = payload;
 			})
-			.addCase(getAssessment.rejected, (state, action) => {
+			.addCase(getAssessment.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: action.payload.message,
-					icon: 'error',
-				});
-
-				console.log(action.payload);
+				if (
+					payload !==
+					'Seems like there is no assessment statement configuration defined for this semester.'
+				)
+					Toast.fire({
+						title: 'Something went wrong!',
+						text: payload,
+						icon: 'error',
+					});
 			})
 			.addCase(updateAssessment.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(updateAssessment.fulfilled, (state, action) => {
+			.addCase(updateAssessment.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
-					text: 'Assessment configuration updated!',
+					text: payload.message,
 					icon: 'success',
 				});
-				state.assessment = action.payload;
+				state.assessment = payload.updatedAssessment;
 			})
-			.addCase(updateAssessment.rejected, (state, action) => {
+			.addCase(updateAssessment.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: action.payload.message,
-					icon: 'error',
-				});
+				if (payload.includes('vaccineStartDate' && 'now'))
+					Toast.fire({
+						title: 'Something went wrong!',
+						text: 'Vaccine start date must be greater than today.',
+						icon: 'error',
+					});
+				else if (payload.includes('vaccineEndDate' && 'vaccineStartDate'))
+					Toast.fire({
+						title: 'Something went wrong!',
+						text: 'Vaccine end date must be greater than vaccine start date.',
+						icon: 'error',
+					});
+				else
+					Toast.fire({
+						title: 'Something went wrong!',
+						text: payload,
+						icon: 'error',
+					});
 			})
 			.addCase(deleteAssessment.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(deleteAssessment.fulfilled, (state, action) => {
+			.addCase(deleteAssessment.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
-					text: action.payload.message,
+					text: payload.message,
 					icon: 'success',
 				});
 				state.assessment = null;
-				// state.assessment = state.assessment.filter((assessment) => {
-				// 	return assessment._id !== action.payload._id;
-				// });
 			})
-			.addCase(deleteAssessment.rejected, (state, action) => {
+			.addCase(deleteAssessment.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',
-					text: action.payload.message,
+					text: payload,
 					icon: 'error',
 				});
 			});

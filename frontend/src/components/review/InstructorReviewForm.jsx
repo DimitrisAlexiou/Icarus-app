@@ -38,6 +38,9 @@ export default function InstructorReviewForm() {
 					<Form>
 						<FormGroup className="form-floating mb-3 mt-2" floating>
 							<Row>
+								<Label for="good_organization" className="text-gray-600 mt-2">
+									Good organization of presentation material
+								</Label>
 								<Field className="form-control" name="good_organization">
 									{({ field, form }) => (
 										<RangeSlider
@@ -52,32 +55,32 @@ export default function InstructorReviewForm() {
 										/>
 									)}
 								</Field>
-								<Label for="good_organization" className="text-gray-600 mt-2">
-									Good organization of presentation material
-								</Label>
 							</Row>
 							<ErrorMessage name="good_organization" component={FormErrorMessage} />
 						</FormGroup>
 						<FormGroup className="form-floating mb-3" floating>
 							<Row>
-								<Field className="form-control" name="clear_comprehensive_answers">
-									{({ field, form }) => (
-										<RangeSlider
-											step={1}
-											min={1}
-											max={5}
-											value={field.value}
-											onChange={(e) =>
-												form.setFieldValue(field.name, e.target.value)
-											}
-											tooltipPlacement="top"
-										/>
-									)}
-								</Field>
 								<Label
 									for="clear_comprehensive_answers"
 									className="text-gray-600 mt-2"
 								>
+									<Field
+										className="form-control"
+										name="clear_comprehensive_answers"
+									>
+										{({ field, form }) => (
+											<RangeSlider
+												step={1}
+												min={1}
+												max={5}
+												value={field.value}
+												onChange={(e) =>
+													form.setFieldValue(field.name, e.target.value)
+												}
+												tooltipPlacement="top"
+											/>
+										)}
+									</Field>
 									Clear and comprehensive answers/exemplifications/examples
 								</Label>
 							</Row>
@@ -88,6 +91,9 @@ export default function InstructorReviewForm() {
 						</FormGroup>
 						<FormGroup className="form-floating mb-3" floating>
 							<Row>
+								<Label for="student_participation" className="text-gray-600 mt-2">
+									Active student participation encouragement
+								</Label>
 								<Field className="form-control" name="student_participation">
 									{({ field, form }) => (
 										<RangeSlider
@@ -102,9 +108,6 @@ export default function InstructorReviewForm() {
 										/>
 									)}
 								</Field>
-								<Label for="student_participation" className="text-gray-600 mt-2">
-									Active student participation encouragement
-								</Label>
 							</Row>
 							<ErrorMessage
 								name="student_participation"
@@ -113,6 +116,9 @@ export default function InstructorReviewForm() {
 						</FormGroup>
 						<FormGroup className="form-floating mb-3" floating>
 							<Row>
+								<Label for="course_consistency" className="text-gray-600 mt-2">
+									Consistency in course obligations
+								</Label>
 								<Field className="form-control" name="course_consistency">
 									{({ field, form }) => (
 										<RangeSlider
@@ -127,14 +133,14 @@ export default function InstructorReviewForm() {
 										/>
 									)}
 								</Field>
-								<Label for="course_consistency" className="text-gray-600 mt-2">
-									Consistency in course obligations
-								</Label>
 							</Row>
 							<ErrorMessage name="course_consistency" component={FormErrorMessage} />
 						</FormGroup>
 						<FormGroup className="form-floating mb-3" floating>
 							<Row>
+								<Label for="instructor_approachable" className="text-gray-600 mt-2">
+									Approachability of the Instructor
+								</Label>
 								<Field className="form-control" name="instructor_approachable">
 									{({ field, form }) => (
 										<RangeSlider
@@ -149,9 +155,6 @@ export default function InstructorReviewForm() {
 										/>
 									)}
 								</Field>
-								<Label for="instructor_approachable" className="text-gray-600 mt-2">
-									Approachability of the Instructor
-								</Label>
 							</Row>
 							<ErrorMessage
 								name="instructor_approachable"

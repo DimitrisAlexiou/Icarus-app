@@ -124,8 +124,11 @@ export const User = model<UserProps>('User', userSchema);
 export const getUsers = () => User.find();
 export const getUserById = (id: string) => User.findById(id);
 export const getUserByUsername = (username: string) => User.findOne({ username });
-export const updateUserById = (id: string, user: Record<string, any>) =>
-	User.findByIdAndUpdate(id, user, { new: true });
+export const updateUserById = (
+	id: string,
+	user: Record<string, any>,
+	options?: Record<string, any>
+) => User.findByIdAndUpdate(id, user, { new: true });
 export const deleteUserById = (id: string, session: ClientSession) =>
 	User.findByIdAndDelete(id).session(session);
 export const deleteUsers = () => User.deleteMany();

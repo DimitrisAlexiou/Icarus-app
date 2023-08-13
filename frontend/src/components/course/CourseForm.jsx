@@ -1,4 +1,4 @@
-import { useState, useRef, forwardRef, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, memo } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { FormGroup, Label, Row, Col, Button, Tooltip, Spinner } from 'reactstrap';
@@ -41,12 +41,7 @@ export default function CourseForm({
 		[]
 	);
 
-	const ctc = useRef(null);
-	const [tooltipIdOpen, setTooltipIdOpen] = useState(false);
-	const tooltipId = () => {
-		setTooltipIdOpen(!tooltipIdOpen);
-	};
-
+	const [tooltip, setTooltipOpen] = useState(false);
 	const [hasPrerequisites, setHasPrerequisites] = useState(false);
 	const [isObligatory, setIsObligatory] = useState(true);
 
@@ -55,20 +50,21 @@ export default function CourseForm({
 	};
 
 	const handleIsObligatory = () => {
+		if (isEditingCourse && course.cycle) {
+			setIsObligatory(true);
+		}
 		setIsObligatory(!isObligatory);
 	};
 
-	const CourseTooltipComponent = forwardRef((props, ref) => {
-		const { ctc } = props;
+	const TooltipComponent = memo((props) => {
 		return (
 			<Tooltip
-				ref={ctc}
 				placement="top"
-				isOpen={tooltipIdOpen}
+				isOpen={tooltip}
 				target="courseIdTooltip"
-				toggle={tooltipId}
+				toggle={() => setTooltipOpen(!tooltip)}
 			>
-				Course ID: 321/xxxx or 321/xxxxx
+				Course ID: 321-xxxx or 321-xxxxx
 			</Tooltip>
 		);
 	});
@@ -105,7 +101,9 @@ export default function CourseForm({
 						title: values.title,
 						type: values.type,
 						isObligatory: values.isObligatory,
-						hasPrerequisites: values.hasPrerequisites,
+						hasPrerequisites: values.prerequisites.some(Boolean)
+							? values.hasPrerequisites
+							: false,
 						hasLab: values.hasLab,
 						description: values.description,
 						semester: values.semester,
@@ -123,7 +121,6 @@ export default function CourseForm({
 						setSubmitting(false);
 						return;
 					}
-					console.log(courseData);
 					dispatch(createCourse(courseData));
 					setSubmitting(false);
 					navigate('/course');
@@ -145,7 +142,7 @@ export default function CourseForm({
 									</Label>
 									<ErrorMessage name="courseId" component={FormErrorMessage} />
 								</FormGroup>
-								<CourseTooltipComponent ctc={ctc} />
+								<TooltipComponent />
 							</Col>
 							<Col md="8">
 								<FormGroup className="form-floating mb-3" floating>
@@ -157,7 +154,6 @@ export default function CourseForm({
 								</FormGroup>
 							</Col>
 						</Row>
-
 						<Row>
 							<Col md="4">
 								<FormGroup className="form-floating mb-3" floating>
@@ -222,7 +218,6 @@ export default function CourseForm({
 								</FormGroup>
 							</Col>
 						</Row>
-
 						<FormGroup className="form-floating mb-3" floating>
 							<Field
 								as="textarea"
@@ -235,7 +230,6 @@ export default function CourseForm({
 							</Label>
 							<ErrorMessage name="description" component={FormErrorMessage} />
 						</FormGroup>
-
 						<Row>
 							<Col md="6">
 								<FormGroup className="form-floating mb-3" floating>
@@ -268,7 +262,6 @@ export default function CourseForm({
 								</FormGroup>
 							</Col>
 						</Row>
-
 						<Row>
 							<Col md="6">
 								<FormGroup
@@ -302,7 +295,10 @@ export default function CourseForm({
 								</FormGroup>
 							</Col>
 							<Col md="6">
-								{!isObligatory || (course && course.cycle) ? (
+								{isEditingCourse &&
+								course.cycle &&
+								isObligatory === false ? null : !isObligatory ||
+								  (course && course.cycle) ? (
 									<>
 										<FormGroup className="form-floating mb-3" floating>
 											<Field
@@ -311,7 +307,7 @@ export default function CourseForm({
 												name="cycle"
 											>
 												<option default>Select course cycle</option>
-												{cycles.names.map((cycle) => (
+												{cycles.map((cycle) => (
 													<option key={cycle._id} value={cycle._id}>
 														{cycle.cycle}
 													</option>
@@ -329,7 +325,6 @@ export default function CourseForm({
 								) : null}
 							</Col>
 						</Row>
-
 						{hasPrerequisites ? (
 							<>
 								<FormGroup className="form-floating mb-3" floating>
@@ -351,16 +346,20 @@ export default function CourseForm({
 															Add Prerequisite
 														</Button>
 													</Col>
-													<Col className="text-right">
-														{values.prerequisites.length > 1 && (
-															<Button
-																color="warning"
-																onClick={() => arrayHelpers.pop()}
-															>
-																-
-															</Button>
-														)}
-													</Col>
+													{!isEditingCourse ? (
+														<Col className="text-right">
+															{values.prerequisites.length > 1 ? (
+																<Button
+																	color="warning"
+																	onClick={() =>
+																		arrayHelpers.pop()
+																	}
+																>
+																	-
+																</Button>
+															) : null}
+														</Col>
+													) : null}
 												</Row>
 												{values.prerequisites.length > 0 &&
 													values.prerequisites.map(
@@ -410,7 +409,7 @@ export default function CourseForm({
 																		/>
 																	</FormGroup>
 																</Col>
-																<Col>
+																<Col md="5">
 																	<FormGroup
 																		className="form-floating"
 																		floating
@@ -428,14 +427,18 @@ export default function CourseForm({
 																					PrerequisiteType.Hard
 																				}
 																			>
-																				Hard
+																				{
+																					PrerequisiteType.Hard
+																				}
 																			</option>
 																			<option
 																				value={
 																					PrerequisiteType.Soft
 																				}
 																			>
-																				Soft
+																				{
+																					PrerequisiteType.Soft
+																				}
 																			</option>
 																		</Field>
 																		<Label
@@ -452,6 +455,39 @@ export default function CourseForm({
 																		/>
 																	</FormGroup>
 																</Col>
+																{isEditingCourse ? (
+																	<Col
+																		md="1"
+																		className="text-right"
+																	>
+																		{values.prerequisites
+																			.length > 1 ? (
+																			<Button
+																				color="warning"
+																				onClick={() =>
+																					arrayHelpers.remove(
+																						index
+																					)
+																				}
+																			>
+																				-
+																			</Button>
+																		) : isEditingCourse &&
+																		  values.prerequisites
+																				.length > 0 ? (
+																			<Button
+																				color="warning"
+																				onClick={() =>
+																					arrayHelpers.remove(
+																						index
+																					)
+																				}
+																			>
+																				-
+																			</Button>
+																		) : null}
+																	</Col>
+																) : null}
 															</Row>
 														)
 													)}
@@ -465,7 +501,6 @@ export default function CourseForm({
 								</FormGroup>
 							</>
 						) : null}
-
 						<Row>
 							<Col sm="6" md="6" xs="12" className="text-sm-left text-center">
 								<Button
@@ -482,7 +517,7 @@ export default function CourseForm({
 								</Button>
 							</Col>
 							<Col className="text-sm-right text-center mt-sm-0 mt-3">
-								<Button color="primary" disabled={isSubmitting}>
+								<Button type="submit" color="primary" disabled={isSubmitting}>
 									{isSubmitting ? (
 										<>
 											Please wait <Spinner type="grow" size="sm" />

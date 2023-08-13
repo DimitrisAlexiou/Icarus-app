@@ -30,5 +30,5 @@ export default (router: express.Router) => {
 		.put(authorize, isOwner, noteFileUpload.single('file'), validateNote, updateUserNote)
 		.delete(authorize, isOwner, deleteUserNote);
 
-	router.route('/note/:id/importance').put(authorize, isOwner, validateNote, updateUserNote);
+	router.route('/note/:id/importance').patch(authorize, isOwner, validateNote, updateUserNote);
 };

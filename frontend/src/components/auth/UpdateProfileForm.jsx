@@ -1,7 +1,7 @@
 import { useDispatch } from 'react-redux';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { FormGroup, Label, Row, Col, Button, Spinner } from 'reactstrap';
-import { UserSchema } from '../../schemas/auth/User';
+import { UserProfileSchema } from '../../schemas/UserProfile';
 import { updateProfile } from '../../features/auth/authSlice';
 import { Degree, UserType } from '../../constants/enums';
 import FormErrorMessage from '../form/FormErrorMessage';
@@ -17,21 +17,21 @@ export default function UpdateProfileForm({ user }) {
 					surname: user.user.surname,
 					username: user.user.username,
 					email: user.user.email,
-					...(user.user.type === UserType.instructor && {
-						degree: user.user.instructor.degree,
-					}),
+					type: user.user.type,
+					degree: user && user.user.instructor ? user.user.instructor.degree : null,
 				}}
-				validationSchema={UserSchema}
+				validationSchema={UserProfileSchema}
 				onSubmit={(values, { setSubmitting }) => {
-					const updatedUser = {
+					const userToUpdate = {
 						name: values.name,
 						surname: values.surname,
 						username: values.username,
 						email: values.email,
-						...(values.degree && { degree: values.degree }),
+						type: values.type,
 					};
-					console.log(updatedUser);
-					dispatch(updateProfile(updatedUser));
+					if (values.type === UserType.instructor) userToUpdate.degree = values.degree;
+					console.log(userToUpdate);
+					dispatch(updateProfile({ userId: user.user._id, data: userToUpdate }));
 					setSubmitting(false);
 				}}
 				validateOnMount
@@ -84,9 +84,15 @@ export default function UpdateProfileForm({ user }) {
 									<FormGroup className="form-floating mb-3" floating>
 										<Field as="select" className="form-control" name="degree">
 											<option default>{user.user.instructor.degree}</option>
-											<option value={Degree.Assistant}>Assistant</option>
-											<option value={Degree.Associate}>Associate</option>
-											<option value={Degree.Professor}>Professor</option>
+											<option value={Degree.Assistant}>
+												{Degree.Assistant}
+											</option>
+											<option value={Degree.Associate}>
+												{Degree.Associate}
+											</option>
+											<option value={Degree.Professor}>
+												{Degree.Professor}
+											</option>
 										</Field>
 										<Label for="degree" className="text-gray-600">
 											Degree

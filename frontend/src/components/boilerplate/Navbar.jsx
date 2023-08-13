@@ -94,7 +94,7 @@ export default function NavBar({ isSidebarCollapsed, setSidebarCollapsed }) {
 						</Button>
 					</NavItem>
 
-					<NavItem className="d-none d-md-none d-sm-block d-lg-block nav-item mx-3">
+					<NavItem className="d-none d-md-none d-sm-block d-lg-none d-xl-block nav-item mx-3">
 						<a
 							href="https://www.icsd.aegean.gr/"
 							target="_blank"

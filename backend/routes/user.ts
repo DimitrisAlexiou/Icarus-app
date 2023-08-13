@@ -70,11 +70,13 @@ export default (router: express.Router) => {
 			deleteUserGeneralReview
 		);
 
-	// @desc    Get / Update / Delete User Profile
-	// @route   GET/PUT/DELETE /api/user/profile
+	// @desc    Get / Delete User Profile
+	// @route   GET/DELETE /api/user/profile
 	// @access  Private User
-	router
-		.route('/user/profile')
-		.get(authorize, isOwner, viewProfile)
-		.put(authorize, isOwner, validateProfile, updateProfile);
+	router.route('/user/profile').get(authorize, isOwner, viewProfile);
+
+	// @desc    Update User Profile
+	// @route   PUT /api/user/profile/:id
+	// @access  Private User
+	router.route('/user/profile/:id').put(authorize, isOwner, validateProfile, updateProfile);
 };

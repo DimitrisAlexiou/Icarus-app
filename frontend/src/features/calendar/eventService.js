@@ -1,5 +1,5 @@
 import axiosFetch from '../../utils/axios';
-import { API_URL_CALENDAR } from '../../constants/config';
+import { API_URL_CALENDAR } from '../../constants/apiConfig';
 
 const getEvents = async () => {
 	const response = await axiosFetch.get(API_URL_CALENDAR);
@@ -13,6 +13,12 @@ const addEvent = async (data) => {
 	return response.data;
 };
 
+const updateEvent = async (eventId, data) => {
+	const response = await axiosFetch.put(API_URL_CALENDAR + '/' + eventId, data);
+
+	return response.data;
+};
+
 const deleteEvent = async (eventId) => {
 	const response = axiosFetch.delete(API_URL_CALENDAR + '/' + eventId);
 
@@ -20,16 +26,17 @@ const deleteEvent = async (eventId) => {
 };
 
 const deleteEvents = async () => {
-	const response = axiosFetch.delete(API_URL_CALENDAR + '/delete_all');
+	const response = axiosFetch.delete(API_URL_CALENDAR + '/delete');
 
 	return response.data;
 };
 
 const eventService = {
+	getEvents,
 	addEvent,
+	updateEvent,
 	deleteEvent,
 	deleteEvents,
-	getEvents,
 };
 
 export default eventService;

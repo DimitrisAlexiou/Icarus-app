@@ -1,11 +1,10 @@
 import axios from 'axios';
-import { BASE_URL } from '../constants/config';
+import { BASE_URL } from '../constants/apiConfig';
 import {
 	getUserFromLocalStorage,
 	removeUserFromLocalStorage,
 	removeLastPageFromLocalStorage,
 } from './localStorage';
-import { extractErrorMessage } from './errorMessage';
 
 const axiosFetch = axios.create({
 	baseURL: BASE_URL,
@@ -22,24 +21,17 @@ axiosFetch.interceptors.request.use((config) => {
 	return config;
 });
 
-export const checkTokenExpiration = (error, thunkAPI) => {
+export const checkTokenExpiration = (error) => {
 	const status = error.response ? error.response.status : null;
 
 	if (status === 401) {
 		removeUserFromLocalStorage();
 		window.location.href = '/unauthorized';
+		// window.history.pushState({}, '', '/unauthorized');
 		removeLastPageFromLocalStorage();
-		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		throw error;
 	}
-	return thunkAPI.rejectWithValue(extractErrorMessage(error));
-};
-
-export const checkForUnauthorizedResponse = (error, thunkAPI) => {
-	if (error.response.status === 401) {
-		// thunkAPI.dispatch(clearStore());
-		return thunkAPI.rejectWithValue('Unauthorized! Logging Out. . .');
-	}
-	return thunkAPI.rejectWithValue(extractErrorMessage(error));
+	throw error;
 };
 
 axiosFetch.interceptors.response.use((response) => response, checkTokenExpiration);

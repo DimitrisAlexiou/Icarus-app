@@ -41,7 +41,7 @@ export const defineReviewStatement = tryCatch(
 			status: 'new',
 		});
 
-		return res.status(201).json(review);
+		return res.status(201).json({ message: 'Review configuration defined!', review });
 	}
 );
 
@@ -92,7 +92,7 @@ export const updateReviewStatement = tryCatch(
 				404
 			);
 
-		return res.status(200).json(updatedReview);
+		return res.status(200).json({ message: 'Review configuration updated!', updatedReview });
 	}
 );
 

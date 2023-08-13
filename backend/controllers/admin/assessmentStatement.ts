@@ -40,7 +40,7 @@ export const defineAssessment = tryCatch(async (req: Request, res: Response): Pr
 		status: 'new',
 	});
 
-	return res.status(201).json(assessment);
+	return res.status(201).json({ message: 'Assessment configuration defined.', assessment });
 });
 
 export const viewAssessment = tryCatch(async (req: Request, res: Response): Promise<Response> => {
@@ -50,10 +50,6 @@ export const viewAssessment = tryCatch(async (req: Request, res: Response): Prom
 			'Seems like there is no defined semester for current period. Define a semester first in order to define assessment statement configuration.',
 			404
 		);
-	// return res.status(404).json({
-	// 	message:
-	// 		'Seems like there is no defined semester for current period. Define a semester first in order to define assessment statement configuration.',
-	// });
 
 	const semesterId = semester._id.toString();
 	const assessment = await getAssessmentBySemester(semesterId);
@@ -62,18 +58,14 @@ export const viewAssessment = tryCatch(async (req: Request, res: Response): Prom
 			'Seems like there is no assessment statement configuration defined for this semester.',
 			404
 		);
-	// return res.status(404).json({
-	// 	message:
-	// 		'Seems like there is no assessment statement configuration defined for this semester.',
-	// });
 
 	return res.status(200).json(assessment);
 });
 
 export const updateAssessment = tryCatch(async (req: Request, res: Response): Promise<Response> => {
-	const { period, startDate, endDate } = req.body;
+	const { period, vaccineStartDate, vaccineEndDate } = req.body;
 
-	if (!period || !startDate || !endDate)
+	if (!period || !vaccineStartDate || !vaccineEndDate)
 		throw new CustomError('Please fill in all the required fields.', 400);
 
 	const { id } = req.params;
@@ -86,7 +78,9 @@ export const updateAssessment = tryCatch(async (req: Request, res: Response): Pr
 			404
 		);
 
-	return res.status(200).json(updatedAssessment);
+	return res
+		.status(200)
+		.json({ message: 'Assessment configuration updated.', updatedAssessment });
 });
 
 export const deleteAssessment = tryCatch(async (req: Request, res: Response): Promise<Response> => {
