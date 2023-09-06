@@ -7,9 +7,9 @@ export default function Courses() {
 
 	return (
 		<>
-			<Row className="mb-5 animated--grow-in">
+			<Row className="mb-4 animated--grow-in">
 				<Col>
-					<h1 className="h3 text-gray-800 font-weight-bold">Studies</h1>
+					<h3 className="text-gray-800 font-weight-bold">Studies</h3>
 				</Col>
 				{/* {user.user.isAdmin ? (
 					<Col className="px-3 d-flex justify-content-end">

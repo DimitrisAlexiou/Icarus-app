@@ -6,6 +6,7 @@ import {
 	getEvents,
 	deleteEvent,
 	deleteEvents,
+	updateEventById,
 } from '../models/calendar';
 import { UserProps } from '../models/users/user';
 import { tryCatch } from '../utils/tryCatch';
@@ -17,9 +18,9 @@ interface AuthenticatedRequest extends Request {
 
 export const addEvent = tryCatch(
 	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
-		const { eventId, title, start, end, allDay } = req.body;
+		const { eventId, title, startDate, endDate, allDay } = req.body;
 
-		if (!title || !start || !end || !allDay)
+		if (!title || !startDate || !endDate || !allDay)
 			throw new CustomError('Please fill in all the required fields.', 400);
 
 		const userId = req.user.id;
@@ -34,8 +35,8 @@ export const addEvent = tryCatch(
 		const event = await createEvent({
 			eventId,
 			title,
-			start,
-			end,
+			startDate,
+			endDate,
 			allDay,
 			owner: userId,
 			status: 'new',
@@ -43,6 +44,28 @@ export const addEvent = tryCatch(
 		console.log(event);
 
 		return res.status(201).json({ message: 'Event added!', event });
+	}
+);
+
+export const updateEvent = tryCatch(
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
+		const { title, startDate, endDate, allDay } = req.body;
+
+		if (!title) throw new CustomError('Please fill in all the required fields.', 400);
+
+		const { id } = req.params;
+		const updatedEvent = await updateEventById(id, {
+			...req.body,
+			owner: req.user.id,
+		});
+
+		if (!updatedEvent)
+			throw new CustomError(
+				'Seems like the event that you are trying to update does not exist.',
+				404
+			);
+
+		return res.status(200).json({ message: 'Event updated!', updatedEvent });
 	}
 );
 

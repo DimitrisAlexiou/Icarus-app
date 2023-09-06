@@ -2,8 +2,8 @@ import mongoose, { ClientSession, Schema, model } from 'mongoose';
 
 export interface CalendarProps {
 	title: string;
-	start?: Date;
-	end?: Date;
+	startDate?: Date;
+	endDate?: Date;
 	allDay: boolean;
 	owner: mongoose.Types.ObjectId;
 }
@@ -14,13 +14,13 @@ const calendarSchema = new Schema<CalendarProps>(
 			type: String,
 			required: true,
 		},
-		start: {
+		startDate: {
 			type: Date,
 			required: function () {
 				return this.allDay === false;
 			},
 		},
-		end: {
+		endDate: {
 			type: Date,
 			required: function () {
 				return this.allDay === false;

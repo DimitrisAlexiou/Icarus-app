@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { Types, startSession } from 'mongoose';
+import { startSession } from 'mongoose';
 import {
 	getCourses,
 	getCourseById,
@@ -13,6 +13,8 @@ import {
 	createTeaching,
 	deleteTeachingByCourseId,
 	deleteTeachings,
+	getTeachingByCourseId,
+	getTeachingById,
 } from '../../models/course/teaching';
 import { UserProps } from '../../models/users/user';
 import { getStudentByUserId } from '../../models/users/student';
@@ -108,33 +110,31 @@ export const enrollCourse = tryCatch(
 		const { id } = req.params;
 		const userId = req.user.id;
 
-		const course = await getCourseById(id);
-		if (!course)
-			throw new CustomError(
-				'Seems like the course that you are trying to enroll does not exist.',
-				404
-			);
-
-		if (!course.isActive) throw new CustomError('Inactive courses cannot be enrolled.', 400);
-
-		const currentSemester = await getCurrentSemester(new Date());
-		if (course.semester._id.toString() !== currentSemester._id.toString())
-			throw new CustomError('Course semester does not match the current semester.', 400);
-
 		const student = await getStudentByUserId(userId);
 		if (!student) throw new CustomError('Student not found.', 404);
 
-		if (student.enrolledCourses.includes(course._id))
+		const teaching = await getTeachingById(id);
+		if (!teaching)
+			throw new CustomError(
+				'Seems like the course that you are trying to enroll is not active.',
+				404
+			);
+
+		const currentSemester = await getCurrentSemester(new Date());
+		if (teaching.semester._id.toString() !== currentSemester._id.toString())
+			throw new CustomError('Course semester does not match the current semester.', 400);
+
+		if (student.enrolledCourses.includes(teaching._id))
 			throw new CustomError('Student is already enrolled in this course.', 400);
 
-		student.enrolledCourses.push(course._id);
+		student.enrolledCourses.push(teaching._id);
 		await student.save();
 
 		return res.status(201).json({ message: 'Enrolled to Course!', student });
 	}
 );
 
-export const unenrollCourse = tryCatch(
+export const disenrollCourse = tryCatch(
 	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const { id } = req.params;
 		const userId = req.user.id;
@@ -142,18 +142,16 @@ export const unenrollCourse = tryCatch(
 		const student = await getStudentByUserId(userId).populate('enrolledCourses');
 		if (!student) throw new CustomError('Student not found.', 404);
 
-		const courseId = new Types.ObjectId(id);
-		const courseIndex = student.enrolledCourses.findIndex((course) =>
-			course._id.equals(courseId)
-		);
-		if (courseIndex === -1)
-			throw new CustomError('Student is not enrolled in this course.', 400);
+		const isEnrolled = student.enrolledCourses.some((teaching) => teaching._id.equals(id));
+		if (!isEnrolled) throw new CustomError('Student is not enrolled in this course.', 400);
 
-		student.enrolledCourses.splice(courseIndex, 1);
+		student.enrolledCourses = student.enrolledCourses.filter(
+			(teaching) => !teaching._id.equals(id)
+		);
 
 		await student.save();
 
-		return res.status(200).json({ message: 'Unrolled from course.', student });
+		return res.status(200).json({ message: 'Disenroll from course.', student });
 	}
 );
 
@@ -308,45 +306,29 @@ export const updateCourse = tryCatch(async (req: Request, res: Response): Promis
 	return res.status(200).json({ message: 'Course updated!', updatedCourse });
 });
 
-export const deleteCourse = async (req: Request, res: Response): Promise<Response> => {
+export const deleteCourse = tryCatch(async (req: Request, res: Response): Promise<Response> => {
 	const { id } = req.params;
-	const session = await startSession();
-	let courseToDelete;
 
-	try {
-		session.startTransaction();
+	const teaching = await getTeachingByCourseId(id);
 
-		// const teaching = await getTeachingByCourseId(id);
+	if (teaching)
+		throw new CustomError(
+			'This course can not be deleted because it has an active teaching.',
+			400
+		);
 
-		// if (teaching)
-		// 	throw new CustomError(
-		// 		'Seems like the course can not be deleted because it has an active teaching.',
-		// 		400
-		// 	);
+	const courseToDelete = await deleteCourseById(id);
 
-		courseToDelete = await deleteCourseById(id, session);
-
-		if (!courseToDelete)
-			throw new CustomError(
-				'Seems like the course that you are trying to delete does not exist.',
-				404
-			);
-
-		await deleteTeachingByCourseId(id, session);
-
-		await session.commitTransaction();
-	} catch (error) {
-		await session.abortTransaction();
-		console.error('❌ ', error);
-		throw new CustomError('Course did not deleted.', 500);
-	} finally {
-		session.endSession();
-	}
+	if (!courseToDelete)
+		throw new CustomError(
+			'Seems like the course that you are trying to delete does not exist.',
+			404
+		);
 
 	return res.status(200).json({ message: 'Course deleted.', course: courseToDelete._id });
-};
+});
 
-export const deleteAllCourses = async (_: Request, res: Response): Promise<Response> => {
+export const deleteSystemCourses = async (_: Request, res: Response): Promise<Response> => {
 	const session = await startSession();
 
 	try {

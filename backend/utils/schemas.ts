@@ -128,17 +128,40 @@ export const teachingSchema = Joi.object({
 	theoryWeight: Joi.number().max(100).required(),
 	theoryGradeRetentionYears: Joi.number().min(0).required(),
 	labGradeRetentionYears: Joi.number().min(0).required(),
-	theoryGradeThreshold: Joi.number().min(4).required(),
-	labGradeThreshold: Joi.number().min(4).required(),
+	theoryGradeThreshold: Joi.number().min(4).greater(0).required(),
+	labGradeThreshold: Joi.number().min(4).greater(0).required(),
 	books: Joi.array().items(Joi.string()),
 	course: Joi.string().required(),
 	semester: Joi.string().required(),
+});
+
+const examinationSchema = Joi.object({
+	type: Joi.string().required(),
+	weight: Joi.number().max(100).positive().required(),
+	lowerGradeThreshold: Joi.number().precision(2).max(10).required(),
+});
+
+export const teachingGradingSchema = Joi.object({
+	theoryExamination: Joi.array().when('theory', {
+		is: true,
+		then: Joi.array().min(1).items(examinationSchema),
+	}),
+	labExamination: Joi.array().when('lab', {
+		is: true,
+		then: Joi.array().min(1).items(examinationSchema),
+	}),
 });
 
 export const instructorsAssignmentSchema = Joi.array()
 	.items(Joi.string().required())
 	.min(1)
 	.required();
+
+export const statementSchema = Joi.object({
+	teaching: Joi.array().items(Joi.string().required()).min(1).required(),
+	semester: Joi.string().required(),
+	user: Joi.string().required(),
+});
 
 export const teachingReviewSchema = Joi.object({
 	clear_course_objectives: Joi.number().required(),
@@ -147,8 +170,8 @@ export const teachingReviewSchema = Joi.object({
 	examination_method: Joi.number().required(),
 	course_difficulty: Joi.number().required(),
 	course_activities: Joi.number().required(),
-	user: Joi.string().required(),
 	teaching: Joi.string().required(),
+	user: Joi.string().required(),
 });
 
 export const instructorReviewSchema = Joi.object({
@@ -157,8 +180,8 @@ export const instructorReviewSchema = Joi.object({
 	student_participation: Joi.number().required(),
 	course_consistency: Joi.number().required(),
 	instructor_approachable: Joi.number().required(),
-	user: Joi.string().required(),
 	teaching: Joi.string().required(),
+	user: Joi.string().required(),
 });
 
 export const generalReviewSchema = Joi.object({
@@ -166,22 +189,23 @@ export const generalReviewSchema = Joi.object({
 	instructor_opinion: Joi.string().max(800).required(),
 	likes: Joi.string().max(800).required(),
 	dislikes: Joi.string().max(800).required(),
-	user: Joi.string().required(),
 	teaching: Joi.string().required(),
+	user: Joi.string().required(),
 });
 
 export const semesterSchema = Joi.object({
 	type: Joi.string().valid(SemesterType.Winter, SemesterType.Spring, SemesterType.Any).required(),
-	startDate: Joi.date().when('type', {
-		is: SemesterType.Any,
-		then: Joi.optional().allow(null),
-		otherwise: Joi.date().required(),
-	}),
-	endDate: Joi.date().when('type', {
-		is: SemesterType.Any,
-		then: Joi.optional().allow(null),
-		otherwise: Joi.date().greater(Joi.ref('startDate')).required(),
-	}),
+	academicYear: Joi.string().required(),
+	// startDate: Joi.date().when('type', {
+	// 	is: SemesterType.Any,
+	// 	then: Joi.optional().allow(null),
+	// 	otherwise: Joi.date().required(),
+	// }),
+	// endDate: Joi.date().when('type', {
+	// 	is: SemesterType.Any,
+	// 	then: Joi.optional().allow(null),
+	// 	otherwise: Joi.date().greater(Joi.ref('startDate')).required(),
+	// }),
 	grading: Joi.number().when('type', {
 		is: SemesterType.Any,
 		then: Joi.optional(),
@@ -190,14 +214,14 @@ export const semesterSchema = Joi.object({
 });
 
 export const assessmentSchema = Joi.object({
-	vaccineStartDate: Joi.date().greater('now').required(),
+	vaccineStartDate: Joi.date().required(),
 	vaccineEndDate: Joi.date().greater(Joi.ref('vaccineStartDate')).required(),
 	period: Joi.number().min(1).required(),
 	semester: Joi.string().required(),
 });
 
 export const reviewSchema = Joi.object({
-	startDate: Joi.date().greater('now').required(),
+	startDate: Joi.date().required(),
 	endDate: Joi.date().greater(Joi.ref('startDate')).required(),
 	startAfter: Joi.number().min(1).required(),
 	semester: Joi.string().required(),
@@ -226,8 +250,8 @@ export const noteSchema = Joi.object({
 export const calendarSchema = Joi.object({
 	eventId: Joi.string().required(),
 	title: Joi.string().max(50).required(),
-	start: Joi.date().required(),
-	end: Joi.date().required(),
+	startDate: Joi.date().required(),
+	endDate: Joi.date().required(),
 	allDay: Joi.boolean().required(),
 	owner: Joi.string().required(),
 });

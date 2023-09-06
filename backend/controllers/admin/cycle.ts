@@ -96,7 +96,7 @@ export const deleteCycle = tryCatch(async (req: Request, res: Response): Promise
 	return res.status(200).json({ message: 'Cycle deleted.', cycle: cycleToDelete._id });
 });
 
-export const deleteAllCycles = tryCatch(async (_: Request, res: Response): Promise<Response> => {
+export const deleteSystemCycles = tryCatch(async (_: Request, res: Response): Promise<Response> => {
 	await deleteCycles();
 	return res.status(200).json({ message: 'Defined cycles deleted.' });
 });

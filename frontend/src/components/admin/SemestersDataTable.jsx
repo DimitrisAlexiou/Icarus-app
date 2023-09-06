@@ -9,6 +9,8 @@ import moment from 'moment';
 import DataTable from '../DataTable';
 import SemesterForm from '../../components/admin/forms/SemesterForm';
 import Spinner from '../../components/boilerplate/Spinner';
+import { SemesterType } from '../../constants/enums';
+import { academicYearEnd, academicYearStart } from '../../utils/academicYears';
 
 export default function SemestersDataTable({ semesters }) {
 	const { isLoading, isEditingSemester, editSemesterId } = useSelector(
@@ -60,17 +62,24 @@ export default function SemestersDataTable({ semesters }) {
 		{
 			name: 'grading',
 			label: 'Grading Period',
-			render: (semester) => semester.grading + ' weeks',
+			render: (semester) =>
+				semester.type !== SemesterType.Any ? semester.grading + ' weeks' : 'unnecessary',
 		},
 		{
 			name: 'startDate',
 			label: 'Start Date',
-			render: (semester) => moment(semester.startDate).format('DD/MM/YYYY'),
+			render: (semester) =>
+				semester.type !== SemesterType.Any
+					? moment(semester.startDate).format('DD/MM/YYYY')
+					: `${academicYearStart}-${academicYearEnd}`,
 		},
 		{
 			name: 'endDate',
 			label: 'End Date',
-			render: (semester) => moment(semester.endDate).format('DD/MM/YYYY'),
+			render: (semester) =>
+				semester.type !== SemesterType.Any
+					? moment(semester.endDate).format('DD/MM/YYYY')
+					: `${academicYearStart}-${academicYearEnd}`,
 		},
 		{
 			name: 'actions',
@@ -104,24 +113,22 @@ export default function SemestersDataTable({ semesters }) {
 		},
 	];
 
-	if (isLoading) return <Spinner card />;
-
 	return (
 		<>
 			<div className="card card-body">
-				{/* {isDeletingSemester ? (
+				{isLoading ? (
 					<Spinner card />
-				) : ( */}
-				<>
-					<DataTable
-						data={semesters}
-						config={dataTableConfig}
-						sortColumns={['type', 'startDate']}
-						searchMessage={'by Start Date'}
-					/>
-					{isEditingSemester ? <ModalComponent ref={modalRef} /> : null}
-				</>
-				{/* )} */}
+				) : (
+					<>
+						<DataTable
+							data={semesters}
+							config={dataTableConfig}
+							sortColumns={['type', 'startDate']}
+							searchMessage={'by Start Date'}
+						/>
+						{isEditingSemester ? <ModalComponent ref={modalRef} /> : null}
+					</>
+				)}
 			</div>
 		</>
 	);

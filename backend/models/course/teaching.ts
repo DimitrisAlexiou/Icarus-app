@@ -12,6 +12,7 @@ interface Examination {
 	weight: number;
 	lowerGradeThreshold: number;
 }
+
 export interface TeachingProps {
 	labWeight: number;
 	theoryWeight: number;
@@ -26,6 +27,7 @@ export interface TeachingProps {
 	labInstructors?: mongoose.Types.ObjectId[];
 	theoryExamination?: Examination[];
 	labExamination?: Examination[];
+	directories: mongoose.Types.ObjectId[];
 }
 
 const examinationSchema = new Schema<Examination>(
@@ -110,6 +112,13 @@ const teachingSchema = new Schema<TeachingProps>(
 		],
 		theoryExamination: [examinationSchema],
 		labExamination: [examinationSchema],
+		directories: [
+			{
+				type: Schema.Types.ObjectId,
+				ref: 'Directory',
+				required: true,
+			},
+		],
 	},
 	{
 		timestamps: true,
@@ -187,16 +196,33 @@ export const getTeachingByCourseId = (id: string) => {
 			},
 		});
 };
+export const getActiveTeachingsBySemesterId = (semesterId: string) =>
+	Teaching.find({ semester: semesterId });
 export const createTeaching = (teaching: Record<string, any>, options?: Record<string, any>) =>
 	new Teaching(teaching).save().then((teaching) => teaching.toObject());
 export const updateTeachingById = (id: string, teaching: TeachingProps) =>
-	Teaching.findByIdAndUpdate(id, teaching, { new: true });
+	Teaching.findByIdAndUpdate(id, teaching, { new: true })
+		.populate('course')
+		.populate('semester')
+		.populate({
+			path: 'theoryInstructors',
+			populate: {
+				path: 'user',
+				select: 'surname',
+			},
+		})
+		.populate({
+			path: 'labInstructors',
+			populate: {
+				path: 'user',
+				select: 'surname',
+			},
+		});
 export const deleteTeachingById = (id: string) => Teaching.findByIdAndDelete(id);
 export const deleteTeachingByCourseId = (courseId: string, session: ClientSession) => {
 	return Teaching.findOneAndDelete({ course: courseId }).session(session);
 };
 export const deleteTeachings = () => Teaching.deleteMany();
-
 export const assignTheoryInstructors = (id: string, instructors: mongoose.Types.ObjectId[]) => {
 	return Teaching.findByIdAndUpdate(
 		id,
@@ -210,7 +236,6 @@ export const assignTheoryInstructors = (id: string, instructors: mongoose.Types.
 		},
 	});
 };
-
 export const assignLabInstructors = (id: string, instructors: mongoose.Types.ObjectId[]) => {
 	return Teaching.findByIdAndUpdate(id, { labInstructors: instructors }, { new: true }).populate({
 		path: 'labInstructors',
@@ -220,11 +245,21 @@ export const assignLabInstructors = (id: string, instructors: mongoose.Types.Obj
 		},
 	});
 };
-
 export const unassignTheoryInstructors = (id: string) => {
 	return Teaching.findByIdAndUpdate(id, { theoryInstructors: [] }, { new: true });
 };
-
 export const unassignLabInstructors = (id: string) => {
 	return Teaching.findByIdAndUpdate(id, { labInstructors: [] }, { new: true });
+};
+export const assignTheoryGrading = (id: string, examinations: Examination[]) => {
+	return Teaching.findByIdAndUpdate(id, { theoryExamination: examinations }, { new: true });
+};
+export const assignLabGrading = (id: string, examinations: Examination[]) => {
+	return Teaching.findByIdAndUpdate(id, { labExamination: examinations }, { new: true });
+};
+export const unassignTheoryGrading = (id: string) => {
+	return Teaching.findByIdAndUpdate(id, { theoryExamination: [] }, { new: true });
+};
+export const unassignLabGrading = (id: string) => {
+	return Teaching.findByIdAndUpdate(id, { labExamination: [] }, { new: true });
 };

@@ -1,4 +1,4 @@
-import { Row, Col, Nav, NavItem } from 'reactstrap';
+import { Row, Col, Nav, NavItem, Card, CardTitle } from 'reactstrap';
 import { Link, NavLink } from 'react-router-dom';
 import { FaStudiovinari } from 'react-icons/fa';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -11,10 +11,10 @@ export default function Landing() {
 				<div id="content-wrapper" className="d-flex flex-column">
 					<div className="bg-gradient-primary">
 						<div id="content">
-							<Row className="mb-md-3 mx-5 my-2">
+							<Row className="mx-5 my-2">
 								<Nav className="logo">
 									<NavLink
-										className="sidebar-brand d-flex align-items-center mt-3"
+										className="sidebar-brand d-flex align-items-center"
 										to="/"
 									>
 										<div className="logo-brand-icon rotate-15">
@@ -30,156 +30,189 @@ export default function Landing() {
 								</Nav>
 							</Row>
 							<Row className="justify-content-center">
-								<Col xl="5" lg="4">
-									<div className="landing-login d-xl-flex d-lg-flex d-md-none">
-										<div className="card o-hidden border-0 shadow-lg animated--grow-in">
-											<div className="card-body p-0">
-												<Col>
-													<div className="p-5">
-														<div className="text-center">
-															<img
-																style={{ width: '80%' }}
-																src="sculpture.png"
-																alt="sculpture"
-															/>
-															<Row className="mt-4">
-																<Col className="text-center">
-																	<Link
-																		style={{
-																			textDecoration: 'none',
-																		}}
-																		className="btn btn-light-cornflower-blue align-self-center"
-																		color="primary"
-																		to="/auth/login"
-																	>
-																		LOGIN
-																	</Link>
-																</Col>
-															</Row>
-															<span className="mt-4">Or</span>
-															<Row className="mt-4">
-																<Col className="text-center">
-																	<Link
-																		style={{
-																			textDecoration: 'none',
-																		}}
-																		className="btn btn-light-cornflower-blue align-self-center"
-																		color="primary"
-																		to="/studies"
-																	>
-																		Courses
-																	</Link>
-																</Col>
-															</Row>
-														</div>
-													</div>
-												</Col>
-											</div>
+								<Col xl="6" lg="7" md="10" sm="10" xs="10" className="mb-3">
+									<div className="card o-hidden border-0 shadow-lg animated--grow-in">
+										<div className="card-body p-4 text-center">
+											<Row className="text-center mb-4">
+												<h2
+													className="text-gray-800 justify-content-center"
+													style={{
+														fontWeight: '600',
+														letterSpacing: '0.4rem',
+													}}
+												>
+													Welcome to Icarus
+												</h2>
+											</Row>
+											<Row className="text-center mb-2">
+												<span>
+													Τo login to{' '}
+													<h6
+														style={{
+															display: 'inline-block',
+															fontSize: '1.23rem',
+															letterSpacing: '0.05rem',
+														}}
+													>
+														<b>Icarus Student Information Services</b>
+													</h6>
+													, use:
+												</span>
+											</Row>
+											<Row className="mb-3 text-center">
+												<li>
+													your{' '}
+													<span className="text-success">academic</span>{' '}
+													account if you are a{' '}
+													<i>
+														<small
+															className="text-muted pill-label"
+															style={{
+																textAlign: 'justify',
+																fontWeight: '700',
+																fontSize: 16,
+															}}
+														>
+															Student
+														</small>
+													</i>
+												</li>
+												<li className="mt-1">
+													your{' '}
+													<span className="text-success">instuctor</span>{' '}
+													account if you are an{' '}
+													<i>
+														<small
+															className="text-muted pill-label"
+															style={{
+																textAlign: 'justify',
+																fontWeight: '700',
+																fontSize: 16,
+															}}
+														>
+															Instructor
+														</small>
+													</i>
+												</li>
+											</Row>
+											<Row className="mb-3">
+												<span>
+													<span
+														style={{
+															fontSize: '1.15rem',
+															color: 'tomato',
+															letterSpacing: '0.05rem',
+														}}
+													>
+														<b>Icarus</b>
+													</span>{' '}
+													Student Information System Services allows{' '}
+													<small
+														className="text-muted pill-label"
+														style={{
+															textAlign: 'justify',
+															fontWeight: '700',
+															fontSize: 16,
+														}}
+													>
+														students
+													</small>
+												</span>
+												<Row className="mt-2 text-center">
+													<li>apply for semester registration</li>
+													<li>apply for academic certificates</li>
+													<li>
+														view courses, semester registrations and
+														grades
+													</li>
+													<li>
+														review and communicate with their professors
+													</li>
+												</Row>
+											</Row>
+											<Row>
+												<span>
+													Also offers a wide set of features to{' '}
+													<small
+														className="text-muted pill-label"
+														style={{
+															textAlign: 'justify',
+															fontWeight: '700',
+															fontSize: 16,
+														}}
+													>
+														instructors
+													</small>
+												</span>
+												<Row className="mt-2 text-center">
+													<li>viewing courses, teachings and students</li>
+													<li>
+														managing active teachings and course
+														examinations
+													</li>
+													<li>
+														uploading digital course material for
+														students to study
+													</li>
+													<li>
+														uploading digitally signed grades for course
+														examinations
+													</li>
+												</Row>
+											</Row>
 										</div>
 									</div>
 								</Col>
-								<Col xl="6" lg="7" md="9" sm="11" xs="11">
-									<div className="card o-hidden border-0 shadow-lg animated--grow-in">
-										<div className="card-body p-0">
-											<div style={{ padding: '2.2rem' }}>
-												<div className="text-center">
-													<h2 className="text-gray-900 mb-4 justify-content-center">
-														Welcome to Icarus
-													</h2>
+								<Col xl="4" lg="4" md="6" sm="10" xs="10">
+									<Row>
+										<Col>
+											<div className="card o-hidden border-0 shadow-lg animated--grow-in">
+												<div className="card-body">
+													<Row className="mb-3 justify-content-center">
+														<img
+															style={{ width: '35%' }}
+															src="sculpture.png"
+															alt="sculpture"
+														/>
+													</Row>
+													<Col className="text-center">
+														<Link
+															style={{ textDecoration: 'none' }}
+															to="/auth/login"
+														>
+															<Card
+																className="card-animate border-0 text-center"
+																body
+																color="success"
+																inverse
+															>
+																<CardTitle
+																	tag="h5"
+																	className="mt-2"
+																>
+																	Login
+																</CardTitle>
+															</Card>
+														</Link>
+													</Col>
 												</div>
-												{/* <img
-													style={{ width: '24%' }}
-													src="sculpture.png"
-													alt="sculpture"
-												/> */}
-												<Row>
-													<span>
-														Τo login to{' '}
-														<h6
-															style={{
-																display: 'inline-block',
-																fontSize: '1.23rem',
-															}}
-														>
-															<b>
-																Icarus Student Information Services
-															</b>
-														</h6>
-														, use:
-														<ul>
-															<li className="mt-2 text-justify">
-																your{' '}
-																<span className="text-success">
-																	academic
-																</span>{' '}
-																account if you are a{' '}
-																<i>
-																	<b className="">Student</b>
-																</i>
-															</li>
-															<li>
-																your{' '}
-																<span className="text-success">
-																	InstuctorClass
-																</span>{' '}
-																account if you are an{' '}
-																<i>
-																	<b className="">Instructor</b>
-																</i>
-															</li>
-														</ul>
-													</span>
-													<span className="mt-3">
-														<span
-															style={{
-																fontSize: '1.15rem',
-																color: 'tomato',
-																letterSpacing: '0.05rem',
-															}}
-														>
-															<b>Icarus</b>
-														</span>{' '}
-														Student Information Services allows{' '}
-														<b>students</b> to:
-														<ul>
-															<li className="mt-2 text-justify">
-																view courses, semester registrations
-																and grades
-															</li>
-															<li>apply for semester registration</li>
-															<li>apply for academic certificates</li>
-															<li>
-																review and communicate with their
-																professors
-															</li>
-														</ul>
-													</span>
-													<span className="mt-3">
-														Also offers a wide set of features to{' '}
-														<b>instructors</b> for:
-														<ul>
-															<li className="mt-2 text-justify">
-																viewing courses, teachings and
-																students
-															</li>
-															<li>
-																managing active teachings and course
-																examinations
-															</li>
-															<li>
-																uploading digitally signed grades
-																for course examinations
-															</li>
-															<li>
-																uploading digital course material
-																for students to study
-															</li>
-														</ul>
-													</span>
-												</Row>
 											</div>
-										</div>
-									</div>
+										</Col>
+										<Col className="mt-3 mb-3 animated--grow-in" xl="12">
+											<Link style={{ textDecoration: 'none' }} to="/studies">
+												<Card
+													className="card-animate border-0 text-center"
+													body
+													color="warning"
+													inverse
+												>
+													<CardTitle tag="h5" className="mt-2">
+														Studies
+													</CardTitle>
+												</Card>
+											</Link>
+										</Col>
+									</Row>
 								</Col>
 							</Row>
 						</div>

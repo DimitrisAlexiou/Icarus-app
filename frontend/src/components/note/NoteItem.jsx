@@ -3,10 +3,10 @@ import { Row, Col, Card } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExclamation } from '@fortawesome/free-solid-svg-icons';
 import { faCircle, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
-import { updateImportance } from '../../features/notes/noteSlice';
+import { deleteUserNote, updateImportance } from '../../features/notes/noteSlice';
 import moment from 'moment';
 
-export default function NoteItem({ note, onDelete }) {
+export default function NoteItem({ note, setSelectedCategory }) {
 	const dispatch = useDispatch();
 
 	return (
@@ -16,15 +16,6 @@ export default function NoteItem({ note, onDelete }) {
 					<Card className="card-note card-body-note mb-4">
 						<span className="side-stick"></span>
 						<h5>{note.title}</h5>
-						{/* <p>
-							{note.categories.filter(Boolean).length > 0 ? (
-								<>
-									{note.categories.map((category, index) => (
-										<b key={index}>{category}</b>
-									))}
-								</>
-							):null}
-						</p> */}
 						<p className="mx-2 py-1">{note.text}</p>
 						<h6
 							className="mt-2"
@@ -37,33 +28,31 @@ export default function NoteItem({ note, onDelete }) {
 							Created at: {moment(note.createdAt).format('MMMM DD, YYYY')}
 						</h6>
 						<Row className="d-flex align-items-center">
-							<Col>
-								{note.importance ? (
-									<span className="mr-3">
-										<FontAwesomeIcon
-											className="text-warning"
-											icon={faExclamation}
-											onClick={(e) => {
-												e.stopPropagation();
-												dispatch(updateImportance(note._id));
-											}}
-											bounce
-										/>
-									</span>
-								) : (
-									<span className="mr-3">
-										<FontAwesomeIcon
-											icon={faExclamation}
-											onClick={(e) => {
-												e.stopPropagation();
-												dispatch(updateImportance(note._id));
-											}}
-										/>
-									</span>
-								)}
-								<span className="mr-3">
-									<FontAwesomeIcon icon={faTrashAlt} onClick={onDelete} />
-								</span>
+							<Col xs="1" sm="1" md="1">
+								<FontAwesomeIcon
+									className={
+										note.importance
+											? 'text-warning mr-3 clickable'
+											: 'mr-3 clickable'
+									}
+									icon={faExclamation}
+									onClick={(e) => {
+										e.stopPropagation();
+										dispatch(updateImportance(note._id));
+									}}
+									bounce={note.importance}
+								/>
+							</Col>
+							<Col xs="1" sm="1" md="1">
+								<FontAwesomeIcon
+									className="mr-3 clickable"
+									icon={faTrashAlt}
+									onClick={(e) => {
+										e.stopPropagation();
+										dispatch(deleteUserNote(note._id));
+										setSelectedCategory(null);
+									}}
+								/>
 							</Col>
 							{note.categories.filter(Boolean).length > 0 ? (
 								<Col className="d-flex justify-content-end">

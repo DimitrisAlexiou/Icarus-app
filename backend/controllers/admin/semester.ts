@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import {
-	getSemesterByType,
 	getCurrentSemester,
 	getSemesters,
 	createSemester,
@@ -8,24 +7,46 @@ import {
 	deleteSemesterById,
 	deleteSemesters,
 	SemesterType,
+	getSemesterByTypeAndAcademicYear,
+	getSemesterById,
 } from '../../models/admin/semester';
+import { getActiveTeachingsBySemesterId } from '../../models/course/teaching';
 import { tryCatch } from '../../utils/tryCatch';
 import CustomError from '../../utils/CustomError';
 
 export const defineSemester = tryCatch(async (req: Request, res: Response): Promise<Response> => {
-	const { type, grading, startDate, endDate } = req.body;
+	const { type, academicYear, grading } = req.body;
 
-	if (!type) throw new CustomError('Please provide a semester type.', 400);
+	if (!type || !academicYear)
+		throw new CustomError('Please provide a semester type and the academic year.', 400);
 
-	if (type !== SemesterType.Any && (!startDate || !endDate || !grading))
-		throw new CustomError('Please fill in all the required fields.', 400);
+	if (type !== SemesterType.Any && !grading)
+		throw new CustomError('Please provide the grading period.', 400);
 
-	const existingSemester = await getSemesterByType(type);
+	const existingSemester = await getSemesterByTypeAndAcademicYear(type, academicYear);
+
 	if (existingSemester)
-		throw new CustomError(`Seems like the ${type} semester is already defined.`, 409);
+		throw new CustomError(
+			`A ${type} semester for the academic year ${academicYear} is already defined.`,
+			400
+		);
+
+	let startDate: Date | null = null;
+	let endDate: Date | null = null;
+
+	if (type === SemesterType.Winter) {
+		const [startYear, endYear] = academicYear.split('-');
+		startDate = new Date(`${startYear}-10-01`);
+		endDate = new Date(`${endYear}-01-31`);
+	} else if (type === SemesterType.Spring) {
+		const [, endYear] = academicYear.split('-');
+		startDate = new Date(`${endYear}-02-01`);
+		endDate = new Date(`${endYear}-05-31`);
+	}
 
 	const semester = await createSemester({
 		type,
+		academicYear,
 		grading: type === SemesterType.Any ? null : grading,
 		startDate: type === SemesterType.Any ? null : startDate,
 		endDate: type === SemesterType.Any ? null : endDate,
@@ -51,9 +72,9 @@ export const viewSemesters = tryCatch(async (_: Request, res: Response): Promise
 });
 
 export const updateSemester = tryCatch(async (req: Request, res: Response): Promise<Response> => {
-	const { grading, startDate, endDate } = req.body;
+	const { grading, academicYear } = req.body;
 
-	if (!grading || !startDate || !endDate)
+	if (!grading || !academicYear)
 		throw new CustomError('Please provide all the required fields.', 400);
 
 	const { id } = req.params;
@@ -71,10 +92,26 @@ export const updateSemester = tryCatch(async (req: Request, res: Response): Prom
 
 export const deleteSemester = tryCatch(async (req: Request, res: Response): Promise<Response> => {
 	const { id } = req.params;
+
+	const semester = await getSemesterById(id);
+	if (!semester)
+		throw new CustomError(
+			'Seems like the semester that you are trying to delete does not exist.',
+			404
+		);
+
+	const activeTeachings = await getActiveTeachingsBySemesterId(id);
+
+	if (activeTeachings.length)
+		throw new CustomError(
+			'Seems like the semester has active teachings and can not be deleted.',
+			400
+		);
+
 	const semesterToDelete = await deleteSemesterById(id);
 	if (!semesterToDelete)
 		throw new CustomError(
-			'Seems like the semester that you are trying to delete does not exist.',
+			'Seems like something went wrong and the semester did not deleted.',
 			404
 		);
 
@@ -83,7 +120,9 @@ export const deleteSemester = tryCatch(async (req: Request, res: Response): Prom
 		.json({ message: 'Defined semester deleted.', semester: semesterToDelete._id });
 });
 
-export const deleteAllSemesters = tryCatch(async (_: Request, res: Response): Promise<Response> => {
-	await deleteSemesters();
-	return res.status(200).json({ message: 'Defined semesters deleted.' });
-});
+export const deleteSystemSemesters = tryCatch(
+	async (_: Request, res: Response): Promise<Response> => {
+		await deleteSemesters();
+		return res.status(200).json({ message: 'Defined semesters deleted.' });
+	}
+);

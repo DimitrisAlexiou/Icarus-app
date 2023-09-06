@@ -3,10 +3,10 @@ import { getTeachingReviews, deleteTeachingReviews } from '../../models/review/t
 import { tryCatch } from '../../utils/tryCatch';
 import CustomError from '../../utils/CustomError';
 
-export const getAllTeachingReviews = tryCatch(
+export const getSystemTeachingReviews = tryCatch(
 	async (_: Request, res: Response): Promise<Response> => {
 		const teachingReviews = await getTeachingReviews();
-		if (!teachingReviews.length)
+		if (!teachingReviews)
 			throw new CustomError(
 				'Seems like there are no teaching reviews registered in the system.',
 				404
@@ -16,7 +16,7 @@ export const getAllTeachingReviews = tryCatch(
 	}
 );
 
-export const deleteAllTeachingReviews = tryCatch(
+export const deleteSystemTeachingReviews = tryCatch(
 	async (_: Request, res: Response): Promise<Response> => {
 		await deleteTeachingReviews();
 		return res

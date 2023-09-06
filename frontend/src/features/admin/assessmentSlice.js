@@ -7,7 +7,7 @@ import {
 	GET_ASSESSMENT,
 	UPDATE_ASSESSMENT,
 } from '../actions';
-import assessmentService from './assessmentService';
+import assessmentService from './services/assessmentService';
 
 const initialState = {
 	assessment: null,
@@ -79,16 +79,10 @@ export const assessmentSlice = createSlice({
 			})
 			.addCase(defineAssessment.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				if (payload.includes('vaccineStartDate' && 'now'))
+				if (payload.includes('vaccineEndDate' && 'vaccineStartDate'))
 					Toast.fire({
 						title: 'Something went wrong!',
-						text: 'Vaccine start date must be greater than today.',
-						icon: 'error',
-					});
-				else if (payload.includes('vaccineEndDate' && 'vaccineStartDate'))
-					Toast.fire({
-						title: 'Something went wrong!',
-						text: 'Vaccine end date must be greater than vaccine start date.',
+						text: 'Vaccine end date must be greater than vaccine starting date.',
 						icon: 'error',
 					});
 				else
@@ -109,13 +103,16 @@ export const assessmentSlice = createSlice({
 				state.isLoading = false;
 				if (
 					payload !==
-					'Seems like there is no assessment statement configuration defined for this semester.'
-				)
+						'Seems like there is no assessment statement configuration defined for this semester.' &&
+					payload !==
+						'Seems like there is no defined semester for current period. Define a semester first in order to define assessment statement configuration.'
+				) {
 					Toast.fire({
 						title: 'Something went wrong!',
 						text: payload,
 						icon: 'error',
 					});
+				}
 			})
 			.addCase(updateAssessment.pending, (state) => {
 				state.isLoading = true;
@@ -131,16 +128,10 @@ export const assessmentSlice = createSlice({
 			})
 			.addCase(updateAssessment.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				if (payload.includes('vaccineStartDate' && 'now'))
+				if (payload.includes('vaccineEndDate' && 'vaccineStartDate'))
 					Toast.fire({
 						title: 'Something went wrong!',
-						text: 'Vaccine start date must be greater than today.',
-						icon: 'error',
-					});
-				else if (payload.includes('vaccineEndDate' && 'vaccineStartDate'))
-					Toast.fire({
-						title: 'Something went wrong!',
-						text: 'Vaccine end date must be greater than vaccine start date.',
+						text: 'Vaccine end date must be greater than vaccine starting date.',
 						icon: 'error',
 					});
 				else

@@ -16,6 +16,7 @@ export default function ReviewForm({ review, isEditingReview, editReviewId, seme
 					startDate: review ? new Date(review.startDate) : new Date(),
 					endDate: review ? new Date(review.endDate) : new Date(),
 					startAfter: review ? review.startAfter : 0,
+					semesterStartDate: new Date(semester.startDate),
 				}}
 				validationSchema={ReviewSchema}
 				onSubmit={(values, { setSubmitting }) => {

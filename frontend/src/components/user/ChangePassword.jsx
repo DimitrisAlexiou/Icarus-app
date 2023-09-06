@@ -29,8 +29,6 @@ export default function ChangePassword() {
 		dispatch(reset());
 	}, [dispatch, isError, isSuccess, message]);
 
-	if (isLoading) return <CustomSpinner />;
-
 	return (
 		<>
 			<h5 className="text-gray-800 font-weight-bold animated--grow-in mb-4 mx-4">
@@ -41,7 +39,7 @@ export default function ChangePassword() {
 				<Col xl="8" lg="8" md="10" sm="12" xs="12">
 					<div className="profile_card animated--grow-in">
 						<div className="card-body">
-							<ChangePasswordForm />
+							{isLoading ? <CustomSpinner card /> : <ChangePasswordForm />}
 						</div>
 					</div>
 				</Col>

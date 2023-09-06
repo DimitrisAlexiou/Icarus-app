@@ -33,6 +33,12 @@ export const defineReviewStatement = tryCatch(
 				400
 			);
 
+		if (startDate < semester.startDate)
+			throw new CustomError(
+				'Review starting date should be greater than the starting date of the current semester.',
+				400
+			);
+
 		const review = await createReview({
 			startDate,
 			endDate,
@@ -84,6 +90,19 @@ export const updateReviewStatement = tryCatch(
 		if (!startDate || !endDate || !startAfter)
 			throw new CustomError('Please fill in all the required fields.', 400);
 
+		const semester = await getCurrentSemester(new Date());
+		if (!semester)
+			throw new CustomError(
+				'Seems like there is no defined semester for current period. Define a semester first in order to update review statement configuration.',
+				404
+			);
+
+		if (startDate < semester.startDate)
+			throw new CustomError(
+				'Review starting date should be greater than the starting date of the current semester.',
+				400
+			);
+
 		const { id } = req.params;
 		const updatedReview = await updateReviewById(id, { ...req.body });
 		if (!updatedReview)
@@ -110,7 +129,7 @@ export const deleteReviewStatement = tryCatch(
 	}
 );
 
-export const deleteAllReviewStatements = tryCatch(
+export const deleteSystemReviewStatements = tryCatch(
 	async (_: Request, res: Response): Promise<Response> => {
 		await deleteReview();
 		return res

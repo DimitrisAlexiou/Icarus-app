@@ -1,4 +1,4 @@
-import mongoose, { Schema, model } from 'mongoose';
+import mongoose, { ClientSession, Schema, model } from 'mongoose';
 
 export interface InstructorReviewProps {
 	good_organization: number;
@@ -53,16 +53,26 @@ export const InstructorReview = model<InstructorReviewProps>(
 	instructorReviewSchema
 );
 
-export const getInstructorReviews = () => InstructorReview.find();
-export const deleteInstructorReviews = () => InstructorReview.deleteMany();
-export const getUserInstructorReviews = (userId: string) =>
-	InstructorReview.find({ user: userId }).populate('teaching');
-export const getUserSubmittedInstructorReview = (userId: string) =>
-	InstructorReview.findOne({ user: userId });
-export const getInstructorReviewById = (id: string) =>
-	InstructorReview.findById(id).populate('teaching');
 export const createInstructorReview = (values: Record<string, any>) =>
 	new InstructorReview(values).save().then((instructorReview) => instructorReview.toObject());
+export const getInstructorReviewById = (id: string) =>
+	InstructorReview.findById(id).populate('teaching');
+export const getUserSubmittedInstructorReview = (userId: string, teachingId: string) =>
+	InstructorReview.findOne({ user: userId, teaching: teachingId });
 export const updateInstructorReviewById = (id: string, instructorReview: Record<string, any>) =>
 	InstructorReview.findByIdAndUpdate(id, instructorReview, { new: true });
 export const deleteInstructorReviewById = (id: string) => InstructorReview.findByIdAndDelete(id);
+export const getUserInstructorReviews = (userId: string) =>
+	InstructorReview.find({ user: userId })
+		.populate({
+			path: 'teaching',
+			populate: {
+				path: 'course',
+				select: 'title',
+			},
+		})
+		.populate('user');
+export const deleteUserInstructorReviews = (userId: string, session: ClientSession) =>
+	InstructorReview.deleteMany({ user: userId }).session(session);
+export const getInstructorReviews = () => InstructorReview.find();
+export const deleteInstructorReviews = () => InstructorReview.deleteMany();

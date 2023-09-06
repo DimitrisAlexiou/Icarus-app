@@ -17,7 +17,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import listPlugin from '@fullcalendar/list';
-import Spinner from '../../components/boilerplate/Spinner';
+import Spinner from '../boilerplate/Spinner';
 import CarouselComponent from '../Carousel';
 import EventForm from './EventForm';
 
@@ -25,6 +25,7 @@ export default function Calendar() {
 	const { events, isLoading, isEditingEvent, editEventId } = useSelector((state) => state.events);
 	const { user } = useSelector((state) => state.auth);
 
+	const calendarRef = useRef(null);
 	const [selectedEvent, setSelectedEvent] = useState(null);
 	const myRef = useRef(null);
 	const [modal, setModal] = useState(false);
@@ -37,6 +38,11 @@ export default function Calendar() {
 				editEventId: '',
 			})
 		);
+
+		if (selectedEvent && calendarRef.current) {
+			calendarRef.current.getApi().unselect();
+			setSelectedEvent(null);
+		}
 	};
 
 	const [time, setTime] = useState('10:00');
@@ -60,8 +66,10 @@ export default function Calendar() {
 
 		const newEvent = {
 			title: '',
-			start: selected.start.toISOString(),
-			end: selected.end.toISOString(),
+			startDate: new Date(selected.start),
+			endDate: new Date(selected.end),
+			// startDate: selected.start.toISOString(),
+			// endDate: selected.end.toISOString(),
 			allDay: selected.allDay,
 		};
 
@@ -79,21 +87,22 @@ export default function Calendar() {
 		return (
 			<Modal ref={ref} isOpen={modal} toggle={toggle} className="modal-lg">
 				<ModalHeader toggle={toggle}>
-					{isEditingEvent ? 'Edit Event' : 'Fill the form below to create a new event'}
+					{isEditingEvent
+						? `Edit Event (${event.title})`
+						: 'Fill the form below to create a new event'}
 				</ModalHeader>
 				<ModalBody>
 					<EventForm
 						event={event}
-						user={user.user}
+						user={user}
 						isEditingEvent={isEditingEvent}
 						editEventId={editEventId}
+						setModal={setModal}
 					/>
 				</ModalBody>
 			</Modal>
 		);
 	});
-
-	if (isLoading) return <Spinner card />;
 
 	return (
 		<>
@@ -115,49 +124,53 @@ export default function Calendar() {
 							</Button>
 						</Col>
 					</Row>
-					<CarouselComponent
-						objects={events}
-						renderItem={(event) => (
-							<>
-								<CardTitle
-									style={{
-										textAlign: 'justify',
-										fontWeight: '700',
-										fontSize: 15,
-									}}
-									className="text-light-cornflower-blue mb-2"
-								>
-									{event.title}
-								</CardTitle>
-								<CardText>
-									<small
-										className="text-muted"
+					{isLoading ? (
+						<Spinner card />
+					) : (
+						<CarouselComponent
+							objects={events}
+							renderItem={(event) => (
+								<>
+									<CardTitle
 										style={{
 											textAlign: 'justify',
 											fontWeight: '700',
-											fontSize: 13,
+											fontSize: 15,
+										}}
+										className="text-light-cornflower-blue mb-2"
+									>
+										{event.title}
+									</CardTitle>
+									<CardText>
+										<small
+											className="text-muted"
+											style={{
+												textAlign: 'justify',
+												fontWeight: '700',
+												fontSize: 13,
+											}}
+										>
+											{moment(event.startDate).format('MMMM D, YYYY')}
+										</small>
+									</CardText>
+									<CardText
+										style={{
+											textAlign: 'justify',
+											fontWeight: '600',
+											fontSize: 11,
 										}}
 									>
-										{moment(event.start).format('MMMM D, YYYY')}
-									</small>
-								</CardText>
-								<CardText
-									style={{
-										textAlign: 'justify',
-										fontWeight: '600',
-										fontSize: 11,
-									}}
-								>
-									{event.allDay ? 'All Day' : 'Timed Event'}
-								</CardText>
-							</>
-						)}
-						onObjectClick={(event) => {
-							dispatch(setEditEvent({ editEventId: event._id }));
-							setSelectedEvent(event);
-							setModal(true);
-						}}
-					/>
+										{event.allDay ? 'All Day' : 'Timed Event'}
+									</CardText>
+								</>
+							)}
+							onObjectClick={(event) => {
+								dispatch(setEditEvent({ editEventId: event._id }));
+								setSelectedEvent(event);
+								setModal(true);
+							}}
+						/>
+					)}
 				</>
 			) : (
 				<Row className="mb-5 animated--grow-in text-gray-500">
@@ -167,6 +180,7 @@ export default function Calendar() {
 			<Row className=" animated--grow-in mt-4 mb-5">
 				<Col md="12" lg="10" xl="8" className="mx-auto">
 					<FullCalendar
+						ref={calendarRef}
 						height="65vh"
 						plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
 						headerToolbar={{

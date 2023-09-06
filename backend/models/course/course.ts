@@ -1,5 +1,4 @@
 import mongoose, { ClientSession, Schema, model } from 'mongoose';
-import { Teaching, deleteTeachingById } from './teaching';
 
 export enum CourseType {
 	Undergraduate = 'Undergraduate',
@@ -130,6 +129,5 @@ export const updateCourseById = (
 	course: Record<string, any>,
 	options?: Record<string, any>
 ) => Course.findByIdAndUpdate(id, course, { new: true });
-export const deleteCourseById = (id: string, session: ClientSession) =>
-	Course.findByIdAndDelete(id).session(session);
+export const deleteCourseById = (id: string) => Course.findByIdAndDelete(id);
 export const deleteCourses = () => Course.deleteMany();

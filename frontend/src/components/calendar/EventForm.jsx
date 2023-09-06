@@ -1,12 +1,12 @@
 import { useDispatch } from 'react-redux';
 import { FormGroup, Label, Row, Col, Button, Spinner, Input } from 'reactstrap';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { addEvent, updateEvent } from '../../features/calendar/eventSlice';
+import { addEvent, setEditEvent, updateEvent } from '../../features/calendar/eventSlice';
 import { EventSchema } from '../../schemas/calendar/Event';
 import FormErrorMessage from '../form/FormErrorMessage';
 import DatePickerField from '../form/DatePickerField';
 
-export default function EventForm({ event, user, isEditingEvent, editEventId }) {
+export default function EventForm({ event, user, isEditingEvent, editEventId, setModal }) {
 	const dispatch = useDispatch();
 
 	return (
@@ -14,30 +14,38 @@ export default function EventForm({ event, user, isEditingEvent, editEventId }) 
 			<Formik
 				initialValues={{
 					title: event ? event.title : '',
-					start: event ? event.start : new Date(),
-					end: event ? event.end : new Date(),
+					startDate: event ? new Date(event.startDate) : new Date(),
+					endDate: event ? new Date(event.endDate) : new Date(),
 					allDay: event ? event.allDay : false,
 				}}
 				validationSchema={EventSchema}
 				onSubmit={(values, { setSubmitting }) => {
-					const event = {
+					const newEvent = {
 						title: values.title,
-						start: values.start,
-						end: values.end,
+						startDate: values.startDate,
+						endDate: values.endDate,
 						allDay: values.allDay,
-						owner: user._id,
+						eventId: event.eventId,
+						owner: user.user._id,
 					};
 					if (isEditingEvent) {
 						dispatch(
 							updateEvent({
 								eventId: editEventId,
-								data: event,
+								data: newEvent,
 							})
 						);
 						setSubmitting(false);
+						dispatch(
+							setEditEvent({
+								isEditingEvent: false,
+								editEventId: '',
+							})
+						);
+						setModal(false);
 						return;
 					}
-					dispatch(addEvent(event));
+					dispatch(addEvent(newEvent));
 					setSubmitting(false);
 				}}
 				validateOnMount

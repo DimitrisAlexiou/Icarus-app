@@ -3,9 +3,10 @@ import { register } from '../../controllers/auth/register';
 import { login } from '../../controllers/auth/login';
 // import { forgotPassword } from '../../controllers/auth/forgotPassword';
 import { changePassword } from '../../controllers/auth/changePassword';
-import { resetPasswordLimiter } from '../../middleware/authMiddleware';
+import { authorize, isOwner, resetPasswordLimiter } from '../../middleware/authMiddleware';
 import { validateUser } from '../../middleware/validations';
 import { revokeToken } from '../../controllers/auth/authToken';
+import { viewProfile } from '../../controllers/user';
 // import { refreshToken } from '../../controllers/auth/authToken';
 
 export default (router: express.Router) => {
@@ -24,10 +25,10 @@ export default (router: express.Router) => {
 	// @access  Private
 	// router.route('/auth/forgot-password').post(resetPasswordLimiter, forgotPassword);
 
-	// @desc    Change User Password
-	// @route   POST /api/user/profile
+	// @desc     Get User Profile / Change User Password
+	// @route   GET/POST /api/user/profile
 	// @access  Private
-	router.route('/user/profile').post(changePassword);
+	router.route('/user/profile').get(authorize, isOwner, viewProfile).post(changePassword);
 	// router.route('/user/profile').post(resetPasswordLimiter, changePassword);
 
 	// @desc    Route to revoke a token

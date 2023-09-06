@@ -13,7 +13,7 @@ import { faEdit, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import { deleteAlert } from '../../constants/sweetAlertNotification';
 import DataTable from '../DataTable';
 import Switch from 'react-switch';
-import CourseForm from '../../components/course/CourseForm';
+import CourseForm from '../../components/course/forms/CourseForm';
 import Spinner from '../../components/boilerplate/Spinner';
 
 export default function CoursesDataTable({ courses, cycles, semesters }) {
@@ -161,8 +161,6 @@ export default function CoursesDataTable({ courses, cycles, semesters }) {
 			),
 		},
 	];
-
-	if (isLoading) return <Spinner card />;
 
 	return (
 		<>

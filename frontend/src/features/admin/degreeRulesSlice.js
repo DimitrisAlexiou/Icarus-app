@@ -7,7 +7,7 @@ import {
 	GET_DEGREE_RULES,
 	UPDATE_DEGREE_RULES,
 } from '../actions';
-import degreeRulesService from './degreeRulesService';
+import degreeRulesService from './services/degreeRulesService';
 
 const initialState = {
 	degreeRules: null,

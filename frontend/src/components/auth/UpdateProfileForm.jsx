@@ -17,20 +17,19 @@ export default function UpdateProfileForm({ user }) {
 					surname: user.user.surname,
 					username: user.user.username,
 					email: user.user.email,
-					type: user.user.type,
-					degree: user && user.user.instructor ? user.user.instructor.degree : null,
+					degree:
+						user.user.type === UserType.instructor ? user.user.instructor.degree : '',
 				}}
-				validationSchema={UserProfileSchema}
+				validationSchema={!user.user.isAdmin ? UserProfileSchema : null}
 				onSubmit={(values, { setSubmitting }) => {
 					const userToUpdate = {
 						name: values.name,
 						surname: values.surname,
 						username: values.username,
 						email: values.email,
-						type: values.type,
+						type: user.user.type,
 					};
-					if (values.type === UserType.instructor) userToUpdate.degree = values.degree;
-					console.log(userToUpdate);
+					if (user.user.type === UserType.instructor) userToUpdate.degree = values.degree;
 					dispatch(updateProfile({ userId: user.user._id, data: userToUpdate }));
 					setSubmitting(false);
 				}}

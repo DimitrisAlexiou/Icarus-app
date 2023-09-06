@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { extractErrorMessage } from '../../utils/errorMessage';
 import { Toast } from '../../constants/sweetAlertNotification';
-import courseService from './courseService';
+import courseService from './services/courseService';
 import {
 	ACTIVATE_COURSE,
 	CREATE_COURSE,
@@ -11,9 +11,11 @@ import {
 	ENROLL_COURSE,
 	GET_COURSE,
 	GET_COURSES,
+	GET_ENROLLED_COURSES,
 	UNENROLL_COURSE,
 	UPDATE_COURSE,
 } from '../actions';
+import { updateEnrolledCourses } from '../auth/authSlice';
 
 const initialFiltersState = {
 	search: '',
@@ -109,17 +111,33 @@ export const deleteCourses = createAsyncThunk(DELETE_COURSES, async (_, thunkAPI
 	}
 });
 
-export const enrollCourse = createAsyncThunk(ENROLL_COURSE, async (courseId, thunkAPI) => {
+export const enrollCourse = createAsyncThunk(ENROLL_COURSE, async (teachingId, thunkAPI) => {
 	try {
-		return await courseService.enrollCourse(courseId);
+		const response = await courseService.enrollCourse(teachingId);
+		const updatedStudent = response.student;
+
+		thunkAPI.dispatch(updateEnrolledCourses(updatedStudent.enrolledCourses));
+		return response;
 	} catch (error) {
 		return thunkAPI.rejectWithValue(extractErrorMessage(error));
 	}
 });
 
-export const unenrollCourse = createAsyncThunk(UNENROLL_COURSE, async (courseId, thunkAPI) => {
+export const disenrollCourse = createAsyncThunk(UNENROLL_COURSE, async (teachingId, thunkAPI) => {
 	try {
-		return await courseService.unenrollCourse(courseId);
+		const response = await courseService.disenrollCourse(teachingId);
+		const updatedStudent = response.student;
+
+		thunkAPI.dispatch(updateEnrolledCourses(updatedStudent.enrolledCourses));
+		return response;
+	} catch (error) {
+		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+	}
+});
+
+export const getEnrolledCourses = createAsyncThunk(GET_ENROLLED_COURSES, async (_, thunkAPI) => {
+	try {
+		return await courseService.getEnrolledCourses();
 	} catch (error) {
 		return thunkAPI.rejectWithValue(extractErrorMessage(error));
 	}
@@ -322,7 +340,6 @@ export const courseSlice = createSlice({
 					text: payload.message,
 					icon: 'success',
 				});
-				state.auth.user.user.student = payload.student;
 			})
 			.addCase(enrollCourse.rejected, (state, { payload }) => {
 				state.isLoading = false;
@@ -332,19 +349,18 @@ export const courseSlice = createSlice({
 					icon: 'warning',
 				});
 			})
-			.addCase(unenrollCourse.pending, (state) => {
+			.addCase(disenrollCourse.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(unenrollCourse.fulfilled, (state, { payload }) => {
+			.addCase(disenrollCourse.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
 					text: payload.message,
 					icon: 'success',
 				});
-				state.auth.user.user.student = payload.student;
 			})
-			.addCase(unenrollCourse.rejected, (state, { payload }) => {
+			.addCase(disenrollCourse.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',

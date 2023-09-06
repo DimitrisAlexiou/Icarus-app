@@ -8,7 +8,7 @@ import {
 	DELETE_SEMESTER,
 	GET_SEMESTERS,
 } from '../actions';
-import semesterService from './semesterService';
+import semesterService from './services/semesterService';
 
 const initialState = {
 	semesters: [],
@@ -83,6 +83,7 @@ export const semesterSlice = createSlice({
 					icon: 'success',
 				});
 				state.semester = payload.semester;
+				state.semesters = [...state.semesters, payload.semester];
 			})
 			.addCase(defineSemester.rejected, (state, { payload }) => {
 				state.isLoading = false;
@@ -184,7 +185,7 @@ export const semesterSlice = createSlice({
 					text: payload.message,
 					icon: 'success',
 				});
-				// state.semester = null;
+				state.semester = null;
 				state.semesters = state.semesters.filter((semester) => {
 					return semester._id !== payload.semester;
 				});

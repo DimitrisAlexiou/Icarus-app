@@ -4,6 +4,7 @@ import {
 	profileSchema,
 	courseSchema,
 	teachingSchema,
+	statementSchema,
 	teachingReviewSchema,
 	instructorReviewSchema,
 	generalReviewSchema,
@@ -17,7 +18,12 @@ import {
 	courseActivationSchema,
 	instructorsAssignmentSchema,
 } from '../utils/schemas';
+import { UserProps } from '../models/users/user';
 import CustomError from '../utils/CustomError';
+
+interface AuthenticatedRequest extends Request {
+	user?: UserProps;
+}
 
 export const validateUser = (req: Request, _: Response, next: NextFunction) => {
 	const { error } = userSchema.validate(req.body);
@@ -29,7 +35,10 @@ export const validateUser = (req: Request, _: Response, next: NextFunction) => {
 	next();
 };
 
-export const validateProfile = (req: Request, _: Response, next: NextFunction) => {
+export const validateProfile = (req: AuthenticatedRequest, _: Response, next: NextFunction) => {
+	const isAdmin = req.user.isAdmin;
+	if (isAdmin) return next();
+
 	const { error } = profileSchema.validate(req.body);
 	if (error) {
 		console.error('❌ Profile schema validation: ', error);
@@ -73,6 +82,16 @@ export const validateInstructorsAssignment = (req: Request, _: Response, next: N
 	const { error } = instructorsAssignmentSchema.validate(req.body);
 	if (error) {
 		console.error('❌ Instructors assignment schema validation: ', error);
+		throw new CustomError(error.message, 400);
+	}
+
+	next();
+};
+
+export const validateStatement = (req: Request, _: Response, next: NextFunction) => {
+	const { error } = statementSchema.validate(req.body);
+	if (error) {
+		console.error('❌ Statement schema validation: ', error);
 		throw new CustomError(error.message, 400);
 	}
 

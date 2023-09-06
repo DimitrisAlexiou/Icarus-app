@@ -3,6 +3,7 @@ import { extractErrorMessage } from '../../utils/errorMessage';
 import { Toast } from '../../constants/sweetAlertNotification';
 import {
 	CREATE_NOTE,
+	DELETE_CATEGORY,
 	DELETE_NOTE,
 	DELETE_NOTES,
 	GET_NOTE,
@@ -54,12 +55,22 @@ export const updateUserNote = createAsyncThunk(UPDATE_NOTE, async ({ noteId, dat
 
 export const updateImportance = createAsyncThunk(UPDATE_IMPORTANCE, async (noteId, thunkAPI) => {
 	try {
-		const updatedNote = await noteService.updateImportance(noteId);
-		return { noteId, updatedNote };
+		return await noteService.updateImportance(noteId);
 	} catch (error) {
 		return thunkAPI.rejectWithValue(extractErrorMessage(error));
 	}
 });
+
+export const deleteCategory = createAsyncThunk(
+	DELETE_CATEGORY,
+	async ({ noteId, category }, thunkAPI) => {
+		try {
+			return await noteService.deleteCategory(noteId, category);
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
+	}
+);
 
 export const deleteUserNote = createAsyncThunk(DELETE_NOTE, async (noteId, thunkAPI) => {
 	try {
@@ -165,25 +176,42 @@ export const noteSlice = createSlice({
 				state.isLoading = true;
 			})
 			.addCase(updateImportance.fulfilled, (state, { payload }) => {
-				const { noteId, updatedNote } = payload;
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Success',
 					text: 'Note importance updated!',
 					icon: 'success',
 				});
-				state.note = payload;
-				state.notes = state.notes.map((note) => {
-					if (note._id === noteId)
-						return {
-							...note,
-							importance: !updatedNote.importance,
-						};
-
-					return note;
-				});
+				const updatedNoteIndex = state.notes.findIndex(
+					(note) => note._id === payload.updatedNote._id
+				);
+				if (updatedNoteIndex !== -1)
+					state.notes[updatedNoteIndex].importance = payload.updatedNote.importance;
 			})
 			.addCase(updateImportance.rejected, (state, { payload }) => {
+				state.isLoading = false;
+				Toast.fire({
+					title: 'Something went wrong!',
+					text: payload,
+					icon: 'error',
+				});
+			})
+			.addCase(deleteCategory.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(deleteCategory.fulfilled, (state, { payload }) => {
+				state.isLoading = false;
+				Toast.fire({
+					title: 'Success',
+					text: payload.message,
+					icon: 'success',
+				});
+				const updatedNoteIndex = state.notes.findIndex(
+					(note) => note._id === payload.updatedNote._id
+				);
+				if (updatedNoteIndex !== -1) state.notes[updatedNoteIndex] = payload.updatedNote;
+			})
+			.addCase(deleteCategory.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',

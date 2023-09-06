@@ -207,6 +207,10 @@ export const authSlice = createSlice({
 			state.isAccountLocked = false;
 			state.lastAttemptedUsername = null;
 		},
+		updateEnrolledCourses: (state, { payload }) => {
+			state.user.user.student.enrolledCourses = payload;
+			addUserToLocalStorage(state.user);
+		},
 	},
 	extraReducers: (builder) => {
 		builder
@@ -275,9 +279,9 @@ export const authSlice = createSlice({
 			.addCase(getProfile.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(getProfile.fulfilled, (state, { payload }) => {
+			.addCase(getProfile.fulfilled, (state) => {
 				state.isLoading = false;
-				state.user = payload;
+				state.user = getUserFromLocalStorage();
 			})
 			.addCase(getProfile.rejected, (state, { payload }) => {
 				state.isLoading = false;
@@ -294,8 +298,8 @@ export const authSlice = createSlice({
 					text: payload.message,
 					icon: 'success',
 				});
-				state.auth.user.user = payload.updatedUser;
-				addUserToLocalStorage(payload.updatedUser);
+				state.user.user = payload.updatedUser;
+				addUserToLocalStorage(state.user);
 			})
 			.addCase(updateProfile.rejected, (state, { payload }) => {
 				state.isLoading = false;
@@ -308,5 +312,6 @@ export const authSlice = createSlice({
 	},
 });
 
-export const { reset, updateLoginStatus, resetLoginStatus } = authSlice.actions;
+export const { reset, updateLoginStatus, resetLoginStatus, updateEnrolledCourses } =
+	authSlice.actions;
 export default authSlice.reducer;

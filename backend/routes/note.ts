@@ -6,6 +6,7 @@ import {
 	updateUserNote,
 	deleteUserNote,
 	deleteUserNotes,
+	deleteCategory,
 } from '../controllers/note';
 import { validateNote } from '../middleware/validations';
 import { authorize, isOwner } from '../middleware/authMiddleware';
@@ -30,5 +31,6 @@ export default (router: express.Router) => {
 		.put(authorize, isOwner, noteFileUpload.single('file'), validateNote, updateUserNote)
 		.delete(authorize, isOwner, deleteUserNote);
 
-	router.route('/note/:id/importance').patch(authorize, isOwner, validateNote, updateUserNote);
+	router.route('/note/:id/importance').patch(authorize, isOwner, updateUserNote);
+	router.route('/note/:id/category').patch(authorize, isOwner, deleteCategory);
 };

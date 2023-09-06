@@ -57,7 +57,11 @@ export const updateProfile = async (
 
 		const { id } = req.params;
 
-		const updatedUser = await updateUserById(id, { ...req.body }, { session });
+		const updatedUser = await updateUserById(
+			id,
+			{ name, surname, username, email },
+			{ session }
+		);
 
 		if (!updatedUser)
 			throw new CustomError(

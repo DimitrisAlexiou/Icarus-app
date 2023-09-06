@@ -1,22 +1,25 @@
 import express from 'express';
-import { viewProfile, updateProfile } from '../controllers/user';
+import { updateProfile } from '../controllers/user';
 import {
 	getAllUserTeachingReviews,
 	viewUserTeachingReview,
-	// updateUserTeachingReview,
+	updateUserTeachingReview,
 	deleteUserTeachingReview,
+	deleteAllUserTeachingReviews,
 } from '../controllers/review/teachingReview';
 import {
 	getAllUserInstructorReviews,
 	viewUserInstructorReview,
 	updateUserInstructorReview,
 	deleteUserInstructorReview,
+	deleteAllUserInstructorReviews,
 } from '../controllers/review/instructorReview';
 import {
 	getAllUserGeneralReviews,
 	viewUserGeneralReview,
 	updateUserGeneralReview,
 	deleteUserGeneralReview,
+	deleteAllUserGeneralReviews,
 } from '../controllers/review/generalReview';
 import {
 	validateProfile,
@@ -24,56 +27,93 @@ import {
 	validateInstructorReview,
 	validateGeneralReview,
 } from '../middleware/validations';
-import { authorize, isOwner } from '../middleware/authMiddleware';
+import { authorize, checkUserRole, isOwner } from '../middleware/authMiddleware';
+import { UserType } from '../models/users/user';
 
 export default (router: express.Router) => {
-	// @desc    Get User Teaching|Instructor|General Reviews
-	// @route   GET /api/user/activity/reviews
+	// @desc    Get User Teaching Reviews
+	// @route   GET /api/user/activity/reviews/teaching
 	// @access  Private USER
 	router
-		.route('/user/activity/reviews')
-		.get(
-			authorize,
-			isOwner,
-			getAllUserTeachingReviews,
-			getAllUserInstructorReviews,
-			getAllUserGeneralReviews
-		);
+		.route('/user/activity/reviews/teaching')
+		.get(authorize, isOwner, getAllUserTeachingReviews)
+		.delete(authorize, isOwner, deleteAllUserTeachingReviews);
 
-	// @desc    Get / Update / Delete User Teaching|Instructor|General Review by ID
-	// @route   GET/PUT/DELETE /api/user/activity/reviews/:id
+	// @desc    Get User Instructor Reviews
+	// @route   GET /api/user/activity/reviews/instructor
 	// @access  Private USER
 	router
-		.route('/user/activity/reviews/:id')
-		.get(
-			authorize,
-			isOwner,
-			viewUserTeachingReview,
-			viewUserInstructorReview,
-			viewUserGeneralReview
-		)
+		.route('/user/activity/reviews/instructor')
+		.get(authorize, isOwner, getAllUserInstructorReviews)
+		.delete(authorize, isOwner, deleteAllUserInstructorReviews);
+
+	// @desc    Get User General Reviews
+	// @route   GET /api/user/activity/reviews/general
+	// @access  Private USER
+	router
+		.route('/user/activity/reviews/general')
+		.get(authorize, isOwner, getAllUserGeneralReviews)
+		.delete(authorize, isOwner, deleteAllUserGeneralReviews);
+
+	// @desc    Get / Delete / Update Teaching Review
+	// @route   GET/DELETE/PUT /api/review/teaching/:id
+	// @access  Private
+	router
+		.route('/user/activity/reviews/teaching/:id')
+		.get(authorize, isOwner, viewUserTeachingReview)
 		.put(
 			authorize,
 			isOwner,
+			checkUserRole([UserType.admin, UserType.student]),
 			validateTeachingReview,
+			updateUserTeachingReview
+		)
+		.delete(
+			authorize,
+			isOwner,
+			checkUserRole([UserType.admin, UserType.student]),
+			deleteUserTeachingReview
+		);
+
+	// @desc    Get / Delete / Update Instructor Review
+	// @route   GET/DELETE/PUT /api/review/instructor/:id
+	// @access  Private
+	router
+		.route('/user/activity/reviews/instructor/:id')
+		.get(authorize, isOwner, viewUserInstructorReview)
+		.put(
+			authorize,
+			isOwner,
+			checkUserRole([UserType.admin, UserType.student]),
 			validateInstructorReview,
+			updateUserInstructorReview
+		)
+		.delete(
+			authorize,
+			isOwner,
+			checkUserRole([UserType.admin, UserType.student]),
+			deleteUserInstructorReview
+		);
+
+	// @desc    Get / Delete / Update General Review
+	// @route   GET/DELETE/PUT /api/review/general/:id
+	// @access  Private
+	router
+		.route('/user/activity/reviews/general/:id')
+		.get(authorize, isOwner, viewUserGeneralReview)
+		.put(
+			authorize,
+			isOwner,
+			checkUserRole([UserType.admin, UserType.student]),
 			validateGeneralReview,
-			// updateUserTeachingReview,
-			updateUserInstructorReview,
 			updateUserGeneralReview
 		)
 		.delete(
 			authorize,
 			isOwner,
-			deleteUserTeachingReview,
-			deleteUserInstructorReview,
+			checkUserRole([UserType.admin, UserType.student]),
 			deleteUserGeneralReview
 		);
-
-	// @desc    Get / Delete User Profile
-	// @route   GET/DELETE /api/user/profile
-	// @access  Private User
-	router.route('/user/profile').get(authorize, isOwner, viewProfile);
 
 	// @desc    Update User Profile
 	// @route   PUT /api/user/profile/:id

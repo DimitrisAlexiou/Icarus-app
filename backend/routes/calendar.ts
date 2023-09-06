@@ -1,22 +1,29 @@
 import express from 'express';
-import { viewEvents, addEvent, deleteUserEvent, deleteUserEvents } from '../controllers/calendar';
+import {
+	viewEvents,
+	addEvent,
+	deleteUserEvent,
+	deleteUserEvents,
+	updateEvent,
+} from '../controllers/calendar';
 import { validateCalendar } from '../middleware/validations';
 import { authorize, isOwner } from '../middleware/authMiddleware';
 
 export default (router: express.Router) => {
-	// @desc    Get Events / Post / Delete Event
+	// @desc    Get / Post / Delete Events
 	// @route   GET/POST/DELETE /api/calendar
 	// @access  Private
 	router
 		.route('/calendar')
 		.get(authorize, isOwner, viewEvents)
-		.post(authorize, validateCalendar, addEvent);
-	// .delete(authorize, deleteEvent);
+		.post(authorize, validateCalendar, addEvent)
+		.delete(authorize, isOwner, deleteUserEvents);
 
-	router.route('/calendar/:id').delete(authorize, isOwner, deleteUserEvent);
-
-	// @desc    Delete Events
-	// @route   DELETE /api/calendar/delete
+	// @desc    Update / Delete Event by ID
+	// @route   PUT/DELETE /api/calendar/:id
 	// @access  Private
-	router.route('/calendar/delete').delete(authorize, isOwner, deleteUserEvents);
+	router
+		.route('/calendar/:id')
+		.put(authorize, isOwner, validateCalendar, updateEvent)
+		.delete(authorize, isOwner, deleteUserEvent);
 };

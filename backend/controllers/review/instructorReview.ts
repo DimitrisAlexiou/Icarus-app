@@ -1,3 +1,4 @@
+import { startSession } from 'mongoose';
 import { Request, Response } from 'express';
 import {
 	getUserInstructorReviews,
@@ -6,6 +7,7 @@ import {
 	createInstructorReview,
 	updateInstructorReviewById,
 	deleteInstructorReviewById,
+	deleteUserInstructorReviews,
 } from '../../models/review/instructorReview';
 import { getCurrentSemester } from '../../models/admin/semester';
 import { getReviewBySemester } from '../../models/admin/review';
@@ -17,18 +19,81 @@ interface AuthenticatedRequest extends Request {
 	user?: UserProps;
 }
 
-export const getAllUserInstructorReviews = tryCatch(
+export const createUserInstructorReview = tryCatch(
 	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
-		const userId = req.user.id;
-		const userInstructorReviews = await getUserInstructorReviews(userId);
+		const {
+			good_organization,
+			clear_comprehensive_answers,
+			student_participation,
+			course_consistency,
+			instructor_approachable,
+			teaching,
+		} = req.body;
 
-		if (!userInstructorReviews)
+		if (
+			!good_organization ||
+			!clear_comprehensive_answers ||
+			!student_participation ||
+			!course_consistency ||
+			!instructor_approachable
+		)
+			throw new CustomError('Please provide a rating for all required fields.', 400);
+
+		const currentDate = new Date();
+		const semester = await getCurrentSemester(currentDate);
+
+		if (!semester)
 			throw new CustomError(
-				`Seems like there are no instructor reviews registered from user: ${req.user.username}.`,
+				`Seems like there is no defined semester for current period, so you can't submit a review.`,
 				404
 			);
 
-		return res.status(200).json(userInstructorReviews);
+		const semesterId = semester._id.toString();
+		const reviewDuration = await getReviewBySemester(semesterId);
+
+		if (!reviewDuration)
+			throw new CustomError(
+				`There is no review duration defined for the current semester.`,
+				404
+			);
+
+		if (reviewDuration.startDate > currentDate)
+			throw new CustomError(
+				'The review duration period has not started yet. Please wait until the review period starts.',
+				406
+			);
+
+		if (reviewDuration.endDate < currentDate)
+			throw new CustomError(
+				'The review duration period has ended. No more teaching reviews can be submitted.',
+				406
+			);
+
+		const userId = req.user.id;
+		const { teachingReviewId } = req.params;
+		const existingInstructorReview = await getUserSubmittedInstructorReview(
+			userId,
+			teachingReviewId
+		);
+
+		if (existingInstructorReview)
+			throw new CustomError(
+				'Seems like an instructor review has already been submitted for this semester.',
+				406
+			);
+
+		const instructorReview = await createInstructorReview({
+			good_organization,
+			clear_comprehensive_answers,
+			student_participation,
+			course_consistency,
+			instructor_approachable,
+			teaching: teaching,
+			user: userId,
+			status: 'new',
+		});
+
+		return res.status(201).json({ message: 'Instructor review submitted!', instructorReview });
 	}
 );
 
@@ -47,67 +112,6 @@ export const viewUserInstructorReview = tryCatch(
 	}
 );
 
-//TODO
-export const createUserInstructorReview = tryCatch(
-	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
-		const {
-			good_organization,
-			clear_comprehensive_answers,
-			student_participation,
-			course_consistency,
-			instructor_approachable,
-		} = req.body;
-
-		if (
-			!good_organization ||
-			!clear_comprehensive_answers ||
-			!student_participation ||
-			!course_consistency ||
-			!instructor_approachable
-		)
-			throw new CustomError('Please fill in all the required fields.', 400);
-
-		const currentDate = new Date();
-		const semester = await getCurrentSemester(currentDate);
-
-		if (!semester)
-			throw new CustomError(
-				'Seems like there is no defined semester for current period. ',
-				404
-			);
-
-		const semesterId = semester._id.toString();
-		const reviewDuration = await getReviewBySemester(semesterId);
-
-		if (reviewDuration.endDate < currentDate)
-			throw new CustomError(
-				'The review duration period has ended. No more teaching reviews can be submitted.',
-				406
-			);
-
-		const userId = req.user.id;
-		const existingInstructorReview = await getUserSubmittedInstructorReview(userId);
-
-		if (existingInstructorReview)
-			throw new CustomError(
-				'Seems like an instructor review has already been submitted for this semester.',
-				406
-			);
-
-		const instructorReview = await createInstructorReview({
-			good_organization,
-			clear_comprehensive_answers,
-			student_participation,
-			course_consistency,
-			instructor_approachable,
-			user: userId,
-			status: 'new',
-		});
-
-		return res.status(201).json(instructorReview);
-	}
-);
-
 export const updateUserInstructorReview = tryCatch(
 	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const {
@@ -116,6 +120,7 @@ export const updateUserInstructorReview = tryCatch(
 			student_participation,
 			course_consistency,
 			instructor_approachable,
+			teaching,
 		} = req.body;
 
 		if (
@@ -125,19 +130,25 @@ export const updateUserInstructorReview = tryCatch(
 			!course_consistency ||
 			!instructor_approachable
 		)
-			throw new CustomError('Please fill in all the required fields.', 400);
+			throw new CustomError('Please provide a rating for all required fields.', 400);
 
 		const currentDate = new Date();
 		const semester = await getCurrentSemester(currentDate);
 
 		if (!semester)
 			throw new CustomError(
-				'Seems like there is no defined semester for current period. ',
+				`Seems like there is no defined semester for current period, so you can't submit a review.`,
 				404
 			);
 
 		const semesterId = semester._id.toString();
 		const reviewDuration = await getReviewBySemester(semesterId);
+
+		if (!reviewDuration)
+			throw new CustomError(
+				`There is no review duration defined for the current semester.`,
+				404
+			);
 
 		if (reviewDuration.endDate < currentDate)
 			throw new CustomError(
@@ -145,8 +156,8 @@ export const updateUserInstructorReview = tryCatch(
 				406
 			);
 
-		const { id } = req.params;
-		const updatedInstructorReview = await updateInstructorReviewById(id, {
+		const { instructorReviewId } = req.params;
+		const updatedInstructorReview = await updateInstructorReviewById(instructorReviewId, {
 			...req.body,
 		});
 
@@ -156,7 +167,9 @@ export const updateUserInstructorReview = tryCatch(
 				404
 			);
 
-		return res.status(200).json(updatedInstructorReview);
+		return res
+			.status(200)
+			.json({ message: 'Instructor review updated!', updatedInstructorReview });
 	}
 );
 
@@ -171,6 +184,48 @@ export const deleteUserInstructorReview = tryCatch(
 				404
 			);
 
-		return res.status(200).json({ message: 'Instructor review deleted.' });
+		return res.status(200).json({
+			message: 'Instructor review deleted.',
+			instructorReview: instructorReviewToDelete._id,
+		});
 	}
 );
+
+export const getAllUserInstructorReviews = tryCatch(
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
+		const userId = req.user.id;
+		const userInstructorReviews = await getUserInstructorReviews(userId);
+
+		if (!userInstructorReviews)
+			throw new CustomError(
+				`Seems like you haven't submitted any instructor reviews yet.`,
+				404
+			);
+
+		return res.status(200).json(userInstructorReviews);
+	}
+);
+
+export const deleteAllUserInstructorReviews = async (
+	req: AuthenticatedRequest,
+	res: Response
+): Promise<Response> => {
+	const userId = req.user.id;
+	const session = await startSession();
+
+	try {
+		session.startTransaction();
+
+		await deleteUserInstructorReviews(userId, session);
+
+		await session.commitTransaction();
+	} catch (error) {
+		await session.abortTransaction();
+		console.error('❌ ', error);
+		throw new CustomError('User instructor reviews did not deleted.', 500);
+	} finally {
+		session.endSession();
+	}
+
+	return res.status(200).json({ message: 'User instructor reviews deleted.' });
+};

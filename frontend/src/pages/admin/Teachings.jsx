@@ -11,15 +11,17 @@ import {
 	deleteTeachings,
 	getTeachings,
 	setEditTeaching,
+	setEditTeachingGrading,
 } from '../../features/courses/teachingSlice';
-import TeachingForm from '../../components/course/TeachingForm';
+import TeachingGradingForm from '../../components/course/forms/TeachingGradingForm';
+import TeachingForm from '../../components/course/forms/TeachingForm';
 import CustomSpinner from '../../components/boilerplate/Spinner';
 import DataTable from '../../components/DataTable';
 
 export default function Teachings() {
-	const { teachings, isLoading, isEditingTeaching, editTeachingId } = useSelector(
-		(state) => state.teachings
-	);
+	const { teachings, isLoading, isEditingTeaching, isEditingTeachingGrading, editTeachingId } =
+		useSelector((state) => state.teachings);
+	const { user } = useSelector((state) => state.auth);
 
 	const modalRef = useRef(null);
 	const modalGradingRef = useRef(null);
@@ -51,7 +53,15 @@ export default function Teachings() {
 		);
 	};
 
-	const toggleGrading = () => setModalGrading(!modalGrading);
+	const toggleGrading = () => {
+		setModalGrading(!modalGrading);
+		dispatch(
+			setEditTeachingGrading({
+				isEditingTeachingGrading: false,
+				editTeachingId: '',
+			})
+		);
+	};
 
 	const handleTeachingRowClick = (teaching) => {
 		navigate(`/teaching/${teaching._id}`);
@@ -83,13 +93,19 @@ export default function Teachings() {
 		return (
 			<Modal ref={ref} isOpen={modalGrading} toggle={toggleGrading} className="modal-lg">
 				<ModalHeader toggle={toggleGrading}>
-					Edit Grading ({currentTeaching?.course?.title})
+					{(currentTeaching?.theoryExamination?.length ?? 0) ||
+					(currentTeaching?.labExamination?.length ?? 0)
+						? `Edit Grading (${currentTeaching?.course?.title})`
+						: `Configure Grading (${currentTeaching?.course?.title})`}
 				</ModalHeader>
 				<ModalBody>
-					{/* <TeachingGradingForm
+					<TeachingGradingForm
+						user={user}
 						teaching={currentTeaching}
 						setModalGrading={setModalGrading}
-					/> */}
+						isEditingTeachingGrading={isEditingTeachingGrading}
+						editTeachingId={editTeachingId}
+					/>
 				</ModalBody>
 			</Modal>
 		);
@@ -134,6 +150,7 @@ export default function Teachings() {
 							className="btn btn-light"
 							onClick={(e) => {
 								e.stopPropagation();
+								dispatch(setEditTeachingGrading({ editTeachingId: teaching._id }));
 								setCurrentTeaching(teaching);
 								setModalGrading(true);
 							}}
@@ -157,15 +174,25 @@ export default function Teachings() {
 		},
 	];
 
+	const filteredTeachings = user.user.isAdmin
+		? teachings
+		: teachings.filter(
+				(teaching) =>
+					teaching.theoryInstructors.some((instructor) => {
+						return instructor.user._id === user.user._id;
+					}) ||
+					teaching.labInstructors.some((instructor) => {
+						return instructor.user._id === user.user._id;
+					})
+		  );
+
 	return (
 		<>
-			<Row className="mb-5 animated--grow-in">
+			<Row className="mb-4 animated--grow-in">
 				<Col xs="12" sm="12" md="5" lg="7" xl="8">
-					<h3 className="mb-5 text-gray-800 font-weight-bold animated--grow-in">
-						Teachings
-					</h3>
+					<h3 className="text-gray-800 font-weight-bold animated--grow-in">Teachings</h3>
 				</Col>
-				{teachings ? (
+				{teachings.length && user.user.isAdmin ? (
 					<Col xs="12" sm="12" md="7" lg="5" xl="4" className="text-sm-right text-center">
 						<Button
 							className="btn btn-red align-self-center"
@@ -179,15 +206,15 @@ export default function Teachings() {
 			</Row>
 
 			<Row className="justify-content-center animated--grow-in">
-				<Col className="card card-body mb-4" xs="12" sm="12" md="12" lg="12" xl="12">
+				<Col className="card card-body mb-3" xs="12" sm="12" md="12" lg="12" xl="12">
 					{isLoading ? (
-						<CustomSpinner />
-					) : teachings.length > 0 ? (
+						<CustomSpinner card />
+					) : filteredTeachings.length > 0 ? (
 						<DataTable
-							data={teachings}
+							data={filteredTeachings}
 							config={dataTableConfig}
 							sortColumns={['course', 'courseId', 'semester']}
-							searchMessage={'by Course or CourseID'}
+							searchMessage={'by Course or Course ID'}
 							onRowClick={(teaching) => handleTeachingRowClick(teaching)}
 						/>
 					) : (
@@ -198,7 +225,7 @@ export default function Teachings() {
 				</Col>
 			</Row>
 
-			{isEditingTeaching ? <ModalComponent ref={modalRef} toggle={toggle} /> : null}
+			<ModalComponent ref={modalRef} toggle={toggle} />
 			<ModalGradingComponent ref={modalGradingRef} toggleGrading={toggleGrading} />
 		</>
 	);

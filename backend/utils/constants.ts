@@ -19,3 +19,4 @@ export const allowedFileTypes = [
 ];
 export const noteFileUploadDestinationPath = '/user/notes/uploads';
 export const teachingFileUploadDestination = 'path/to/upload/directory/Documents';
+export const teachingDocumentUploadDestination = 'document/uploads/';

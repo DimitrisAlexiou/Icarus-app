@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { extractErrorMessage } from '../../utils/errorMessage';
 import { Toast } from '../../constants/sweetAlertNotification';
 import { DEFINE_REVIEW, DELETE_REVIEW, GET_REVIEW, UPDATE_REVIEW } from '../actions';
-import reviewService from './reviewService';
+import reviewService from './services/reviewService';
 
 const initialState = {
 	review: null,
@@ -71,16 +71,10 @@ export const reviewSlice = createSlice({
 			})
 			.addCase(defineReview.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				if (payload.includes('startDate' && 'now'))
+				if (payload.includes('endDate' && 'startDate'))
 					Toast.fire({
 						title: 'Something went wrong!',
-						text: 'Semester start date must be greater than today.',
-						icon: 'error',
-					});
-				else if (payload.includes('endDate' && 'startDate'))
-					Toast.fire({
-						title: 'Something went wrong!',
-						text: 'Semester end date must be greater than semester start date.',
+						text: 'Review end date must be greater than review starting date.',
 						icon: 'error',
 					});
 				else
@@ -101,13 +95,16 @@ export const reviewSlice = createSlice({
 				state.isLoading = false;
 				if (
 					payload !==
-					'Seems like there is no review statement configuration defined for this semester.'
-				)
+						'Seems like there is no review statement configuration defined for this semester.' &&
+					payload !==
+						'Seems like there is no defined semester for current period. Define a semester first in order to define review statement configuration.'
+				) {
 					Toast.fire({
 						title: 'Something went wrong!',
 						text: payload,
 						icon: 'error',
 					});
+				}
 			})
 			.addCase(updateReview.pending, (state) => {
 				state.isLoading = true;
@@ -123,16 +120,10 @@ export const reviewSlice = createSlice({
 			})
 			.addCase(updateReview.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				if (payload.includes('startDate' && 'now'))
+				if (payload.includes('endDate' && 'startDate'))
 					Toast.fire({
 						title: 'Something went wrong!',
-						text: 'Semester start date must be greater than today.',
-						icon: 'error',
-					});
-				else if (payload.includes('endDate' && 'startDate'))
-					Toast.fire({
-						title: 'Something went wrong!',
-						text: 'Semester end date must be greater than semester start date.',
+						text: 'Review end date must be greater than review starting date.',
 						icon: 'error',
 					});
 				else

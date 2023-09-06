@@ -607,64 +607,6 @@ pre code {
 	right: 1rem;
 }
 
-.landing-login,
-.landing-login-sm,
-.landing-login-md,
-.landing-login-lg,
-.landing-login-xl {
-	position: absolute;
-	top: 10rem;
-	left: 7.7rem;
-}
-
-@media (min-width: 576px) {
-	.landing-login,
-	.landing-login-sm {
-		max-width: 540px;
-		position: absolute;
-		justify-content: center;
-		align-items: center;
-		flex-direction: column;
-	}
-}
-
-@media (min-width: 768px) {
-	.landing-login,
-	.landing-login-sm,
-	.landing-login-md {
-		max-width: 720px;
-		position: absolute;
-		justify-content: center;
-		align-items: center;
-		flex-direction: column;
-	}
-}
-
-@media (min-width: 992px) {
-	.landing-login,
-	.landing-login-sm,
-	.landing-login-md,
-	.landing-login-lg {
-		max-width: 960px;
-		position: absolute;
-		top: 10rem;
-		left: 3.7rem;
-	}
-}
-
-@media (min-width: 1200px) {
-	.landing-login,
-	.landing-login-sm,
-	.landing-login-md,
-	.landing-login-lg,
-	.landing-login-xl {
-		max-width: 1140px;
-		position: absolute;
-		top: 10rem;
-		left: 7.7rem;
-	}
-}
-
 @media (min-width: 576px) {
 	.container,
 	.container-sm {
@@ -12447,4 +12389,9 @@ body.sidebar-toggled footer.sticky-footer {
 	margin-right: 8px;
 	font-weight: 500;
 	font-size: 11px;
+}
+
+.clickable {
+	padding: 5px;
+	cursor: pointer;
 }

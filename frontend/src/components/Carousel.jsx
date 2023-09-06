@@ -72,14 +72,14 @@ export default function CarouselComponent({ objects, renderItem, onObjectClick }
 						onExited={() => setAnimating(false)}
 					>
 						<Row>
-							{page.map((object) => (
+							{page.map((object, index) => (
 								<Col
 									xs="12"
 									sm="12"
 									md="6"
 									lg="6"
 									xl="4"
-									key={object._id}
+									key={index}
 									onClick={() => {
 										if (onObjectClick) onObjectClick(object);
 									}}

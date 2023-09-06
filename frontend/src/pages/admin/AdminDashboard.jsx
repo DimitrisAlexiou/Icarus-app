@@ -20,7 +20,10 @@ import { getSemesters } from '../../features/admin/semesterSlice';
 import { getCycles } from '../../features/admin/cyclesSlice';
 import { getInstructors, getStudents, getUsers } from '../../features/admin/userSlice';
 import { getUserNotes } from '../../features/notes/noteSlice';
-import Calendar from '../../components/calendar/calendar';
+import { getTeachingReviews } from '../../features/reviews/teachingReviewSlice';
+import { getInstructorReviews } from '../../features/reviews/instructorReviewSlice';
+import { getGeneralReviews } from '../../features/reviews/generalReviewSlice';
+import Calendar from '../../components/calendar/Calendar';
 import CoursesDataTable from '../../components/admin/CoursesDataTable';
 import SemestersDataTable from '../../components/admin/SemestersDataTable';
 import Spinner from '../../components/boilerplate/Spinner';
@@ -38,13 +41,13 @@ export default function AdminDashboard() {
 	const { semesters, isLoading: semestersIsLoading } = useSelector((state) => state.semesters);
 	const { notes, isLoading: notesIsLoading } = useSelector((state) => state.notes);
 	const { teachingReviews, isLoading: teachingReviewsIsLoading } = useSelector(
-		(state) => state.teachingReview
+		(state) => state.teachingReviews
 	);
 	const { instructorReviews, isLoading: instructorReviewsIsLoading } = useSelector(
-		(state) => state.instructorReview
+		(state) => state.instructorReviews
 	);
 	const { generalReviews, isLoading: generalReviewsIsLoading } = useSelector(
-		(state) => state.generalReview
+		(state) => state.generalReviews
 	);
 
 	const dispatch = useDispatch();
@@ -58,6 +61,9 @@ export default function AdminDashboard() {
 		dispatch(getStudents());
 		dispatch(getInstructors());
 		dispatch(getUserNotes());
+		dispatch(getTeachingReviews());
+		dispatch(getInstructorReviews());
+		dispatch(getGeneralReviews());
 	}, [dispatch]);
 
 	return (

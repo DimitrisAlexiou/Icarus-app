@@ -52,63 +52,9 @@ const CycleForm = ({ cycle, isEditingCycle, editCycleId, setAddingCycle }) => {
 						) : (
 							<FieldArray name="cycle">
 								{({ push, remove }) => (
-									<Row>
-										<Col md="8" lg="6" xl="8">
-											{values.cycle.map((_, index) => (
-												<div key={index}>
-													<FormGroup
-														className="form-floating mb-3"
-														key={index}
-														floating
-													>
-														<Field
-															type="text"
-															className="form-control"
-															name={`cycle.${index}`}
-														/>
-														<Label
-															for={`cycle.${index}`}
-															className="text-gray-600"
-														>
-															{!isEditingCycle
-																? `Cycle ${index + 1}`
-																: `Cycle`}
-														</Label>
-														<ErrorMessage
-															name={`cycle.${index}`}
-															component={FormErrorMessage}
-														/>
-													</FormGroup>
-												</div>
-											))}
-										</Col>
-										<Col
-											xs="10"
-											sm="10"
-											md="2"
-											lg="5"
-											xl="2"
-											className="mb-3 text-right"
-										>
-											{values.cycle.length > 1 ? (
-												<Button
-													color="warning"
-													onClick={() => remove(values.cycle.length - 1)}
-													disabled={isSubmitting}
-												>
-													-
-												</Button>
-											) : null}
-										</Col>
-										{!isEditingCycle ? (
-											<Col
-												xs="2"
-												sm="2"
-												md="2"
-												lg="1"
-												xl="2"
-												className="mb-3"
-											>
+									<>
+										<div className="mb-3">
+											{!isEditingCycle ? (
 												<Button
 													color="info"
 													onClick={() => push('')}
@@ -116,9 +62,57 @@ const CycleForm = ({ cycle, isEditingCycle, editCycleId, setAddingCycle }) => {
 												>
 													+
 												</Button>
-											</Col>
-										) : null}
-									</Row>
+											) : null}
+										</div>
+										<Row>
+											{values.cycle.map((_, index) => (
+												<Row key={index}>
+													<Col xs="11" sm="11" md="11" lg="11" xl="11">
+														<FormGroup
+															className="form-floating mb-3"
+															floating
+														>
+															<Field
+																type="text"
+																className="form-control"
+																name={`cycle.${index}`}
+															/>
+															<Label
+																for={`cycle.${index}`}
+																className="text-gray-600"
+															>
+																{!isEditingCycle
+																	? `Cycle ${index + 1}`
+																	: `Cycle`}
+															</Label>
+															<ErrorMessage
+																name={`cycle.${index}`}
+																component={FormErrorMessage}
+															/>
+														</FormGroup>
+													</Col>
+													{values.cycle.length > 1 ? (
+														<Col
+															xs="1"
+															sm="1"
+															md="1"
+															lg="1"
+															xl="1"
+															className="mb-3"
+														>
+															<Button
+																color="warning"
+																onClick={() => remove(index)}
+																disabled={isSubmitting}
+															>
+																-
+															</Button>
+														</Col>
+													) : null}
+												</Row>
+											))}
+										</Row>
+									</>
 								)}
 							</FieldArray>
 						)}

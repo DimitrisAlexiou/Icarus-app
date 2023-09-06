@@ -4,7 +4,7 @@ import { Row, Col } from 'reactstrap';
 import { getCourses } from '../../features/courses/courseSlice';
 import { getCycles } from '../../features/admin/cyclesSlice';
 import { getSemesters } from '../../features/admin/semesterSlice';
-import CourseForm from '../../components/course/CourseForm';
+import CourseForm from '../../components/course/forms/CourseForm';
 import BackButton from '../../components/buttons/BackButton';
 import Spinner from '../../components/boilerplate/Spinner';
 
@@ -21,11 +21,9 @@ export default function NewCourse() {
 		dispatch(getSemesters());
 	}, [dispatch]);
 
-	if (coursesIsLoading || cyclesIsLoading || semestersIsLoading) return <Spinner />;
-
 	return (
 		<>
-			<Row className="mb-5 animated--grow-in">
+			<Row className="mb-4 animated--grow-in">
 				<Col sm="6" xs="9" md="6">
 					<h3 className="text-gray-800 font-weight-bold">Create Course</h3>
 				</Col>
@@ -43,7 +41,15 @@ export default function NewCourse() {
 							</h6>
 						</div>
 						<div className="card-body">
-							<CourseForm courses={courses} cycles={cycles} semesters={semesters} />
+							{coursesIsLoading || cyclesIsLoading || semestersIsLoading ? (
+								<Spinner card />
+							) : (
+								<CourseForm
+									courses={courses}
+									cycles={cycles}
+									semesters={semesters}
+								/>
+							)}
 						</div>
 					</div>
 				</Col>

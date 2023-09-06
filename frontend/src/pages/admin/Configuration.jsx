@@ -1,20 +1,22 @@
 import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Row } from 'reactstrap';
-import { getSemester } from '../../features/admin/semesterSlice';
+import { Card, CardBody, CardTitle, Col, Row } from 'reactstrap';
+import { getSemester, getSemesters } from '../../features/admin/semesterSlice';
 import { getAssessment } from '../../features/admin/assessmentSlice';
 import { getReview } from '../../features/admin/reviewSlice';
 import { getDegreeRules } from '../../features/admin/degreeRulesSlice';
 import { getCycles } from '../../features/admin/cyclesSlice';
-import SemesterCard from '../../components/admin/SemesterCard';
-import AssessementCard from '../../components/admin/AssessmentCard';
-import ReviewCard from '../../components/admin/ReviewCard';
-import DegreeRulesCard from '../../components/admin/DegreeRulesCard';
-import CycleCard from '../../components/admin/CycleCard';
+import { academicYearEnd, academicYearStart } from '../../utils/academicYears';
+import SemesterCard from '../../components/admin/cards/SemesterCard';
+import AssessementCard from '../../components/admin/cards/AssessmentCard';
+import ReviewCard from '../../components/admin/cards/ReviewCard';
+import DegreeRulesCard from '../../components/admin/cards/DegreeRulesCard';
+import CycleCard from '../../components/admin/cards/CycleCard';
 
 export default function Configuration() {
 	const {
 		semester,
+		semesters,
 		isLoading: isSemesterLoading,
 		isEditingSemester,
 		editSemesterId,
@@ -48,6 +50,7 @@ export default function Configuration() {
 
 	useEffect(() => {
 		dispatch(getSemester());
+		dispatch(getSemesters());
 		dispatch(getAssessment());
 		dispatch(getReview());
 		dispatch(getDegreeRules());
@@ -56,13 +59,32 @@ export default function Configuration() {
 
 	return (
 		<>
-			<h3 className="mb-5 text-gray-800 font-weight-bold animated--grow-in">
-				System Configuration
-			</h3>
+			<Row className="mb-4 animated--grow-in">
+				<Col>
+					<h3 className="mb-4 text-gray-800 font-weight-bold animated--grow-in">
+						System Configuration
+					</h3>
+				</Col>
+				<Col xl="3" md="6" className="text-right">
+					<Card className="card-note">
+						<CardBody>
+							<CardTitle>
+								<Col>
+									<h6>Academic Year</h6>
+								</Col>
+								<Col>
+									<h3>{`${academicYearStart}-${academicYearEnd}`}</h3>
+								</Col>
+							</CardTitle>
+						</CardBody>
+					</Card>
+				</Col>
+			</Row>
 
 			<Row className="animated--grow-in">
 				<SemesterCard
 					semester={semester}
+					semesters={semesters}
 					isSemesterLoading={isSemesterLoading}
 					isEditingSemester={isEditingSemester}
 					editSemesterId={editSemesterId}

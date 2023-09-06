@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import { Request, Response } from 'express';
 import {
 	getTeachings,
@@ -10,11 +11,15 @@ import {
 	assignTheoryInstructors,
 	assignLabInstructors,
 	getTeachingByCourseId,
+	assignTheoryGrading,
+	assignLabGrading,
+	unassignTheoryGrading,
+	unassignLabGrading,
 } from '../../models/course/teaching';
-import { getCourseByTeachingId } from '../../models/course/course';
+import { getCourseById } from '../../models/course/course';
+import { getStatementByTeachingId } from '../../models/course/statement';
 import { tryCatch } from '../../utils/tryCatch';
 import CustomError from '../../utils/CustomError';
-import mongoose from 'mongoose';
 
 export const viewTeaching = tryCatch(async (req: Request, res: Response): Promise<Response> => {
 	const { id } = req.params;
@@ -53,6 +58,7 @@ export const updateTeaching = tryCatch(async (req: Request, res: Response): Prom
 		theoryGradeThreshold,
 		labGradeThreshold,
 		books,
+		course,
 	} = req.body;
 
 	if (
@@ -64,17 +70,23 @@ export const updateTeaching = tryCatch(async (req: Request, res: Response): Prom
 	)
 		throw new CustomError('Please fill in all the required fields.', 400);
 
+	if (theoryWeight + labWeight !== 100)
+		throw new CustomError(
+			'The sum of theory weight and lab weight should be equal to 100.',
+			400
+		);
+
 	let updatedTeaching;
 	const { id } = req.params;
 
-	const course = await getCourseByTeachingId(id);
-	if (!course)
+	const existingCourse = await getCourseById(course);
+	if (!existingCourse)
 		throw new CustomError(
 			'Seems like the course that you are trying to retrieve for teaching update does not exist.',
 			404
 		);
 
-	if (course.hasLab) {
+	if (existingCourse.hasLab) {
 		if (!labWeight || !theoryWeight)
 			throw new CustomError('Please provide the required weight fields.', 400);
 
@@ -84,6 +96,7 @@ export const updateTeaching = tryCatch(async (req: Request, res: Response): Prom
 				'Seems like the course teaching that you are trying to update does not exist.',
 				404
 			);
+		return res.status(200).json({ message: 'Teaching updated!', updatedTeaching });
 	}
 
 	updatedTeaching = await updateTeachingById(id, {
@@ -103,6 +116,15 @@ export const updateTeaching = tryCatch(async (req: Request, res: Response): Prom
 
 export const deleteTeaching = tryCatch(async (req: Request, res: Response): Promise<Response> => {
 	const { id } = req.params;
+
+	const statementWithTeaching = await getStatementByTeachingId(id);
+
+	if (statementWithTeaching)
+		throw new CustomError(
+			'This course teaching is in progress in at least one student statement and cannot be deleted.',
+			400
+		);
+
 	const teachingToDelete = await deleteTeachingById(id);
 
 	if (!teachingToDelete)
@@ -128,11 +150,15 @@ export const viewTeachings = tryCatch(async (_: Request, res: Response): Promise
 	return res.status(200).json(teachings);
 });
 
-export const deleteAllTeachings = tryCatch(async (_: Request, res: Response): Promise<Response> => {
-	await deleteTeachings();
+export const deleteSystemTeachings = tryCatch(
+	async (_: Request, res: Response): Promise<Response> => {
+		await deleteTeachings();
 
-	return res.status(200).json({ message: 'Course teachings existing in the system deleted.' });
-});
+		return res
+			.status(200)
+			.json({ message: 'Course teachings existing in the system deleted.' });
+	}
+);
 
 export const assignTheoryInstructorsToTeaching = tryCatch(
 	async (req: Request, res: Response): Promise<Response> => {
@@ -255,6 +281,96 @@ export const updateTheoryInstructorsForTeaching = tryCatch(
 		return res.status(200).json({
 			message: 'Theory Instructor(s) updated successfully.',
 			updatedTheoryInstructors,
+		});
+	}
+);
+
+export const assignTheoryGradingToTeaching = tryCatch(
+	async (req: Request, res: Response): Promise<Response> => {
+		const { theoryExamination } = req.body;
+
+		if (!theoryExamination)
+			throw new CustomError(
+				'Please provide at least one examination for the teaching of the theory.',
+				400
+			);
+
+		const { id } = req.params;
+		const assignedTheoryGrading = await assignTheoryGrading(id, theoryExamination);
+
+		if (!assignedTheoryGrading)
+			throw new CustomError(
+				'Seems like the course teaching that you are trying to assign examination to, does not exist.',
+				404
+			);
+
+		return res.status(200).json({
+			message: 'Theory Examination(s) assigned successfully.',
+			assignedTheoryGrading,
+		});
+	}
+);
+
+export const assignLabGradingToTeaching = tryCatch(
+	async (req: Request, res: Response): Promise<Response> => {
+		const { labExamination } = req.body;
+
+		if (!labExamination)
+			throw new CustomError(
+				'Please provide at least one examination for the teaching of the lab.',
+				400
+			);
+
+		const { id } = req.params;
+		const assignedLabGrading = await assignLabGrading(id, labExamination);
+
+		if (!assignedLabGrading)
+			throw new CustomError(
+				'Seems like the course teaching that you are trying to assign examination to, does not exist.',
+				404
+			);
+
+		return res.status(200).json({
+			message: 'Lab Examination(s) assigned successfully.',
+			assignedLabGrading,
+		});
+	}
+);
+
+export const unassignTheoryGradingFromTeaching = tryCatch(
+	async (req: Request, res: Response): Promise<Response> => {
+		const { id } = req.params;
+		const unassignedTheoryGrading = await unassignTheoryGrading(id);
+
+		if (!unassignedTheoryGrading) {
+			throw new CustomError(
+				'Seems like the course teaching that you are trying to unassign grading from, does not exist.',
+				404
+			);
+		}
+
+		return res.status(200).json({
+			message: 'Theory grading unassigned successfully.',
+			unassignedTheoryGrading,
+		});
+	}
+);
+
+export const unassignLabGradingFromTeaching = tryCatch(
+	async (req: Request, res: Response): Promise<Response> => {
+		const { id } = req.params;
+		const unassignedLabGrading = await unassignLabGrading(id);
+
+		if (!unassignedLabGrading) {
+			throw new CustomError(
+				'Seems like the course teaching that you are trying to unassign grading from, does not exist.',
+				404
+			);
+		}
+
+		return res.status(200).json({
+			message: 'Lab grading unassigned successfully.',
+			unassignedLabGrading,
 		});
 	}
 );

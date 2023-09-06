@@ -4,6 +4,7 @@ import { Row, Col, Button, Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { getInstructors, resetUsers } from '../../features/admin/userSlice';
 import { faChalkboardTeacher } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import AssignInstructorForm from '../../components/course/forms/AssignInstructorForm';
 import DataTable from '../../components/DataTable';
 import Spinner from '../../components/boilerplate/Spinner';
 
@@ -12,6 +13,7 @@ export default function Instructors() {
 
 	const modalRef = useRef(null);
 	const [modal, setModal] = useState(false);
+	const [selectedTeaching, setSelectedTeaching] = useState(null);
 	const [currentInstructor, setCurrentInstructor] = useState(null);
 
 	const toggle = () => {
@@ -53,7 +55,7 @@ export default function Instructors() {
 		},
 		{
 			name: 'admissionYear',
-			label: 'Adminssion Year',
+			label: 'Admission Year',
 			render: (instructor) => instructor.instructorEntranceYear,
 		},
 		{
@@ -86,6 +88,7 @@ export default function Instructors() {
 				<ModalBody>
 					{/* <AssignInstructorForm
 						teaching={selectedTeaching}
+						setModal={setModal}
 						instructors={instructors}
 						isEditingInstructors={isEditingInstructors}
 					/> */}
@@ -96,12 +99,12 @@ export default function Instructors() {
 
 	return (
 		<>
-			<h3 className="mb-5 text-gray-800 font-weight-bold animated--grow-in">Instructors</h3>
+			<h3 className="mb-4 text-gray-800 font-weight-bold animated--grow-in">Instructors</h3>
 
 			<Row className="justify-content-center animated--grow-in">
 				<Col className="card card-body mb-4" xs="12" sm="12" md="12" lg="12" xl="12">
 					{isLoading ? (
-						<Spinner />
+						<Spinner card />
 					) : instructors.length > 0 ? (
 						<DataTable
 							data={instructors}

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
-import Navbar from './Navbar';
-import Sidebar from './Sidebar';
+import Navbar from './navbar/Navbar';
+import Sidebar from './sidebar/Sidebar';
 import Footer from './Footer';
 import GoToTop from './GoToTop';
 

@@ -47,7 +47,6 @@ export const Note = model<NoteProps>('Note', noteSchema);
 export const createNote = (values: Record<string, any>) =>
 	new Note(values).save().then((note) => note.toObject());
 export const getNotes = (userId: string) => Note.find({ owner: userId });
-export const getAllNotes = () => Note.find();
 export const getNoteByTitle = (title: string) => Note.findOne({ title });
 export const getNoteById = (id: string) => Note.findById(id);
 export const updateNoteById = (id: string, note: Record<string, any>) =>
@@ -55,4 +54,5 @@ export const updateNoteById = (id: string, note: Record<string, any>) =>
 export const deleteNote = (id: string) => Note.findByIdAndDelete(id);
 export const deleteNotes = (userId: string, session: ClientSession) =>
 	Note.deleteMany({ owner: userId }).session(session);
+export const getAllNotes = () => Note.find();
 export const deleteAllNotes = () => Note.deleteMany();

@@ -8,6 +8,7 @@ import { assessmentSlice } from '../features/admin/assessmentSlice';
 import { cyclesSlice } from '../features/admin/cyclesSlice';
 import { courseSlice } from '../features/courses/courseSlice';
 import { teachingSlice } from '../features/courses/teachingSlice';
+import { statementSlice } from '../features/courses/statementSlice';
 import { noteSlice } from '../features/notes/noteSlice';
 import { eventSlice } from '../features/calendar/eventSlice';
 import { teachingReviewSlice } from '../features/reviews/teachingReviewSlice';
@@ -20,12 +21,13 @@ export const store = configureStore({
 		users: userSlice.reducer,
 		courses: courseSlice.reducer,
 		teachings: teachingSlice.reducer,
+		statements: statementSlice.reducer,
 		notes: noteSlice.reducer,
 		events: eventSlice.reducer,
 		cycles: cyclesSlice.reducer,
-		teachingReview: teachingReviewSlice.reducer,
-		instructorReview: instructorReviewSlice.reducer,
-		generalReview: generalReviewSlice.reducer,
+		teachingReviews: teachingReviewSlice.reducer,
+		instructorReviews: instructorReviewSlice.reducer,
+		generalReviews: generalReviewSlice.reducer,
 		semesters: semesterSlice.reducer,
 		review: reviewSlice.reducer,
 		degreeRules: degreeRulesSlice.reducer,

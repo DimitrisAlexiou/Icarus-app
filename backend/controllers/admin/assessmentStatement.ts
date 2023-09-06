@@ -32,6 +32,12 @@ export const defineAssessment = tryCatch(async (req: Request, res: Response): Pr
 			400
 		);
 
+	if (vaccineStartDate < semester.startDate)
+		throw new CustomError(
+			'Vaccine statement starting date should be greater than the starting date of the current semester.',
+			400
+		);
+
 	const assessment = await createAssessment({
 		vaccineStartDate,
 		vaccineEndDate,
@@ -67,6 +73,19 @@ export const updateAssessment = tryCatch(async (req: Request, res: Response): Pr
 
 	if (!period || !vaccineStartDate || !vaccineEndDate)
 		throw new CustomError('Please fill in all the required fields.', 400);
+
+	const semester = await getCurrentSemester(new Date());
+	if (!semester)
+		throw new CustomError(
+			'Seems like there is no defined semester for current period. Define a semester first in order to update assessment statement configuration.',
+			404
+		);
+
+	if (vaccineStartDate < semester.startDate)
+		throw new CustomError(
+			'Vaccine statement starting date should be greater than the starting date of the current semester.',
+			400
+		);
 
 	const { id } = req.params;
 	const updatedAssessment = await updateAssessmentById(id, {
@@ -108,7 +127,7 @@ export const viewAssessments = tryCatch(async (_: Request, res: Response): Promi
 	return res.status(200).json(assessments);
 });
 
-export const deleteAllAssessments = tryCatch(
+export const deleteSystemAssessments = tryCatch(
 	async (_: Request, res: Response): Promise<Response> => {
 		await deleteAssessments();
 		return res

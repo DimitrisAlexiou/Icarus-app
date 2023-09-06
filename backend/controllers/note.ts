@@ -84,6 +84,29 @@ export const updateUserNote = tryCatch(
 	}
 );
 
+export const deleteCategory = tryCatch(
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
+		const { category } = req.body;
+
+		const { id } = req.params;
+		const note = await getNoteById(id);
+
+		if (!note)
+			throw new CustomError(
+				'Seems like the note that you are trying to view does not exist.',
+				404
+			);
+
+		note.categories = note.categories.filter(
+			(existingCategory) => existingCategory !== category
+		);
+
+		const updatedNote = await note.save();
+
+		return res.status(200).json({ message: 'Category deleted.', updatedNote });
+	}
+);
+
 export const getUserNotes = tryCatch(
 	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const userId = req.user.id;

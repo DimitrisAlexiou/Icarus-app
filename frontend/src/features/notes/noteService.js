@@ -33,7 +33,16 @@ const updateImportance = async (noteId) => {
 		importance: !currentNote.data.importance,
 	};
 
-	const response = await axiosFetch.patch(API_URL_NOTE + '/' + noteId, updatedNote);
+	const response = await axiosFetch.patch(
+		API_URL_NOTE + '/' + noteId + '/importance',
+		updatedNote
+	);
+
+	return response.data;
+};
+
+const deleteCategory = async (noteId, data) => {
+	const response = await axiosFetch.patch(API_URL_NOTE + '/' + noteId + '/category', data);
 
 	return response.data;
 };
@@ -54,6 +63,7 @@ const noteService = {
 	createUserNote,
 	updateUserNote,
 	updateImportance,
+	deleteCategory,
 	deleteUserNote,
 	deleteUserNotes,
 	getUserNote,

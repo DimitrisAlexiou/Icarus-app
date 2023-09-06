@@ -39,7 +39,7 @@ const studentSchema = new Schema<StudentProps>(
 		enrolledCourses: [
 			{
 				type: Schema.Types.ObjectId,
-				ref: 'Course',
+				ref: 'Teaching',
 			},
 		],
 	},

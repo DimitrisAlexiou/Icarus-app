@@ -23,7 +23,7 @@ export default function UnAuthorized() {
 								textAlign: 'center',
 							}}
 						>
-							Please log in to access !
+							Log in to access !
 						</Link>
 					</Col>
 				</Row>

@@ -127,7 +127,7 @@ export const addUser = async (req: Request, res: Response): Promise<Response> =>
 	}
 };
 
-export const getAllUsers = tryCatch(async (_: Request, res: Response): Promise<Response> => {
+export const getSystemUsers = tryCatch(async (_: Request, res: Response): Promise<Response> => {
 	const users = await getUsers()
 		.populate({
 			path: 'student',
@@ -144,7 +144,7 @@ export const getAllUsers = tryCatch(async (_: Request, res: Response): Promise<R
 	return res.status(200).json(users);
 });
 
-export const deleteAllUsers = async (_: Request, res: Response): Promise<Response> => {
+export const deleteSystemUsers = async (_: Request, res: Response): Promise<Response> => {
 	const session = await startSession();
 
 	try {
@@ -324,7 +324,7 @@ export const deActivateUser = tryCatch(async (req: Request, res: Response): Prom
 	return res.status(200).json({ message: 'User account deactivated.', deactivatedUser });
 });
 
-export const getAllStudents = tryCatch(async (_: Request, res: Response): Promise<Response> => {
+export const getSystemStudents = tryCatch(async (_: Request, res: Response): Promise<Response> => {
 	const students = await getStudents();
 	if (!students)
 		throw new CustomError('Seems like there are no students registered in the system.', 404);
@@ -332,10 +332,15 @@ export const getAllStudents = tryCatch(async (_: Request, res: Response): Promis
 	return res.status(200).json(students);
 });
 
-export const getAllInstructors = tryCatch(async (_: Request, res: Response): Promise<Response> => {
-	const instructors = await getInstructors();
-	if (!instructors)
-		throw new CustomError('Seems like there are no instructors registered in the system.', 404);
+export const getSystemInstructors = tryCatch(
+	async (_: Request, res: Response): Promise<Response> => {
+		const instructors = await getInstructors();
+		if (!instructors)
+			throw new CustomError(
+				'Seems like there are no instructors registered in the system.',
+				404
+			);
 
-	return res.status(200).json(instructors);
-});
+		return res.status(200).json(instructors);
+	}
+);

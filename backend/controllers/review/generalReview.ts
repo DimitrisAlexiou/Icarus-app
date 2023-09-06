@@ -1,3 +1,4 @@
+import { startSession } from 'mongoose';
 import { Request, Response } from 'express';
 import {
 	getUserGeneralReviews,
@@ -6,6 +7,7 @@ import {
 	updateGeneralReviewById,
 	deleteGeneralReviewById,
 	getUserSubmittedGeneralReview,
+	deleteUserGeneralReviews,
 } from '../../models/review/generalReview';
 import { UserProps } from '../../models/users/user';
 import { getCurrentSemester } from '../../models/admin/semester';
@@ -17,18 +19,64 @@ interface AuthenticatedRequest extends Request {
 	user?: UserProps;
 }
 
-export const getAllUserGeneralReviews = tryCatch(
+export const createUserGeneralReview = tryCatch(
 	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
-		const userId = req.user.id;
-		const userGeneralReviews = await getUserGeneralReviews(userId);
+		const { course_opinion, instructor_opinion, likes, dislikes, teaching } = req.body;
 
-		if (!userGeneralReviews)
+		if (!course_opinion || !instructor_opinion || !likes || !dislikes)
+			throw new CustomError('Please provide a rating for all required fields.', 400);
+
+		const currentDate = new Date();
+		const semester = await getCurrentSemester(currentDate);
+
+		if (!semester)
 			throw new CustomError(
-				`Seems like there are no general reviews registered from user: ${req.user.username}.`,
+				`Seems like there is no defined semester for current period, so you can't submit a review.`,
 				404
 			);
 
-		return res.status(200).json(userGeneralReviews);
+		const semesterId = semester._id.toString();
+		const reviewDuration = await getReviewBySemester(semesterId);
+
+		if (!reviewDuration)
+			throw new CustomError(
+				`There is no review duration defined for the current semester.`,
+				404
+			);
+
+		if (reviewDuration.startDate > currentDate)
+			throw new CustomError(
+				'The review duration period has not started yet. Please wait until the review period starts.',
+				406
+			);
+
+		if (reviewDuration.endDate < currentDate)
+			throw new CustomError(
+				'The review duration period has ended. No more general reviews can be submitted.',
+				406
+			);
+
+		const userId = req.user.id;
+		const { teachingReviewId } = req.params;
+		const existingGeneralReview = await getUserSubmittedGeneralReview(userId, teachingReviewId);
+
+		if (existingGeneralReview)
+			throw new CustomError(
+				'Seems like a general review has already been submitted for this semester.',
+				406
+			);
+
+		const generalReview = await createGeneralReview({
+			course_opinion,
+			instructor_opinion,
+			likes,
+			dislikes,
+			teaching: teaching,
+			user: userId,
+			status: 'new',
+		});
+
+		return res.status(201).json({ message: 'Genaral review submitted!', generalReview });
 	}
 );
 
@@ -47,71 +95,30 @@ export const viewUserGeneralReview = tryCatch(
 	}
 );
 
-export const createUserGeneralReview = tryCatch(
-	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
-		const { course_opinion, instructor_opinion, likes, dislikes } = req.body;
-
-		if (!course_opinion || !instructor_opinion || !likes || !dislikes)
-			throw new CustomError('Please fill in all the required fields.', 400);
-
-		const currentDate = new Date();
-		const semester = await getCurrentSemester(currentDate);
-
-		if (!semester)
-			throw new CustomError(
-				'Seems like there is no defined semester for current period.',
-				404
-			);
-
-		const semesterId = semester._id.toString();
-		const reviewDuration = await getReviewBySemester(semesterId);
-
-		if (reviewDuration.endDate < currentDate)
-			throw new CustomError(
-				'The review duration period has ended. No more general reviews can be submitted.',
-				406
-			);
-
-		const userId = req.user.id;
-		const existingGeneralReview = await getUserSubmittedGeneralReview(userId);
-
-		if (existingGeneralReview)
-			throw new CustomError(
-				'Seems like a general review has been already submitted for this semester.',
-				406
-			);
-
-		const generalReview = await createGeneralReview({
-			course_opinion,
-			instructor_opinion,
-			likes,
-			dislikes,
-			user: userId,
-			status: 'new',
-		});
-
-		return res.status(201).json(generalReview);
-	}
-);
-
 export const updateUserGeneralReview = tryCatch(
 	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
-		const { course_opinion, instructor_opinion, likes, dislikes } = req.body;
+		const { course_opinion, instructor_opinion, likes, dislikes, teaching } = req.body;
 
 		if (!course_opinion || !instructor_opinion || !likes || !dislikes)
-			throw new CustomError('Please fill in all the required fields.', 400);
+			throw new CustomError('Please provide a rating for all required fields.', 400);
 
 		const currentDate = new Date();
 		const semester = await getCurrentSemester(currentDate);
 
 		if (!semester)
 			throw new CustomError(
-				'Seems like there is no defined semester for current period.',
+				`Seems like there is no defined semester for current period, so you can't submit a review.`,
 				404
 			);
 
 		const semesterId = semester._id.toString();
 		const reviewDuration = await getReviewBySemester(semesterId);
+
+		if (!reviewDuration)
+			throw new CustomError(
+				`There is no review duration defined for the current semester.`,
+				404
+			);
 
 		if (reviewDuration.endDate < currentDate)
 			throw new CustomError(
@@ -119,8 +126,10 @@ export const updateUserGeneralReview = tryCatch(
 				406
 			);
 
-		const { id } = req.params;
-		const updatedGeneralReview = await updateGeneralReviewById(id, { ...req.body });
+		const { generalReviewId } = req.params;
+		const updatedGeneralReview = await updateGeneralReviewById(generalReviewId, {
+			...req.body,
+		});
 
 		if (!updatedGeneralReview)
 			throw new CustomError(
@@ -128,7 +137,7 @@ export const updateUserGeneralReview = tryCatch(
 				404
 			);
 
-		return res.status(200).json(updatedGeneralReview);
+		return res.status(200).json({ message: 'General review updated!', updatedGeneralReview });
 	}
 );
 
@@ -143,6 +152,48 @@ export const deleteUserGeneralReview = tryCatch(
 				404
 			);
 
-		return res.status(200).json({ message: 'General review deleted.' });
+		return res.status(200).json({
+			message: 'General review deleted.',
+			generalReview: generalReviewToDelete._id,
+		});
 	}
 );
+
+export const getAllUserGeneralReviews = tryCatch(
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
+		const userId = req.user.id;
+		const userGeneralReviews = await getUserGeneralReviews(userId);
+
+		if (!userGeneralReviews)
+			throw new CustomError(
+				`Seems like you haven't submitted any teaching reviews yet.`,
+				404
+			);
+
+		return res.status(200).json(userGeneralReviews);
+	}
+);
+
+export const deleteAllUserGeneralReviews = async (
+	req: AuthenticatedRequest,
+	res: Response
+): Promise<Response> => {
+	const userId = req.user.id;
+	const session = await startSession();
+
+	try {
+		session.startTransaction();
+
+		await deleteUserGeneralReviews(userId, session);
+
+		await session.commitTransaction();
+	} catch (error) {
+		await session.abortTransaction();
+		console.error('❌ ', error);
+		throw new CustomError('User general reviews did not deleted.', 500);
+	} finally {
+		session.endSession();
+	}
+
+	return res.status(200).json({ message: 'User general reviews deleted.' });
+};

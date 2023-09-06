@@ -1,5 +1,7 @@
+import { useSelector } from 'react-redux';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Dashboard, LandingPage, NotFound } from './pages/index';
+import { LandingPage, NotFound } from './pages/index';
+import { Dashboard } from './pages/dashboard/index';
 import {
 	UnAuthorized,
 	Forbidden,
@@ -8,20 +10,8 @@ import {
 	ForgotPassword,
 	ContactAdmin,
 } from './pages/auth/index';
-import {
-	Courses,
-	Studies,
-	Undergraduate,
-	Msc,
-	Phd,
-	Course,
-	NewCourse,
-	Teaching,
-	MyCourses,
-	GradeCourse,
-	AssignTeachingInstructor,
-	TeachingGrading,
-} from './pages/course/index';
+import { Courses, Studies, Undergraduate, Msc, Phd, Course, NewCourse } from './pages/course/index';
+import { Teaching, AssignTeachingInstructor, TeachingGrading } from './pages/teaching/index';
 import { Reviews, TeachingReview, InstructorReview, GeneralReview } from './pages/review/index';
 import {
 	Configuration,
@@ -32,15 +22,18 @@ import {
 	Teachings,
 } from './pages/admin/index';
 import {
+	MyCourses,
+	MyGrades,
 	Portfolio,
 	Profile,
 	Messages,
 	Statements,
 	DegreeCompletion,
 	StatisticsReports,
+	Activity,
 } from './pages/user/index';
 import Notes from './pages/note/Notes';
-import Calendar from './components/calendar/calendar';
+import Calendar from './components/calendar/Calendar';
 import SharedLayout from './components/boilerplate/SharedLayout';
 import ProtectedRoute from './components/boilerplate/ProtectedRoute';
 import { ThemeProvider } from '@mui/material';
@@ -49,6 +42,7 @@ import { UserType } from './constants/enums';
 
 export default function App() {
 	const [theme, colorMode] = useMode();
+	const { user } = useSelector((state) => state.auth);
 
 	return (
 		<>
@@ -62,10 +56,13 @@ export default function App() {
 							<Route path="/auth/forgot-password" element={<ForgotPassword />} />
 							<Route path="/auth/contact-admin" element={<ContactAdmin />} />
 							<Route path="/forbidden" element={<Forbidden />} />
+							<Route path="/unauthorized" element={<UnAuthorized />} />
 							<Route path="/studies" element={<Studies />} />
+							<Route path="/studies/undergraduate" element={<Undergraduate />} />
+							<Route path="/studies/msc" element={<Msc />} />
+							<Route path="/studies/phd" element={<Phd />} />
 							<Route path="*" element={<NotFound />} />
-							{/* <Route path="/" element={user ? <SharedLayout /> : <LandingPage />}> */}
-							<Route path="/" element={<SharedLayout />}>
+							<Route path="/" element={user ? <SharedLayout /> : <LandingPage />}>
 								<Route index element={<Dashboard />} />
 								<Route
 									path="/admin/configuration"
@@ -112,6 +109,14 @@ export default function App() {
 									element={
 										<ProtectedRoute>
 											<Profile />
+										</ProtectedRoute>
+									}
+								/>
+								<Route
+									path="/user/activity"
+									element={
+										<ProtectedRoute>
+											<Activity />
 										</ProtectedRoute>
 									}
 								/>
@@ -209,16 +214,6 @@ export default function App() {
 										</ProtectedRoute>
 									}
 								/>
-								{/* <Route
-									path="/course/:courseId/teaching"
-									element={
-										<ProtectedRoute
-											allowedRoles={[UserType.admin, UserType.instructor]}
-										>
-											<Teaching />
-										</ProtectedRoute>
-									}
-								/> */}
 								<Route
 									path="/review"
 									element={
@@ -274,6 +269,14 @@ export default function App() {
 									}
 								/>
 								<Route
+									path="/my-grades"
+									element={
+										<ProtectedRoute>
+											<MyGrades />
+										</ProtectedRoute>
+									}
+								/>
+								<Route
 									path="/degree-completion"
 									element={
 										<ProtectedRoute>
@@ -290,15 +293,7 @@ export default function App() {
 									}
 								/>
 								<Route
-									path="/grade-course"
-									element={
-										<ProtectedRoute>
-											<GradeCourse />
-										</ProtectedRoute>
-									}
-								/>
-								<Route
-									path="/portfolio"
+									path="/teaching/:teachingId/portfolio"
 									element={
 										<ProtectedRoute>
 											<Portfolio />
@@ -321,7 +316,6 @@ export default function App() {
 										</ProtectedRoute>
 									}
 								/>
-								<Route path="/unauthorized" element={<UnAuthorized />} />
 							</Route>
 						</Routes>
 					</Router>

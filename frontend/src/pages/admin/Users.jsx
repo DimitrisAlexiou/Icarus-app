@@ -167,7 +167,7 @@ export default function Users() {
 
 	return (
 		<>
-			<Row className="mb-5 animated--grow-in">
+			<Row className="mb-4 animated--grow-in">
 				<Col xs="12" sm="12" md="5" lg="7" xl="8">
 					<h3 className="text-gray-800 font-weight-bold">Users</h3>
 				</Col>
@@ -199,7 +199,7 @@ export default function Users() {
 			<Row className="justify-content-center animated--grow-in">
 				<Col className="card card-body mb-4" xs="12" sm="12" md="12" lg="12" xl="12">
 					{isLoading ? (
-						<CustomSpinner />
+						<CustomSpinner card />
 					) : users.length > 0 ? (
 						<DataTable
 							data={users}

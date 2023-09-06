@@ -60,7 +60,7 @@ export const updateDegreeRules = tryCatch(
 	}
 );
 
-export const deleteAllDegreeRules = tryCatch(
+export const deleteSystemDegreeRules = tryCatch(
 	async (_: Request, res: Response): Promise<Response> => {
 		await deleteDegreeRules();
 		return res.status(200).json({ message: 'Defined degree rules deleted.' });

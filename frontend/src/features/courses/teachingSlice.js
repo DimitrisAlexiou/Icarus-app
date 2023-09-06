@@ -12,8 +12,12 @@ import {
 	UNASSIGN_LAB_INSTRUCTORS,
 	UPDATE_TEACHING,
 	GET_TEACHING_BY_COURSE_ID,
+	ASSIGN_THEORY_GRADING,
+	ASSIGN_LAB_GRADING,
+	UNASSIGN_THEORY_GRADING,
+	UNASSIGN_LAB_GRADING,
 } from '../actions';
-import teachingService from './teachingService';
+import teachingService from './services/teachingService';
 
 const initialState = {
 	teachings: [],
@@ -23,6 +27,7 @@ const initialState = {
 	page: 1,
 	isLoading: false,
 	isEditingTeaching: false,
+	isEditingTeachingGrading: false,
 	editTeachingId: '',
 };
 
@@ -127,6 +132,50 @@ export const unassignLabInstructors = createAsyncThunk(
 	}
 );
 
+export const assignTheoryGrading = createAsyncThunk(
+	ASSIGN_THEORY_GRADING,
+	async ({ teachingId, data }, thunkAPI) => {
+		try {
+			return await teachingService.assignTheoryGrading(teachingId, data);
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
+	}
+);
+
+export const unassignTheoryGrading = createAsyncThunk(
+	UNASSIGN_THEORY_GRADING,
+	async (teachingId, thunkAPI) => {
+		try {
+			return await teachingService.unassignTheoryGrading(teachingId);
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
+	}
+);
+
+export const assignLabGrading = createAsyncThunk(
+	ASSIGN_LAB_GRADING,
+	async ({ teachingId, data }, thunkAPI) => {
+		try {
+			return await teachingService.assignLabGrading(teachingId, data);
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
+	}
+);
+
+export const unassignLabGrading = createAsyncThunk(
+	UNASSIGN_LAB_GRADING,
+	async (teachingId, thunkAPI) => {
+		try {
+			return await teachingService.unassignLabGrading(teachingId);
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
+	}
+);
+
 export const teachingSlice = createSlice({
 	name: 'teaching',
 	initialState,
@@ -141,6 +190,9 @@ export const teachingSlice = createSlice({
 		},
 		setEditTeaching: (state, { payload }) => {
 			return { ...state, isEditingTeaching: true, ...payload };
+		},
+		setEditTeachingGrading: (state, { payload }) => {
+			return { ...state, isEditingTeachingGrading: true, ...payload };
 		},
 	},
 	extraReducers: (builder) => {
@@ -240,11 +292,15 @@ export const teachingSlice = createSlice({
 			})
 			.addCase(getTeachings.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: payload,
-					icon: 'error',
-				});
+				if (
+					payload !==
+					'Seems like there are no active course teachings registered in the system.'
+				)
+					Toast.fire({
+						title: 'Something went wrong!',
+						text: payload,
+						icon: 'error',
+					});
 			})
 			.addCase(deleteTeachings.pending, (state) => {
 				state.isLoading = true;
@@ -362,9 +418,108 @@ export const teachingSlice = createSlice({
 					text: payload,
 					icon: 'error',
 				});
+			})
+			.addCase(assignTheoryGrading.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(assignTheoryGrading.fulfilled, (state, { payload }) => {
+				state.isLoading = false;
+				Toast.fire({
+					title: 'Success',
+					text: payload.message,
+					icon: 'success',
+				});
+				const assignedGradingIndex = state.teachings.findIndex(
+					(teaching) => teaching._id === payload.assignedTheoryGrading._id
+				);
+				if (assignedGradingIndex !== -1)
+					state.teachings[assignedGradingIndex].theoryExamination =
+						payload.assignedTheoryGrading.theoryExamination;
+			})
+			.addCase(assignTheoryGrading.rejected, (state, { payload }) => {
+				state.isLoading = false;
+				Toast.fire({
+					title: 'Something went wrong!',
+					text: payload,
+					icon: 'error',
+				});
+			})
+			.addCase(unassignTheoryGrading.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(unassignTheoryGrading.fulfilled, (state, { payload }) => {
+				state.isLoading = false;
+				Toast.fire({
+					title: 'Success',
+					text: payload.message,
+					icon: 'success',
+				});
+				const unassignedGradingIndex = state.teachings.findIndex(
+					(teaching) => teaching._id === payload.unassignedTheoryGrading._id
+				);
+				if (unassignedGradingIndex !== -1)
+					state.teachings[unassignedGradingIndex].theoryExamination = [];
+			})
+			.addCase(unassignTheoryGrading.rejected, (state, { payload }) => {
+				state.isLoading = false;
+				Toast.fire({
+					title: 'Something went wrong!',
+					text: payload,
+					icon: 'error',
+				});
+			})
+			.addCase(assignLabGrading.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(assignLabGrading.fulfilled, (state, { payload }) => {
+				state.isLoading = false;
+				Toast.fire({
+					title: 'Success',
+					text: payload.message,
+					icon: 'success',
+				});
+				const assignedGradingIndex = state.teachings.findIndex(
+					(teaching) => teaching._id === payload.assignedLabGrading._id
+				);
+				if (assignedGradingIndex !== -1)
+					state.teachings[assignedGradingIndex].labExamination =
+						payload.assignedLabGrading.labExamination;
+			})
+			.addCase(assignLabGrading.rejected, (state, { payload }) => {
+				state.isLoading = false;
+				Toast.fire({
+					title: 'Something went wrong!',
+					text: payload,
+					icon: 'error',
+				});
+			})
+			.addCase(unassignLabGrading.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(unassignLabGrading.fulfilled, (state, { payload }) => {
+				state.isLoading = false;
+				Toast.fire({
+					title: 'Success',
+					text: payload.message,
+					icon: 'success',
+				});
+				const unassignedGradingIndex = state.teachings.findIndex(
+					(teaching) => teaching._id === payload.unassignedLabGrading._id
+				);
+				if (unassignedGradingIndex !== -1)
+					state.teachings[unassignedGradingIndex].labExamination = [];
+			})
+			.addCase(unassignLabGrading.rejected, (state, { payload }) => {
+				state.isLoading = false;
+				Toast.fire({
+					title: 'Something went wrong!',
+					text: payload,
+					icon: 'error',
+				});
 			});
 	},
 });
 
-export const { resetTeachings, changePage, handleChange, setEditTeaching } = teachingSlice.actions;
+export const { resetTeachings, changePage, handleChange, setEditTeaching, setEditTeachingGrading } =
+	teachingSlice.actions;
 export default teachingSlice.reducer;

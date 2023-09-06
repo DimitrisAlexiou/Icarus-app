@@ -7,7 +7,7 @@ import { UserType } from '../../models/users/user';
 export default (router: express.Router) => {
 	// @desc    Create Instructor Review
 	// @route   POST /api/review/instructor
-	// @access  Private USER || ADMIN
+	// @access  Private
 	router
 		.route('/review/instructor')
 		.post(

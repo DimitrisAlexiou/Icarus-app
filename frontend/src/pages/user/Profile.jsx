@@ -7,7 +7,7 @@ import { faShieldHalved } from '@fortawesome/free-solid-svg-icons';
 import { faAddressCard } from '@fortawesome/free-regular-svg-icons';
 import ProfileInfoCard from '../../components/user/ProfileInfoCard';
 import ProfileUpdateCard from '../../components/user/ProfileUpdateCard';
-import ProfileCard3 from '../../components/user/ProfileCard3';
+import ProfileProgressCard from '../../components/user/ProfileProgressCard';
 import ChangePassword from '../../components/user/ChangePassword';
 import Spinner from '../../components/boilerplate/Spinner';
 import moment from 'moment';
@@ -16,24 +16,11 @@ export default function Profile() {
 	const { user, isLoading } = useSelector((state) => state.auth);
 	const [selectedNavItem, setSelectedNavItem] = useState('overview');
 
-	if (isLoading) return <Spinner />;
-
-	const renderComponent = () => {
-		switch (selectedNavItem) {
-			case 'overview':
-				return <ProfileUpdateCard user={user} isLoading={isLoading} />;
-			case 'security':
-				return <ChangePassword />;
-			default:
-				return null;
-		}
-	};
-
 	return (
 		<>
 			<Row className="animated--grow-in">
 				<Col sm="6" xs="9" md="6">
-					<h3 className="mb-5 text-gray-800 font-weight-bold animated--grow-in">
+					<h3 className="mb-4 text-gray-800 font-weight-bold animated--grow-in">
 						Profile
 					</h3>
 				</Col>
@@ -52,9 +39,7 @@ export default function Profile() {
 			</Row>
 
 			<Row className="animated--grow-in">
-				<Col>
-					<ProfileInfoCard user={user} />
-				</Col>
+				<Col>{isLoading ? <Spinner card /> : <ProfileInfoCard user={user} />}</Col>
 				<Col md="12" xl="7">
 					<Nav className="justify-content-between navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow sticky-top">
 						<div className="navbar-nav">
@@ -87,11 +72,23 @@ export default function Profile() {
 							</NavItem>
 						</div>
 					</Nav>
-					{renderComponent()}
+					{selectedNavItem === 'overview' ? (
+						isLoading ? (
+							<Spinner card />
+						) : (
+							<ProfileUpdateCard user={user} isLoading={isLoading} />
+						)
+					) : selectedNavItem === 'security' ? (
+						isLoading ? (
+							<Spinner card />
+						) : (
+							<ChangePassword />
+						)
+					) : null}
 				</Col>
 				{/* <img src={undraw_account} alt="undraw_account" className="profile_card_photo" /> */}
 			</Row>
-			<ProfileCard3 user={user} />
+			{isLoading ? <Spinner card /> : <ProfileProgressCard user={user} />}
 			<Row className="mb-5 animated--grow-in">
 				<Col className="d-flex justify-content-end">
 					<span className="text-xs text-gray-500">

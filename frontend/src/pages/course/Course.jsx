@@ -6,7 +6,7 @@ import { getCourse } from '../../features/courses/courseSlice';
 import { getTeachingByCourseId } from '../../features/courses/teachingSlice';
 import { faChalkboard } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import CourseCard from '../../components/course/CourseCard';
+import CourseCard from '../../components/course/cards/CourseCard';
 import BackButton from '../../components/buttons/BackButton';
 import Spinner from '../../components/boilerplate/Spinner';
 
@@ -23,11 +23,9 @@ export default function Course() {
 		if (course.isActive) dispatch(getTeachingByCourseId(courseId));
 	}, [dispatch, courseId, course.isActive]);
 
-	if (isLoading || isTeachingLoading) return <Spinner />;
-
 	return (
 		<>
-			<Row className="mb-5 animated--grow-in">
+			<Row className="mb-4 animated--grow-in">
 				<Col>
 					<h3 className="text-gray-800 font-weight-bold animated--grow-in">
 						{course.title}
@@ -81,9 +79,13 @@ export default function Course() {
 								) : null}
 							</Row>
 						</div>
-						<div className="card-body">
-							<CourseCard key={course._id} course={course} />
-						</div>
+						{isLoading || isTeachingLoading ? (
+							<Spinner card />
+						) : (
+							<div className="card-body">
+								<CourseCard key={course._id} course={course} />
+							</div>
+						)}
 					</div>
 				</Col>
 			</Row>

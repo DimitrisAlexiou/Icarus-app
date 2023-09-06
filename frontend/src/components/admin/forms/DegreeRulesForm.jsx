@@ -3,7 +3,11 @@ import { FormGroup, Label, Row, Col, Button, Spinner } from 'reactstrap';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { DegreeRulesSchema } from '../../../schemas/admin/DegreeRules';
 import { FormCheckbox } from '../../form/FormCheckbox';
-import { defineDegreeRules, updateDegreeRules } from '../../../features/admin/degreeRulesSlice';
+import {
+	defineDegreeRules,
+	setEditDegreeRules,
+	updateDegreeRules,
+} from '../../../features/admin/degreeRulesSlice';
 import FormErrorMessage from '../../form/FormErrorMessage';
 
 export default function DegreeRulesForm({ degreeRules, isEditingDegreeRules, editDegreeRulesId }) {
@@ -34,6 +38,12 @@ export default function DegreeRulesForm({ degreeRules, isEditingDegreeRules, edi
 							})
 						);
 						setSubmitting(false);
+						dispatch(
+							setEditDegreeRules({
+								isEditingDegreeRules: false,
+								editDegreeRulesId: '',
+							})
+						);
 						return;
 					}
 					dispatch(defineDegreeRules(degreeRules));

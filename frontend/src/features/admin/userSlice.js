@@ -12,7 +12,7 @@ import {
 	UPDATE_USER,
 	ADD_USER,
 } from '../actions';
-import userService from './userService';
+import userService from './services/userService';
 
 const initialState = {
 	users: [],

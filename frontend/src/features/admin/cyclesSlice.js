@@ -9,7 +9,7 @@ import {
 	GET_CYCLES,
 	UPDATE_CYCLES,
 } from '../actions';
-import cyclesService from './cyclesService';
+import cyclesService from './services/cyclesService';
 
 const initialState = {
 	cycles: [],

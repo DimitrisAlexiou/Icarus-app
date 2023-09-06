@@ -25,6 +25,7 @@ export default function AssessmentForm({
 					startDate: assessment ? new Date(assessment.vaccineStartDate) : new Date(),
 					endDate: assessment ? new Date(assessment.vaccineEndDate) : new Date(),
 					period: assessment ? assessment.period : 0,
+					semesterStartDate: new Date(semester.startDate),
 				}}
 				validationSchema={AssessmentSchema}
 				onSubmit={(values, { setSubmitting }) => {
