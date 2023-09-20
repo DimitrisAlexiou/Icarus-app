@@ -112,8 +112,8 @@ export const getUserNotes = tryCatch(
 		const userId = req.user.id;
 		const userNotes = await getNotes(userId);
 
-		if (!userNotes)
-			throw new CustomError('Seems like there are no notes registered for this user.', 404);
+		if (!userNotes.length)
+			throw new CustomError(`Seems like you haven't posted any notes yet.`, 404);
 
 		return res.status(200).json(userNotes);
 	}

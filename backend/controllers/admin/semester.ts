@@ -66,7 +66,7 @@ export const viewSemester = tryCatch(async (_: Request, res: Response): Promise<
 
 export const viewSemesters = tryCatch(async (_: Request, res: Response): Promise<Response> => {
 	const semesters = await getSemesters();
-	if (!semesters) throw new CustomError('Seems like there are no defined semesters.', 404);
+	if (!semesters.length) throw new CustomError('Seems like there are no defined semesters.', 404);
 
 	return res.status(200).json(semesters);
 });

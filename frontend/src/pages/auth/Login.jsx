@@ -6,12 +6,13 @@ import { faGoogle, faGithub } from '@fortawesome/free-brands-svg-icons';
 import { FaStudiovinari } from 'react-icons/fa';
 import { Toast } from '../../constants/sweetAlertNotification';
 import { reset, resetLoginStatus } from '../../features/auth/authSlice';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import LoginForm from '../../components/auth/LoginForm';
 import ContactAdminForm from '../../components/auth/ContactAdminForm';
 import SignUpInButton from '../../components/buttons/SignUpInButton';
 import Spinner from '../../components/boilerplate/Spinner';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
+import FooterLanding from '../../components/boilerplate/FooterLanding';
 
 export default function Login() {
 	const { user, isAccountLocked, isError, isLoading, isSuccess, message } = useSelector(
@@ -93,7 +94,7 @@ export default function Login() {
 					</Row>
 					<Row className="justify-content-center">
 						<Col xl="10" lg="12" md="10" sm="12" xs="12">
-							<div className="card o-hidden border-0 shadow-lg my-4 animated--grow-in">
+							<div className="card o-hidden border-0 shadow-lg my-2 animated--grow-in">
 								<div className="card-body p-0">
 									{isAccountLocked ? (
 										<Row>
@@ -209,6 +210,7 @@ export default function Login() {
 							</div>
 						</Col>
 					</Row>
+					<FooterLanding />
 				</div>
 			</div>
 		</>

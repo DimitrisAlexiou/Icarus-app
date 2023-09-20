@@ -1,5 +1,5 @@
 import axiosFetch from '../../utils/axios';
-import { API_URL_NOTE } from '../../constants/apiConfig';
+import { API_URL_ADMIN_NOTES, API_URL_NOTE } from '../../constants/apiConfig';
 
 const getUserNotes = async () => {
 	const response = await axiosFetch.get(API_URL_NOTE);
@@ -59,6 +59,18 @@ const deleteUserNotes = async () => {
 	return response.data;
 };
 
+const getNotes = async () => {
+	const response = await axiosFetch.get(API_URL_ADMIN_NOTES);
+
+	return response.data;
+};
+
+const deleteNotes = async () => {
+	const response = axiosFetch.delete(API_URL_ADMIN_NOTES);
+
+	return response.data;
+};
+
 const noteService = {
 	createUserNote,
 	updateUserNote,
@@ -68,6 +80,8 @@ const noteService = {
 	deleteUserNotes,
 	getUserNote,
 	getUserNotes,
+	getNotes,
+	deleteNotes,
 };
 
 export default noteService;

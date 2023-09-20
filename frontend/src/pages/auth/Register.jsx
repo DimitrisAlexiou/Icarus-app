@@ -8,6 +8,7 @@ import { FaStudiovinari } from 'react-icons/fa';
 import { reset } from '../../features/auth/authSlice';
 import RegisterForm from '../../components/auth/RegisterForm';
 import SignUpInButton from '../../components/buttons/SignUpInButton';
+import FooterLanding from '../../components/boilerplate/FooterLanding';
 import Spinner from '../../components/boilerplate/Spinner';
 
 export default function Register() {
@@ -67,7 +68,7 @@ export default function Register() {
 					</Row>
 					<Row className="justify-content-center">
 						<Col xl="11" lg="11" md="12" sm="12">
-							<div className="card o-hidden border-0 shadow-lg my-4 animated--grow-in">
+							<div className="card o-hidden border-0 shadow-lg my-2 animated--grow-in">
 								<div className="card-body p-0">
 									<Row>
 										{/* <Col
@@ -124,6 +125,7 @@ export default function Register() {
 							</div>
 						</Col>
 					</Row>
+					<FooterLanding />
 				</div>
 			</div>
 		</>

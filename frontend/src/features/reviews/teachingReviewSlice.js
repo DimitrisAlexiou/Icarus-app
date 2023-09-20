@@ -212,11 +212,12 @@ export const teachingReviewSlice = createSlice({
 			})
 			.addCase(getUserTeachingReviews.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: payload,
-					icon: 'error',
-				});
+				if (payload !== `Seems like you haven't submitted any teaching reviews yet.`)
+					Toast.fire({
+						title: 'Something went wrong!',
+						text: payload,
+						icon: 'error',
+					});
 			})
 			.addCase(getTeachingReviews.pending, (state) => {
 				state.isLoading = true;
@@ -227,11 +228,14 @@ export const teachingReviewSlice = createSlice({
 			})
 			.addCase(getTeachingReviews.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: payload,
-					icon: 'error',
-				});
+				if (
+					payload !== 'Seems like there are no teaching reviews registered in the system.'
+				)
+					Toast.fire({
+						title: 'Something went wrong!',
+						text: payload,
+						icon: 'error',
+					});
 			})
 			.addCase(deleteUserTeachingReviews.pending, (state) => {
 				state.isLoading = true;

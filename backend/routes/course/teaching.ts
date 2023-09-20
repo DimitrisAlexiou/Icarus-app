@@ -96,7 +96,11 @@ export default (router: express.Router) => {
 	// @access  Private
 	router
 		.route('/teaching/:id/unassign/theory/grading')
-		.patch(authorize, checkUserRole([UserType.admin]), unassignTheoryGradingFromTeaching);
+		.patch(
+			authorize,
+			checkUserRole([UserType.admin, UserType.instructor]),
+			unassignTheoryGradingFromTeaching
+		);
 
 	// @desc    Assign Teaching Lab Grading
 	// @route   PATCH /api/course/teaching/:id/assign/lab/grading
@@ -114,5 +118,9 @@ export default (router: express.Router) => {
 	// @access  Private
 	router
 		.route('/teaching/:id/unassign/lab/grading')
-		.patch(authorize, checkUserRole([UserType.admin]), unassignLabGradingFromTeaching);
+		.patch(
+			authorize,
+			checkUserRole([UserType.admin, UserType.instructor]),
+			unassignLabGradingFromTeaching
+		);
 };

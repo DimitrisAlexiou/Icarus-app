@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Row, Col, Card, CardBody, CardTitle, CardText } from 'reactstrap';
+import { Row, Col, CardTitle, CardText } from 'reactstrap';
 import { getSemester } from '../../features/admin/semesterSlice';
 import { getTeachings } from '../../features/courses/teachingSlice';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -9,11 +9,12 @@ import InstructorReviewForm from '../../components/review/forms/InstructorReview
 import BreadcrumbNav from '../../components/boilerplate/Breadcrumb';
 import Spinner from '../../components/boilerplate/Spinner';
 import CarouselComponent from '../../components/Carousel';
+import CurrentSemester from '../../components/boilerplate/CurrentSemester';
 
 export default function InstructorReview() {
 	const { user } = useSelector((state) => state.auth);
 	const { teachings, isLoading: isTeachingsLoading } = useSelector((state) => state.teachings);
-	const { semester, isLoading: isSemesterLoading } = useSelector((state) => state.semesters);
+	const { isLoading: isSemesterLoading } = useSelector((state) => state.semesters);
 	const { isLoading: isInstructorReviewLoading } = useSelector(
 		(state) => state.instructorReviews
 	);
@@ -53,22 +54,7 @@ export default function InstructorReview() {
 						Instructor Review
 					</h3>
 				</Col>
-				{semester ? (
-					<Col xl="3" md="6" className="text-right">
-						<Card className="card-note">
-							<CardBody>
-								<CardTitle>
-									<Col>
-										<h6> Current Semester</h6>
-									</Col>
-									<Col>
-										<h3>{semester.type}</h3>
-									</Col>
-								</CardTitle>
-							</CardBody>
-						</Card>
-					</Col>
-				) : null}
+				<CurrentSemester />
 			</Row>
 
 			<h6 className="mb-4 animated--grow-in" style={{ fontWeight: 700, textAlign: 'center' }}>

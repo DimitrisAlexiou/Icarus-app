@@ -80,11 +80,5 @@ export default (router: express.Router) => {
 	// @desc    Get Course Teaching
 	// @route   GET /api/course/:id/teaching
 	// @access  Private
-	router
-		.route('/course/:id/teaching')
-		.get(
-			authorize,
-			checkUserRole([UserType.admin, UserType.instructor]),
-			viewTeachingByCourseId
-		);
+	router.route('/course/:id/teaching').get(authorize, viewTeachingByCourseId);
 };

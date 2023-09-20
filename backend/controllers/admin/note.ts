@@ -5,7 +5,7 @@ import CustomError from '../../utils/CustomError';
 
 export const getAllUsersNotes = tryCatch(async (_: Request, res: Response): Promise<Response> => {
 	const notes = await getAllNotes();
-	if (!notes)
+	if (!notes.length)
 		throw new CustomError('Seems like there are no notes registered in the system.', 404);
 
 	return res.status(200).json(notes);

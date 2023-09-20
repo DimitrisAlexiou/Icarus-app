@@ -116,11 +116,12 @@ export const userSlice = createSlice({
 			})
 			.addCase(getUsers.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: payload,
-					icon: 'error',
-				});
+				if (payload !== 'Seems like there are no users registered in the system.')
+					Toast.fire({
+						title: 'Something went wrong!',
+						text: payload,
+						icon: 'error',
+					});
 			})
 			.addCase(getStudents.pending, (state) => {
 				state.isLoading = true;
@@ -131,11 +132,12 @@ export const userSlice = createSlice({
 			})
 			.addCase(getStudents.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: payload,
-					icon: 'error',
-				});
+				if (payload !== 'Seems like there are no students registered in the system.')
+					Toast.fire({
+						title: 'Something went wrong!',
+						text: payload,
+						icon: 'error',
+					});
 			})
 			.addCase(getInstructors.pending, (state) => {
 				state.isLoading = true;
@@ -146,11 +148,12 @@ export const userSlice = createSlice({
 			})
 			.addCase(getInstructors.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: payload,
-					icon: 'error',
-				});
+				if (payload !== 'Seems like there are no instructors registered in the system.')
+					Toast.fire({
+						title: 'Something went wrong!',
+						text: payload,
+						icon: 'error',
+					});
 			})
 			.addCase(addUser.pending, (state) => {
 				state.isLoading = true;

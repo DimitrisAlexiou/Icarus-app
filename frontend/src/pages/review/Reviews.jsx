@@ -3,9 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Card, CardText, CardTitle, Row, Col, CardBody } from 'reactstrap';
 import { getReview } from '../../features/admin/reviewSlice';
-// import { getTeachingReviews } from '../../features/reviews/teachingReviewSlice';
-// import { getInstructorReviews } from '../../features/reviews/instructorReviewSlice';
-// import { getGeneralReviews } from '../../features/reviews/generalReviewSlice';
+import TeachingReviews from '../../components/review/TeachingReviews';
+import InstructorReviews from '../../components/review/InstructorReviews';
+import GeneralReviews from '../../components/review/GeneralReviews';
 import Spinner from '../../components/boilerplate/Spinner';
 
 export default function Reviews() {
@@ -15,9 +15,6 @@ export default function Reviews() {
 
 	useEffect(() => {
 		dispatch(getReview());
-		// dispatch(getTeachingReviews());
-		// dispatch(getInstructorReviews());
-		// dispatch(getGeneralReviews());
 	}, [dispatch]);
 
 	const reviewStartDate = review && review.startDate;
@@ -93,7 +90,14 @@ export default function Reviews() {
 
 			<Row className="mb-4 justify-content-center animated--grow-in">
 				<Col md="7" lg="4">
-					<Link style={{ textDecoration: 'none' }} to="/review/teaching">
+					<Link
+						style={{
+							textDecoration: 'none',
+							pointerEvents: review ? 'auto' : 'none',
+							opacity: review ? 1 : 0.6,
+						}}
+						to="/review/teaching"
+					>
 						<Card className="card-animate" body color="primary" inverse>
 							<CardTitle tag="h5">Teaching</CardTitle>
 							<CardText>Teaching implementation.</CardText>
@@ -101,7 +105,14 @@ export default function Reviews() {
 					</Link>
 				</Col>
 				<Col md="7" lg="4">
-					<Link style={{ textDecoration: 'none' }} to="/review/instructor">
+					<Link
+						style={{
+							textDecoration: 'none',
+							pointerEvents: review ? 'auto' : 'none',
+							opacity: review ? 1 : 0.6,
+						}}
+						to="/review/instructor"
+					>
 						<Card className="card-animate" body color="info" inverse>
 							<CardTitle tag="h5">Instructor</CardTitle>
 							<CardText>Instructor of the course.</CardText>
@@ -109,15 +120,36 @@ export default function Reviews() {
 					</Link>
 				</Col>
 			</Row>
+
 			<Row className="mb-4 justify-content-center animated--grow-in">
 				<Col md="7" lg="4" className="mb-3">
-					<Link style={{ textDecoration: 'none' }} to="/review/general">
+					<Link
+						style={{
+							textDecoration: 'none',
+							pointerEvents: review ? 'auto' : 'none',
+							opacity: review ? 1 : 0.6,
+						}}
+						to="/review/general"
+						disabled={!review}
+					>
 						<Card className="card-animate" body color="success" inverse>
 							<CardTitle tag="h5">General</CardTitle>
 							<CardText>General aspects of the course.</CardText>
 						</Card>
 					</Link>
 				</Col>
+			</Row>
+
+			<Row className="mb-4 justify-content-center animated--grow-in">
+				<TeachingReviews />
+			</Row>
+
+			<Row className="mb-4 justify-content-center animated--grow-in">
+				<InstructorReviews />
+			</Row>
+
+			<Row className="mb-4 justify-content-center animated--grow-in">
+				<GeneralReviews />
 			</Row>
 		</>
 	);

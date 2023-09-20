@@ -12395,3 +12395,7 @@ body.sidebar-toggled footer.sticky-footer {
 	padding: 5px;
 	cursor: pointer;
 }
+
+.clickable-no-padding {
+	cursor: pointer;
+}

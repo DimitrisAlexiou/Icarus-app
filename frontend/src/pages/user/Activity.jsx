@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Row, Col, NavItem, NavLink } from 'reactstrap';
 import { activityCategories } from '../../utils/NavigationLinks';
 import TeachingReviews from '../../components/review/TeachingReviews';
@@ -6,17 +7,16 @@ import InstructorReviews from '../../components/review/InstructorReviews';
 import GeneralReviews from '../../components/review/GeneralReviews';
 
 export default function Activity() {
+	const { user } = useSelector((state) => state.auth);
 	const [selectedCategory, setSelectedCategory] = useState('Reviews');
 
 	return (
 		<>
 			<Row className="mb-3 animated--grow-in">
-				<Col>
-					<h3 className="text-gray-800 font-weight-bold">Activity</h3>
-				</Col>
+				<h3 className="text-gray-800 font-weight-bold">Activity</h3>
 			</Row>
 
-			<Row className="mb-3 animated--grow-in justify-content-center">
+			<Row className="mb-4 animated--grow-in justify-content-center">
 				<Col
 					md="12"
 					lg="11"
@@ -54,9 +54,15 @@ export default function Activity() {
 			<Row className="animated--grow-in">
 				{selectedCategory === 'Reviews' ? (
 					<>
-						<TeachingReviews />
-						<InstructorReviews />
-						<GeneralReviews />
+						<Row className="mb-4 justify-content-center">
+							<TeachingReviews user={user} />
+						</Row>
+						<Row className="mb-4 justify-content-center">
+							<InstructorReviews user={user} />
+						</Row>
+						<Row className="mb-4 justify-content-center">
+							<GeneralReviews user={user} />
+						</Row>
 					</>
 				) : selectedCategory === 'ACTIVITY' ? null : selectedCategory ===
 				  'ACTIVITY' ? null : null}

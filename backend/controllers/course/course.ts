@@ -29,7 +29,7 @@ interface AuthenticatedRequest extends Request {
 export const viewCourses = tryCatch(async (_: Request, res: Response): Promise<Response> => {
 	const courses = await getCourses();
 
-	if (!courses)
+	if (!courses.length)
 		throw new CustomError('Seems like there are no courses registered in the system.', 404);
 
 	return res.status(200).json(courses);

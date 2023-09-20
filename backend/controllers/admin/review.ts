@@ -73,7 +73,7 @@ export const getReviewStatement = tryCatch(async (_: Request, res: Response): Pr
 export const getReviewStatements = tryCatch(
 	async (_: Request, res: Response): Promise<Response> => {
 		const reviews = await getReview();
-		if (!reviews)
+		if (!reviews.length)
 			throw new CustomError(
 				'Seems like there are no review statement configurations defined.',
 				404

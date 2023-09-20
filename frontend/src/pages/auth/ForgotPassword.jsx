@@ -11,6 +11,7 @@ import { EmailSchema } from '../../schemas/auth/ForgotPassword';
 import { Toast } from '../../constants/sweetAlertNotification';
 import FormErrorMessage from '../../components/form/FormErrorMessage';
 import Spinner from '../../components/boilerplate/Spinner';
+import FooterLanding from '../../components/boilerplate/FooterLanding';
 
 export default function ForgotPassword() {
 	const { user, isError, isLoading, isSuccess, message } = useSelector((state) => state.auth);
@@ -44,8 +45,11 @@ export default function ForgotPassword() {
 				<div className="container">
 					<Row className="justify-content-left">
 						<Nav className="logo">
-							<NavLink className="sidebar-brand d-flex align-items-center" to="/">
-								<div className="logo-brand-icon rotate-n-15">
+							<NavLink
+								className="sidebar-brand d-flex align-items-center mt-3"
+								to="/"
+							>
+								<div className="logo-brand-icon rotate-15">
 									<i>
 										<FaStudiovinari />
 									</i>
@@ -61,7 +65,7 @@ export default function ForgotPassword() {
 					</Row>
 					<Row className="justify-content-center">
 						<Col xl="10" lg="12" md="10" sm="12">
-							<div className="card o-hidden border-0 shadow-lg my-4 animated--grow-in">
+							<div className="card o-hidden border-0 shadow-lg my-2 animated--grow-in">
 								<div className="card-body p-0">
 									<Row>
 										<Col
@@ -161,6 +165,7 @@ export default function ForgotPassword() {
 							</div>
 						</Col>
 					</Row>
+					<FooterLanding />
 				</div>
 			</div>
 		</>

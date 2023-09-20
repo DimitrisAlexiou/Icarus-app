@@ -6,7 +6,7 @@ import CustomError from '../../utils/CustomError';
 export const getSystemGeneralReviews = tryCatch(
 	async (_: Request, res: Response): Promise<Response> => {
 		const generalReviews = await getGeneralReviews();
-		if (!generalReviews)
+		if (!generalReviews.length)
 			throw new CustomError(
 				'Seems like there are no general reviews registered in the system.',
 				404

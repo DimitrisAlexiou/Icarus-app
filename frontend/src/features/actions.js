@@ -30,6 +30,7 @@ export const UNENROLL_COURSE = createAction('course/unenroll_course');
 export const GET_ENROLLED_COURSES = createAction('course/get_enrolled_courses');
 
 export const CREATE_STATEMENT = createAction('course/create_statement');
+export const GET_STUDENT_STATEMENTS = createAction('course/get_student_statements');
 export const GET_STATEMENT = createAction('course/get_statement');
 export const UPDATE_STATEMENT = createAction('course/update_statement');
 export const DELETE_STATEMENT = createAction('course/delete_statement');
@@ -37,11 +38,13 @@ export const GET_STATEMENTS = createAction('course/get_statements');
 export const DELETE_STATEMENTS = createAction('course/delete_statements');
 
 export const GET_NOTES = createAction('note/get_notes');
+export const GET_USER_NOTES = createAction('note/get_user_notes');
 export const GET_NOTE = createAction('note/get_note');
 export const CREATE_NOTE = createAction('note/create_note');
 export const UPDATE_NOTE = createAction('note/update_note');
 export const DELETE_NOTE = createAction('note/delete_note');
 export const DELETE_NOTES = createAction('note/delete_notes');
+export const DELETE_USER_NOTES = createAction('note/delete_user_notes');
 export const UPDATE_IMPORTANCE = createAction('note/update_importance');
 export const DELETE_CATEGORY = createAction('note/delete_category');
 

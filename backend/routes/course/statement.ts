@@ -6,13 +6,22 @@ import {
 	deleteStatement,
 	viewStudentStatements,
 	deleteSystemStatements,
+	viewStatements,
 } from '../../controllers/course/statement';
 import { validateStatement } from '../../middleware/validations';
 import { authorize, checkUserRole, isOwner } from '../../middleware/authMiddleware';
 import { UserType } from '../../models/users/user';
 
 export default (router: express.Router) => {
-	// @desc    Get / Create / Delete Statements
+	// @desc    Get / Delete Statements
+	// @route   GET/DELETE /api/statements
+	// @access  Private
+	router
+		.route('/statements')
+		.get(authorize, checkUserRole([UserType.admin]), viewStatements)
+		.delete(authorize, checkUserRole([UserType.admin]), deleteSystemStatements);
+
+	// @desc    Get / Create Statements
 	// @route   GET/POST/DELETE /api/statement
 	// @access  Private
 	router
@@ -28,11 +37,6 @@ export default (router: express.Router) => {
 			checkUserRole([UserType.admin, UserType.student]),
 			validateStatement,
 			createStudentStatement
-		)
-		.delete(
-			authorize,
-			checkUserRole([UserType.admin, UserType.student]),
-			deleteSystemStatements
 		);
 
 	// @desc    Get / Delete / Update Statement

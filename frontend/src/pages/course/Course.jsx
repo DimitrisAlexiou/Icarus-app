@@ -46,7 +46,7 @@ export default function Course() {
 										Course Information
 									</h6>
 								</Col>
-								{course.isActive ? (
+								{course.isActive && teaching ? (
 									<Col className="d-flex justify-content-end">
 										<Row>
 											<Col>
@@ -61,7 +61,7 @@ export default function Course() {
 											</Col>
 											<Col className="d-flex justify-content-end">
 												<small
-													className="text-muted pill-label"
+													className="text-muted pill-label clickable-no-padding"
 													style={{
 														textAlign: 'justify',
 														fontWeight: '700',

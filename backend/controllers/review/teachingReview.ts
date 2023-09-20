@@ -196,7 +196,7 @@ export const getAllUserTeachingReviews = tryCatch(
 		const userId = req.user.id;
 		const userTeachingReviews = await getUserTeachingReviews(userId);
 
-		if (!userTeachingReviews)
+		if (!userTeachingReviews.length)
 			throw new CustomError(
 				`Seems like you haven't submitted any teaching reviews yet.`,
 				404

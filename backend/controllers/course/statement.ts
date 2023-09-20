@@ -183,7 +183,7 @@ export const viewStudentStatements = tryCatch(
 
 export const viewStatements = tryCatch(async (_: Request, res: Response): Promise<Response> => {
 	const statements = await getStatements();
-	if (!statements)
+	if (!statements.length)
 		throw new CustomError(
 			'Seems like there are no course statements registered in the system.',
 			404

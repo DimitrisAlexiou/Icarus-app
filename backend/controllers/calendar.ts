@@ -74,7 +74,7 @@ export const viewEvents = tryCatch(
 		const userId = req.user.id;
 		const userEvents = await getEvents(userId);
 
-		if (!userEvents) throw new CustomError('Seems like there are no events.', 404);
+		if (!userEvents.length) throw new CustomError('Seems like there are no events.', 404);
 
 		return res.status(200).json(userEvents);
 	}

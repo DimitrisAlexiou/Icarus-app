@@ -305,11 +305,12 @@ export const courseSlice = createSlice({
 			})
 			.addCase(getCourses.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: payload,
-					icon: 'error',
-				});
+				if (payload !== 'Seems like there are no courses registered in the system.')
+					Toast.fire({
+						title: 'Something went wrong!',
+						text: payload,
+						icon: 'error',
+					});
 			})
 			.addCase(deleteCourses.pending, (state) => {
 				state.isLoading = true;

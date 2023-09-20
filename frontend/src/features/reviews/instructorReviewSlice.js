@@ -216,11 +216,12 @@ export const instructorReviewSlice = createSlice({
 			})
 			.addCase(getUserInstructorReviews.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: payload,
-					icon: 'error',
-				});
+				if (payload !== `Seems like you haven't submitted any instructor reviews yet.`)
+					Toast.fire({
+						title: 'Something went wrong!',
+						text: payload,
+						icon: 'error',
+					});
 			})
 			.addCase(deleteUserInstructorReviews.pending, (state) => {
 				state.isLoading = true;
@@ -250,11 +251,15 @@ export const instructorReviewSlice = createSlice({
 			})
 			.addCase(getInstructorReviews.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: payload,
-					icon: 'error',
-				});
+				if (
+					payload !==
+					'Seems like there are no instructor reviews registered in the system.'
+				)
+					Toast.fire({
+						title: 'Something went wrong!',
+						text: payload,
+						icon: 'error',
+					});
 			})
 			.addCase(deleteInstructorReviews.pending, (state) => {
 				state.isLoading = true;

@@ -164,11 +164,8 @@ export const getAllUserGeneralReviews = tryCatch(
 		const userId = req.user.id;
 		const userGeneralReviews = await getUserGeneralReviews(userId);
 
-		if (!userGeneralReviews)
-			throw new CustomError(
-				`Seems like you haven't submitted any teaching reviews yet.`,
-				404
-			);
+		if (!userGeneralReviews.length)
+			throw new CustomError(`Seems like you haven't submitted any general reviews yet.`, 404);
 
 		return res.status(200).json(userGeneralReviews);
 	}

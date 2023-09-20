@@ -31,11 +31,11 @@ const deleteStatement = async (statementId) => {
 	return response.data;
 };
 
-// const getStatements = async () => {
-// 	const response = await axiosFetch.get(API_URL_STATEMENT);
+const getStatements = async () => {
+	const response = await axiosFetch.get(API_URL_STATEMENT + 's');
 
-// 	return response.data;
-// };
+	return response.data;
+};
 
 const deleteStatements = async () => {
 	const response = await axiosFetch.delete(API_URL_STATEMENT + '/delete');
@@ -49,7 +49,7 @@ const statementService = {
 	updateStatement,
 	getStatement,
 	deleteStatement,
-	// getStatements,
+	getStatements,
 	deleteStatements,
 };
 

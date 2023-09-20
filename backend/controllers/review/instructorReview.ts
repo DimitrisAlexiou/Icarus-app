@@ -65,7 +65,7 @@ export const createUserInstructorReview = tryCatch(
 
 		if (reviewDuration.endDate < currentDate)
 			throw new CustomError(
-				'The review duration period has ended. No more teaching reviews can be submitted.',
+				'The review duration period has ended. No more instructor reviews can be submitted.',
 				406
 			);
 
@@ -196,7 +196,7 @@ export const getAllUserInstructorReviews = tryCatch(
 		const userId = req.user.id;
 		const userInstructorReviews = await getUserInstructorReviews(userId);
 
-		if (!userInstructorReviews)
+		if (!userInstructorReviews.length)
 			throw new CustomError(
 				`Seems like you haven't submitted any instructor reviews yet.`,
 				404

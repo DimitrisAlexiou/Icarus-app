@@ -138,7 +138,7 @@ export const getSystemUsers = tryCatch(async (_: Request, res: Response): Promis
 			model: Instructor,
 		});
 
-	if (!users)
+	if (!users.length)
 		throw new CustomError('Seems like there are no users registered in the system.', 404);
 
 	return res.status(200).json(users);
@@ -326,7 +326,7 @@ export const deActivateUser = tryCatch(async (req: Request, res: Response): Prom
 
 export const getSystemStudents = tryCatch(async (_: Request, res: Response): Promise<Response> => {
 	const students = await getStudents();
-	if (!students)
+	if (!students.length)
 		throw new CustomError('Seems like there are no students registered in the system.', 404);
 
 	return res.status(200).json(students);
@@ -335,7 +335,7 @@ export const getSystemStudents = tryCatch(async (_: Request, res: Response): Pro
 export const getSystemInstructors = tryCatch(
 	async (_: Request, res: Response): Promise<Response> => {
 		const instructors = await getInstructors();
-		if (!instructors)
+		if (!instructors.length)
 			throw new CustomError(
 				'Seems like there are no instructors registered in the system.',
 				404

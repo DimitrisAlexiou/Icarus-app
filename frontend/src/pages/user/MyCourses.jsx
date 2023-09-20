@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { Row, Col, Card, CardBody, CardTitle, CardText } from 'reactstrap';
+import { Row, Col, CardTitle, CardText } from 'reactstrap';
 import { getSemester } from '../../features/admin/semesterSlice';
 import { getTeachings } from '../../features/courses/teachingSlice';
 import { PrerequisiteType } from '../../constants/enums';
@@ -12,6 +12,7 @@ import { faSpinner, faXmark } from '@fortawesome/free-solid-svg-icons';
 import BreadcrumbNav from '../../components/boilerplate/Breadcrumb';
 import Spinner from '../../components/boilerplate/Spinner';
 import CarouselComponent from '../../components/Carousel';
+import CurrentSemester from '../../components/boilerplate/CurrentSemester';
 
 export default function MyCourses() {
 	const { semester, isLoading: isSemesterLoading } = useSelector((state) => state.semesters);
@@ -63,22 +64,7 @@ export default function MyCourses() {
 				<Col>
 					<h3 className="text-gray-800 font-weight-bold">My Courses</h3>
 				</Col>
-				{semester ? (
-					<Col xl="3" md="6" className="text-right">
-						<Card className="card-note">
-							<CardBody>
-								<CardTitle>
-									<Col>
-										<h6> Current Semester</h6>
-									</Col>
-									<Col>
-										<h3>{semester.type}</h3>
-									</Col>
-								</CardTitle>
-							</CardBody>
-						</Card>
-					</Col>
-				) : null}
+				<CurrentSemester />
 			</Row>
 
 			<h6 className="mb-4 animated--grow-in" style={{ fontWeight: 700, textAlign: 'center' }}>

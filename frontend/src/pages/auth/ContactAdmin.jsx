@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { ActivateAccountSchema } from '../../schemas/auth/ActivateAccount';
 import { Toast } from '../../constants/sweetAlertNotification';
+import FooterLanding from '../../components/boilerplate/FooterLanding';
 import FormErrorMessage from '../../components/form/FormErrorMessage';
 import Spinner from '../../components/boilerplate/Spinner';
 
@@ -211,6 +212,7 @@ export default function ContactAdmin() {
 							</div>
 						</Col>
 					</Row>
+					<FooterLanding />
 				</div>
 			</div>
 		</>

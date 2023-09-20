@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Row, Col, CardBody, CardTitle, Card, CardText } from 'reactstrap';
+import { Row, Col, CardTitle, CardText } from 'reactstrap';
 import { getSemester } from '../../features/admin/semesterSlice';
 import { getTeachings } from '../../features/courses/teachingSlice';
 import { getStudentStatements } from '../../features/courses/statementSlice';
@@ -8,6 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import StatementForm from '../../components/user/forms/StatementForm';
 import CarouselComponent from '../../components/Carousel';
+import CurrentSemester from '../../components/boilerplate/CurrentSemester';
 import Spinner from '../../components/boilerplate/Spinner';
 import { getCourses } from '../../features/courses/courseSlice';
 
@@ -39,22 +40,7 @@ export default function Statements() {
 				<Col>
 					<h3 className="text-gray-800 font-weight-bold">Statements</h3>
 				</Col>
-				{semester ? (
-					<Col xl="3" md="6" className="text-right">
-						<Card className="card-note">
-							<CardBody>
-								<CardTitle>
-									<Col>
-										<h6> Current Semester</h6>
-									</Col>
-									<Col>
-										<h3>{semester.type}</h3>
-									</Col>
-								</CardTitle>
-							</CardBody>
-						</Card>
-					</Col>
-				) : null}
+				<CurrentSemester />
 			</Row>
 
 			<h6 className="mb-4 animated--grow-in" style={{ fontWeight: 700, textAlign: 'center' }}>

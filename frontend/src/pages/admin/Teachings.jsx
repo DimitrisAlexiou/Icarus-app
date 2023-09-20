@@ -205,11 +205,11 @@ export default function Teachings() {
 				) : null}
 			</Row>
 
-			<Row className="justify-content-center animated--grow-in">
-				<Col className="card card-body mb-3" xs="12" sm="12" md="12" lg="12" xl="12">
-					{isLoading ? (
-						<CustomSpinner card />
-					) : filteredTeachings.length > 0 ? (
+			{isLoading ? (
+				<CustomSpinner card />
+			) : filteredTeachings.length > 0 ? (
+				<Row className="justify-content-center animated--grow-in">
+					<Col className="card card-body mb-3" xs="12" sm="12" md="12" lg="12" xl="12">
 						<DataTable
 							data={filteredTeachings}
 							config={dataTableConfig}
@@ -217,13 +217,23 @@ export default function Teachings() {
 							searchMessage={'by Course or Course ID'}
 							onRowClick={(teaching) => handleTeachingRowClick(teaching)}
 						/>
-					) : (
-						<span className="mt-4 mb-4 text-gray-500 font-weight-bold">
-							There are no active teachings in the system.
-						</span>
-					)}
-				</Col>
-			</Row>
+					</Col>
+				</Row>
+			) : (
+				<Row className="justify-content-center animated--grow-in mb-3">
+					<Col>
+						<div className="profile_card">
+							<div className="card-body">
+								<div className="align-items-center text-center">
+									<span className="text-gray-500 animated--grow-in d-flex justify-content-center">
+										There are no active teachings in the system.
+									</span>
+								</div>
+							</div>
+						</div>
+					</Col>
+				</Row>
+			)}
 
 			<ModalComponent ref={modalRef} toggle={toggle} />
 			<ModalGradingComponent ref={modalGradingRef} toggleGrading={toggleGrading} />

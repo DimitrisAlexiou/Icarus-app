@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 import { Link, NavLink } from 'react-router-dom';
 import { Card, CardText, CardTitle, Row, Col, Nav } from 'reactstrap';
 import { FaStudiovinari } from 'react-icons/fa';
+import FooterLanding from '../../components/boilerplate/FooterLanding';
 
 export default function Studies() {
 	const { user } = useSelector((state) => state.auth);
@@ -113,6 +114,7 @@ export default function Studies() {
 							</div>
 						</Col>
 					</Row>
+					<FooterLanding />
 				</div>
 			</div>
 		</>

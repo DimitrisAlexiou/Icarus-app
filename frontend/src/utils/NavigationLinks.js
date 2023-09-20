@@ -16,6 +16,8 @@ import {
 	faLaptopCode,
 	faInbox,
 	faArrowUp91,
+	faMagnifyingGlass,
+	faNetworkWired,
 } from '@fortawesome/free-solid-svg-icons';
 import {
 	faUser,
@@ -169,7 +171,7 @@ export const sidebarStudentDataLinks = [
 		id: 5,
 		text: 'Reviews',
 		path: '/review',
-		icon: <FontAwesomeIcon icon={faBarsProgress} />,
+		icon: <FontAwesomeIcon icon={faMagnifyingGlass} />,
 	},
 	{
 		id: 6,
@@ -323,5 +325,33 @@ export const activityCategories = [
 		id: 3,
 		text: 'ACTIVITY',
 		icon: <FontAwesomeIcon icon={faLaptopCode} />,
+	},
+];
+
+export const myGradesCategories = [
+	{
+		id: 1,
+		text: 'Recent Grades',
+	},
+	{
+		id: 2,
+		text: 'Transcript of Records',
+	},
+	{
+		id: 3,
+		text: 'Thesis',
+	},
+];
+
+export const degreeCompletionCategories = [
+	{
+		id: 1,
+		text: 'Prerequisites',
+		icon: <FontAwesomeIcon icon={faNetworkWired} />,
+	},
+	{
+		id: 2,
+		text: 'Progress',
+		icon: <FontAwesomeIcon icon={faBarsProgress} />,
 	},
 ];

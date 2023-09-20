@@ -6,8 +6,10 @@ import {
 	DELETE_CATEGORY,
 	DELETE_NOTE,
 	DELETE_NOTES,
+	DELETE_USER_NOTES,
 	GET_NOTE,
 	GET_NOTES,
+	GET_USER_NOTES,
 	UPDATE_IMPORTANCE,
 	UPDATE_NOTE,
 } from '../actions';
@@ -21,7 +23,7 @@ const initialState = {
 	editNoteId: '',
 };
 
-export const getUserNotes = createAsyncThunk(GET_NOTES, async (_, thunkAPI) => {
+export const getUserNotes = createAsyncThunk(GET_USER_NOTES, async (_, thunkAPI) => {
 	try {
 		return await noteService.getUserNotes();
 	} catch (error) {
@@ -80,9 +82,25 @@ export const deleteUserNote = createAsyncThunk(DELETE_NOTE, async (noteId, thunk
 	}
 });
 
-export const deleteUserNotes = createAsyncThunk(DELETE_NOTES, async (_, thunkAPI) => {
+export const deleteUserNotes = createAsyncThunk(DELETE_USER_NOTES, async (_, thunkAPI) => {
 	try {
 		return await noteService.deleteUserNotes();
+	} catch (error) {
+		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+	}
+});
+
+export const getNotes = createAsyncThunk(GET_NOTES, async (_, thunkAPI) => {
+	try {
+		return await noteService.getNotes();
+	} catch (error) {
+		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+	}
+});
+
+export const deleteNotes = createAsyncThunk(DELETE_NOTES, async (_, thunkAPI) => {
+	try {
+		return await noteService.deleteNotes();
 	} catch (error) {
 		return thunkAPI.rejectWithValue(extractErrorMessage(error));
 	}
@@ -108,11 +126,12 @@ export const noteSlice = createSlice({
 			})
 			.addCase(getUserNotes.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: payload,
-					icon: 'error',
-				});
+				if (payload !== `Seems like you haven't posted any notes yet.`)
+					Toast.fire({
+						title: 'Something went wrong!',
+						text: payload,
+						icon: 'error',
+					});
 			})
 			.addCase(getUserNote.pending, (state) => {
 				state.isLoading = true;
@@ -253,6 +272,41 @@ export const noteSlice = createSlice({
 				});
 			})
 			.addCase(deleteUserNotes.rejected, (state, { payload }) => {
+				state.isLoading = false;
+				Toast.fire({
+					title: 'Something went wrong!',
+					text: payload,
+					icon: 'error',
+				});
+			})
+			.addCase(getNotes.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(getNotes.fulfilled, (state, { payload }) => {
+				state.isLoading = false;
+				state.notes = payload;
+			})
+			.addCase(getNotes.rejected, (state, { payload }) => {
+				state.isLoading = false;
+				if (payload !== 'Seems like there are no notes registered in the system.')
+					Toast.fire({
+						title: 'Something went wrong!',
+						text: payload,
+						icon: 'error',
+					});
+			})
+			.addCase(deleteNotes.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(deleteNotes.fulfilled, (state, { payload }) => {
+				state.isLoading = false;
+				Toast.fire({
+					title: 'Success',
+					text: payload,
+					icon: 'success',
+				});
+			})
+			.addCase(deleteNotes.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				Toast.fire({
 					title: 'Something went wrong!',

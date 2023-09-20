@@ -211,11 +211,12 @@ export const generalReviewSlice = createSlice({
 			})
 			.addCase(getUserGeneralReviews.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: payload,
-					icon: 'error',
-				});
+				if (payload !== `Seems like you haven't submitted any general reviews yet.`)
+					Toast.fire({
+						title: 'Something went wrong!',
+						text: payload,
+						icon: 'error',
+					});
 			})
 			.addCase(deleteUserGeneralReviews.pending, (state) => {
 				state.isLoading = true;
@@ -245,11 +246,12 @@ export const generalReviewSlice = createSlice({
 			})
 			.addCase(getGeneralReviews.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: payload,
-					icon: 'error',
-				});
+				if (payload !== 'Seems like there are no general reviews registered in the system.')
+					Toast.fire({
+						title: 'Something went wrong!',
+						text: payload,
+						icon: 'error',
+					});
 			})
 			.addCase(deleteGeneralReviews.pending, (state) => {
 				state.isLoading = true;

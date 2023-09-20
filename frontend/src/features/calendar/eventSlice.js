@@ -72,11 +72,12 @@ export const eventSlice = createSlice({
 			})
 			.addCase(getEvents.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: payload,
-					icon: 'error',
-				});
+				if (payload !== 'Seems like there are no events.')
+					Toast.fire({
+						title: 'Something went wrong!',
+						text: payload,
+						icon: 'error',
+					});
 			})
 			.addCase(addEvent.pending, (state) => {
 				state.isLoading = true;

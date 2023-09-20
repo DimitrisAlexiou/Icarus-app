@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { Types } from 'mongoose';
 import { User, getUserById } from '../models/users/user';
 import { merge, get } from 'lodash';
-import rateLimit from 'express-rate-limit';
+import { rateLimit } from 'express-rate-limit';
 import jwt from 'jsonwebtoken';
 
 interface User {

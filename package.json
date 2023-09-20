@@ -24,7 +24,7 @@
 		"dotenv": "^16.0.0",
 		"express": "^4.17.3",
 		"express-mongo-sanitize": "^2.2.0",
-		"express-rate-limit": "^6.7.0",
+		"express-rate-limit": "^6.11.1",
 		"helmet": "^5.0.2",
 		"jest": "^29.3.1",
 		"joi": "^17.7.1",

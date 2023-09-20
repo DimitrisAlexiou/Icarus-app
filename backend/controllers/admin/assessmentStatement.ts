@@ -118,7 +118,7 @@ export const deleteAssessment = tryCatch(async (req: Request, res: Response): Pr
 
 export const viewAssessments = tryCatch(async (_: Request, res: Response): Promise<Response> => {
 	const assessments = await getAssessments();
-	if (!assessments)
+	if (!assessments.length)
 		throw new CustomError(
 			'Seems like there are no assessment statement configurations defined.',
 			404

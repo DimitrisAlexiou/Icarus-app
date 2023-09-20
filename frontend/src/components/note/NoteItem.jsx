@@ -13,7 +13,7 @@ export default function NoteItem({ note, setSelectedCategory }) {
 		<>
 			<div className="note-has-grid mb-4">
 				<div className="single-note-item all-category">
-					<Card className="card-note card-body-note mb-4">
+					<Card className="card-note card-body-note mb-4 clickable-no-padding">
 						<span className="side-stick"></span>
 						<h5>{note.title}</h5>
 						<p className="mx-2 py-1">{note.text}</p>

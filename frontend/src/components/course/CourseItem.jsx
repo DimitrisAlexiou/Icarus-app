@@ -7,7 +7,7 @@ export default function CourseItem({ course }) {
 	return (
 		<>
 			<Card
-				className="card-animate border-left-sky-blue-crayola mb-3"
+				className="card-animate border-left-sky-blue-crayola mb-3 clickable-no-padding"
 				onClick={() => navigate(`/course/${course._id}`)}
 			>
 				<div className="card-header">

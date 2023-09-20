@@ -130,7 +130,7 @@ export default function Calendar() {
 						<CarouselComponent
 							objects={events}
 							renderItem={(event) => (
-								<>
+								<Row className="clickable-no-padding">
 									<CardTitle
 										style={{
 											textAlign: 'justify',
@@ -162,7 +162,7 @@ export default function Calendar() {
 									>
 										{event.allDay ? 'All Day' : 'Timed Event'}
 									</CardText>
-								</>
+								</Row>
 							)}
 							onObjectClick={(event) => {
 								dispatch(setEditEvent({ editEventId: event._id }));
@@ -173,8 +173,18 @@ export default function Calendar() {
 					)}
 				</>
 			) : (
-				<Row className="mb-5 animated--grow-in text-gray-500">
-					<Col>There are no events available right now.</Col>
+				<Row className="animated--grow-in text-gray-500">
+					<Col>
+						<div className="profile_card">
+							<div className="card-body">
+								<div className="align-items-center text-center">
+									<span className="text-gray-500 animated--grow-in d-flex justify-content-center">
+										There are no events available right now.
+									</span>
+								</div>
+							</div>
+						</div>
+					</Col>
 				</Row>
 			)}
 			<Row className=" animated--grow-in mt-4 mb-5">

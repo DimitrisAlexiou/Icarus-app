@@ -6,7 +6,7 @@ import CustomError from '../../utils/CustomError';
 export const getSystemTeachingReviews = tryCatch(
 	async (_: Request, res: Response): Promise<Response> => {
 		const teachingReviews = await getTeachingReviews();
-		if (!teachingReviews)
+		if (!teachingReviews.length)
 			throw new CustomError(
 				'Seems like there are no teaching reviews registered in the system.',
 				404

@@ -12,7 +12,8 @@ interface AuthenticatedRequest extends Request {
 export const getAnnouncements = tryCatch(
 	async (_: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const announcements = await Announcement.find();
-		if (!announcements) throw new CustomError('Seems like there are no announcements.', 404);
+		if (!announcements.length)
+			throw new CustomError('Seems like there are no announcements.', 404);
 
 		return res.status(200).json(announcements);
 	}
@@ -24,7 +25,7 @@ export const getInstructorAnnouncements = tryCatch(
 		const instructorAnnouncements = await Announcement.find({
 			user: userId,
 		});
-		if (!instructorAnnouncements)
+		if (!instructorAnnouncements.length)
 			throw new CustomError(
 				`Seems like there are no announcements from instructor: ${req.user.username}.`,
 				404

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Col, Row, Card, CardBody, CardTitle, CardText } from 'reactstrap';
+import { Col, Row, CardTitle, CardText } from 'reactstrap';
 import { getSemester } from '../../features/admin/semesterSlice';
 import {
 	getTeachings,
@@ -14,6 +14,7 @@ import { faCircleCheck, faCircleXmark } from '@fortawesome/free-regular-svg-icon
 import { faEllipsis, faMinus, faSpinner, faXmark } from '@fortawesome/free-solid-svg-icons';
 import AssignInstructorForm from '../../components/course/forms/AssignInstructorForm';
 import CarouselComponent from '../../components/Carousel';
+import CurrentSemester from '../../components/boilerplate/CurrentSemester';
 import Spinner from '../../components/boilerplate/Spinner';
 
 export default function AssignTeachingInstructor() {
@@ -61,22 +62,7 @@ export default function AssignTeachingInstructor() {
 				<Col>
 					<h3 className="text-gray-800 font-weight-bold">Assign Instructor</h3>
 				</Col>
-				{semester ? (
-					<Col xl="3" md="6" className="text-right">
-						<Card className="card-note">
-							<CardBody>
-								<CardTitle>
-									<Col>
-										<h6> Current Semester</h6>
-									</Col>
-									<Col>
-										<h3>{semester.type}</h3>
-									</Col>
-								</CardTitle>
-							</CardBody>
-						</Card>
-					</Col>
-				) : null}
+				<CurrentSemester />
 			</Row>
 
 			<h6 className="mb-4 animated--grow-in" style={{ fontWeight: 700, textAlign: 'center' }}>

@@ -9,6 +9,7 @@ import {
 	DELETE_STATEMENT,
 	GET_STATEMENTS,
 	DELETE_STATEMENTS,
+	GET_STUDENT_STATEMENTS,
 } from '../actions';
 
 const initialState = {
@@ -19,13 +20,16 @@ const initialState = {
 	editStatementId: '',
 };
 
-export const getStudentStatements = createAsyncThunk(GET_STATEMENTS, async (_, thunkAPI) => {
-	try {
-		return await statementService.getStudentStatements();
-	} catch (error) {
-		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+export const getStudentStatements = createAsyncThunk(
+	GET_STUDENT_STATEMENTS,
+	async (_, thunkAPI) => {
+		try {
+			return await statementService.getStudentStatements();
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
 	}
-});
+);
 
 export const createStatement = createAsyncThunk(CREATE_STATEMENT, async (data, thunkAPI) => {
 	try {
@@ -62,13 +66,13 @@ export const deleteStatement = createAsyncThunk(DELETE_STATEMENT, async (stateme
 	}
 });
 
-// export const getStatements = createAsyncThunk(GET_STATEMENTS, async (_, thunkAPI) => {
-// 	try {
-// 		return await statementService.getStatements();
-// 	} catch (error) {
-// 		return thunkAPI.rejectWithValue(extractErrorMessage(error));
-// 	}
-// });
+export const getStatements = createAsyncThunk(GET_STATEMENTS, async (_, thunkAPI) => {
+	try {
+		return await statementService.getStatements();
+	} catch (error) {
+		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+	}
+});
 
 export const deleteStatements = createAsyncThunk(DELETE_STATEMENTS, async (_, thunkAPI) => {
 	try {
@@ -190,21 +194,25 @@ export const statementSlice = createSlice({
 					icon: 'error',
 				});
 			})
-			// .addCase(getStatements.pending, (state) => {
-			// 	state.isLoading = true;
-			// })
-			// .addCase(getStatements.fulfilled, (state, { payload }) => {
-			// 	state.isLoading = false;
-			// 	state.statements = payload;
-			// })
-			// .addCase(getStatements.rejected, (state, { payload }) => {
-			// 	state.isLoading = false;
-			// 	Toast.fire({
-			// 		title: 'Something went wrong!',
-			// 		text: payload,
-			// 		icon: 'error',
-			// 	});
-			// })
+			.addCase(getStatements.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(getStatements.fulfilled, (state, { payload }) => {
+				state.isLoading = false;
+				state.statements = payload;
+			})
+			.addCase(getStatements.rejected, (state, { payload }) => {
+				state.isLoading = false;
+				if (
+					payload !==
+					'Seems like there are no course statements registered in the system.'
+				)
+					Toast.fire({
+						title: 'Something went wrong!',
+						text: payload,
+						icon: 'error',
+					});
+			})
 			.addCase(deleteStatements.pending, (state) => {
 				state.isLoading = true;
 			})
