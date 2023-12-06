@@ -10,7 +10,10 @@ import {
 	GET_USER_GENERAL_REVIEWS,
 	UPDATE_GENERAL_REVIEW,
 } from '../actions';
-import { Toast } from '../../constants/sweetAlertNotification';
+import {
+	displayErrorNotification,
+	displaySuccessNotification,
+} from '../../constants/sweetAlertNotification';
 import generalReviewService from './services/generalReviewService';
 
 const initialState = {
@@ -36,7 +39,10 @@ export const updateGeneralReview = createAsyncThunk(
 	UPDATE_GENERAL_REVIEW,
 	async ({ generalReviewId, data }, thunkAPI) => {
 		try {
-			return await generalReviewService.updateGeneralReview(generalReviewId, data);
+			return await generalReviewService.updateGeneralReview(
+				generalReviewId,
+				data
+			);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -87,13 +93,16 @@ export const deleteUserGeneralReviews = createAsyncThunk(
 	}
 );
 
-export const getGeneralReviews = createAsyncThunk(GET_GENERAL_REVIEWS, async (_, thunkAPI) => {
-	try {
-		return await generalReviewService.getGeneralReviews();
-	} catch (error) {
-		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+export const getGeneralReviews = createAsyncThunk(
+	GET_GENERAL_REVIEWS,
+	async (_, thunkAPI) => {
+		try {
+			return await generalReviewService.getGeneralReviews();
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
 	}
-});
+);
 
 export const deleteGeneralReviews = createAsyncThunk(
 	DELETE_GENERAL_REVIEWS,
@@ -122,44 +131,30 @@ export const generalReviewSlice = createSlice({
 			})
 			.addCase(createGeneralReview.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Success',
-					text: payload.message,
-					icon: 'success',
-				});
+				displaySuccessNotification(payload.message);
 				state.generalReviews = [...state.generalReviews, payload.generalReview];
 			})
 			.addCase(createGeneralReview.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: payload,
-					icon: 'error',
-				});
+				displayErrorNotification(payload);
 			})
 			.addCase(updateGeneralReview.pending, (state) => {
 				state.isLoading = true;
 			})
 			.addCase(updateGeneralReview.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Success',
-					text: payload.message,
-					icon: 'success',
-				});
+				displaySuccessNotification(payload.message);
 				const updatedGeneralReviewIndex = state.generalReviews.findIndex(
-					(generalReview) => generalReview._id === payload.updatedGeneralReview._id
+					(generalReview) =>
+						generalReview._id === payload.updatedGeneralReview._id
 				);
 				if (updatedGeneralReviewIndex !== -1)
-					state.generalReviews[updatedGeneralReviewIndex] = payload.updatedGeneralReview;
+					state.generalReviews[updatedGeneralReviewIndex] =
+						payload.updatedGeneralReview;
 			})
 			.addCase(updateGeneralReview.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: payload,
-					icon: 'error',
-				});
+				displayErrorNotification(payload);
 			})
 			.addCase(getGeneralReview.pending, (state) => {
 				state.isLoading = true;
@@ -174,33 +169,21 @@ export const generalReviewSlice = createSlice({
 					payload !==
 					'Seems like the general review that you are trying to view does not exist.'
 				)
-					Toast.fire({
-						title: 'Something went wrong!',
-						text: payload,
-						icon: 'error',
-					});
+					displayErrorNotification(payload);
 			})
 			.addCase(deleteGeneralReview.pending, (state) => {
 				state.isLoading = true;
 			})
 			.addCase(deleteGeneralReview.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Success',
-					text: payload.message,
-					icon: 'success',
-				});
+				displaySuccessNotification(payload.message);
 				state.generalReviews = state.generalReviews.filter((generalReview) => {
 					return generalReview._id !== payload.generalReview;
 				});
 			})
 			.addCase(deleteGeneralReview.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: payload,
-					icon: 'error',
-				});
+				displayErrorNotification(payload);
 			})
 			.addCase(getUserGeneralReviews.pending, (state) => {
 				state.isLoading = true;
@@ -211,31 +194,22 @@ export const generalReviewSlice = createSlice({
 			})
 			.addCase(getUserGeneralReviews.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				if (payload !== `Seems like you haven't submitted any general reviews yet.`)
-					Toast.fire({
-						title: 'Something went wrong!',
-						text: payload,
-						icon: 'error',
-					});
+				if (
+					payload !==
+					`Seems like you haven't submitted any general reviews yet.`
+				)
+					displayErrorNotification(payload);
 			})
 			.addCase(deleteUserGeneralReviews.pending, (state) => {
 				state.isLoading = true;
 			})
 			.addCase(deleteUserGeneralReviews.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Success',
-					text: payload.message,
-					icon: 'success',
-				});
+				displaySuccessNotification(payload.message);
 			})
 			.addCase(deleteUserGeneralReviews.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: payload,
-					icon: 'error',
-				});
+				displayErrorNotification(payload);
 			})
 			.addCase(getGeneralReviews.pending, (state) => {
 				state.isLoading = true;
@@ -246,34 +220,26 @@ export const generalReviewSlice = createSlice({
 			})
 			.addCase(getGeneralReviews.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				if (payload !== 'Seems like there are no general reviews registered in the system.')
-					Toast.fire({
-						title: 'Something went wrong!',
-						text: payload,
-						icon: 'error',
-					});
+				if (
+					payload !==
+					'Seems like there are no general reviews registered in the system.'
+				)
+					displayErrorNotification(payload);
 			})
 			.addCase(deleteGeneralReviews.pending, (state) => {
 				state.isLoading = true;
 			})
 			.addCase(deleteGeneralReviews.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Success',
-					text: payload.message,
-					icon: 'success',
-				});
+				displaySuccessNotification(payload.message);
 			})
 			.addCase(deleteGeneralReviews.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: payload,
-					icon: 'error',
-				});
+				displayErrorNotification(payload);
 			});
 	},
 });
 
-export const { resetGeneralReview, setEditGeneralReview } = generalReviewSlice.actions;
+export const { resetGeneralReview, setEditGeneralReview } =
+	generalReviewSlice.actions;
 export default generalReviewSlice.reducer;

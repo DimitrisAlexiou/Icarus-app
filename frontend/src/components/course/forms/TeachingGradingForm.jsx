@@ -27,12 +27,14 @@ export default function TeachingGradingForm({
 	const dispatch = useDispatch();
 
 	const canEditTheory =
-		teaching.theoryInstructors.some((instructor) => instructor.user._id === user.user._id) ||
-		user.user.isAdmin;
+		teaching.theoryInstructors.some(
+			(instructor) => instructor.user._id === user.user._id
+		) || user.user.isAdmin;
 
 	const canEditLab =
-		teaching.labInstructors.some((instructor) => instructor.user._id === user.user._id) ||
-		user.user.isAdmin;
+		teaching.labInstructors.some(
+			(instructor) => instructor.user._id === user.user._id
+		) || user.user.isAdmin;
 
 	return (
 		<>
@@ -186,12 +188,7 @@ export default function TeachingGradingForm({
 												</small>
 											</Col>
 											{index === 0 ? (
-												<Col
-													xs="2"
-													sm="2"
-													md="2"
-													className="mb-3 text-right"
-												>
+												<Col xs="2" sm="2" md="2" className="mb-3 text-right">
 													<Button
 														type="button"
 														color="info"
@@ -207,12 +204,7 @@ export default function TeachingGradingForm({
 													</Button>
 												</Col>
 											) : (
-												<Col
-													xs="2"
-													sm="2"
-													md="2"
-													className="mb-3 text-right"
-												>
+												<Col xs="2" sm="2" md="2" className="mb-3 text-right">
 													<Button
 														type="button"
 														color="warning"
@@ -239,13 +231,11 @@ export default function TeachingGradingForm({
 														className="form-control"
 													>
 														<option default>Select exam type</option>
-														{Object.values(ExaminationType).map(
-															(type) => (
-																<option key={type} value={type}>
-																	{type}
-																</option>
-															)
-														)}
+														{Object.values(ExaminationType).map((type) => (
+															<option key={type} value={type}>
+																{type}
+															</option>
+														))}
 													</Field>
 													<Label
 														for={`theoryExamination[${index}].type`}
@@ -325,12 +315,7 @@ export default function TeachingGradingForm({
 												</small>
 											</Col>
 											{index === 0 ? (
-												<Col
-													xs="2"
-													sm="2"
-													md="2"
-													className="mb-3 text-right"
-												>
+												<Col xs="2" sm="2" md="2" className="mb-3 text-right">
 													<Button
 														type="button"
 														color="info"
@@ -346,12 +331,7 @@ export default function TeachingGradingForm({
 													</Button>
 												</Col>
 											) : (
-												<Col
-													xs="2"
-													sm="2"
-													md="2"
-													className="mb-3 text-right"
-												>
+												<Col xs="2" sm="2" md="2" className="mb-3 text-right">
 													<Button
 														type="button"
 														color="warning"
@@ -378,13 +358,11 @@ export default function TeachingGradingForm({
 														className="form-control"
 													>
 														<option default>Select exam type</option>
-														{Object.values(ExaminationType).map(
-															(type) => (
-																<option key={type} value={type}>
-																	{type}
-																</option>
-															)
-														)}
+														{Object.values(ExaminationType).map((type) => (
+															<option key={type} value={type}>
+																{type}
+															</option>
+														))}
 													</Field>
 													<Label
 														for={`labExamination[${index}].type`}

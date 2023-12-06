@@ -1,16 +1,8 @@
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { Card, CardBody, CardTitle, Col } from 'reactstrap';
-import { getSemester } from '../../features/admin/semesterSlice';
+import useCurrentSemester from '../../hooks/useCurrentSemester';
 
 export default function CurrentSemester() {
-	const { semester } = useSelector((state) => state.semesters);
-
-	const dispatch = useDispatch();
-
-	useEffect(() => {
-		dispatch(getSemester());
-	}, [dispatch]);
+	const { semester } = useCurrentSemester();
 
 	return (
 		<>

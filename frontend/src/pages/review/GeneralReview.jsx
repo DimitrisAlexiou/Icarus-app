@@ -1,22 +1,24 @@
-import { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useState } from 'react';
 import { Row, Col, CardTitle, CardText } from 'reactstrap';
-import { getSemester } from '../../features/admin/semesterSlice';
-import { getTeachings } from '../../features/courses/teachingSlice';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsis, faMinus } from '@fortawesome/free-solid-svg-icons';
+import useGeneralreview from '../../hooks/review/useGeneralReview';
 import GeneralReviewForm from '../../components/review/forms/GeneralReviewForm';
 import BreadcrumbNav from '../../components/boilerplate/Breadcrumb';
-import Spinner from '../../components/boilerplate/Spinner';
+import Spinner from '../../components/boilerplate/spinners/Spinner';
 import CarouselComponent from '../../components/Carousel';
 import CurrentSemester from '../../components/boilerplate/CurrentSemester';
+import Header from '../../components/boilerplate/Header';
 
 export default function GeneralReview() {
-	const { user } = useSelector((state) => state.auth);
-	const { teachings, isLoading: isTeachingsLoading } = useSelector((state) => state.teachings);
-	const { isLoading: isSemesterLoading } = useSelector((state) => state.semesters);
-	const { isLoading: isGeneralaReviewLoading } = useSelector((state) => state.generalReviews);
-	const enrolledCourses = useSelector((state) => state.auth.user.user.student.enrolledCourses);
+	const {
+		user,
+		enrolledCourses,
+		isTeachingsLoading,
+		isSemesterLoading,
+		isGeneralaReviewLoading,
+		findTeaching,
+	} = useGeneralreview();
 
 	const [selectedTeaching, setSelectedTeaching] = useState(null);
 	const [formIsVisible, setFormIsVisible] = useState(false);
@@ -29,13 +31,6 @@ export default function GeneralReview() {
 		setFormIsVisible(true);
 		setFormIsOpen(true);
 	};
-
-	const dispatch = useDispatch();
-
-	useEffect(() => {
-		dispatch(getSemester());
-		dispatch(getTeachings());
-	}, [dispatch]);
 
 	return (
 		<>
@@ -55,9 +50,11 @@ export default function GeneralReview() {
 				<CurrentSemester />
 			</Row>
 
-			<h6 className="mb-4 animated--grow-in" style={{ fontWeight: 700, textAlign: 'center' }}>
-				Enrolled courses
-			</h6>
+			<Row className="mt-3 mb-4 justify-content-between animated--grow-in">
+				<Col className="text-center">
+					<Header title="enrolled courses" />
+				</Col>
+			</Row>
 
 			{isSemesterLoading || isTeachingsLoading ? (
 				<Spinner card />
@@ -65,9 +62,7 @@ export default function GeneralReview() {
 				<CarouselComponent
 					objects={enrolledCourses}
 					renderItem={(enrolledCourse) => {
-						const teaching = teachings.find(
-							(teaching) => teaching._id === enrolledCourse
-						);
+						const teaching = findTeaching(enrolledCourse);
 						return (
 							<>
 								<CardTitle

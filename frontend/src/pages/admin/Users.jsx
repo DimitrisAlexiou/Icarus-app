@@ -1,26 +1,27 @@
-import { useEffect, useState, forwardRef, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useState, forwardRef, useRef } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, Row, Col } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
-import {
-	getUsers,
-	deleteUser,
-	deleteUsers,
-	activateUser,
-	deactivateUser,
-	resetUsers,
-	setEditUser,
-} from '../../features/admin/userSlice';
-import { deleteAlert } from '../../constants/sweetAlertNotification';
+import useUsers from '../../hooks/admin/useUsers';
 import DataTable from '../../components/DataTable';
 import Switch from 'react-switch';
 import UserForm from '../../components/admin/forms/UserForm';
 import RegisterForm from '../../components/auth/RegisterForm';
-import CustomSpinner from '../../components/boilerplate/Spinner';
+import CustomSpinner from '../../components/boilerplate/spinners/Spinner';
+import SpinnerComponent from '../../components/boilerplate/spinners/SpinnerMessage';
 
 export default function Users() {
-	const { users, isLoading, isEditingUser, editUserId } = useSelector((state) => state.users);
+	const {
+		users,
+		isLoading,
+		isEditingUser,
+		editUserId,
+		setEditUser,
+		handleSwitchToggle,
+		handleDeleteUser,
+		handleDeleteUsers,
+		dispatch,
+	} = useUsers();
 
 	const modalRef = useRef(null);
 	const newUserRef = useRef(null);
@@ -37,21 +38,6 @@ export default function Users() {
 		isAdmin: false,
 	});
 
-	const dispatch = useDispatch();
-
-	useEffect(() => {
-		dispatch(getUsers());
-		dispatch(resetUsers());
-	}, [dispatch]);
-
-	const handleSwitchToggle = (userId, checked) => {
-		if (checked) {
-			dispatch(activateUser(userId));
-		} else {
-			dispatch(deactivateUser(userId));
-		}
-	};
-
 	const toggle = () => {
 		setModal(!modal);
 		dispatch(
@@ -66,7 +52,13 @@ export default function Users() {
 	const ModalComponent = forwardRef((props, ref) => {
 		return (
 			<Modal ref={ref} isOpen={modal} toggle={toggle} className="modal-lg">
-				<ModalHeader toggle={toggle}>Edit User ({currentUser.username})</ModalHeader>
+				<ModalHeader toggle={toggle}>
+					Edit User (
+					<span style={{ fontWeight: 'bold', fontSize: '21px' }}>
+						{currentUser.username}
+					</span>
+					)
+				</ModalHeader>
 				<ModalBody>
 					<UserForm
 						user={currentUser}
@@ -81,7 +73,12 @@ export default function Users() {
 
 	const NewUserComponent = forwardRef((props, ref) => {
 		return (
-			<Modal ref={ref} isOpen={newUser} toggle={toggleNewUser} className="modal-lg">
+			<Modal
+				ref={ref}
+				isOpen={newUser}
+				toggle={toggleNewUser}
+				className="modal-lg"
+			>
 				<ModalHeader toggle={toggleNewUser}>New User</ModalHeader>
 				<ModalBody>
 					<RegisterForm newUser={newUser} setNewUser={setNewUser} />
@@ -121,9 +118,7 @@ export default function Users() {
 			label: 'Active',
 			render: (user) => (
 				<Switch
-					onChange={(checked) => {
-						handleSwitchToggle(user._id, checked);
-					}}
+					onChange={(checked) => handleSwitchToggle(user._id, checked)}
 					checked={user.isActive}
 					uncheckedIcon={false}
 					checkedIcon={false}
@@ -152,10 +147,7 @@ export default function Users() {
 					<Col sm="4">
 						<Button
 							className="btn btn-light"
-							onClick={() => {
-								// doDeleteUser(user);
-								deleteAlert(() => dispatch(deleteUser(user._id)));
-							}}
+							onClick={() => handleDeleteUser(user)}
 						>
 							<FontAwesomeIcon icon={faTrashAlt} />
 						</Button>
@@ -171,7 +163,14 @@ export default function Users() {
 				<Col xs="12" sm="12" md="5" lg="7" xl="8">
 					<h3 className="text-gray-800 font-weight-bold">Users</h3>
 				</Col>
-				<Col xs="6" sm="6" md="3" lg="2" xl="2" className="text-sm-left text-center">
+				<Col
+					xs="6"
+					sm="6"
+					md="3"
+					lg="2"
+					xl="2"
+					className="text-sm-left text-center"
+				>
 					<Button
 						onClick={() => {
 							setNewUser(true);
@@ -183,11 +182,18 @@ export default function Users() {
 					</Button>
 				</Col>
 				{users ? (
-					<Col xs="6" sm="6" md="4" lg="3" xl="2" className="text-sm-right text-center">
+					<Col
+						xs="6"
+						sm="6"
+						md="4"
+						lg="3"
+						xl="2"
+						className="text-sm-right text-center"
+					>
 						<Button
 							className="btn btn-red align-self-center"
 							color="null"
-							onClick={() => deleteAlert(() => dispatch(deleteUsers()))}
+							onClick={() => handleDeleteUsers()}
 						>
 							<FontAwesomeIcon icon={faTrashAlt} /> Delete Users
 						</Button>
@@ -199,7 +205,14 @@ export default function Users() {
 				<CustomSpinner card />
 			) : users.length > 0 ? (
 				<Row className="justify-content-center animated--grow-in">
-					<Col className="card card-body mb-4" xs="12" sm="12" md="12" lg="12" xl="12">
+					<Col
+						className="card card-body mb-4"
+						xs="12"
+						sm="12"
+						md="12"
+						lg="12"
+						xl="12"
+					>
 						<DataTable
 							data={users}
 							config={dataTableConfig}
@@ -214,9 +227,7 @@ export default function Users() {
 						<div className="profile_card">
 							<div className="card-body">
 								<div className="align-items-center text-center">
-									<span className="text-gray-500 animated--grow-in d-flex justify-content-center">
-										There are no users registered in the system.
-									</span>
+									<SpinnerComponent message="There are no users registered in the system." />
 								</div>
 							</div>
 						</div>

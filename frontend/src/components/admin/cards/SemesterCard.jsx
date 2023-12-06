@@ -1,76 +1,31 @@
-import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Row, Col, Badge, Button } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-	deleteSemester,
-	getSemester,
-	getSemesters,
-	setEditSemester,
-} from '../../../features/admin/semesterSlice';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt, faEdit } from '@fortawesome/free-regular-svg-icons';
-import { deleteAlert } from '../../../constants/sweetAlertNotification';
 import { SemesterType } from '../../../constants/enums';
-import { academicYearEnd, academicYearStart } from '../../../utils/academicYears';
+import useSemesterCard from '../../../hooks/admin/useSemesterCard';
 import moment from 'moment';
 import SemesterForm from '../forms/SemesterForm';
-import Spinner from '../../boilerplate/Spinner';
+import Spinner from '../../boilerplate/spinners/Spinner';
 
-const SemesterCard = ({ isSemesterLoading, isEditingSemester, editSemesterId }) => {
-	const { semester, semesters } = useSelector((state) => state.semesters);
+const SemesterCard = ({
+	isSemesterLoading,
+	isEditingSemester,
+	editSemesterId,
+}) => {
+	const {
+		semester,
+		semesters,
+		setEditSemester,
+		missingSemesters,
+		handleDeleteSemester,
+	} = useSemesterCard();
+
 	const [addingSemester, setAddingSemester] = useState(false);
+
 	const dispatch = useDispatch();
-
-	useEffect(() => {
-		dispatch(getSemester());
-		dispatch(getSemesters());
-	}, [dispatch]);
-
-	const isWinterDefined = semesters.some((semester) => {
-		const startDate = new Date(semester.startDate);
-		const endDate = new Date(semester.endDate);
-
-		const isWinterStart = startDate.getMonth() + 1 === 10 && startDate.getDate() === 1;
-		const isWinterEnd = endDate.getMonth() + 1 === 1 && endDate.getDate() === 31;
-
-		return (
-			semester.academicYear === `${academicYearStart}-${academicYearEnd}` &&
-			semester.type === SemesterType.Winter &&
-			isWinterStart &&
-			isWinterEnd
-		);
-	});
-
-	const isSpringDefined = semesters.some((semester) => {
-		const startDate = new Date(semester.startDate);
-		const endDate = new Date(semester.endDate);
-
-		const isSpringStart = startDate.getMonth() + 1 === 2 && startDate.getDate() === 1;
-		const isSpringEnd = endDate.getMonth() + 1 === 5 && endDate.getDate() === 31;
-
-		return (
-			semester.academicYear === `${academicYearStart}-${academicYearEnd}` &&
-			semester.type === SemesterType.Spring &&
-			isSpringStart &&
-			isSpringEnd
-		);
-	});
-
-	const isAnySemesterDefined = semesters.some((semester) => {
-		return (
-			semester.academicYear === `${academicYearStart}-${academicYearEnd}` &&
-			semester.type === SemesterType.Any
-		);
-	});
-
-	const missingSemesters = [];
-
-	if (!isWinterDefined) missingSemesters.push(SemesterType.Winter);
-
-	if (!isSpringDefined) missingSemesters.push(SemesterType.Spring);
-
-	if (!isAnySemesterDefined) missingSemesters.push(SemesterType.Any);
 
 	return (
 		<>
@@ -101,11 +56,7 @@ const SemesterCard = ({ isSemesterLoading, isEditingSemester, editSemesterId }) 
 													</Col>
 													<Row>
 														{semesters.map((semester) => (
-															<Col
-																key={semester._id}
-																md="4"
-																className="mb-3"
-															>
+															<Col key={semester._id} md="4" className="mb-3">
 																<b
 																	style={{
 																		textAlign: 'justify',
@@ -146,13 +97,9 @@ const SemesterCard = ({ isSemesterLoading, isEditingSemester, editSemesterId }) 
 													: 'Semester has not been defined for current period!'}
 											</Col>
 											{addingSemester ? (
-												<Col
-													xs="2"
-													sm="6"
-													md="6"
-													className="text-right mt-1"
-												>
+												<Col xs="2" sm="6" md="6" className="text-right mt-1">
 													<FontAwesomeIcon
+														className="clickable"
 														onClick={() => setAddingSemester(false)}
 														icon={faXmark}
 													/>
@@ -180,6 +127,7 @@ const SemesterCard = ({ isSemesterLoading, isEditingSemester, editSemesterId }) 
 											</Col>
 											<Col xs="2" sm="6" md="6" className="text-right mt-1">
 												<FontAwesomeIcon
+													className="clickable"
 													onClick={() =>
 														dispatch(
 															setEditSemester({
@@ -205,9 +153,7 @@ const SemesterCard = ({ isSemesterLoading, isEditingSemester, editSemesterId }) 
 														{semester.type}
 													</p>
 												) : (
-													<p style={{ textAlign: 'justify' }}>
-														Invalid Type
-													</p>
+													<p style={{ textAlign: 'justify' }}>Invalid Type</p>
 												)}
 												<hr />
 											</Col>
@@ -261,9 +207,7 @@ const SemesterCard = ({ isSemesterLoading, isEditingSemester, editSemesterId }) 
 														<b>Start Date</b>
 													</label>
 													<p style={{ textAlign: 'justify' }}>
-														{moment(semester.startDate).format(
-															'DD/MM/YYYY'
-														)}
+														{moment(semester.startDate).format('DD/MM/YYYY')}
 													</p>
 													<hr />
 												</Col>
@@ -272,9 +216,7 @@ const SemesterCard = ({ isSemesterLoading, isEditingSemester, editSemesterId }) 
 														<b>End Date</b>
 													</label>
 													<p style={{ textAlign: 'justify' }}>
-														{moment(semester.endDate).format(
-															'DD/MM/YYYY'
-														)}
+														{moment(semester.endDate).format('DD/MM/YYYY')}
 													</p>
 													<hr />
 												</Col>
@@ -303,8 +245,7 @@ const SemesterCard = ({ isSemesterLoading, isEditingSemester, editSemesterId }) 
 															onClick={() =>
 																dispatch(
 																	setEditSemester({
-																		editSemesterId:
-																			semester._id,
+																		editSemesterId: semester._id,
 																	})
 																)
 															}
@@ -320,19 +261,9 @@ const SemesterCard = ({ isSemesterLoading, isEditingSemester, editSemesterId }) 
 																	fontWeight: 500,
 																	fontSize: 15,
 																}}
-																onClick={async () =>
-																	deleteAlert(() =>
-																		dispatch(
-																			deleteSemester(
-																				semester._id
-																			)
-																		)
-																	)
-																}
+																onClick={() => handleDeleteSemester(semester)}
 															>
-																<FontAwesomeIcon
-																	icon={faTrashAlt}
-																/>
+																<FontAwesomeIcon icon={faTrashAlt} />
 															</Button>
 														</Col>
 													</Col>

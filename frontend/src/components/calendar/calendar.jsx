@@ -1,15 +1,20 @@
-import { useState, forwardRef, useRef, useEffect } from 'react';
-import { Row, Col, Modal, ModalHeader, ModalBody, Button, CardTitle, CardText } from 'reactstrap';
-import { useSelector, useDispatch } from 'react-redux';
+import { useState, forwardRef, useRef } from 'react';
 import {
-	getEvents,
-	deleteEvents,
-	deleteEvent,
-	setEditEvent,
-} from '../../features/calendar/eventSlice';
+	Row,
+	Col,
+	Modal,
+	ModalHeader,
+	ModalBody,
+	Button,
+	CardTitle,
+	CardText,
+} from 'reactstrap';
+import { useSelector, useDispatch } from 'react-redux';
+import { deleteEvent, setEditEvent } from '../../features/calendar/eventSlice';
 import { deleteAlert } from '../../constants/sweetAlertNotification';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
+import useCalendar from '../../hooks/calendar/useCalendar';
 import moment from 'moment';
 import TimePicker from 'react-time-picker';
 import FullCalendar from '@fullcalendar/react';
@@ -17,12 +22,14 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import listPlugin from '@fullcalendar/list';
-import Spinner from '../boilerplate/Spinner';
+import Spinner from '../boilerplate/spinners/Spinner';
 import CarouselComponent from '../Carousel';
+import Header from '../boilerplate/Header';
 import EventForm from './EventForm';
 
 export default function Calendar() {
-	const { events, isLoading, isEditingEvent, editEventId } = useSelector((state) => state.events);
+	const { events, isLoading, isEditingEvent, editEventId, handleDeleteEvents } =
+		useCalendar();
 	const { user } = useSelector((state) => state.auth);
 
 	const calendarRef = useRef(null);
@@ -45,13 +52,7 @@ export default function Calendar() {
 		}
 	};
 
-	const [time, setTime] = useState('10:00');
-
 	const dispatch = useDispatch();
-
-	useEffect(() => {
-		dispatch(getEvents());
-	}, [dispatch]);
 
 	const handleDateClick = (selected) => {
 		const calendarApi = selected.view.calendar;
@@ -87,9 +88,17 @@ export default function Calendar() {
 		return (
 			<Modal ref={ref} isOpen={modal} toggle={toggle} className="modal-lg">
 				<ModalHeader toggle={toggle}>
-					{isEditingEvent
-						? `Edit Event (${event.title})`
-						: 'Fill the form below to create a new event'}
+					{isEditingEvent ? (
+						<>
+							Edit Event (
+							<span style={{ fontWeight: 'bold', fontSize: '21px' }}>
+								{event.title}
+							</span>
+							)
+						</>
+					) : (
+						'Fill the form below to create a new event'
+					)}
 				</ModalHeader>
 				<ModalBody>
 					<EventForm
@@ -110,15 +119,13 @@ export default function Calendar() {
 				<>
 					<Row className="mb-4 animated--grow-in">
 						<Col>
-							<h6 className="text-gray-600 font-weight-bold animated--grow-in">
-								Events
-							</h6>
+							<Header title="Events" />
 						</Col>
 						<Col className="d-flex justify-content-end">
 							<Button
 								className="btn btn-red align-self-center"
 								color="null"
-								onClick={() => deleteAlert(() => dispatch(deleteEvents()))}
+								onClick={() => handleDeleteEvents()}
 							>
 								<FontAwesomeIcon icon={faTrashAlt} />
 							</Button>
@@ -130,7 +137,7 @@ export default function Calendar() {
 						<CarouselComponent
 							objects={events}
 							renderItem={(event) => (
-								<Row className="clickable-no-padding">
+								<>
 									<CardTitle
 										style={{
 											textAlign: 'justify',
@@ -162,7 +169,7 @@ export default function Calendar() {
 									>
 										{event.allDay ? 'All Day' : 'Timed Event'}
 									</CardText>
-								</Row>
+								</>
 							)}
 							onObjectClick={(event) => {
 								dispatch(setEditEvent({ editEventId: event._id }));
@@ -189,24 +196,35 @@ export default function Calendar() {
 			)}
 			<Row className=" animated--grow-in mt-4 mb-5">
 				<Col md="12" lg="10" xl="8" className="mx-auto">
-					<FullCalendar
-						ref={calendarRef}
-						height="65vh"
-						plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
-						headerToolbar={{
-							left: 'prev,next today',
-							center: 'title',
-							right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth',
-						}}
-						initialView="dayGridMonth"
-						editable={true}
-						selectable={true}
-						selectMirror={true}
-						dayMaxEvents={true}
-						select={handleDateClick}
-						eventClick={handleEventClick}
-						events={events}
-					/>
+					<div className="profile_card">
+						<div className="card-body">
+							<div className="align-items-center text-center">
+								<FullCalendar
+									ref={calendarRef}
+									height="65vh"
+									plugins={[
+										dayGridPlugin,
+										timeGridPlugin,
+										interactionPlugin,
+										listPlugin,
+									]}
+									headerToolbar={{
+										left: 'prev,next today',
+										center: 'title',
+										right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth',
+									}}
+									initialView="dayGridMonth"
+									editable={true}
+									selectable={true}
+									selectMirror={true}
+									dayMaxEvents={true}
+									select={handleDateClick}
+									eventClick={handleEventClick}
+									events={events}
+								/>
+							</div>
+						</div>
+					</div>
 				</Col>
 			</Row>
 			<ModalComponent

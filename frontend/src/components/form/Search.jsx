@@ -1,43 +1,22 @@
-import { useState, useMemo } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { FormGroup, Label, Row, Col, Button, Card, CardBody } from 'reactstrap';
+import { FormGroup, Label, Row, Col, Card, CardBody } from 'reactstrap';
 import { Formik, Form, Field } from 'formik';
-import { handleChange, clearFilters } from '../../features/courses/courseSlice';
-import FormCheckbox from './FormCheckbox';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import useSearch from '../../hooks/course/useSearch';
+import FormCheckbox from './FormCheckbox';
 
 export default function Search() {
-	const { isLoading, search, searchSemester, searchCycle, searchHasLab, sort, sortOptions } =
-		useSelector((store) => store.courses);
-
-	const [localSearch, setLocalSearch] = useState(search);
-
-	const dispatch = useDispatch();
-
-	const handleSearch = (e) => {
-		dispatch(handleChange({ name: e.target.name, value: e.target.value }));
-	};
-
-	const optimizedDebounce = useMemo(() => {
-		const debounce = () => {
-			let timeoutID;
-			return (e) => {
-				setLocalSearch(e.target.value);
-				clearTimeout(timeoutID);
-				timeoutID = setTimeout(() => {
-					dispatch(handleChange({ name: e.target.name, value: e.target.value }));
-				}, 1000);
-			};
-		};
-		return debounce();
-	}, [dispatch, setLocalSearch]);
-
-	const handleSubmit = (e) => {
-		e.preventDefault();
-		setLocalSearch('');
-		dispatch(clearFilters());
-	};
+	const {
+		searchSemester,
+		searchCycle,
+		searchHasLab,
+		sort,
+		sortOptions,
+		localSearch,
+		handleSearch,
+		optimizedDebounce,
+		handleSubmit,
+	} = useSearch();
 
 	return (
 		<>
@@ -122,7 +101,7 @@ export default function Search() {
 								</Col>
 								<Col sm="6" md="3" lg="3" xl="2" className="mt-sm-0 mt-3">
 									<FontAwesomeIcon
-										className="text-muted"
+										className="text-muted clickable"
 										style={{
 											textAlign: 'justify',
 											fontWeight: '700',

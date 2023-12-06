@@ -1,25 +1,13 @@
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Card, CardText, CardTitle, Row, Col, CardBody } from 'reactstrap';
-import { getReview } from '../../features/admin/reviewSlice';
+import useReviews from '../../hooks/review/useReviews';
 import TeachingReviews from '../../components/review/TeachingReviews';
 import InstructorReviews from '../../components/review/InstructorReviews';
 import GeneralReviews from '../../components/review/GeneralReviews';
-import Spinner from '../../components/boilerplate/Spinner';
+import Spinner from '../../components/boilerplate/spinners/Spinner';
 
 export default function Reviews() {
-	const { review, isLoading } = useSelector((state) => state.review);
-
-	const dispatch = useDispatch();
-
-	useEffect(() => {
-		dispatch(getReview());
-	}, [dispatch]);
-
-	const reviewStartDate = review && review.startDate;
-	const currentDate = new Date();
-	const reviewHasStarted = reviewStartDate && currentDate >= new Date(reviewStartDate);
+	const { review, isLoading, reviewStartDate, reviewHasStarted } = useReviews();
 
 	return (
 		<>
@@ -32,45 +20,10 @@ export default function Reviews() {
 				<Col xl="3" md="6" className="text-right">
 					<Card className="card-note">
 						<CardBody>
-							<CardText>
-								{isLoading ? (
-									<Spinner card />
-								) : review ? (
-									reviewHasStarted ? (
-										<small
-											className="text-muted"
-											style={{
-												textAlign: 'justify',
-												fontWeight: '800',
-												fontSize: 15,
-											}}
-										>
-											Reviews are available to submit
-										</small>
-									) : (
-										<>
-											<small
-												className="text-muted pill-label"
-												style={{
-													textAlign: 'justify',
-													fontWeight: '800',
-													fontSize: 15,
-												}}
-											>
-												Reviews start on
-											</small>
-											<small
-												style={{
-													textAlign: 'justify',
-													fontWeight: '700',
-													fontSize: 14,
-												}}
-											>
-												{new Date(reviewStartDate).toDateString()}
-											</small>
-										</>
-									)
-								) : (
+							{isLoading ? (
+								<Spinner card />
+							) : review ? (
+								reviewHasStarted ? (
 									<small
 										className="text-muted"
 										style={{
@@ -79,10 +32,43 @@ export default function Reviews() {
 											fontSize: 15,
 										}}
 									>
-										Reviews will be available soon
+										Reviews are available to submit
 									</small>
-								)}
-							</CardText>
+								) : (
+									<>
+										<small
+											className="text-muted pill-label"
+											style={{
+												textAlign: 'justify',
+												fontWeight: '800',
+												fontSize: 15,
+											}}
+										>
+											Reviews start on
+										</small>
+										<small
+											style={{
+												textAlign: 'justify',
+												fontWeight: '700',
+												fontSize: 14,
+											}}
+										>
+											{new Date(reviewStartDate).toDateString()}
+										</small>
+									</>
+								)
+							) : (
+								<small
+									className="text-muted"
+									style={{
+										textAlign: 'justify',
+										fontWeight: '800',
+										fontSize: 15,
+									}}
+								>
+									Reviews will be available soon
+								</small>
+							)}
 						</CardBody>
 					</Card>
 				</Col>
@@ -93,8 +79,8 @@ export default function Reviews() {
 					<Link
 						style={{
 							textDecoration: 'none',
-							pointerEvents: review ? 'auto' : 'none',
-							opacity: review ? 1 : 0.6,
+							pointerEvents: review && reviewHasStarted ? 'auto' : 'none',
+							opacity: review && reviewHasStarted ? 1 : 0.6,
 						}}
 						to="/review/teaching"
 					>
@@ -108,8 +94,8 @@ export default function Reviews() {
 					<Link
 						style={{
 							textDecoration: 'none',
-							pointerEvents: review ? 'auto' : 'none',
-							opacity: review ? 1 : 0.6,
+							pointerEvents: review && reviewHasStarted ? 'auto' : 'none',
+							opacity: review && reviewHasStarted ? 1 : 0.6,
 						}}
 						to="/review/instructor"
 					>
@@ -126,8 +112,8 @@ export default function Reviews() {
 					<Link
 						style={{
 							textDecoration: 'none',
-							pointerEvents: review ? 'auto' : 'none',
-							opacity: review ? 1 : 0.6,
+							pointerEvents: review && reviewHasStarted ? 'auto' : 'none',
+							opacity: review && reviewHasStarted ? 1 : 0.6,
 						}}
 						to="/review/general"
 						disabled={!review}

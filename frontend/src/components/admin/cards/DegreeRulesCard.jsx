@@ -3,10 +3,13 @@ import { Row, Col, Badge, Button } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt, faEdit } from '@fortawesome/free-regular-svg-icons';
-import { deleteDegreeRules, setEditDegreeRules } from '../../../features/admin/degreeRulesSlice';
+import {
+	deleteDegreeRules,
+	setEditDegreeRules,
+} from '../../../features/admin/degreeRulesSlice';
 import { deleteAlert } from '../../../constants/sweetAlertNotification';
 import DegreeRulesForm from '../forms/DegreeRulesForm';
-import Spinner from '../../boilerplate/Spinner';
+import Spinner from '../../boilerplate/spinners/Spinner';
 
 const DegreeRulesCard = ({
 	degreeRules,
@@ -47,13 +50,9 @@ const DegreeRulesCard = ({
 													: 'Degree Rules have not been defined!'}
 											</Col>
 											{isEditingDegreeRules ? (
-												<Col
-													xs="2"
-													sm="6"
-													md="6"
-													className="text-right mt-1"
-												>
+												<Col xs="2" sm="6" md="6" className="text-right mt-1">
 													<FontAwesomeIcon
+														className="clickable"
 														onClick={() =>
 															dispatch(
 																setEditDegreeRules({
@@ -147,8 +146,7 @@ const DegreeRulesCard = ({
 															onClick={() =>
 																dispatch(
 																	setEditDegreeRules({
-																		editDegreeRulesId:
-																			degreeRules._id,
+																		editDegreeRulesId: degreeRules._id,
 																	})
 																)
 															}
@@ -166,17 +164,11 @@ const DegreeRulesCard = ({
 																}}
 																onClick={async () =>
 																	deleteAlert(() =>
-																		dispatch(
-																			deleteDegreeRules(
-																				degreeRules._id
-																			)
-																		)
+																		dispatch(deleteDegreeRules(degreeRules._id))
 																	)
 																}
 															>
-																<FontAwesomeIcon
-																	icon={faTrashAlt}
-																/>
+																<FontAwesomeIcon icon={faTrashAlt} />
 															</Button>
 														</Col>
 													</Col>

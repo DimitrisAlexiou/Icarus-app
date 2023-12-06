@@ -1,9 +1,16 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Col, Badge } from 'reactstrap';
-import { faUserTie, faCertificate, faGraduationCap } from '@fortawesome/free-solid-svg-icons';
-import { faCalendarCheck, faIdBadge } from '@fortawesome/free-regular-svg-icons';
-import { UserType } from '../../constants/enums';
-import img from '../../assets/images/undraw_profile.svg';
+import {
+	faUserTie,
+	faCertificate,
+	faGraduationCap,
+} from '@fortawesome/free-solid-svg-icons';
+import {
+	faCalendarCheck,
+	faIdBadge,
+} from '@fortawesome/free-regular-svg-icons';
+import { UserType } from '../../../constants/enums';
+import img from '../../../assets/images/undraw_profile.svg';
 
 export default function ProfileInfoCard({ user }) {
 	return (
@@ -37,7 +44,9 @@ export default function ProfileInfoCard({ user }) {
 							<p className="text-secondary font-weight-bold mt-2 mb-1">
 								{user.user.type}
 							</p>
-							<p className="text-star-command-blue mt-3">University of Aegean</p>
+							<p className="text-star-command-blue mt-3">
+								University of Aegean
+							</p>
 						</Col>
 					</div>
 					{user.user.type === UserType.student ? (

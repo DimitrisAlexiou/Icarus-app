@@ -1,31 +1,23 @@
-import { useEffect, useState } from 'react';
-import { NavLink, useParams } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useState } from 'react';
+import { NavLink } from 'react-router-dom';
 import { Row, Col, NavItem, Nav } from 'reactstrap';
-import { getTeaching } from '../../features/courses/teachingSlice';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowUp91 } from '@fortawesome/free-solid-svg-icons';
+import useTeaching from '../../hooks/teaching/useTeaching';
 import TeachingCard from '../../components/course/cards/TeachingCard';
 import GradingCard from '../../components/course/cards/GradingCard';
 import BreadcrumbNav from '../../components/boilerplate/Breadcrumb';
-import Spinner from '../../components/boilerplate/Spinner';
+import Spinner from '../../components/boilerplate/spinners/Spinner';
 import BackButton from '../../components/buttons/BackButton';
 
 export default function Teaching() {
-	const { teaching, isLoading } = useSelector((state) => state.teachings);
+	const { teaching, isLoading } = useTeaching();
 	const [gradingForm, setGradingForm] = useState(false);
-
-	const { teachingId } = useParams();
-	const dispatch = useDispatch();
-
-	useEffect(() => {
-		dispatch(getTeaching(teachingId));
-	}, [dispatch, teachingId]);
 
 	return (
 		<>
 			<Row className="animated--grow-in">
-				<Col sm="12" xs="12" md="12" lg="9">
+				<Col>
 					<BreadcrumbNav
 						className="animated--grow-in"
 						link={'/teachings'}

@@ -1,43 +1,17 @@
-import { useEffect } from 'react';
-import { useNavigate, Link, NavLink } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { Link, NavLink } from 'react-router-dom';
 import { Button, Row, Col, FormGroup, Label, Nav } from 'reactstrap';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { activateAccount, reset } from '../../features/auth/authSlice';
 import { FaStudiovinari } from 'react-icons/fa';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { ActivateAccountSchema } from '../../schemas/auth/ActivateAccount';
-import { Toast } from '../../constants/sweetAlertNotification';
+import useContactAdmin from '../../hooks/auth/useContactAdmin';
 import FooterLanding from '../../components/boilerplate/FooterLanding';
 import FormErrorMessage from '../../components/form/FormErrorMessage';
-import Spinner from '../../components/boilerplate/Spinner';
+import Spinner from '../../components/boilerplate/spinners/Spinner';
 
 export default function ContactAdmin() {
-	const { user, isError, isLoading, isSuccess, message } = useSelector((state) => state.auth);
-
-	const dispatch = useDispatch();
-	const navigate = useNavigate();
-
-	useEffect(() => {
-		if (isError) {
-			Toast.fire({
-				title: 'Something went wrong!',
-				text: message,
-				icon: 'error',
-			});
-		}
-		if (isSuccess) {
-			Toast.fire({
-				title: 'Success',
-				text: `New password restored ${user.name}`,
-				icon: 'success',
-			});
-			navigate('/');
-		}
-
-		dispatch(reset());
-	}, [isError, isSuccess, user, message, navigate, dispatch]);
+	const { isLoading } = useContactAdmin();
 
 	return (
 		<>
@@ -45,7 +19,10 @@ export default function ContactAdmin() {
 				<div className="container">
 					<Row className="justify-content-left">
 						<Nav className="logo">
-							<NavLink className="sidebar-brand d-flex align-items-center" to="/">
+							<NavLink
+								className="sidebar-brand d-flex align-items-center"
+								to="/"
+							>
 								<div className="logo-brand-icon rotate-n-15">
 									<i>
 										<FaStudiovinari />
@@ -73,13 +50,11 @@ export default function ContactAdmin() {
 										<Col lg="7" xl="7">
 											<div className="p-5">
 												<div className="text-center">
-													<h1 className="h4 text-gray-900 mb-4">
-														Locked Out?
-													</h1>
+													<h1 className="h4 text-gray-900 mb-4">Locked Out?</h1>
 													<p className="mb-5">
-														No need to to worry about it. Just enter
-														your email address and username below and
-														we'll activate your account!
+														No need to to worry about it. Just enter your email
+														address and username below and we'll activate your
+														account!
 													</p>
 												</div>
 												{isLoading ? (
@@ -123,19 +98,13 @@ export default function ContactAdmin() {
 																		component={FormErrorMessage}
 																	/>
 																</FormGroup>
-																<FormGroup
-																	className="form-group mb-3"
-																	floating
-																>
+																<FormGroup className="form-group mb-3" floating>
 																	<Field
 																		type="email"
 																		className="form-control"
 																		name="email"
 																	/>
-																	<Label
-																		for="email"
-																		className="text-gray-600"
-																	>
+																	<Label for="email" className="text-gray-600">
 																		Email
 																	</Label>
 																	<ErrorMessage
@@ -151,13 +120,8 @@ export default function ContactAdmin() {
 																		className="text-sm-left text-center"
 																	>
 																		<Button
-																			onClick={() =>
-																				handleReset()
-																			}
-																			disabled={
-																				!dirty ||
-																				isSubmitting
-																			}
+																			onClick={() => handleReset()}
+																			disabled={!dirty || isSubmitting}
 																		>
 																			Clear
 																		</Button>
@@ -172,10 +136,7 @@ export default function ContactAdmin() {
 																			{isSubmitting ? (
 																				<>
 																					Please wait{' '}
-																					<Spinner
-																						type="grow"
-																						size="sm"
-																					/>
+																					<Spinner type="grow" size="sm" />
 																				</>
 																			) : (
 																				'Request Activation'

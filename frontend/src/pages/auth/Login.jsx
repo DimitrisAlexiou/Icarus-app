@@ -1,74 +1,18 @@
-import { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate, Link, NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { Row, Col, Nav } from 'reactstrap';
 import { faGoogle, faGithub } from '@fortawesome/free-brands-svg-icons';
 import { FaStudiovinari } from 'react-icons/fa';
-import { Toast } from '../../constants/sweetAlertNotification';
-import { reset, resetLoginStatus } from '../../features/auth/authSlice';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
+import useLogin from '../../hooks/auth/useLogin';
 import LoginForm from '../../components/auth/LoginForm';
 import ContactAdminForm from '../../components/auth/ContactAdminForm';
 import SignUpInButton from '../../components/buttons/SignUpInButton';
-import Spinner from '../../components/boilerplate/Spinner';
+import Spinner from '../../components/boilerplate/spinners/Spinner';
 import FooterLanding from '../../components/boilerplate/FooterLanding';
 
 export default function Login() {
-	const { user, isAccountLocked, isError, isLoading, isSuccess, message } = useSelector(
-		(state) => state.auth
-	);
-
-	const dispatch = useDispatch();
-	const navigate = useNavigate();
-
-	useEffect(() => {
-		if (isError) {
-			if (message === 'Account is not yet active, it will be available soon.') {
-				Toast.fire({
-					title: 'Oops!',
-					text: message,
-					icon: 'info',
-				});
-			}
-			// else if (
-			// 	message ===
-			// 	'Account is deactivated due to three login failed attempts, please contact the admin.'
-			// ) {
-			// 	Toast.fire({
-			// 		title: 'Oops!',
-			// 		text: message,
-			// 		icon: 'warning',
-			// 	});
-			// 	navigate('/auth/contact-admin');
-			// }
-			else {
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: message,
-					icon: 'error',
-				});
-			}
-		}
-		if (user) {
-			Toast.fire({
-				title: 'Hey!',
-				text: 'You are already logged in.',
-				icon: 'info',
-			});
-			navigate('/');
-		}
-		if (isSuccess) {
-			Toast.fire({
-				title: 'Hello!',
-				text: `Welcome Back ${user.user.name}!`,
-				icon: 'success',
-			});
-			navigate('/');
-		}
-
-		dispatch(reset());
-	}, [isError, isSuccess, user, message, navigate, dispatch]);
+	const { isLoading, isAccountLocked, handleResetLoginStatus } = useLogin();
 
 	return (
 		<>
@@ -110,16 +54,12 @@ export default function Login() {
 															Locked Out?
 														</h1>
 														<p className="mb-5">
-															No need to to worry about it. Just enter
-															your email address and username below
-															and we'll activate your account!
+															No need to to worry about it. Just enter your
+															email address and username below and we'll
+															activate your account!
 														</p>
 													</div>
-													{isLoading ? (
-														<Spinner card />
-													) : (
-														<ContactAdminForm />
-													)}
+													{isLoading ? <Spinner card /> : <ContactAdminForm />}
 													<Row>
 														<Col className="text-center mt-4">
 															<hr />
@@ -129,9 +69,7 @@ export default function Login() {
 																style={{
 																	textDecoration: 'none',
 																}}
-																onClick={() => {
-																	dispatch(resetLoginStatus());
-																}}
+																onClick={() => handleResetLoginStatus()}
 															>
 																<FontAwesomeIcon
 																	className="mx-2"

@@ -21,9 +21,9 @@ interface AuthenticatedRequest extends Request {
 
 export const createStudentStatement = tryCatch(
 	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
-		const { teaching } = req.body;
+		const { teachings } = req.body;
 
-		if (!teaching)
+		if (!teachings)
 			throw new CustomError(
 				'Please provide at least one course for the course statement creation.',
 				400
@@ -60,7 +60,10 @@ export const createStudentStatement = tryCatch(
 			);
 
 		const userId = req.user.id;
-		const existingStatement = await getUserSubmittedStatement(userId, semesterId);
+		const existingStatement = await getUserSubmittedStatement(
+			userId,
+			semesterId
+		);
 
 		if (existingStatement)
 			throw new CustomError(
@@ -69,7 +72,7 @@ export const createStudentStatement = tryCatch(
 			);
 
 		const statement = await createStatement({
-			teaching: teaching,
+			teaching: teachings,
 			semester: semester,
 			user: userId,
 			status: 'new',
@@ -147,7 +150,9 @@ export const updateStatement = tryCatch(
 				404
 			);
 
-		return res.status(200).json({ message: 'Statement updated!', updatedStatement });
+		return res
+			.status(200)
+			.json({ message: 'Statement updated!', updatedStatement });
 	}
 );
 
@@ -175,27 +180,34 @@ export const viewStudentStatements = tryCatch(
 		const userStatements = await getUserStatements(userId);
 
 		if (!userStatements.length)
-			throw new CustomError(`Seems like you haven't submitted a course statement yet.`, 404);
+			throw new CustomError(
+				`Seems like you haven't submitted a course statement yet.`,
+				404
+			);
 
 		return res.status(200).json(userStatements);
 	}
 );
 
-export const viewStatements = tryCatch(async (_: Request, res: Response): Promise<Response> => {
-	const statements = await getStatements();
-	if (!statements.length)
-		throw new CustomError(
-			'Seems like there are no course statements registered in the system.',
-			404
-		);
+export const viewStatements = tryCatch(
+	async (_: Request, res: Response): Promise<Response> => {
+		const statements = await getStatements();
+		if (!statements.length)
+			throw new CustomError(
+				'Seems like there are no course statements registered in the system.',
+				404
+			);
 
-	return res.status(200).json(statements);
-});
+		return res.status(200).json(statements);
+	}
+);
 
 export const deleteSystemStatements = tryCatch(
 	async (_: Request, res: Response): Promise<Response> => {
 		await deleteStatements();
-		return res.status(200).json({ message: 'Statements existing in the system deleted.' });
+		return res
+			.status(200)
+			.json({ message: 'Statements existing in the system deleted.' });
 	}
 );
 

@@ -1,5 +1,4 @@
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Col, Row } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -18,9 +17,17 @@ export default function MyCradesCard() {
 			<Row className="justify-content-center animated--grow-in mb-3">
 				<h6
 					className="animated--grow-in text-gray-500"
-					style={{ fontWeight: 700, textAlign: 'center' }}
+					style={{ textAlign: 'center' }}
 				>
-					recent grades
+					<small
+						className="text-muted pill-label"
+						style={{
+							fontWeight: '700',
+							fontSize: 15,
+						}}
+					>
+						Recent Grades
+					</small>
 				</h6>
 			</Row>
 			<div className="profile_card">

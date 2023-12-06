@@ -62,7 +62,6 @@ export default function FooterLanding() {
 					</div>
 				</div>
 			</footer>
-			;
 		</>
 	);
 }

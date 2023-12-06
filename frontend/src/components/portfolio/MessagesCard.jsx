@@ -1,6 +1,5 @@
 import { Row, Col } from 'reactstrap';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import SpinnerComponent from '../boilerplate/spinners/SpinnerMessage';
 
 const MessagesCard = () => {
 	const messages = [];
@@ -10,10 +9,18 @@ const MessagesCard = () => {
 			<Row className="justify-content-center animated--grow-in mb-3">
 				<Col xs="12" sm="12" md="12" lg="10" xl="10">
 					<h6
-						style={{ fontWeight: 700, textAlign: 'center' }}
+						style={{ textAlign: 'center' }}
 						className="text-gray-500 font-weight-bold"
 					>
-						Messages
+						<small
+							className="text-muted pill-label"
+							style={{
+								fontWeight: '700',
+								fontSize: 15,
+							}}
+						>
+							Messages
+						</small>
 					</h6>
 				</Col>
 			</Row>
@@ -23,10 +30,7 @@ const MessagesCard = () => {
 						{messages.length > 0 ? (
 							<></>
 						) : (
-							<span className="text-gray-500 animated--grow-in d-flex justify-content-center">
-								<FontAwesomeIcon className="text-gray-300 px-2" icon={faSpinner} />
-								You don't have any new messages.
-							</span>
+							<SpinnerComponent message="You don't have any new messages." />
 						)}
 					</div>
 				</div>

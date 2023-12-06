@@ -14,7 +14,7 @@ export default function AssignInstructorForm({
 	instructors,
 	isEditingTheoryInstructors,
 	isEditingLabInstructors,
-	setFormIsVisible,
+	setModal,
 }) {
 	const [selectedPart, setSelectedPart] = useState('theory');
 
@@ -22,7 +22,7 @@ export default function AssignInstructorForm({
 
 	return (
 		<>
-			<Row className="justify-content-center">
+			<Row style={{ textAlign: 'center' }} className="justify-content-center">
 				<Col md="5">
 					<FormGroup className="mx-1 mb-3 mt-3" check>
 						<Input
@@ -58,7 +58,9 @@ export default function AssignInstructorForm({
 					theoryInstructors: teaching.theoryInstructors.length
 						? teaching.theoryInstructors
 						: [''],
-					labInstructors: teaching.labInstructors.length ? teaching.labInstructors : [''],
+					labInstructors: teaching.labInstructors.length
+						? teaching.labInstructors
+						: [''],
 				}}
 				validationSchema={AssignInstructorSchema(selectedPart)}
 				onSubmit={(values, { setSubmitting }) => {
@@ -86,7 +88,7 @@ export default function AssignInstructorForm({
 						);
 					}
 					setSubmitting(false);
-					setFormIsVisible(false);
+					setModal(false);
 				}}
 				validateOnMount
 			>
@@ -96,45 +98,96 @@ export default function AssignInstructorForm({
 							<FormGroup className="form-floating mb-3" floating>
 								{selectedPart === 'theory' ? (
 									<>
-										{values.theoryInstructors.map((_, index) => (
-											<Row key={index}>
-												<Col xs="10" sm="10" md="10">
-													<Field
-														as="select"
-														className="form-control mb-3"
-														name={`theoryInstructors[${index}]`}
-													>
-														<option
-															className="text-gray-600"
-															value=""
-															default
-															disabled
-														>
-															Theory Instructor{' '}
-															{index === 0
-																? null
-																: '(' + (index + 1) + ')'}
-														</option>
-														{isEditingTheoryInstructors ? (
-															<>
-																{values.theoryInstructors.map(
-																	(theoryInstructor) => (
-																		<option
-																			key={
-																				theoryInstructor._id
-																			}
-																			value={theoryInstructor}
-																		>
-																			{
-																				theoryInstructor
-																					.user.surname
-																			}
-																		</option>
-																	)
-																)}
-															</>
-														) : (
-															<>
+										{isEditingTheoryInstructors ? (
+											<>
+												{values.theoryInstructors.map(
+													(theoryInstructor, index) => (
+														<Row key={index}>
+															<Col xs="10" sm="10" md="10">
+																<Field
+																	as="select"
+																	className="form-control mb-3"
+																	name={`theoryInstructors[${index}]`}
+																>
+																	<option
+																		key={theoryInstructor._id}
+																		value={theoryInstructor._id}
+																	>
+																		{theoryInstructor.user.surname}
+																	</option>
+																</Field>
+																<ErrorMessage
+																	name={`theoryInstructors[${index}]`}
+																	component={FormErrorMessage}
+																/>
+															</Col>
+															{index === 0 ? (
+																<Col
+																	xs="2"
+																	sm="2"
+																	md="2"
+																	className="mb-3 text-right"
+																>
+																	<Button
+																		type="button"
+																		color="info"
+																		onClick={() =>
+																			setFieldValue('theoryInstructors', [
+																				...values.theoryInstructors,
+																				'',
+																			])
+																		}
+																		disabled={isSubmitting}
+																	>
+																		+
+																	</Button>
+																</Col>
+															) : (
+																<Col
+																	xs="2"
+																	sm="2"
+																	md="2"
+																	className="mb-3 text-right"
+																>
+																	<Button
+																		type="button"
+																		color="warning"
+																		onClick={() =>
+																			setFieldValue(
+																				'theoryInstructors',
+																				values.theoryInstructors.filter(
+																					(_, i) => i !== index
+																				)
+																			)
+																		}
+																	>
+																		-
+																	</Button>
+																</Col>
+															)}
+														</Row>
+													)
+												)}
+											</>
+										) : (
+											<>
+												{values.theoryInstructors.map((_, index) => (
+													<Row key={index}>
+														<Col xs="10" sm="10" md="10">
+															<Field
+																as="select"
+																className="form-control mb-3"
+																name={`theoryInstructors[${index}]`}
+															>
+																<option
+																	className="text-gray-600"
+																	value=""
+																	default
+																	disabled
+																>
+																	Theory Instructor{' '}
+																	{index === 0 ? null : '(' + (index + 1) + ')'}
+																</option>
 																{instructors.map((instructor) => (
 																	<option
 																		key={instructor._id}
@@ -143,100 +196,151 @@ export default function AssignInstructorForm({
 																		{instructor.user.surname}
 																	</option>
 																))}
-															</>
+															</Field>
+															<ErrorMessage
+																name={`theoryInstructors[${index}]`}
+																component={FormErrorMessage}
+															/>
+														</Col>
+														{index === 0 ? (
+															<Col
+																xs="2"
+																sm="2"
+																md="2"
+																className="mb-3 text-right"
+															>
+																<Button
+																	type="button"
+																	color="info"
+																	onClick={() =>
+																		setFieldValue('theoryInstructors', [
+																			...values.theoryInstructors,
+																			'',
+																		])
+																	}
+																	disabled={isSubmitting}
+																>
+																	+
+																</Button>
+															</Col>
+														) : (
+															<Col
+																xs="2"
+																sm="2"
+																md="2"
+																className="mb-3 text-right"
+															>
+																<Button
+																	type="button"
+																	color="warning"
+																	onClick={() =>
+																		setFieldValue(
+																			'theoryInstructors',
+																			values.theoryInstructors.filter(
+																				(_, i) => i !== index
+																			)
+																		)
+																	}
+																>
+																	-
+																</Button>
+															</Col>
 														)}
-													</Field>
-													<ErrorMessage
-														name={`theoryInstructors[${index}]`}
-														component={FormErrorMessage}
-													/>
-												</Col>
-												{index === 0 ? (
-													<Col
-														xs="2"
-														sm="2"
-														md="2"
-														className="mb-3 text-right"
-													>
-														<Button
-															type="button"
-															color="info"
-															onClick={() =>
-																setFieldValue('theoryInstructors', [
-																	...values.theoryInstructors,
-																	'',
-																])
-															}
-															disabled={isSubmitting}
-														>
-															+
-														</Button>
-													</Col>
-												) : (
-													<Col
-														xs="2"
-														sm="2"
-														md="2"
-														className="mb-3 text-right"
-													>
-														<Button
-															type="button"
-															color="warning"
-															onClick={() =>
-																setFieldValue(
-																	'theoryInstructors',
-																	values.theoryInstructors.filter(
-																		(_, i) => i !== index
-																	)
-																)
-															}
-														>
-															-
-														</Button>
-													</Col>
-												)}
-											</Row>
-										))}
+													</Row>
+												))}
+											</>
+										)}
 									</>
 								) : (
 									<>
-										{values.labInstructors.map((_, index) => (
-											<Row key={index}>
-												<Col xs="10" sm="10" md="10">
-													<Field
-														as="select"
-														className="form-control mb-3"
-														name={`labInstructors[${index}]`}
-													>
-														<option
-															className="text-gray-600"
-															value=""
-															default
-															disabled
-														>
-															Lab Instructor{' '}
-															{index === 0
-																? null
-																: '(' + (index + 1) + ')'}
-														</option>
-														{isEditingLabInstructors ? (
-															<>
-																{values.labInstructors.map(
-																	(instructor) => (
-																		<option
-																			key={instructor._id}
-																			value={instructor._id}
-																		>
-																			{
-																				instructor.user
-																					.surname
-																			}
-																		</option>
-																	)
-																)}
-															</>
+										{isEditingLabInstructors ? (
+											<>
+												{values.labInstructors.map((labInstructor, index) => (
+													<Row key={index}>
+														<Col xs="10" sm="10" md="10">
+															<Field
+																as="select"
+																className="form-control mb-3"
+																name={`labInstructors[${index}]`}
+															>
+																<option
+																	key={labInstructor._id}
+																	value={labInstructor._id}
+																>
+																	{labInstructor.user.surname}
+																</option>
+															</Field>
+															<ErrorMessage
+																name={`labInstructors[${index}]`}
+																component={FormErrorMessage}
+															/>
+														</Col>
+														{index === 0 ? (
+															<Col
+																xs="2"
+																sm="2"
+																md="2"
+																className="mb-3 text-right"
+															>
+																<Button
+																	type="button"
+																	color="info"
+																	onClick={() =>
+																		setFieldValue('labInstructors', [
+																			...values.labInstructors,
+																			'',
+																		])
+																	}
+																	disabled={isSubmitting}
+																>
+																	+
+																</Button>
+															</Col>
 														) : (
-															<>
+															<Col
+																xs="2"
+																sm="2"
+																md="2"
+																className="mb-3 text-right"
+															>
+																<Button
+																	type="button"
+																	color="warning"
+																	onClick={() =>
+																		setFieldValue(
+																			'labInstructors',
+																			values.labInstructors.filter(
+																				(_, i) => i !== index
+																			)
+																		)
+																	}
+																>
+																	-
+																</Button>
+															</Col>
+														)}
+													</Row>
+												))}
+											</>
+										) : (
+											<>
+												{values.labInstructors.map((_, index) => (
+													<Row key={index}>
+														<Col xs="10" sm="10" md="10">
+															<Field
+																as="select"
+																className="form-control mb-3"
+																name={`labInstructors[${index}]`}
+															>
+																<option
+																	className="text-gray-600"
+																	value=""
+																	default
+																	disabled
+																>
+																	Lab Instructor{' '}
+																	{index === 0 ? null : '(' + (index + 1) + ')'}
+																</option>
 																{instructors.map((instructor) => (
 																	<option
 																		key={instructor._id}
@@ -245,60 +349,60 @@ export default function AssignInstructorForm({
 																		{instructor.user.surname}
 																	</option>
 																))}
-															</>
+															</Field>
+															<ErrorMessage
+																name={`labInstructors[${index}]`}
+																component={FormErrorMessage}
+															/>
+														</Col>
+														{index === 0 ? (
+															<Col
+																xs="2"
+																sm="2"
+																md="2"
+																className="mb-3 text-right"
+															>
+																<Button
+																	type="button"
+																	color="info"
+																	onClick={() =>
+																		setFieldValue('labInstructors', [
+																			...values.labInstructors,
+																			'',
+																		])
+																	}
+																	disabled={isSubmitting}
+																>
+																	+
+																</Button>
+															</Col>
+														) : (
+															<Col
+																xs="2"
+																sm="2"
+																md="2"
+																className="mb-3 text-right"
+															>
+																<Button
+																	type="button"
+																	color="warning"
+																	onClick={() =>
+																		setFieldValue(
+																			'labInstructors',
+																			values.labInstructors.filter(
+																				(_, i) => i !== index
+																			)
+																		)
+																	}
+																>
+																	-
+																</Button>
+															</Col>
 														)}
-													</Field>
-													<ErrorMessage
-														name={`labInstructors[${index}]`}
-														component={FormErrorMessage}
-													/>
-												</Col>
-												{index === 0 ? (
-													<Col
-														xs="2"
-														sm="2"
-														md="2"
-														className="mb-3 text-right"
-													>
-														<Button
-															type="button"
-															color="info"
-															onClick={() =>
-																setFieldValue('labInstructors', [
-																	...values.labInstructors,
-																	'',
-																])
-															}
-															disabled={isSubmitting}
-														>
-															+
-														</Button>
-													</Col>
-												) : (
-													<Col
-														xs="2"
-														sm="2"
-														md="2"
-														className="mb-3 text-right"
-													>
-														<Button
-															type="button"
-															color="warning"
-															onClick={() =>
-																setFieldValue(
-																	'labInstructors',
-																	values.labInstructors.filter(
-																		(_, i) => i !== index
-																	)
-																)
-															}
-														>
-															-
-														</Button>
-													</Col>
-												)}
-											</Row>
-										))}
+													</Row>
+												))}
+											</>
+										)}
 									</>
 								)}
 							</FormGroup>
@@ -321,7 +425,8 @@ export default function AssignInstructorForm({
 										<>
 											Please wait <Spinner type="grow" size="sm" />
 										</>
-									) : selectedPart === 'theory' && isEditingTheoryInstructors ? (
+									) : selectedPart === 'theory' &&
+									  isEditingTheoryInstructors ? (
 										'Update'
 									) : selectedPart === 'lab' && isEditingLabInstructors ? (
 										'Update'

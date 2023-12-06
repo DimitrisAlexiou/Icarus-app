@@ -1,25 +1,18 @@
-import { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 import { Row, Col } from 'reactstrap';
-import { getCourses } from '../../features/courses/courseSlice';
-import { getCycles } from '../../features/admin/cyclesSlice';
-import { getSemesters } from '../../features/admin/semesterSlice';
+import useNewCourse from '../../hooks/course/useNewCourse';
 import CourseForm from '../../components/course/forms/CourseForm';
 import BackButton from '../../components/buttons/BackButton';
-import Spinner from '../../components/boilerplate/Spinner';
+import Spinner from '../../components/boilerplate/spinners/Spinner';
 
 export default function NewCourse() {
-	const { courses, isLoading: coursesIsLoading } = useSelector((state) => state.courses);
-	const { cycles, isLoading: cyclesIsLoading } = useSelector((state) => state.cycles);
-	const { semesters, isLoading: semestersIsLoading } = useSelector((state) => state.semesters);
-
-	const dispatch = useDispatch();
-
-	useEffect(() => {
-		dispatch(getCourses());
-		dispatch(getCycles());
-		dispatch(getSemesters());
-	}, [dispatch]);
+	const {
+		courses,
+		cycles,
+		semesters,
+		coursesIsLoading,
+		cyclesIsLoading,
+		semestersIsLoading,
+	} = useNewCourse();
 
 	return (
 		<>
@@ -32,8 +25,34 @@ export default function NewCourse() {
 				</Col>
 			</Row>
 
+			{!semesters.length ? (
+				<Row className="mb-3 animated--grow-in">
+					<Col className="d-flex justify-content-center">
+						<span className="text-sm text-gray-500">
+							<small
+								className="text-warning pill-label mb-3"
+								style={{
+									textAlign: 'justify',
+									fontWeight: '700',
+									fontSize: 16,
+								}}
+							>
+								Warning
+							</small>
+							Semesters must be defined first in order to create a course.
+						</span>
+					</Col>
+				</Row>
+			) : null}
+
 			<Row className="justify-content-center animated--grow-in">
-				<Col lg="9">
+				<Col
+					lg="9"
+					style={{
+						pointerEvents: semesters.length ? 'auto' : 'none',
+						opacity: semesters.length ? 1 : 0.6,
+					}}
+				>
 					<div className="card shadow mb-4">
 						<div className="card-header py-3">
 							<h6 className="m-0 font-weight-bold text-primary">

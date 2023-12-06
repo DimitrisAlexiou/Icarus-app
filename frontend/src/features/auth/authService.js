@@ -24,9 +24,7 @@ const register = async (data) => {
 
 	const response = await axios.post(API_URL_REGISTER, data, config);
 
-	if (response.data) {
-		localStorage.setItem('user', JSON.stringify(response.data));
-	}
+	if (response.data) addUserToLocalStorage(response.data);
 
 	return response.data;
 };
@@ -64,7 +62,7 @@ const forgotPassword = async (data) => {
 	const response = await axios.post(API_URL_FORGOT_PASSWORD, data, config);
 
 	// if (response.data) {
-	// 	localStorage.setItem('user', JSON.stringify(response.data));
+	// 	addUserToLocalStorage(response.data));
 	// 	if (getLastPageFromLocalStorage()) {
 	// 		window.location.href = getLastPageFromLocalStorage();
 	// 		removeLastPageFromLocalStorage();
@@ -74,20 +72,8 @@ const forgotPassword = async (data) => {
 	return response.data;
 };
 
-const changePassword = async (data) => {
-	const config = {
-		headers: { headers },
-	};
-
-	const response = await axios.post(API_URL_USER, data, config);
-
-	// if (response.data) {
-	// 	localStorage.setItem('user', JSON.stringify(response.data));
-	// 	if (getLastPageFromLocalStorage()) {
-	// 		window.location.href = getLastPageFromLocalStorage();
-	// 		removeLastPageFromLocalStorage();
-	// 	}
-	// }
+const changePassword = async (userId, data) => {
+	const response = await axios.put(API_URL_USER + '/' + userId, data);
 
 	return response.data;
 };

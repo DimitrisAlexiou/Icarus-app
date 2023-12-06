@@ -1,7 +1,19 @@
 import { useState, useMemo, useRef } from 'react';
-import { Row, Col, Carousel, CarouselItem, CarouselIndicators, Card, CardBody } from 'reactstrap';
+import {
+	Row,
+	Col,
+	Carousel,
+	CarouselItem,
+	CarouselIndicators,
+	Card,
+	CardBody,
+} from 'reactstrap';
 
-export default function CarouselComponent({ objects, renderItem, onObjectClick }) {
+export default function CarouselComponent({
+	objects,
+	renderItem,
+	onObjectClick,
+}) {
 	const ref = useRef(null);
 	const itemsPerPage = 6;
 	const [activeIndex, setActiveIndex] = useState(0);
@@ -15,20 +27,25 @@ export default function CarouselComponent({ objects, renderItem, onObjectClick }
 					result[pageIndex].push(object);
 					return result;
 				},
-				Array.from({ length: Math.ceil(objects.length / itemsPerPage) }, () => [])
+				Array.from(
+					{ length: Math.ceil(objects.length / itemsPerPage) },
+					() => []
+				)
 			),
 		[objects, itemsPerPage]
 	);
 
 	const next = () => {
 		if (animating) return;
-		const nextIndex = activeIndex === objectPages.length - 1 ? 0 : activeIndex + 1;
+		const nextIndex =
+			activeIndex === objectPages.length - 1 ? 0 : activeIndex + 1;
 		setActiveIndex(nextIndex);
 	};
 
 	const previous = () => {
 		if (animating) return;
-		const nextIndex = activeIndex === 0 ? objectPages.length - 1 : activeIndex - 1;
+		const nextIndex =
+			activeIndex === 0 ? objectPages.length - 1 : activeIndex - 1;
 		setActiveIndex(nextIndex);
 	};
 
@@ -39,7 +56,13 @@ export default function CarouselComponent({ objects, renderItem, onObjectClick }
 
 	const renderCarouselItem = (object) => {
 		return (
-			<Card className="card-note mb-4">
+			<Card
+				className={
+					onObjectClick
+						? 'card-note mb-4 clickable-no-padding'
+						: 'card-note mb-4'
+				}
+			>
 				<CardBody>{renderItem(object)}</CardBody>
 			</Card>
 		);

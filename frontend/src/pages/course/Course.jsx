@@ -1,27 +1,19 @@
-import { useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
 import { Row, Col } from 'reactstrap';
-import { getCourse } from '../../features/courses/courseSlice';
-import { getTeachingByCourseId } from '../../features/courses/teachingSlice';
 import { faChalkboard } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import useCourse from '../../hooks/course/useCourse';
 import CourseCard from '../../components/course/cards/CourseCard';
 import BackButton from '../../components/buttons/BackButton';
-import Spinner from '../../components/boilerplate/Spinner';
+import Spinner from '../../components/boilerplate/spinners/Spinner';
 
 export default function Course() {
-	const { course, isLoading } = useSelector((state) => state.courses);
-	const { teaching, isLoading: isTeachingLoading } = useSelector((state) => state.teachings);
-
-	const { courseId } = useParams();
-	const dispatch = useDispatch();
-	const navigate = useNavigate();
-
-	useEffect(() => {
-		dispatch(getCourse(courseId));
-		if (course.isActive) dispatch(getTeachingByCourseId(courseId));
-	}, [dispatch, courseId, course.isActive]);
+	const {
+		course,
+		teaching,
+		isCourseLoading,
+		isTeachingLoading,
+		handleNavigateToTeaching,
+	} = useCourse();
 
 	return (
 		<>
@@ -67,9 +59,7 @@ export default function Course() {
 														fontWeight: '700',
 														fontSize: 12,
 													}}
-													onClick={() =>
-														navigate('/teaching/' + teaching._id)
-													}
+													onClick={() => handleNavigateToTeaching(teaching)}
 												>
 													Teaching
 												</small>
@@ -79,7 +69,7 @@ export default function Course() {
 								) : null}
 							</Row>
 						</div>
-						{isLoading || isTeachingLoading ? (
+						{isCourseLoading || isTeachingLoading ? (
 							<Spinner card />
 						) : (
 							<div className="card-body">

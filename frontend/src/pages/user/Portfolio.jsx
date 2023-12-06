@@ -1,9 +1,7 @@
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import { useState } from 'react';
 import { Row, Col, NavItem, NavLink } from 'reactstrap';
-import { getTeaching } from '../../features/courses/teachingSlice';
 import { portfolioCategories } from '../../utils/NavigationLinks';
+import usePortfolio from '../../hooks/user/usePortfolio';
 import Documents from '../../components/portfolio/Documents';
 import Calendar from '../../components/calendar/Calendar';
 import Exercises from '../../components/portfolio/Exercises';
@@ -11,19 +9,12 @@ import Chat from '../../components/portfolio/Chat';
 import MessagesCard from '../../components/portfolio/MessagesCard';
 import AnnouncementsCard from '../../components/portfolio/AnnouncementsCard';
 import BreadcrumbNav from '../../components/boilerplate/Breadcrumb';
-import Spinner from '../../components/boilerplate/Spinner';
+import Spinner from '../../components/boilerplate/spinners/Spinner';
 
 export default function Portfolio() {
-	const { teaching, isLoading } = useSelector((state) => state.teachings);
+	const { teaching, isLoading } = usePortfolio();
 
-	const { teachingId } = useParams();
 	const [selectedCategory, setSelectedCategory] = useState('Documents');
-
-	const dispatch = useDispatch();
-
-	useEffect(() => {
-		dispatch(getTeaching(teachingId));
-	}, [dispatch, teachingId]);
 
 	return (
 		<>
@@ -34,7 +25,9 @@ export default function Portfolio() {
 				active={teaching?.course?.title}
 			/>
 
-			<h3 className="mb-4 text-gray-800 font-weight-bold animated--grow-in">Portfolio</h3>
+			<h3 className="mb-4 text-gray-800 font-weight-bold animated--grow-in">
+				Portfolio
+			</h3>
 
 			<Row className="mb-3 animated--grow-in justify-content-center">
 				<Col

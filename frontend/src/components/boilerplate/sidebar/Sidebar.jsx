@@ -1,16 +1,22 @@
 import { NavLink } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import { Nav, NavItem } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { FaStudiovinari } from 'react-icons/fa';
-import { faUniversity, faBarsStaggered } from '@fortawesome/free-solid-svg-icons';
+import {
+	faUniversity,
+	faBarsStaggered,
+} from '@fortawesome/free-solid-svg-icons';
 import { UserType } from '../../../constants/enums';
 import AdminSidebar from './AdminSidebar';
 import InstructorSidebar from './InstructorSidebar';
 import StudentSidebar from './StudentSidebar';
 
-export default function Sidebar({ isSidebarCollapsed, setSidebarCollapsed, smallSidebar }) {
-	const { user } = useSelector((state) => state.auth);
+export default function Sidebar({
+	user,
+	isSidebarCollapsed,
+	setSidebarCollapsed,
+	smallSidebar,
+}) {
 	const smallToggled = () => {
 		if (smallSidebar) setSidebarCollapsed(true);
 	};
@@ -45,9 +51,15 @@ export default function Sidebar({ isSidebarCollapsed, setSidebarCollapsed, small
 				</NavItem>
 
 				{user && user.user.type === UserType.student ? (
-					<StudentSidebar smallSidebar={smallSidebar} smallToggled={smallToggled} />
+					<StudentSidebar
+						smallSidebar={smallSidebar}
+						smallToggled={smallToggled}
+					/>
 				) : user && user.user.type === UserType.instructor ? (
-					<InstructorSidebar smallSidebar={smallSidebar} smallToggled={smallToggled} />
+					<InstructorSidebar
+						smallSidebar={smallSidebar}
+						smallToggled={smallToggled}
+					/>
 				) : user && user.user.isAdmin ? (
 					<AdminSidebar
 						smallSidebar={smallSidebar}

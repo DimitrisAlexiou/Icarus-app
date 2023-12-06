@@ -1,11 +1,16 @@
-import { useState, useEffect } from 'react';
-import { Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+import { useState } from 'react';
+import {
+	Dropdown,
+	DropdownToggle,
+	DropdownMenu,
+	DropdownItem,
+} from 'reactstrap';
 import { Link } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope } from '@fortawesome/free-regular-svg-icons';
 // import { getMessages, reset } from '../../features/messages/messagesSlice';
-import Spinner from './Spinner';
+import Spinner from './spinners/Spinner';
 
 export default function Inbox() {
 	// const { messages, isLoading, isSuccess } = useSelector(
@@ -71,8 +76,8 @@ export default function Inbox() {
 						</div>
 						<div>
 							<div className="text-truncate">
-								I have the photos that you ordered last month, how would you like
-								them sent to you?
+								I have the photos that you ordered last month, how would you
+								like them sent to you?
 							</div>
 							<div className="small text-gray-500">Jae Chun · 1d</div>
 						</div>
@@ -84,8 +89,8 @@ export default function Inbox() {
 						</div>
 						<div>
 							<div className="text-truncate">
-								Last month's report looks great, I am very happy with the progress
-								so far, keep up the good work!
+								Last month's report looks great, I am very happy with the
+								progress so far, keep up the good work!
 							</div>
 							<div className="small text-gray-500">Morgan Alvarez · 2d</div>
 						</div>
@@ -97,8 +102,8 @@ export default function Inbox() {
 						</div>
 						<div>
 							<div className="text-truncate">
-								Am I a good boy? The reason I ask is because someone told me that
-								people say this to all dogs, even if they aren't good...
+								Am I a good boy? The reason I ask is because someone told me
+								that people say this to all dogs, even if they aren't good...
 							</div>
 							<div className="small text-gray-500">Chicken the Dog · 2w</div>
 						</div>

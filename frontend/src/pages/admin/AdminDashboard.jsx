@@ -1,5 +1,3 @@
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { Col, Row, Badge, Button } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -9,66 +7,47 @@ import {
 	faUsers,
 	faLayerGroup,
 	faClockRotateLeft,
-	faSpinner,
 	faChalkboard,
 	faListCheck,
 } from '@fortawesome/free-solid-svg-icons';
-import { faNoteSticky, faComment, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
-import { deleteCourses, getCourses } from '../../features/courses/courseSlice';
-import { getTeachings } from '../../features/courses/teachingSlice';
-import { getStatements } from '../../features/courses/statementSlice';
-import { getSemesters } from '../../features/admin/semesterSlice';
-import { getCycles } from '../../features/admin/cyclesSlice';
-import { getInstructors, getStudents, getUsers } from '../../features/admin/userSlice';
-import { getNotes } from '../../features/notes/noteSlice';
-import { getTeachingReviews } from '../../features/reviews/teachingReviewSlice';
-import { getInstructorReviews } from '../../features/reviews/instructorReviewSlice';
-import { getGeneralReviews } from '../../features/reviews/generalReviewSlice';
-import { deleteAlert } from '../../constants/sweetAlertNotification';
+import {
+	faNoteSticky,
+	faComment,
+	faTrashAlt,
+} from '@fortawesome/free-regular-svg-icons';
+import useAdminDashboard from '../../hooks/admin/useAdminDashboard';
 import Calendar from '../../components/calendar/Calendar';
 import CoursesDataTable from '../../components/admin/CoursesDataTable';
 import SemestersDataTable from '../../components/admin/SemestersDataTable';
-import Spinner from '../../components/boilerplate/Spinner';
+import Spinner from '../../components/boilerplate/spinners/Spinner';
+import SpinnerComponent from '../../components/boilerplate/spinners/SpinnerMessage';
 
 export default function AdminDashboard() {
-	const { courses, isLoading: coursesIsLoading } = useSelector((state) => state.courses);
-	const { teachings, isLoading: teachingsIsLoading } = useSelector((state) => state.teachings);
-	const { statements, isLoading: isStatementsLoading } = useSelector((state) => state.statements);
 	const {
+		courses,
+		teachings,
+		statements,
 		users,
 		students,
 		instructors,
-		isLoading: usersIsLoading,
-	} = useSelector((state) => state.users);
-	const { cycles, isLoading: cyclesIsLoading } = useSelector((state) => state.cycles);
-	const { semesters, isLoading: semestersIsLoading } = useSelector((state) => state.semesters);
-	const { notes, isLoading: notesIsLoading } = useSelector((state) => state.notes);
-	const { teachingReviews, isLoading: teachingReviewsIsLoading } = useSelector(
-		(state) => state.teachingReviews
-	);
-	const { instructorReviews, isLoading: instructorReviewsIsLoading } = useSelector(
-		(state) => state.instructorReviews
-	);
-	const { generalReviews, isLoading: generalReviewsIsLoading } = useSelector(
-		(state) => state.generalReviews
-	);
-
-	const dispatch = useDispatch();
-
-	useEffect(() => {
-		dispatch(getCourses());
-		dispatch(getTeachings());
-		dispatch(getStatements());
-		dispatch(getSemesters());
-		dispatch(getCycles());
-		dispatch(getUsers());
-		dispatch(getStudents());
-		dispatch(getInstructors());
-		dispatch(getNotes());
-		dispatch(getTeachingReviews());
-		dispatch(getInstructorReviews());
-		dispatch(getGeneralReviews());
-	}, [dispatch]);
+		cycles,
+		semesters,
+		notes,
+		teachingReviews,
+		instructorReviews,
+		generalReviews,
+		coursesIsLoading,
+		teachingsIsLoading,
+		isStatementsLoading,
+		usersIsLoading,
+		cyclesIsLoading,
+		semestersIsLoading,
+		notesIsLoading,
+		teachingReviewsIsLoading,
+		instructorReviewsIsLoading,
+		generalReviewsIsLoading,
+		deleteSystemCourses,
+	} = useAdminDashboard();
 
 	return (
 		<>
@@ -134,9 +113,7 @@ export default function AdminDashboard() {
 											Student Course Statements
 										</div>
 										<div className="h5 mb-0 font-weight-bold text-gray-800">
-											{statements && statements.length
-												? statements.length
-												: 0}
+											{statements && statements.length ? statements.length : 0}
 										</div>
 									</Col>
 									<div className="col-auto">
@@ -296,7 +273,9 @@ export default function AdminDashboard() {
 				</>
 			)}
 
-			{teachingReviewsIsLoading || instructorReviewsIsLoading || generalReviewsIsLoading ? (
+			{teachingReviewsIsLoading ||
+			instructorReviewsIsLoading ||
+			generalReviewsIsLoading ? (
 				<Spinner card />
 			) : (
 				<>
@@ -393,7 +372,7 @@ export default function AdminDashboard() {
 									<Button
 										className="btn btn-red align-self-center"
 										color="null"
-										onClick={() => deleteAlert(() => dispatch(deleteCourses()))}
+										onClick={() => deleteSystemCourses()}
 									>
 										<FontAwesomeIcon icon={faTrashAlt} />
 									</Button>
@@ -417,13 +396,7 @@ export default function AdminDashboard() {
 						<div className="profile_card">
 							<div className="card-body">
 								<div className="align-items-center text-center">
-									<span className="text-gray-500 animated--grow-in d-flex justify-content-center">
-										There are no courses registered in the system !
-										<FontAwesomeIcon
-											className="fa-1x text-gray-300 px-4"
-											icon={faSpinner}
-										/>
-									</span>
+									<SpinnerComponent message="There are no courses registered in the system." />
 								</div>
 							</div>
 						</div>
@@ -465,13 +438,7 @@ export default function AdminDashboard() {
 						<div className="profile_card">
 							<div className="card-body">
 								<div className="align-items-center text-center">
-									<span className="text-gray-500 animated--grow-in d-flex justify-content-center">
-										There are no semesters defined in the system !
-										<FontAwesomeIcon
-											className="fa-1x text-gray-300 px-4"
-											icon={faSpinner}
-										/>
-									</span>
+									<SpinnerComponent message="There are no semesters defined in the system." />
 								</div>
 							</div>
 						</div>

@@ -25,14 +25,18 @@ export default function InstructorReviewForm({
 		<>
 			<Formik
 				initialValues={{
-					good_organization: instructorReview ? instructorReview.good_organization : 1,
+					good_organization: instructorReview
+						? instructorReview.good_organization
+						: 1,
 					clear_comprehensive_answers: instructorReview
 						? instructorReview.clear_comprehensive_answers
 						: 1,
 					student_participation: instructorReview
 						? instructorReview.student_participation
 						: 1,
-					course_consistency: instructorReview ? instructorReview.course_consistency : 1,
+					course_consistency: instructorReview
+						? instructorReview.course_consistency
+						: 1,
 					instructor_approachable: instructorReview
 						? instructorReview.instructor_approachable
 						: 1,
@@ -97,7 +101,10 @@ export default function InstructorReviewForm({
 									)}
 								</Field>
 							</Row>
-							<ErrorMessage name="good_organization" component={FormErrorMessage} />
+							<ErrorMessage
+								name="good_organization"
+								component={FormErrorMessage}
+							/>
 						</FormGroup>
 						<FormGroup className="form-floating mb-3" floating>
 							<Row>
@@ -105,25 +112,25 @@ export default function InstructorReviewForm({
 									for="clear_comprehensive_answers"
 									className="text-gray-600 mt-2"
 								>
-									<Field
-										className="form-control"
-										name="clear_comprehensive_answers"
-									>
-										{({ field, form }) => (
-											<RangeSlider
-												step={1}
-												min={1}
-												max={5}
-												value={field.value}
-												onChange={(e) =>
-													form.setFieldValue(field.name, e.target.value)
-												}
-												tooltipPlacement="top"
-											/>
-										)}
-									</Field>
 									Clear and comprehensive answers/exemplifications/examples
 								</Label>
+								<Field
+									className="form-control"
+									name="clear_comprehensive_answers"
+								>
+									{({ field, form }) => (
+										<RangeSlider
+											step={1}
+											min={1}
+											max={5}
+											value={field.value}
+											onChange={(e) =>
+												form.setFieldValue(field.name, e.target.value)
+											}
+											tooltipPlacement="top"
+										/>
+									)}
+								</Field>
 							</Row>
 							<ErrorMessage
 								name="clear_comprehensive_answers"
@@ -132,7 +139,10 @@ export default function InstructorReviewForm({
 						</FormGroup>
 						<FormGroup className="form-floating mb-3" floating>
 							<Row>
-								<Label for="student_participation" className="text-gray-600 mt-2">
+								<Label
+									for="student_participation"
+									className="text-gray-600 mt-2"
+								>
 									Active student participation encouragement
 								</Label>
 								<Field className="form-control" name="student_participation">
@@ -175,11 +185,17 @@ export default function InstructorReviewForm({
 									)}
 								</Field>
 							</Row>
-							<ErrorMessage name="course_consistency" component={FormErrorMessage} />
+							<ErrorMessage
+								name="course_consistency"
+								component={FormErrorMessage}
+							/>
 						</FormGroup>
 						<FormGroup className="form-floating mb-3" floating>
 							<Row>
-								<Label for="instructor_approachable" className="text-gray-600 mt-2">
+								<Label
+									for="instructor_approachable"
+									className="text-gray-600 mt-2"
+								>
 									Approachability of the Instructor
 								</Label>
 								<Field className="form-control" name="instructor_approachable">

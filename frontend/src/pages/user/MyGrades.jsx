@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { Row, Col, NavItem, NavLink } from 'reactstrap';
-import { useSelector } from 'react-redux';
 import {
 	faBarcode,
 	faChartSimple,
@@ -19,12 +18,11 @@ import {
 	faLightbulb,
 	faCircle,
 } from '@fortawesome/free-regular-svg-icons';
-import { academicSemesters, getOrdinal } from '../../utils/semesters';
+import { academicSemesters, getOrdinalSemesters } from '../../utils/semesters';
 import { myGradesCategories } from '../../utils/NavigationLinks';
 import DoughnutChart from '../../components/charts/Doughnut';
 
-export default function MyGrades() {
-	const { user } = useSelector((state) => state.auth);
+export default function MyGrades({ user }) {
 	const [selectedCategory, setSelectedCategory] = useState('Recent Grades');
 
 	const passedCourses = ['Mobile and Wireless Networks Security'];
@@ -262,8 +260,7 @@ export default function MyGrades() {
 																	className="mr-2 text-gray-600"
 																	icon={faPersonChalkboard}
 																/>
-																ΓΕΩΡΓΙΟΣ ΚΑΜΠΟΥΡΑΚΗΣ, ΓΕΩΡΓΙΟΣ
-																ΣΤΕΡΓΙΟΠΟΥΛΟΣ
+																ΓΕΩΡΓΙΟΣ ΚΑΜΠΟΥΡΑΚΗΣ, ΓΕΩΡΓΙΟΣ ΣΤΕΡΓΙΟΠΟΥΛΟΣ
 																{/* {user.user.name.toUpperCase()} */}
 															</small>
 														</Col>
@@ -498,7 +495,7 @@ export default function MyGrades() {
 														className="mr-2 text-gray-600"
 														icon={faCircleDot}
 													/>
-													{getOrdinal(semester)} Semester
+													{getOrdinalSemesters(semester)} Semester
 												</h6>
 											</Col>
 										</Row>
@@ -550,8 +547,7 @@ export default function MyGrades() {
 																	className="mr-2 text-gray-600"
 																	icon={faPersonChalkboard}
 																/>
-																ΓΕΩΡΓΙΟΣ ΚΑΜΠΟΥΡΑΚΗΣ, ΓΕΩΡΓΙΟΣ
-																ΣΤΕΡΓΙΟΠΟΥΛΟΣ
+																ΓΕΩΡΓΙΟΣ ΚΑΜΠΟΥΡΑΚΗΣ, ΓΕΩΡΓΙΟΣ ΣΤΕΡΓΙΟΠΟΥΛΟΣ
 																{/* {user.user.name.toUpperCase()} */}
 															</small>
 														</Col>
@@ -615,9 +611,7 @@ export default function MyGrades() {
 																</small>
 															</Col>
 															<Col>
-																<span className="text-secondary">
-																	6
-																</span>
+																<span className="text-secondary">6</span>
 															</Col>
 															<Col xs="6" sm="6" md="2">
 																<small
@@ -632,9 +626,7 @@ export default function MyGrades() {
 																</small>
 															</Col>
 															<Col>
-																<span className="text-secondary">
-																	5.83
-																</span>
+																<span className="text-secondary">5.83</span>
 															</Col>
 															<Col xs="6" sm="6" md="2">
 																<small
@@ -649,9 +641,7 @@ export default function MyGrades() {
 																</small>
 															</Col>
 															<Col>
-																<span className="text-secondary">
-																	30/30
-																</span>
+																<span className="text-secondary">30/30</span>
 															</Col>
 														</Row>
 													</Col>

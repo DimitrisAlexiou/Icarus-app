@@ -1,27 +1,31 @@
-import { useEffect, useRef, useState, forwardRef } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useRef, useState, forwardRef } from 'react';
 import { Row, Col, Button, Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import { faArrowUp91 } from '@fortawesome/free-solid-svg-icons';
-import { deleteAlert } from '../../constants/sweetAlertNotification';
-import {
-	deleteTeaching,
-	deleteTeachings,
-	getTeachings,
-	setEditTeaching,
-	setEditTeachingGrading,
-} from '../../features/courses/teachingSlice';
+import useTeachings from '../../hooks/admin/useTeachings';
 import TeachingGradingForm from '../../components/course/forms/TeachingGradingForm';
 import TeachingForm from '../../components/course/forms/TeachingForm';
-import CustomSpinner from '../../components/boilerplate/Spinner';
+import CustomSpinner from '../../components/boilerplate/spinners/Spinner';
 import DataTable from '../../components/DataTable';
+import SpinnerComponent from '../../components/boilerplate/spinners/SpinnerMessage';
 
 export default function Teachings() {
-	const { teachings, isLoading, isEditingTeaching, isEditingTeachingGrading, editTeachingId } =
-		useSelector((state) => state.teachings);
-	const { user } = useSelector((state) => state.auth);
+	const {
+		teachings,
+		user,
+		isLoading,
+		isEditingTeaching,
+		isEditingTeachingGrading,
+		editTeachingId,
+		filteredTeachings,
+		setEditTeaching,
+		setEditTeachingGrading,
+		handleTeachingRowClick,
+		handleDeleteTeachings,
+		handleDeleteTeaching,
+		dispatch,
+	} = useTeachings();
 
 	const modalRef = useRef(null);
 	const modalGradingRef = useRef(null);
@@ -39,9 +43,6 @@ export default function Teachings() {
 		theoryInstructors: [],
 		labInstructors: [],
 	});
-
-	const dispatch = useDispatch();
-	const navigate = useNavigate();
 
 	const toggle = () => {
 		setModal(!modal);
@@ -63,19 +64,15 @@ export default function Teachings() {
 		);
 	};
 
-	const handleTeachingRowClick = (teaching) => {
-		navigate(`/teaching/${teaching._id}`);
-	};
-
-	useEffect(() => {
-		dispatch(getTeachings());
-	}, [dispatch]);
-
 	const ModalComponent = forwardRef((props, ref) => {
 		return (
 			<Modal ref={ref} isOpen={modal} toggle={toggle} className="modal-lg">
 				<ModalHeader toggle={toggle}>
-					Edit Teaching ({currentTeaching?.course?.title})
+					Edit Teaching (
+					<span style={{ fontWeight: 'bold', fontSize: '21px' }}>
+						{currentTeaching?.course?.title}
+					</span>
+					)
 				</ModalHeader>
 				<ModalBody>
 					<TeachingForm
@@ -91,12 +88,31 @@ export default function Teachings() {
 
 	const ModalGradingComponent = forwardRef((props, ref) => {
 		return (
-			<Modal ref={ref} isOpen={modalGrading} toggle={toggleGrading} className="modal-lg">
+			<Modal
+				ref={ref}
+				isOpen={modalGrading}
+				toggle={toggleGrading}
+				className="modal-lg"
+			>
 				<ModalHeader toggle={toggleGrading}>
 					{(currentTeaching?.theoryExamination?.length ?? 0) ||
-					(currentTeaching?.labExamination?.length ?? 0)
-						? `Edit Grading (${currentTeaching?.course?.title})`
-						: `Configure Grading (${currentTeaching?.course?.title})`}
+					(currentTeaching?.labExamination?.length ?? 0) ? (
+						<>
+							Edit Grading (
+							<span style={{ fontWeight: 'bold', fontSize: '21px' }}>
+								{currentTeaching?.course?.title}
+							</span>
+							)
+						</>
+					) : (
+						<>
+							Configure Grading (
+							<span style={{ fontWeight: 'bold', fontSize: '21px' }}>
+								{currentTeaching?.course?.title}
+							</span>
+							)
+						</>
+					)}
 				</ModalHeader>
 				<ModalBody>
 					<TeachingGradingForm
@@ -150,7 +166,9 @@ export default function Teachings() {
 							className="btn btn-light"
 							onClick={(e) => {
 								e.stopPropagation();
-								dispatch(setEditTeachingGrading({ editTeachingId: teaching._id }));
+								dispatch(
+									setEditTeachingGrading({ editTeachingId: teaching._id })
+								);
 								setCurrentTeaching(teaching);
 								setModalGrading(true);
 							}}
@@ -161,9 +179,9 @@ export default function Teachings() {
 					<Col xs="4" sm="4">
 						<Button
 							className="btn btn-light"
-							onClick={async (e) => {
+							onClick={(e) => {
 								e.stopPropagation();
-								deleteAlert(() => dispatch(deleteTeaching(teaching._id)));
+								handleDeleteTeaching(teaching);
 							}}
 						>
 							<FontAwesomeIcon icon={faTrashAlt} />
@@ -174,30 +192,27 @@ export default function Teachings() {
 		},
 	];
 
-	const filteredTeachings = user.user.isAdmin
-		? teachings
-		: teachings.filter(
-				(teaching) =>
-					teaching.theoryInstructors.some((instructor) => {
-						return instructor.user._id === user.user._id;
-					}) ||
-					teaching.labInstructors.some((instructor) => {
-						return instructor.user._id === user.user._id;
-					})
-		  );
-
 	return (
 		<>
 			<Row className="mb-4 animated--grow-in">
 				<Col xs="12" sm="12" md="5" lg="7" xl="8">
-					<h3 className="text-gray-800 font-weight-bold animated--grow-in">Teachings</h3>
+					<h3 className="text-gray-800 font-weight-bold animated--grow-in">
+						Teachings
+					</h3>
 				</Col>
 				{teachings.length && user.user.isAdmin ? (
-					<Col xs="12" sm="12" md="7" lg="5" xl="4" className="text-sm-right text-center">
+					<Col
+						xs="12"
+						sm="12"
+						md="7"
+						lg="5"
+						xl="4"
+						className="text-sm-right text-center"
+					>
 						<Button
 							className="btn btn-red align-self-center"
 							color="null"
-							onClick={() => deleteAlert(() => dispatch(deleteTeachings()))}
+							onClick={() => handleDeleteTeachings()}
 						>
 							<FontAwesomeIcon icon={faTrashAlt} /> Delete Teachings
 						</Button>
@@ -209,7 +224,14 @@ export default function Teachings() {
 				<CustomSpinner card />
 			) : filteredTeachings.length > 0 ? (
 				<Row className="justify-content-center animated--grow-in">
-					<Col className="card card-body mb-3" xs="12" sm="12" md="12" lg="12" xl="12">
+					<Col
+						className="card card-body mb-3"
+						xs="12"
+						sm="12"
+						md="12"
+						lg="12"
+						xl="12"
+					>
 						<DataTable
 							data={filteredTeachings}
 							config={dataTableConfig}
@@ -224,11 +246,7 @@ export default function Teachings() {
 					<Col>
 						<div className="profile_card">
 							<div className="card-body">
-								<div className="align-items-center text-center">
-									<span className="text-gray-500 animated--grow-in d-flex justify-content-center">
-										There are no active teachings in the system.
-									</span>
-								</div>
+								<SpinnerComponent message="There are no active teachings in the system." />
 							</div>
 						</div>
 					</Col>
@@ -236,7 +254,10 @@ export default function Teachings() {
 			)}
 
 			<ModalComponent ref={modalRef} toggle={toggle} />
-			<ModalGradingComponent ref={modalGradingRef} toggleGrading={toggleGrading} />
+			<ModalGradingComponent
+				ref={modalGradingRef}
+				toggleGrading={toggleGrading}
+			/>
 		</>
 	);
 }

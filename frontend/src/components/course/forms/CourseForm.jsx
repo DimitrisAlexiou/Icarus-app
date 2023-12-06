@@ -1,10 +1,22 @@
 import { useState, useEffect, useMemo, memo } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { FormGroup, Label, Row, Col, Button, Tooltip, Spinner } from 'reactstrap';
+import {
+	FormGroup,
+	Label,
+	Row,
+	Col,
+	Button,
+	Tooltip,
+	Spinner,
+} from 'reactstrap';
 import { Formik, Form, Field, FieldArray, ErrorMessage } from 'formik';
 import { CourseSchema } from '../../../schemas/course/Course';
-import { createCourse, setEditCourse, updateCourse } from '../../../features/courses/courseSlice';
+import {
+	createCourse,
+	setEditCourse,
+	updateCourse,
+} from '../../../features/courses/courseSlice';
 import { FormCheckbox } from '../../form/FormCheckbox';
 import { CourseType, PrerequisiteType } from '../../../constants/enums';
 import FormErrorMessage from '../../form/FormErrorMessage';
@@ -70,7 +82,9 @@ export default function CourseForm({
 	});
 
 	useEffect(() => {
-		setHasPrerequisites(course && course.prerequisites && course.prerequisites.length > 0);
+		setHasPrerequisites(
+			course && course.prerequisites && course.prerequisites.length > 0
+		);
 	}, [course]);
 
 	const dispatch = useDispatch();
@@ -96,6 +110,7 @@ export default function CourseForm({
 				enableReinitialize={true}
 				validationSchema={CourseSchema}
 				onSubmit={(values, { setSubmitting }) => {
+					console.log('Entered onSubmit');
 					const courseData = {
 						courseId: values.courseId,
 						title: values.title,
@@ -115,21 +130,22 @@ export default function CourseForm({
 							: [],
 						isActive: course ? course.isActive : false,
 					};
+					console.log(courseData);
 					if (isEditingCourse) {
-						console.log(courseData);
-						dispatch(updateCourse({ courseId: editCourseId, data: courseData }));
+						console.log('Updating course:', courseData);
+						dispatch(
+							updateCourse({ courseId: editCourseId, data: courseData })
+						);
 						setSubmitting(false);
 						dispatch(
-							setEditCourse({
-								isEditingCourse: false,
-								editCourseId: '',
-							})
+							setEditCourse({ isEditingCourse: false, editCourseId: '' })
 						);
-						return;
+					} else {
+						console.log('Creating course:', courseData);
+						dispatch(createCourse(courseData));
+						setSubmitting(false);
+						navigate('/course');
 					}
-					dispatch(createCourse(courseData));
-					setSubmitting(false);
-					navigate('/course');
 				}}
 				validateOnMount
 			>
@@ -217,7 +233,11 @@ export default function CourseForm({
 							</Col>
 							<Col md="2">
 								<FormGroup className="mx-1 mb-3 mt-3" check>
-									<Field type="checkbox" name="hasLab" component={FormCheckbox} />
+									<Field
+										type="checkbox"
+										name="hasLab"
+										component={FormCheckbox}
+									/>
 									<Label for="hasLab" className="text-gray-500">
 										Lab
 									</Label>
@@ -307,11 +327,7 @@ export default function CourseForm({
 								  (course && course.cycle) ? (
 									<>
 										<FormGroup className="form-floating mb-3" floating>
-											<Field
-												as="select"
-												className="form-control"
-												name="cycle"
-											>
+											<Field as="select" className="form-control" name="cycle">
 												<option default>Select course cycle</option>
 												{cycles.map((cycle) => (
 													<option key={cycle._id} value={cycle._id}>
@@ -322,10 +338,7 @@ export default function CourseForm({
 											<Label for="cycle" className="text-gray-600">
 												Course Cycle
 											</Label>
-											<ErrorMessage
-												name="cycle"
-												component={FormErrorMessage}
-											/>
+											<ErrorMessage name="cycle" component={FormErrorMessage} />
 										</FormGroup>
 									</>
 								) : null}
@@ -357,9 +370,7 @@ export default function CourseForm({
 															{values.prerequisites.length > 1 ? (
 																<Button
 																	color="warning"
-																	onClick={() =>
-																		arrayHelpers.pop()
-																	}
+																	onClick={() => arrayHelpers.pop()}
 																>
 																	-
 																</Button>
@@ -368,135 +379,89 @@ export default function CourseForm({
 													) : null}
 												</Row>
 												{values.prerequisites.length > 0 &&
-													values.prerequisites.map(
-														(prerequisite, index) => (
-															<Row key={prerequisite._id}>
-																<Col md="6">
-																	<FormGroup
-																		className="form-floating mb-3"
-																		floating
+													values.prerequisites.map((prerequisite, index) => (
+														<Row key={index}>
+															<Col md="6">
+																<FormGroup
+																	className="form-floating mb-3"
+																	floating
+																>
+																	<Field
+																		as="select"
+																		className="form-control"
+																		name={`prerequisites.${index}.prerequisite`}
 																	>
-																		<Field
-																			as="select"
-																			className="form-control"
-																			name={`prerequisites.${index}.prerequisite`}
-																		>
-																			<option default>
-																				Select prerequisite
-																			</option>
-																			{courses.map(
-																				(course) => (
-																					<option
-																						key={
-																							course._id
-																						}
-																						value={
-																							course._id
-																						}
-																					>
-																						{
-																							course.title
-																						}
-																					</option>
-																				)
-																			)}
-																		</Field>
-																		<Label
-																			for={`prerequisites.${index}.prerequisite`}
-																			className="text-gray-600"
-																		>
-																			Prerequisite {index + 1}
-																		</Label>
-																		<ErrorMessage
-																			name={`prerequisites.${index}.prerequisite`}
-																			component={
-																				FormErrorMessage
-																			}
-																		/>
-																	</FormGroup>
-																</Col>
-																<Col md="5">
-																	<FormGroup
-																		className="form-floating"
-																		floating
-																	>
-																		<Field
-																			as="select"
-																			className="form-control"
-																			name={`prerequisites.${index}.prerequisiteType`}
-																		>
-																			<option default>
-																				Select type
-																			</option>
+																		<option default>Select prerequisite</option>
+																		{courses.map((course) => (
 																			<option
-																				value={
-																					PrerequisiteType.Hard
-																				}
+																				key={course._id}
+																				value={course._id}
 																			>
-																				{
-																					PrerequisiteType.Hard
-																				}
+																				{course.title}
 																			</option>
-																			<option
-																				value={
-																					PrerequisiteType.Soft
-																				}
-																			>
-																				{
-																					PrerequisiteType.Soft
-																				}
-																			</option>
-																		</Field>
-																		<Label
-																			for={`prerequisites.${index}.prerequisiteType`}
-																			className="text-gray-600"
-																		>
-																			Prerequisite Type
-																		</Label>
-																		<ErrorMessage
-																			name={`prerequisites.${index}.prerequisiteType`}
-																			component={
-																				FormErrorMessage
-																			}
-																		/>
-																	</FormGroup>
-																</Col>
-																{isEditingCourse ? (
-																	<Col
-																		md="1"
-																		className="text-right"
+																		))}
+																	</Field>
+																	<Label
+																		for={`prerequisites.${index}.prerequisite`}
+																		className="text-gray-600"
 																	>
-																		{values.prerequisites
-																			.length > 1 ? (
-																			<Button
-																				color="warning"
-																				onClick={() =>
-																					arrayHelpers.remove(
-																						index
-																					)
-																				}
-																			>
-																				-
-																			</Button>
-																		) : isEditingCourse &&
-																		  values.prerequisites
-																				.length > 0 ? (
-																			<Button
-																				color="warning"
-																				onClick={() =>
-																					arrayHelpers.remove(
-																						index
-																					)
-																				}
-																			>
-																				-
-																			</Button>
-																		) : null}
-																	</Col>
-																) : null}
-															</Row>
-														)
-													)}
+																		Prerequisite {index + 1}
+																	</Label>
+																	<ErrorMessage
+																		name={`prerequisites.${index}.prerequisite`}
+																		component={FormErrorMessage}
+																	/>
+																</FormGroup>
+															</Col>
+															<Col md="5">
+																<FormGroup className="form-floating" floating>
+																	<Field
+																		as="select"
+																		className="form-control"
+																		name={`prerequisites.${index}.prerequisiteType`}
+																	>
+																		<option default>Select type</option>
+																		<option value={PrerequisiteType.Hard}>
+																			{PrerequisiteType.Hard}
+																		</option>
+																		<option value={PrerequisiteType.Soft}>
+																			{PrerequisiteType.Soft}
+																		</option>
+																	</Field>
+																	<Label
+																		for={`prerequisites.${index}.prerequisiteType`}
+																		className="text-gray-600"
+																	>
+																		Prerequisite Type
+																	</Label>
+																	<ErrorMessage
+																		name={`prerequisites.${index}.prerequisiteType`}
+																		component={FormErrorMessage}
+																	/>
+																</FormGroup>
+															</Col>
+															{isEditingCourse ? (
+																<Col md="1" className="text-right">
+																	{values.prerequisites.length > 1 ? (
+																		<Button
+																			color="warning"
+																			onClick={() => arrayHelpers.remove(index)}
+																		>
+																			-
+																		</Button>
+																	) : isEditingCourse &&
+																	  values.prerequisites.length > 0 ? (
+																		<Button
+																			color="warning"
+																			onClick={() => arrayHelpers.remove(index)}
+																		>
+																			-
+																		</Button>
+																	) : null}
+																</Col>
+															) : null}
+														</Row>
+													))}
 											</>
 										)}
 									/>

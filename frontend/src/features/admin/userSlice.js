@@ -1,6 +1,9 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { extractErrorMessage } from '../../utils/errorMessage';
-import { Toast } from '../../constants/sweetAlertNotification';
+import {
+	displayErrorNotification,
+	displaySuccessNotification,
+} from '../../constants/sweetAlertNotification';
 import {
 	ACTIVATE_USER,
 	DEACTIVATE_USER,
@@ -32,21 +35,27 @@ export const getUsers = createAsyncThunk(GET_USERS, async (_, thunkAPI) => {
 	}
 });
 
-export const getStudents = createAsyncThunk(GET_STUDENTS, async (_, thunkAPI) => {
-	try {
-		return await userService.getStudents();
-	} catch (error) {
-		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+export const getStudents = createAsyncThunk(
+	GET_STUDENTS,
+	async (_, thunkAPI) => {
+		try {
+			return await userService.getStudents();
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
 	}
-});
+);
 
-export const getInstructors = createAsyncThunk(GET_INSTRUCTORS, async (_, thunkAPI) => {
-	try {
-		return await userService.getInstructors();
-	} catch (error) {
-		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+export const getInstructors = createAsyncThunk(
+	GET_INSTRUCTORS,
+	async (_, thunkAPI) => {
+		try {
+			return await userService.getInstructors();
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
 	}
-});
+);
 
 export const addUser = createAsyncThunk(ADD_USER, async (user, thunkAPI) => {
 	try {
@@ -56,45 +65,60 @@ export const addUser = createAsyncThunk(ADD_USER, async (user, thunkAPI) => {
 	}
 });
 
-export const updateUser = createAsyncThunk(UPDATE_USER, async ({ userId, data }, thunkAPI) => {
-	try {
-		return await userService.updateUser(userId, data);
-	} catch (error) {
-		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+export const updateUser = createAsyncThunk(
+	UPDATE_USER,
+	async ({ userId, data }, thunkAPI) => {
+		try {
+			return await userService.updateUser(userId, data);
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
 	}
-});
+);
 
-export const activateUser = createAsyncThunk(ACTIVATE_USER, async (userId, thunkAPI) => {
-	try {
-		return await userService.activateUser(userId);
-	} catch (error) {
-		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+export const activateUser = createAsyncThunk(
+	ACTIVATE_USER,
+	async (userId, thunkAPI) => {
+		try {
+			return await userService.activateUser(userId);
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
 	}
-});
+);
 
-export const deactivateUser = createAsyncThunk(DEACTIVATE_USER, async (userId, thunkAPI) => {
-	try {
-		return await userService.deactivateUser(userId);
-	} catch (error) {
-		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+export const deactivateUser = createAsyncThunk(
+	DEACTIVATE_USER,
+	async (userId, thunkAPI) => {
+		try {
+			return await userService.deactivateUser(userId);
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
 	}
-});
+);
 
-export const deleteUser = createAsyncThunk(DELETE_USER, async (userId, thunkAPI) => {
-	try {
-		return await userService.deleteUser(userId);
-	} catch (error) {
-		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+export const deleteUser = createAsyncThunk(
+	DELETE_USER,
+	async (userId, thunkAPI) => {
+		try {
+			return await userService.deleteUser(userId);
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
 	}
-});
+);
 
-export const deleteUsers = createAsyncThunk(DELETE_USERS, async (_, thunkAPI) => {
-	try {
-		return await userService.deleteUsers();
-	} catch (error) {
-		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+export const deleteUsers = createAsyncThunk(
+	DELETE_USERS,
+	async (_, thunkAPI) => {
+		try {
+			return await userService.deleteUsers();
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
 	}
-});
+);
 
 export const userSlice = createSlice({
 	name: 'user',
@@ -116,12 +140,10 @@ export const userSlice = createSlice({
 			})
 			.addCase(getUsers.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				if (payload !== 'Seems like there are no users registered in the system.')
-					Toast.fire({
-						title: 'Something went wrong!',
-						text: payload,
-						icon: 'error',
-					});
+				if (
+					payload !== 'Seems like there are no users registered in the system.'
+				)
+					displayErrorNotification(payload);
 			})
 			.addCase(getStudents.pending, (state) => {
 				state.isLoading = true;
@@ -132,12 +154,11 @@ export const userSlice = createSlice({
 			})
 			.addCase(getStudents.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				if (payload !== 'Seems like there are no students registered in the system.')
-					Toast.fire({
-						title: 'Something went wrong!',
-						text: payload,
-						icon: 'error',
-					});
+				if (
+					payload !==
+					'Seems like there are no students registered in the system.'
+				)
+					displayErrorNotification(payload);
 			})
 			.addCase(getInstructors.pending, (state) => {
 				state.isLoading = true;
@@ -148,143 +169,97 @@ export const userSlice = createSlice({
 			})
 			.addCase(getInstructors.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				if (payload !== 'Seems like there are no instructors registered in the system.')
-					Toast.fire({
-						title: 'Something went wrong!',
-						text: payload,
-						icon: 'error',
-					});
+				if (
+					payload !==
+					'Seems like there are no instructors registered in the system.'
+				)
+					displayErrorNotification(payload);
 			})
 			.addCase(addUser.pending, (state) => {
 				state.isLoading = true;
 			})
 			.addCase(addUser.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Success',
-					text: payload.message,
-					icon: 'success',
-				});
+				displaySuccessNotification(payload.message);
 				state.users = [...state.users, payload.user];
 			})
 			.addCase(addUser.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: payload,
-					icon: 'error',
-				});
+				displayErrorNotification(payload);
 			})
 			.addCase(updateUser.pending, (state) => {
 				state.isLoading = true;
 			})
 			.addCase(updateUser.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Success',
-					text: payload.message,
-					icon: 'success',
-				});
+				displaySuccessNotification(payload.message);
 				const updatedUserIndex = state.users.findIndex(
 					(user) => user._id === payload.updatedUser._id
 				);
-				if (updatedUserIndex !== -1) state.users[updatedUserIndex] = payload.updatedUser;
+				if (updatedUserIndex !== -1)
+					state.users[updatedUserIndex] = payload.updatedUser;
 			})
 			.addCase(updateUser.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: payload,
-					icon: 'error',
-				});
+				displayErrorNotification(payload);
 			})
 			.addCase(activateUser.pending, (state) => {
 				state.isLoading = true;
 			})
 			.addCase(activateUser.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Success',
-					text: payload.message,
-					icon: 'success',
-				});
+				displaySuccessNotification(payload.message);
 				const activatedUserIndex = state.users.findIndex(
 					(user) => user._id === payload.activatedUser._id
 				);
-				if (activatedUserIndex !== -1) state.users[activatedUserIndex].isActive = true;
+				if (activatedUserIndex !== -1)
+					state.users[activatedUserIndex].isActive = true;
 			})
 			.addCase(activateUser.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: payload,
-					icon: 'error',
-				});
+				displayErrorNotification(payload);
 			})
 			.addCase(deactivateUser.pending, (state) => {
 				state.isLoading = true;
 			})
 			.addCase(deactivateUser.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Success',
-					text: payload.message,
-					icon: 'success',
-				});
+				displaySuccessNotification(payload.message);
 				const deactivatedUserIndex = state.users.findIndex(
 					(user) => user._id === payload.deactivatedUser._id
 				);
-				if (deactivatedUserIndex !== -1) state.users[deactivatedUserIndex].isActive = false;
+				if (deactivatedUserIndex !== -1)
+					state.users[deactivatedUserIndex].isActive = false;
 			})
 			.addCase(deactivateUser.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: payload,
-					icon: 'error',
-				});
+				displayErrorNotification(payload);
 			})
 			.addCase(deleteUser.pending, (state) => {
 				state.isLoading = true;
 			})
 			.addCase(deleteUser.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Success',
-					text: payload.message,
-					icon: 'success',
-				});
+				displaySuccessNotification(payload.message);
 				state.users = state.users.filter((user) => {
 					return user._id !== payload.user;
 				});
 			})
 			.addCase(deleteUser.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: payload,
-					icon: 'error',
-				});
+				displayErrorNotification(payload);
 			})
 			.addCase(deleteUsers.pending, (state) => {
 				state.isLoading = true;
 			})
 			.addCase(deleteUsers.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Success',
-					text: payload,
-					icon: 'success',
-				});
+				displaySuccessNotification(payload);
 				state.users = [];
 			})
 			.addCase(deleteUsers.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: payload,
-					icon: 'error',
-				});
+				displayErrorNotification(payload);
 			});
 	},
 });

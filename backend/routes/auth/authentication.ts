@@ -28,8 +28,10 @@ export default (router: express.Router) => {
 	// @desc     Get User Profile / Change User Password
 	// @route   GET/POST /api/user/profile
 	// @access  Private
-	router.route('/user/profile').get(authorize, isOwner, viewProfile).post(changePassword);
-	// router.route('/user/profile').post(resetPasswordLimiter, changePassword);
+	router
+		.route('/user/profile')
+		.get(authorize, isOwner, viewProfile)
+		.put(authorize, isOwner, resetPasswordLimiter, changePassword);
 
 	// @desc    Route to revoke a token
 	// @route   POST /api/auth/revoke-token

@@ -57,9 +57,8 @@ export const getStudents = () =>
 	});
 export const getStudentById = (id: mongoose.Types.ObjectId) =>
 	Student.findById(id).populate('user');
-export const getStudentByUserId = (userId: string) => {
-	return Student.findOne({ user: userId });
-};
+export const getStudentByUserId = (userId: string) =>
+	Student.findOne({ user: userId });
 export const updateStudentById = (
 	id: string,
 	student: Record<string, any>,

@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
 import { Row, Col, NavItem, NavLink } from 'reactstrap';
 import { activityCategories } from '../../utils/NavigationLinks';
 import TeachingReviews from '../../components/review/TeachingReviews';
@@ -7,7 +6,6 @@ import InstructorReviews from '../../components/review/InstructorReviews';
 import GeneralReviews from '../../components/review/GeneralReviews';
 
 export default function Activity() {
-	const { user } = useSelector((state) => state.auth);
 	const [selectedCategory, setSelectedCategory] = useState('Reviews');
 
 	return (
@@ -55,13 +53,13 @@ export default function Activity() {
 				{selectedCategory === 'Reviews' ? (
 					<>
 						<Row className="mb-4 justify-content-center">
-							<TeachingReviews user={user} />
+							<TeachingReviews />
 						</Row>
 						<Row className="mb-4 justify-content-center">
-							<InstructorReviews user={user} />
+							<InstructorReviews />
 						</Row>
 						<Row className="mb-4 justify-content-center">
-							<GeneralReviews user={user} />
+							<GeneralReviews />
 						</Row>
 					</>
 				) : selectedCategory === 'ACTIVITY' ? null : selectedCategory ===

@@ -1,5 +1,4 @@
-import { useEffect, useState, useRef, forwardRef, useMemo } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useState, useRef, forwardRef, useMemo } from 'react';
 import {
 	Modal,
 	ModalHeader,
@@ -11,18 +10,31 @@ import {
 	NavItem,
 	NavLink,
 } from 'reactstrap';
-import { getUserNotes, deleteUserNotes, setEditNote } from '../../features/notes/noteSlice';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleExclamation, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import {
+	faCircleExclamation,
+	faTrashAlt,
+} from '@fortawesome/free-solid-svg-icons';
 import { faNoteSticky } from '@fortawesome/free-regular-svg-icons';
-import { deleteAlert } from '../../constants/sweetAlertNotification';
+import useNotes from '../../hooks/note/useNotes';
 import NoteForm from '../../components/note/NoteForm';
 import NoteItem from '../../components/note/NoteItem';
-import Spinner from '../../components/boilerplate/Spinner';
+import Spinner from '../../components/boilerplate/spinners/Spinner';
+import Header from '../../components/boilerplate/Header';
 
 export default function Notes() {
-	const { notes, isLoading, isEditingNote, editNoteId } = useSelector((state) => state.notes);
-	const { user } = useSelector((state) => state.auth);
+	const {
+		user,
+		notes,
+		isLoading,
+		isEditingNote,
+		editNoteId,
+		setEditNote,
+		allCategories,
+		hasImportantNotes,
+		handleDeleteUserNotes,
+		dispatch,
+	} = useNotes();
 
 	const [selectedNote, setSelectedNote] = useState(null);
 	const [selectedCategory, setSelectedCategory] = useState(null);
@@ -41,17 +53,13 @@ export default function Notes() {
 		);
 	};
 
-	const dispatch = useDispatch();
-
-	useEffect(() => {
-		dispatch(getUserNotes());
-	}, [dispatch]);
-
 	const ModalComponent = forwardRef(({ note, ...props }, ref) => {
 		return (
 			<Modal ref={ref} isOpen={modal} toggle={toggle} className="modal-lg">
 				<ModalHeader toggle={toggle}>
-					{isEditingNote ? 'Edit Note' : 'Fill the form below to post a new note'}
+					{isEditingNote
+						? 'Edit Note'
+						: 'Fill the form below to post a new note'}
 				</ModalHeader>
 				<ModalBody>
 					<NoteForm
@@ -67,8 +75,6 @@ export default function Notes() {
 		);
 	});
 
-	const allCategories = Array.from(new Set(notes.flatMap((note) => note.categories)));
-
 	const filteredNotesByCategory = useMemo(() => {
 		if (showImportant) return notes.filter((note) => note.importance);
 
@@ -77,15 +83,13 @@ export default function Notes() {
 			: notes;
 	}, [notes, selectedCategory, showImportant]);
 
-	const hasImportantNotes = useMemo(() => {
-		return notes.some((note) => note.importance);
-	}, [notes]);
-
 	return (
 		<>
 			<Row className="mb-4 animated--grow-in">
 				<Col sm="6" xs="6" md="6">
-					<h3 className="mb-3 text-gray-800 font-weight-bold animated--grow-in">Notes</h3>
+					<h3 className="mb-3 text-gray-800 font-weight-bold animated--grow-in">
+						Notes
+					</h3>
 				</Col>
 				<Col className="px-3 d-flex justify-content-end">
 					<Button
@@ -172,7 +176,7 @@ export default function Notes() {
 							pill
 							style={{ fontSize: '0.9rem' }}
 							className={`mx-1 d-flex align-items-center`}
-							onClick={() => deleteAlert(() => dispatch(deleteUserNotes()))}
+							onClick={() => handleDeleteUserNotes()}
 						>
 							<FontAwesomeIcon className="clickable" icon={faTrashAlt} />
 						</Badge>
@@ -186,6 +190,14 @@ export default function Notes() {
 				toggle={toggle}
 				note={selectedNote}
 			/>
+
+			{user.user.isAdmin ? (
+				<Row className="mb-4 justify-content-between animated--grow-in">
+					<Col className="text-center">
+						<Header title="User Notes" />
+					</Col>
+				</Row>
+			) : null}
 
 			{filteredNotesByCategory.length ? (
 				isLoading ? (
@@ -206,7 +218,10 @@ export default function Notes() {
 									setModal(true);
 								}}
 							>
-								<NoteItem note={note} setSelectedCategory={setSelectedCategory} />
+								<NoteItem
+									note={note}
+									setSelectedCategory={setSelectedCategory}
+								/>
 							</Col>
 						))}
 					</Row>
@@ -218,7 +233,9 @@ export default function Notes() {
 							<FontAwesomeIcon icon={faNoteSticky} />
 						</i>
 						<p className="text-gray-500 mt-5 mb-5">
-							There aren't any notes posted yet !
+							{user.user.isAdmin
+								? 'There are no notes registered in the system.'
+								: `There aren't any notes posted yet.`}
 						</p>
 					</div>
 				</div>

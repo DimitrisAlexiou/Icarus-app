@@ -132,11 +132,6 @@ export const sidebarCourseConfigDropDown = [
 		text: 'Teaching Grading',
 		path: 'teaching/grading',
 	},
-	{
-		id: 4,
-		text: 'Statement',
-		path: 'course/statement',
-	},
 ];
 
 export const sidebarStudentCourseLinks = [
@@ -261,19 +256,34 @@ export const navbarLinks = [
 		id: 1,
 		text: 'Profile',
 		path: '/user/profile',
-		icon: <FontAwesomeIcon className="fa-sm fa-fw mr-2 text-gray-400" icon={faUser} />,
+		icon: (
+			<FontAwesomeIcon
+				className="fa-sm fa-fw mr-2 text-gray-400"
+				icon={faUser}
+			/>
+		),
 	},
 	{
 		id: 2,
 		text: 'Settings',
 		path: '/user/settings',
-		icon: <FontAwesomeIcon className="fa-sm fa-fw mr-2 text-gray-400" icon={faGears} />,
+		icon: (
+			<FontAwesomeIcon
+				className="fa-sm fa-fw mr-2 text-gray-400"
+				icon={faGears}
+			/>
+		),
 	},
 	{
 		id: 3,
 		text: 'Activity Log',
 		path: '/user/activity',
-		icon: <FontAwesomeIcon className="fa-sm fa-fw mr-2 text-gray-400" icon={faList} />,
+		icon: (
+			<FontAwesomeIcon
+				className="fa-sm fa-fw mr-2 text-gray-400"
+				icon={faList}
+			/>
+		),
 	},
 ];
 

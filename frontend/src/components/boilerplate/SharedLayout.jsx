@@ -5,7 +5,7 @@ import Sidebar from './sidebar/Sidebar';
 import Footer from './Footer';
 import GoToTop from './GoToTop';
 
-export default function SharedLayout() {
+export default function SharedLayout({ user }) {
 	const [isSidebarCollapsed, setSidebarCollapsed] = useState(false);
 	const [smallSidebar, setSmallSidebar] = useState(false);
 
@@ -30,6 +30,7 @@ export default function SharedLayout() {
 		<>
 			<div id="wrapper">
 				<Sidebar
+					user={user}
 					isSidebarCollapsed={isSidebarCollapsed}
 					setSidebarCollapsed={setSidebarCollapsed}
 					smallSidebar={smallSidebar}
@@ -38,6 +39,7 @@ export default function SharedLayout() {
 				<div id="content-wrapper" className="d-flex flex-column">
 					<div id="content">
 						<Navbar
+							user={user}
 							isSidebarCollapsed={isSidebarCollapsed}
 							setSidebarCollapsed={setSidebarCollapsed}
 						/>

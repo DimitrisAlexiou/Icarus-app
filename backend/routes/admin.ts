@@ -63,7 +63,10 @@ import {
 	getSystemGeneralReviews,
 	deleteSystemGeneralReviews,
 } from '../controllers/admin/generalReview';
-import { deleteAllUsersNotes, getAllUsersNotes } from '../controllers/admin/note';
+import {
+	deleteAllUsersNotes,
+	getAllUsersNotes,
+} from '../controllers/admin/note';
 import { authorize, checkUserRole } from '../middleware/authMiddleware';
 import { UserType } from '../models/users/user';
 
@@ -73,7 +76,12 @@ export default (router: express.Router) => {
 	// @access  Private
 	router
 		.route('/admin/configuration/semester')
-		.post(authorize, checkUserRole([UserType.admin]), validateSemester, defineSemester)
+		.post(
+			authorize,
+			checkUserRole([UserType.admin]),
+			validateSemester,
+			defineSemester
+		)
 		.get(authorize, viewSemester);
 
 	// @desc    Update / Delete Semester
@@ -81,7 +89,12 @@ export default (router: express.Router) => {
 	// @access  Private
 	router
 		.route('/admin/configuration/semester/:id')
-		.put(authorize, checkUserRole([UserType.admin]), validateSemester, updateSemester)
+		.put(
+			authorize,
+			checkUserRole([UserType.admin]),
+			validateSemester,
+			updateSemester
+		)
 		.delete(authorize, checkUserRole([UserType.admin]), deleteSemester);
 
 	// @desc    View / Delete Semesters
@@ -97,15 +110,25 @@ export default (router: express.Router) => {
 	// @access  Private
 	router
 		.route('/admin/configuration/assessment')
-		.post(authorize, checkUserRole([UserType.admin]), validateAssessment, defineAssessment)
-		.get(authorize, checkUserRole([UserType.admin]), viewAssessment);
+		.post(
+			authorize,
+			checkUserRole([UserType.admin]),
+			validateAssessment,
+			defineAssessment
+		)
+		.get(authorize, viewAssessment);
 
 	// @desc    Update / Delete Assessment Statement Duration period
 	// @route   PUT/DELETE /api/admin/configuration/assessment/:id
 	// @access  Private
 	router
 		.route('/admin/configuration/assessment/:id')
-		.put(authorize, checkUserRole([UserType.admin]), validateAssessment, updateAssessment)
+		.put(
+			authorize,
+			checkUserRole([UserType.admin]),
+			validateAssessment,
+			updateAssessment
+		)
 		.delete(authorize, checkUserRole([UserType.admin]), deleteAssessment);
 
 	// @desc    Define / View Review Statement period
@@ -113,15 +136,29 @@ export default (router: express.Router) => {
 	// @access  Private
 	router
 		.route('/admin/configuration/review')
-		.post(authorize, checkUserRole([UserType.admin]), validateReview, defineReviewStatement)
-		.get(authorize, checkUserRole([UserType.admin, UserType.student]), getReviewStatement);
+		.post(
+			authorize,
+			checkUserRole([UserType.admin]),
+			validateReview,
+			defineReviewStatement
+		)
+		.get(
+			authorize,
+			checkUserRole([UserType.admin, UserType.student]),
+			getReviewStatement
+		);
 
 	// @desc    Update / Delete Review Statement period
 	// @route   PUT/DELETE /api/admin/configuration/review/:id
 	// @access  Private
 	router
 		.route('/admin/configuration/review/:id')
-		.put(authorize, checkUserRole([UserType.admin]), validateReview, updateReviewStatement)
+		.put(
+			authorize,
+			checkUserRole([UserType.admin]),
+			validateReview,
+			updateReviewStatement
+		)
 		.delete(authorize, checkUserRole([UserType.admin]), deleteReviewStatement);
 
 	// @desc    Define / View / Delete List of Cycles
@@ -147,7 +184,12 @@ export default (router: express.Router) => {
 	// @access  Private
 	router
 		.route('/admin/configuration/degree_rules')
-		.post(authorize, checkUserRole([UserType.admin]), validateDegreeRules, defineDegreeRules)
+		.post(
+			authorize,
+			checkUserRole([UserType.admin]),
+			validateDegreeRules,
+			defineDegreeRules
+		)
 		.get(authorize, checkUserRole([UserType.admin]), viewDegreeRules);
 
 	// @desc    Update / Delete Degree Rules
@@ -155,8 +197,17 @@ export default (router: express.Router) => {
 	// @access  Private
 	router
 		.route('/admin/configuration/degree_rules/:id')
-		.put(authorize, checkUserRole([UserType.admin]), validateDegreeRules, updateDegreeRules)
-		.delete(authorize, checkUserRole([UserType.admin]), deleteSystemDegreeRules);
+		.put(
+			authorize,
+			checkUserRole([UserType.admin]),
+			validateDegreeRules,
+			updateDegreeRules
+		)
+		.delete(
+			authorize,
+			checkUserRole([UserType.admin]),
+			deleteSystemDegreeRules
+		);
 
 	// @desc    Create User / Get Users / Delete Users
 	// @route   POST/GET/DELETE /api/admin/users
@@ -209,7 +260,11 @@ export default (router: express.Router) => {
 	router
 		.route('/admin/review/teaching')
 		.get(authorize, getSystemTeachingReviews)
-		.delete(authorize, checkUserRole([UserType.admin]), deleteSystemTeachingReviews);
+		.delete(
+			authorize,
+			checkUserRole([UserType.admin]),
+			deleteSystemTeachingReviews
+		);
 
 	// @desc    Get / Delete System Instructor Reviews
 	// @route   GET/DELETE /api/admin/review/instructor
@@ -217,7 +272,11 @@ export default (router: express.Router) => {
 	router
 		.route('/admin/review/instructor')
 		.get(authorize, getSystemInstructorReviews)
-		.delete(authorize, checkUserRole([UserType.admin]), deleteSystemInstructorReviews);
+		.delete(
+			authorize,
+			checkUserRole([UserType.admin]),
+			deleteSystemInstructorReviews
+		);
 
 	// @desc    Get / Delete System General Reviews
 	// @route   GET/DELETE /api/admin/review/general
@@ -225,7 +284,11 @@ export default (router: express.Router) => {
 	router
 		.route('/admin/review/general')
 		.get(authorize, getSystemGeneralReviews)
-		.delete(authorize, checkUserRole([UserType.admin]), deleteSystemGeneralReviews);
+		.delete(
+			authorize,
+			checkUserRole([UserType.admin]),
+			deleteSystemGeneralReviews
+		);
 
 	// @desc    Get / Delete Notes
 	// @route   GET/DELETE /api/admin/notes

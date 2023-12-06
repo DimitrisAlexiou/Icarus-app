@@ -1,31 +1,25 @@
-import { useEffect, useRef, useState, forwardRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useRef, useState, forwardRef } from 'react';
 import { Row, Col, Button, Modal, ModalHeader, ModalBody } from 'reactstrap';
-import { getInstructors, resetUsers } from '../../features/admin/userSlice';
 import { faChalkboardTeacher } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import AssignInstructorForm from '../../components/course/forms/AssignInstructorForm';
+import useInstructors from '../../hooks/admin/useInstructors';
+import AssignInstructorFormDataTable from '../../components/course/forms/AssignInstructorFormDataTable';
 import DataTable from '../../components/DataTable';
-import Spinner from '../../components/boilerplate/Spinner';
+import Spinner from '../../components/boilerplate/spinners/Spinner';
+import SpinnerComponent from '../../components/boilerplate/spinners/SpinnerMessage';
+import Header from '../../components/boilerplate/Header';
 
 export default function Instructors() {
-	const { instructors, isLoading } = useSelector((state) => state.users);
+	const { instructors, isLoading } = useInstructors();
 
 	const modalRef = useRef(null);
 	const [modal, setModal] = useState(false);
-	const [selectedTeaching, setSelectedTeaching] = useState(null);
 	const [currentInstructor, setCurrentInstructor] = useState(null);
 
 	const toggle = () => {
 		setModal(!modal);
+		setCurrentInstructor(null);
 	};
-
-	const dispatch = useDispatch();
-
-	useEffect(() => {
-		dispatch(getInstructors());
-		dispatch(resetUsers());
-	}, [dispatch]);
 
 	const dataTableConfig = [
 		{
@@ -84,14 +78,20 @@ export default function Instructors() {
 	const ModalComponent = forwardRef((props, ref) => {
 		return (
 			<Modal ref={ref} isOpen={modal} toggle={toggle} className="modal-lg">
-				<ModalHeader toggle={toggle}>Assign Instructor ({currentInstructor})</ModalHeader>
+				<ModalHeader toggle={toggle}>
+					Assign Instructor (
+					<span style={{ fontWeight: 'bold', fontSize: '21px' }}>
+						{currentInstructor}
+					</span>
+					)
+				</ModalHeader>
 				<ModalBody>
-					{/* <AssignInstructorForm
-						teaching={selectedTeaching}
-						setModal={setModal}
-						instructors={instructors}
-						isEditingInstructors={isEditingInstructors}
-					/> */}
+					<Row className="justify-content-between animated--grow-in">
+						<Col className="text-center">
+							<Header title="active teachings" />
+						</Col>
+					</Row>
+					<AssignInstructorFormDataTable setModal={setModal} />
 				</ModalBody>
 			</Modal>
 		);
@@ -99,13 +99,22 @@ export default function Instructors() {
 
 	return (
 		<>
-			<h3 className="mb-4 text-gray-800 font-weight-bold animated--grow-in">Instructors</h3>
+			<h3 className="mb-4 text-gray-800 font-weight-bold animated--grow-in">
+				Instructors
+			</h3>
 
 			{isLoading ? (
 				<Spinner card />
 			) : instructors.length > 0 ? (
 				<Row className="justify-content-center animated--grow-in">
-					<Col className="card card-body mb-4" xs="12" sm="12" md="12" lg="12" xl="12">
+					<Col
+						className="card card-body mb-4"
+						xs="12"
+						sm="12"
+						md="12"
+						lg="12"
+						xl="12"
+					>
 						<DataTable
 							data={instructors}
 							config={dataTableConfig}
@@ -119,11 +128,7 @@ export default function Instructors() {
 					<Col>
 						<div className="profile_card">
 							<div className="card-body">
-								<div className="align-items-center text-center">
-									<span className="text-gray-500 animated--grow-in d-flex justify-content-center">
-										There are no Instructors registered in the system.
-									</span>
-								</div>
+								<SpinnerComponent message="There are no Instructors registered in the system." />
 							</div>
 						</div>
 					</Col>

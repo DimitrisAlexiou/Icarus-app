@@ -1,15 +1,24 @@
 import { useDispatch } from 'react-redux';
 import { Row, Col, Badge, Button } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { deleteReview, setEditReview } from '../../../features/admin/reviewSlice';
+import {
+	deleteReview,
+	setEditReview,
+} from '../../../features/admin/reviewSlice';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt, faEdit } from '@fortawesome/free-regular-svg-icons';
 import { deleteAlert } from '../../../constants/sweetAlertNotification';
 import moment from 'moment';
 import ReviewForm from '../forms/ReviewForm';
-import Spinner from '../../boilerplate/Spinner';
+import Spinner from '../../boilerplate/spinners/Spinner';
 
-const ReviewCard = ({ review, semester, isReviewLoading, isEditingReview, editReviewId }) => {
+const ReviewCard = ({
+	review,
+	semester,
+	isReviewLoading,
+	isEditingReview,
+	editReviewId,
+}) => {
 	const dispatch = useDispatch();
 
 	return (
@@ -56,13 +65,9 @@ const ReviewCard = ({ review, semester, isReviewLoading, isEditingReview, editRe
 													: 'Review statement period has not been defined!'}
 											</Col>
 											{isEditingReview ? (
-												<Col
-													xs="2"
-													sm="6"
-													md="6"
-													className="text-right mt-1"
-												>
+												<Col xs="2" sm="6" md="6" className="text-right mt-1">
 													<FontAwesomeIcon
+														className="clickable"
 														onClick={() =>
 															dispatch(
 																setEditReview({
@@ -164,15 +169,11 @@ const ReviewCard = ({ review, semester, isReviewLoading, isEditingReview, editRe
 																}}
 																onClick={async () =>
 																	deleteAlert(() =>
-																		dispatch(
-																			deleteReview(review._id)
-																		)
+																		dispatch(deleteReview(review._id))
 																	)
 																}
 															>
-																<FontAwesomeIcon
-																	icon={faTrashAlt}
-																/>
+																<FontAwesomeIcon icon={faTrashAlt} />
 															</Button>
 														</Col>
 													</Col>

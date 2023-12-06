@@ -3,14 +3,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button, Row, Col, Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
-import { deleteSemester, setEditSemester } from '../../features/admin/semesterSlice';
+import {
+	deleteSemester,
+	setEditSemester,
+} from '../../features/admin/semesterSlice';
 import { deleteAlert } from '../../constants/sweetAlertNotification';
+import { SemesterType } from '../../constants/enums';
+import { academicYearEnd, academicYearStart } from '../../utils/academicYears';
 import moment from 'moment';
 import DataTable from '../DataTable';
 import SemesterForm from '../../components/admin/forms/SemesterForm';
-import Spinner from '../../components/boilerplate/Spinner';
-import { SemesterType } from '../../constants/enums';
-import { academicYearEnd, academicYearStart } from '../../utils/academicYears';
+import Spinner from '../../components/boilerplate/spinners/Spinner';
 
 export default function SemestersDataTable({ semesters }) {
 	const { isLoading, isEditingSemester, editSemesterId } = useSelector(
@@ -41,7 +44,13 @@ export default function SemestersDataTable({ semesters }) {
 	const ModalComponent = forwardRef((props, ref) => {
 		return (
 			<Modal ref={ref} isOpen={modal} toggle={toggle} className="modal-lg">
-				<ModalHeader toggle={toggle}>Edit Semester ({currentSemester.type})</ModalHeader>
+				<ModalHeader toggle={toggle}>
+					Edit Semester (
+					<span style={{ fontWeight: 'bold', fontSize: '21px' }}>
+						{currentSemester.type}
+					</span>
+					)
+				</ModalHeader>
 				<ModalBody>
 					<SemesterForm
 						semester={currentSemester}
@@ -63,7 +72,9 @@ export default function SemestersDataTable({ semesters }) {
 			name: 'grading',
 			label: 'Grading Period',
 			render: (semester) =>
-				semester.type !== SemesterType.Any ? semester.grading + ' weeks' : 'unnecessary',
+				semester.type !== SemesterType.Any
+					? semester.grading + ' weeks'
+					: 'unnecessary',
 		},
 		{
 			name: 'startDate',

@@ -1,14 +1,22 @@
 import { useEffect, useState } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 import { NavLink } from 'react-router-dom';
-import { getCourses } from '../../features/courses/courseSlice';
-import { Card, CardText, CardTitle, Col, Input, Nav, NavItem, Row } from 'reactstrap';
+import {
+	Card,
+	CardText,
+	CardTitle,
+	Col,
+	Input,
+	Nav,
+	NavItem,
+	Row,
+} from 'reactstrap';
 import { faBook } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { FaStudiovinari } from 'react-icons/fa';
 import { CourseType } from '../../constants/enums';
+import useCourses from '../../hooks/course/useCourses';
 import Skeleton from '../../components/boilerplate/Skeleton';
-import Spinner from '../../components/boilerplate/Spinner';
+import Spinner from '../../components/boilerplate/spinners/Spinner';
 import CourseItem from '../../components/course/CourseItem';
 import BreadcrumbNav from '../../components/boilerplate/Breadcrumb';
 import Notification from '../../components/boilerplate/Notification';
@@ -17,7 +25,7 @@ import BackButton from '../../components/buttons/BackButton';
 import CarouselComponent from '../../components/Carousel';
 import Search from '../../components/form/Search';
 
-export default function UndergraduateCourses() {
+export default function Undergraduate({ user }) {
 	const {
 		courses,
 		page,
@@ -28,8 +36,7 @@ export default function UndergraduateCourses() {
 		searchHasLab,
 		sort,
 		isLoading,
-	} = useSelector((state) => state.courses);
-	const { user } = useSelector((state) => state.auth);
+	} = useCourses();
 
 	const [Obligatory, setObligatory] = useState(true);
 	const [filteredCourses, setFilteredCourses] = useState([]);
@@ -37,7 +44,8 @@ export default function UndergraduateCourses() {
 	useEffect(() => {
 		const filtered = courses.filter(
 			(course) =>
-				course.type === CourseType.Undergraduate && course.isObligatory === Obligatory
+				course.type === CourseType.Undergraduate &&
+				course.isObligatory === Obligatory
 		);
 		setFilteredCourses(filtered);
 	}, [courses, Obligatory]);
@@ -46,43 +54,19 @@ export default function UndergraduateCourses() {
 		setObligatory(isObligatory);
 	};
 
-	const dispatch = useDispatch();
-
-	// useEffect(() => {
-	// 	const handleScroll = () => {
-	// 		if (!hasMore || isFetching) return;
-
-	// 		const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-	// 		if (scrollTop + clientHeight >= scrollHeight - 20) {
-	// 			dispatch(getCourses());
-	// 			dispatch(getCycles());
-	// 		}
-	// 	};
-
-	// 	window.addEventListener('scroll', handleScroll);
-	// 	return () => {
-	// 		window.removeEventListener('scroll', handleScroll);
-	// 	};
-	// }, [dispatch, hasMore, isFetching]);
-
-	useEffect(() => {
-		dispatch(getCourses());
-	}, [dispatch]);
-
 	return (
 		<>
 			{user ? (
 				<>
-					<Row className="mb-3 animated--grow-in">
+					<Row>
 						<Col sm="12" xs="12" md="12" lg="9">
 							<BreadcrumbNav
-								className="animated--grow-in"
 								link={'/course'}
-								header={'Courses'}
+								header={'Studies'}
 								active={'Undergraduate'}
 							/>
 						</Col>
-						<Col className="d-flex justify-content-end">
+						<Col className="d-flex justify-content-end animated--grow-in">
 							<Input
 								type="text"
 								placeholder={`Search . . .`}
@@ -224,13 +208,9 @@ export default function UndergraduateCourses() {
 																		? 'font-weight-bold text-gray-500'
 																		: ''
 																}`}
-																onClick={() =>
-																	handleNavigationClick(true)
-																}
+																onClick={() => handleNavigationClick(true)}
 															>
-																<span className="ml-2">
-																	Obligatory
-																</span>
+																<span className="ml-2">Obligatory</span>
 															</NavLink>
 														</NavItem>
 														<NavItem className="nav-item mx-1">
@@ -240,9 +220,7 @@ export default function UndergraduateCourses() {
 																		? 'font-weight-bold text-gray-500'
 																		: ''
 																}`}
-																onClick={() =>
-																	handleNavigationClick(false)
-																}
+																onClick={() => handleNavigationClick(false)}
 															>
 																<span className="ml-2">Cycles</span>
 															</NavLink>
@@ -275,20 +253,16 @@ export default function UndergraduateCourses() {
 																		<small
 																			className="text-muted"
 																			style={{
-																				textAlign:
-																					'justify',
+																				textAlign: 'justify',
 																				fontWeight: '700',
 																				fontSize: 13,
 																				overflow: 'hidden',
-																				textOverflow:
-																					'ellipsis',
-																				display:
-																					'-webkit-box',
+																				textOverflow: 'ellipsis',
+																				display: '-webkit-box',
 																				lineHeight: '20px',
 																				maxHeight: '80px',
 																				WebkitLineClamp: 3,
-																				WebkitBoxOrient:
-																					'vertical',
+																				WebkitBoxOrient: 'vertical',
 																			}}
 																		>
 																			{course.description}
@@ -298,10 +272,8 @@ export default function UndergraduateCourses() {
 																		<Col>
 																			<CardText
 																				style={{
-																					textAlign:
-																						'justify',
-																					fontWeight:
-																						'600',
+																					textAlign: 'justify',
+																					fontWeight: '600',
 																					fontSize: 11,
 																				}}
 																			>
@@ -311,20 +283,16 @@ export default function UndergraduateCourses() {
 																		<Col className="d-flex justify-content-end">
 																			<CardText
 																				style={{
-																					textAlign:
-																						'justify',
-																					fontWeight:
-																						'600',
+																					textAlign: 'justify',
+																					fontWeight: '600',
 																					fontSize: 11,
 																				}}
 																			>
 																				<small
 																					className="text-muted pill-label"
 																					style={{
-																						textAlign:
-																							'justify',
-																						fontWeight:
-																							'700',
+																						textAlign: 'justify',
+																						fontWeight: '700',
 																						fontSize: 10,
 																					}}
 																				>
@@ -336,20 +304,16 @@ export default function UndergraduateCourses() {
 																		<Col className="d-flex justify-content-end">
 																			<CardText
 																				style={{
-																					textAlign:
-																						'justify',
-																					fontWeight:
-																						'600',
+																					textAlign: 'justify',
+																					fontWeight: '600',
 																					fontSize: 11,
 																				}}
 																			>
 																				<small
 																					className="text-muted pill-label"
 																					style={{
-																						textAlign:
-																							'justify',
-																						fontWeight:
-																							'700',
+																						textAlign: 'justify',
+																						fontWeight: '700',
 																						fontSize: 10,
 																					}}
 																				>

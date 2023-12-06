@@ -1,13 +1,16 @@
 import { useDispatch } from 'react-redux';
 import { Row, Col, Badge, Button } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { deleteAssessment, setEditAssessment } from '../../../features/admin/assessmentSlice';
+import {
+	deleteAssessment,
+	setEditAssessment,
+} from '../../../features/admin/assessmentSlice';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt, faEdit } from '@fortawesome/free-regular-svg-icons';
 import { deleteAlert } from '../../../constants/sweetAlertNotification';
 import moment from 'moment';
 import AssessmentForm from '../forms/AssessmentForm';
-import Spinner from '../../boilerplate/Spinner';
+import Spinner from '../../boilerplate/spinners/Spinner';
 
 const AssessementCard = ({
 	assessment,
@@ -62,13 +65,9 @@ const AssessementCard = ({
 													: 'Assessment/Vaccine statement period has not been defined!'}
 											</Col>
 											{isEditingAssessment ? (
-												<Col
-													xs="2"
-													sm="6"
-													md="6"
-													className="text-right mt-1"
-												>
+												<Col xs="2" sm="6" md="6" className="text-right mt-1">
 													<FontAwesomeIcon
+														className="clickable"
 														onClick={() =>
 															dispatch(
 																setEditAssessment({
@@ -165,8 +164,7 @@ const AssessementCard = ({
 															onClick={() =>
 																dispatch(
 																	setEditAssessment({
-																		editAssessmentId:
-																			assessment._id,
+																		editAssessmentId: assessment._id,
 																	})
 																)
 															}
@@ -184,17 +182,11 @@ const AssessementCard = ({
 																}}
 																onClick={async () =>
 																	deleteAlert(() =>
-																		dispatch(
-																			deleteAssessment(
-																				assessment._id
-																			)
-																		)
+																		dispatch(deleteAssessment(assessment._id))
 																	)
 																}
 															>
-																<FontAwesomeIcon
-																	icon={faTrashAlt}
-																/>
+																<FontAwesomeIcon icon={faTrashAlt} />
 															</Button>
 														</Col>
 													</Col>

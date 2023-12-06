@@ -1,22 +1,11 @@
-import { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 import { Col, Row } from 'reactstrap';
-import {
-	getGeneralReviews,
-	getUserGeneralReviews,
-} from '../../features/reviews/generalReviewSlice';
+import useGeneralReviews from '../../hooks/review/useGeneralReviews';
 import GeneralReviewCard from './cards/GeneralReviewCard';
 import CarouselComponent from '../Carousel';
-import Spinner from '../boilerplate/Spinner';
+import Spinner from '../boilerplate/spinners/Spinner';
 
 export default function GeneralReviews({ user }) {
-	const { generalReviews, isLoading } = useSelector((state) => state.generalReviews);
-
-	const dispatch = useDispatch();
-
-	useEffect(() => {
-		dispatch(user ? getUserGeneralReviews() : getGeneralReviews());
-	}, [dispatch, user]);
+	const { generalReviews, isLoading } = useGeneralReviews();
 
 	return (
 		<>

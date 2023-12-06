@@ -1,6 +1,9 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { extractErrorMessage } from '../../utils/errorMessage';
-import { Toast } from '../../constants/sweetAlertNotification';
+import {
+	displayErrorNotification,
+	displaySuccessNotification,
+} from '../../constants/sweetAlertNotification';
 import {
 	DEFINE_ASSESSMENT,
 	DELETE_ASSESSMENT,
@@ -16,21 +19,27 @@ const initialState = {
 	editAssessmentId: '',
 };
 
-export const defineAssessment = createAsyncThunk(DEFINE_ASSESSMENT, async (data, thunkAPI) => {
-	try {
-		return await assessmentService.defineAssessment(data);
-	} catch (error) {
-		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+export const defineAssessment = createAsyncThunk(
+	DEFINE_ASSESSMENT,
+	async (data, thunkAPI) => {
+		try {
+			return await assessmentService.defineAssessment(data);
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
 	}
-});
+);
 
-export const getAssessment = createAsyncThunk(GET_ASSESSMENT, async (_, thunkAPI) => {
-	try {
-		return await assessmentService.getAssessment();
-	} catch (error) {
-		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+export const getAssessment = createAsyncThunk(
+	GET_ASSESSMENT,
+	async (_, thunkAPI) => {
+		try {
+			return await assessmentService.getAssessment();
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
 	}
-});
+);
 
 export const updateAssessment = createAsyncThunk(
 	UPDATE_ASSESSMENT,
@@ -70,27 +79,16 @@ export const assessmentSlice = createSlice({
 			})
 			.addCase(defineAssessment.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Success',
-					text: payload.message,
-					icon: 'success',
-				});
+				displaySuccessNotification(payload.message);
 				state.assessment = payload.assessment;
 			})
 			.addCase(defineAssessment.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				if (payload.includes('vaccineEndDate' && 'vaccineStartDate'))
-					Toast.fire({
-						title: 'Something went wrong!',
-						text: 'Vaccine end date must be greater than vaccine starting date.',
-						icon: 'error',
-					});
-				else
-					Toast.fire({
-						title: 'Something went wrong!',
-						text: payload,
-						icon: 'error',
-					});
+					displayErrorNotification(
+						'Vaccine end date must be greater than vaccine starting date.'
+					);
+				else displayErrorNotification(payload);
 			})
 			.addCase(getAssessment.pending, (state) => {
 				state.isLoading = true;
@@ -106,60 +104,36 @@ export const assessmentSlice = createSlice({
 						'Seems like there is no assessment statement configuration defined for this semester.' &&
 					payload !==
 						'Seems like there is no defined semester for current period. Define a semester first in order to define assessment statement configuration.'
-				) {
-					Toast.fire({
-						title: 'Something went wrong!',
-						text: payload,
-						icon: 'error',
-					});
-				}
+				)
+					displayErrorNotification(payload);
 			})
 			.addCase(updateAssessment.pending, (state) => {
 				state.isLoading = true;
 			})
 			.addCase(updateAssessment.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Success',
-					text: payload.message,
-					icon: 'success',
-				});
+				displaySuccessNotification(payload.message);
 				state.assessment = payload.updatedAssessment;
 			})
 			.addCase(updateAssessment.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				if (payload.includes('vaccineEndDate' && 'vaccineStartDate'))
-					Toast.fire({
-						title: 'Something went wrong!',
-						text: 'Vaccine end date must be greater than vaccine starting date.',
-						icon: 'error',
-					});
-				else
-					Toast.fire({
-						title: 'Something went wrong!',
-						text: payload,
-						icon: 'error',
-					});
+					displayErrorNotification(
+						'Vaccine end date must be greater than vaccine starting date.'
+					);
+				else displayErrorNotification(payload);
 			})
 			.addCase(deleteAssessment.pending, (state) => {
 				state.isLoading = true;
 			})
 			.addCase(deleteAssessment.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Success',
-					text: payload.message,
-					icon: 'success',
-				});
+				displaySuccessNotification(payload.message);
 				state.assessment = null;
 			})
 			.addCase(deleteAssessment.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: payload,
-					icon: 'error',
-				});
+				displayErrorNotification(payload);
 			});
 	},
 });

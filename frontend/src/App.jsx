@@ -10,9 +10,27 @@ import {
 	ForgotPassword,
 	ContactAdmin,
 } from './pages/auth/index';
-import { Courses, Studies, Undergraduate, Msc, Phd, Course, NewCourse } from './pages/course/index';
-import { Teaching, AssignTeachingInstructor, TeachingGrading } from './pages/teaching/index';
-import { Reviews, TeachingReview, InstructorReview, GeneralReview } from './pages/review/index';
+import {
+	Courses,
+	Studies,
+	Undergraduate,
+	Msc,
+	Phd,
+	Course,
+	NewCourse,
+	InfoSecMsc,
+} from './pages/course/index';
+import {
+	Teaching,
+	AssignTeachingInstructor,
+	TeachingGrading,
+} from './pages/teaching/index';
+import {
+	Reviews,
+	TeachingReview,
+	InstructorReview,
+	GeneralReview,
+} from './pages/review/index';
 import {
 	Configuration,
 	AdminDashboard,
@@ -53,21 +71,31 @@ export default function App() {
 							<Route path="/landing" element={<LandingPage />} />
 							<Route path="/auth/register" element={<Register />} />
 							<Route path="/auth/login" element={<Login />} />
-							<Route path="/auth/forgot-password" element={<ForgotPassword />} />
+							<Route
+								path="/auth/forgot-password"
+								element={<ForgotPassword />}
+							/>
 							<Route path="/auth/contact-admin" element={<ContactAdmin />} />
 							<Route path="/forbidden" element={<Forbidden />} />
 							<Route path="/unauthorized" element={<UnAuthorized />} />
-							<Route path="/studies" element={<Studies />} />
-							<Route path="/studies/undergraduate" element={<Undergraduate />} />
+							<Route path="/studies" element={<Studies user={user} />} />
+							<Route
+								path="/studies/undergraduate"
+								element={<Undergraduate />}
+							/>
 							<Route path="/studies/msc" element={<Msc />} />
+							<Route path="/studies/msc/infoSec" element={<InfoSecMsc />} />
 							<Route path="/studies/phd" element={<Phd />} />
 							<Route path="*" element={<NotFound />} />
-							<Route path="/" element={user ? <SharedLayout /> : <LandingPage />}>
-								<Route index element={<Dashboard />} />
+							<Route
+								path="/"
+								element={user ? <SharedLayout user={user} /> : <LandingPage />}
+							>
+								<Route index element={<Dashboard user={user} />} />
 								<Route
 									path="/admin/configuration"
 									element={
-										<ProtectedRoute allowedRoles={[UserType.admin]}>
+										<ProtectedRoute user={user} allowedRoles={[UserType.admin]}>
 											<Configuration />
 										</ProtectedRoute>
 									}
@@ -75,7 +103,7 @@ export default function App() {
 								<Route
 									path="/admin/dashboard"
 									element={
-										<ProtectedRoute allowedRoles={[UserType.admin]}>
+										<ProtectedRoute user={user} allowedRoles={[UserType.admin]}>
 											<AdminDashboard />
 										</ProtectedRoute>
 									}
@@ -83,7 +111,7 @@ export default function App() {
 								<Route
 									path="/users"
 									element={
-										<ProtectedRoute allowedRoles={[UserType.admin]}>
+										<ProtectedRoute user={user} allowedRoles={[UserType.admin]}>
 											<Users />
 										</ProtectedRoute>
 									}
@@ -91,7 +119,7 @@ export default function App() {
 								<Route
 									path="/instructors"
 									element={
-										<ProtectedRoute allowedRoles={[UserType.admin]}>
+										<ProtectedRoute user={user} allowedRoles={[UserType.admin]}>
 											<Instructors />
 										</ProtectedRoute>
 									}
@@ -99,7 +127,7 @@ export default function App() {
 								<Route
 									path="/students"
 									element={
-										<ProtectedRoute allowedRoles={[UserType.admin]}>
+										<ProtectedRoute user={user} allowedRoles={[UserType.admin]}>
 											<Students />
 										</ProtectedRoute>
 									}
@@ -107,15 +135,15 @@ export default function App() {
 								<Route
 									path="/user/profile"
 									element={
-										<ProtectedRoute>
-											<Profile />
+										<ProtectedRoute user={user}>
+											<Profile user={user} />
 										</ProtectedRoute>
 									}
 								/>
 								<Route
 									path="/user/activity"
 									element={
-										<ProtectedRoute>
+										<ProtectedRoute user={user}>
 											<Activity />
 										</ProtectedRoute>
 									}
@@ -124,6 +152,7 @@ export default function App() {
 									path="/teachings"
 									element={
 										<ProtectedRoute
+											user={user}
 											allowedRoles={[UserType.admin, UserType.instructor]}
 										>
 											<Teachings />
@@ -134,6 +163,7 @@ export default function App() {
 									path="/teaching/:teachingId"
 									element={
 										<ProtectedRoute
+											user={user}
 											allowedRoles={[UserType.admin, UserType.instructor]}
 										>
 											<Teaching />
@@ -143,7 +173,7 @@ export default function App() {
 								<Route
 									path="/teaching/assign"
 									element={
-										<ProtectedRoute allowedRoles={[UserType.admin]}>
+										<ProtectedRoute user={user} allowedRoles={[UserType.admin]}>
 											<AssignTeachingInstructor />
 										</ProtectedRoute>
 									}
@@ -152,6 +182,7 @@ export default function App() {
 									path="/teaching/grading"
 									element={
 										<ProtectedRoute
+											user={user}
 											allowedRoles={[UserType.admin, UserType.instructor]}
 										>
 											<TeachingGrading />
@@ -161,7 +192,7 @@ export default function App() {
 								<Route
 									path="/course"
 									element={
-										<ProtectedRoute>
+										<ProtectedRoute user={user}>
 											<Courses />
 										</ProtectedRoute>
 									}
@@ -169,7 +200,7 @@ export default function App() {
 								<Route
 									path="/my-courses"
 									element={
-										<ProtectedRoute>
+										<ProtectedRoute user={user}>
 											<MyCourses />
 										</ProtectedRoute>
 									}
@@ -177,31 +208,39 @@ export default function App() {
 								<Route
 									path="/course/undergraduate"
 									element={
-										<ProtectedRoute>
-											<Undergraduate />
+										<ProtectedRoute user={user}>
+											<Undergraduate user={user} />
 										</ProtectedRoute>
 									}
 								/>
 								<Route
 									path="/course/msc"
 									element={
-										<ProtectedRoute>
-											<Msc />
+										<ProtectedRoute user={user}>
+											<Msc user={user} />
+										</ProtectedRoute>
+									}
+								/>
+								<Route
+									path="/course/msc/infoSec"
+									element={
+										<ProtectedRoute user={user}>
+											<InfoSecMsc user={user} />
 										</ProtectedRoute>
 									}
 								/>
 								<Route
 									path="/course/phd"
 									element={
-										<ProtectedRoute>
-											<Phd />
+										<ProtectedRoute user={user}>
+											<Phd user={user} />
 										</ProtectedRoute>
 									}
 								/>
 								<Route
 									path="/course/new"
 									element={
-										<ProtectedRoute allowedRoles={[UserType.admin]}>
+										<ProtectedRoute user={user} allowedRoles={[UserType.admin]}>
 											<NewCourse />
 										</ProtectedRoute>
 									}
@@ -209,7 +248,7 @@ export default function App() {
 								<Route
 									path="/course/:courseId"
 									element={
-										<ProtectedRoute>
+										<ProtectedRoute user={user}>
 											<Course />
 										</ProtectedRoute>
 									}
@@ -217,7 +256,7 @@ export default function App() {
 								<Route
 									path="/review"
 									element={
-										<ProtectedRoute>
+										<ProtectedRoute user={user}>
 											<Reviews />
 										</ProtectedRoute>
 									}
@@ -226,6 +265,7 @@ export default function App() {
 									path="/review/teaching"
 									element={
 										<ProtectedRoute
+											user={user}
 											allowedRoles={[UserType.admin, UserType.student]}
 										>
 											<TeachingReview />
@@ -236,6 +276,7 @@ export default function App() {
 									path="/review/instructor"
 									element={
 										<ProtectedRoute
+											user={user}
 											allowedRoles={[UserType.admin, UserType.student]}
 										>
 											<InstructorReview />
@@ -246,6 +287,7 @@ export default function App() {
 									path="/review/general"
 									element={
 										<ProtectedRoute
+											user={user}
 											allowedRoles={[UserType.admin, UserType.student]}
 										>
 											<GeneralReview />
@@ -255,7 +297,7 @@ export default function App() {
 								<Route
 									path="/messages"
 									element={
-										<ProtectedRoute>
+										<ProtectedRoute user={user}>
 											<Messages />
 										</ProtectedRoute>
 									}
@@ -263,7 +305,7 @@ export default function App() {
 								<Route
 									path="/statements"
 									element={
-										<ProtectedRoute>
+										<ProtectedRoute user={user}>
 											<Statements />
 										</ProtectedRoute>
 									}
@@ -271,15 +313,15 @@ export default function App() {
 								<Route
 									path="/my-grades"
 									element={
-										<ProtectedRoute>
-											<MyGrades />
+										<ProtectedRoute user={user}>
+											<MyGrades user={user} />
 										</ProtectedRoute>
 									}
 								/>
 								<Route
 									path="/degree-completion"
 									element={
-										<ProtectedRoute>
+										<ProtectedRoute user={user}>
 											<DegreeCompletion />
 										</ProtectedRoute>
 									}
@@ -287,7 +329,7 @@ export default function App() {
 								<Route
 									path="/statistics-reports"
 									element={
-										<ProtectedRoute>
+										<ProtectedRoute user={user}>
 											<StatisticsReports />
 										</ProtectedRoute>
 									}
@@ -295,7 +337,7 @@ export default function App() {
 								<Route
 									path="/teaching/:teachingId/portfolio"
 									element={
-										<ProtectedRoute>
+										<ProtectedRoute user={user}>
 											<Portfolio />
 										</ProtectedRoute>
 									}
@@ -303,7 +345,7 @@ export default function App() {
 								<Route
 									path="/note"
 									element={
-										<ProtectedRoute>
+										<ProtectedRoute user={user}>
 											<Notes />
 										</ProtectedRoute>
 									}
@@ -311,7 +353,7 @@ export default function App() {
 								<Route
 									path="/calendar"
 									element={
-										<ProtectedRoute>
+										<ProtectedRoute user={user}>
 											<Calendar />
 										</ProtectedRoute>
 									}

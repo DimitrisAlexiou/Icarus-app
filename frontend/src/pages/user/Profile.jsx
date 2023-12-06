@@ -1,19 +1,16 @@
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
 import { Row, Col, Nav, NavItem } from 'reactstrap';
 import { NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShieldHalved } from '@fortawesome/free-solid-svg-icons';
 import { faAddressCard } from '@fortawesome/free-regular-svg-icons';
-import ProfileInfoCard from '../../components/user/ProfileInfoCard';
-import ProfileUpdateCard from '../../components/user/ProfileUpdateCard';
-import ProfileProgressCard from '../../components/user/ProfileProgressCard';
+import ProfileInfoCard from '../../components/user/cards/ProfileInfoCard';
+import ProfileUpdateCard from '../../components/user/cards/ProfileUpdateCard';
+import ProfileProgressCard from '../../components/user/cards/ProfileProgressCard';
 import ChangePassword from '../../components/user/ChangePassword';
-import Spinner from '../../components/boilerplate/Spinner';
 import moment from 'moment';
 
-export default function Profile() {
-	const { user, isLoading } = useSelector((state) => state.auth);
+export default function Profile({ user }) {
 	const [selectedNavItem, setSelectedNavItem] = useState('overview');
 
 	return (
@@ -39,7 +36,9 @@ export default function Profile() {
 			</Row>
 
 			<Row className="animated--grow-in">
-				<Col>{isLoading ? <Spinner card /> : <ProfileInfoCard user={user} />}</Col>
+				<Col>
+					<ProfileInfoCard user={user} />
+				</Col>
 				<Col md="12" xl="7">
 					<Nav className="justify-content-between navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow sticky-top">
 						<div className="navbar-nav">
@@ -73,22 +72,14 @@ export default function Profile() {
 						</div>
 					</Nav>
 					{selectedNavItem === 'overview' ? (
-						isLoading ? (
-							<Spinner card />
-						) : (
-							<ProfileUpdateCard user={user} isLoading={isLoading} />
-						)
+						<ProfileUpdateCard user={user} />
 					) : selectedNavItem === 'security' ? (
-						isLoading ? (
-							<Spinner card />
-						) : (
-							<ChangePassword />
-						)
+						<ChangePassword user={user} />
 					) : null}
 				</Col>
 				{/* <img src={undraw_account} alt="undraw_account" className="profile_card_photo" /> */}
 			</Row>
-			{isLoading ? <Spinner card /> : <ProfileProgressCard user={user} />}
+			{user.user.isAdmin ? null : <ProfileProgressCard user={user} />}
 			<Row className="mb-5 animated--grow-in">
 				<Col className="d-flex justify-content-end">
 					<span className="text-xs text-gray-500">

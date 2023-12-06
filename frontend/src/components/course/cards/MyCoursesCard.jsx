@@ -1,26 +1,16 @@
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import { Col, Row } from 'reactstrap';
-import { getTeachings } from '../../../features/courses/teachingSlice';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
-import Spinner from '../../boilerplate/Spinner';
+import useMyCourses from '../../../hooks/user/useMyCourses';
+import Spinner from '../../boilerplate/spinners/Spinner';
+import SpinnerComponent from '../../boilerplate/spinners/SpinnerMessage';
 
 export default function MyCoursesCard() {
-	const { teachings, isLoading } = useSelector((state) => state.teachings);
-	const enrolledCourses = useSelector((state) => state.auth.user.user.student.enrolledCourses);
-
-	const dispatch = useDispatch();
-	const navigate = useNavigate();
-
-	useEffect(() => {
-		dispatch(getTeachings());
-	}, [dispatch]);
-
-	const handleCourseRowClick = (teaching) => {
-		navigate('/teaching/' + teaching._id + '/portfolio');
-	};
+	const {
+		isTeachingsLoading,
+		enrolledCourses,
+		findTeaching,
+		getInstructorNames,
+		handleCourseRowClick,
+	} = useMyCourses();
 
 	return (
 		<>
@@ -32,25 +22,29 @@ export default function MyCoursesCard() {
 			<Row className="justify-content-center animated--grow-in mb-3">
 				<h6
 					className="animated--grow-in text-gray-500"
-					style={{ fontWeight: 700, textAlign: 'center' }}
+					style={{ textAlign: 'center' }}
 				>
-					enrolled courses
+					<small
+						className="text-muted pill-label"
+						style={{
+							fontWeight: '700',
+							fontSize: 15,
+						}}
+					>
+						Enrolled Courses
+					</small>
 				</h6>
 			</Row>
 			<div className="profile_card">
 				<div className="card-body">
 					<div className="align-items-center text-center">
-						{isLoading ? (
+						{isTeachingsLoading ? (
 							<Spinner card />
-						) : enrolledCourses.length > 0 ? (
+						) : enrolledCourses && enrolledCourses.length > 0 ? (
 							<>
 								{enrolledCourses.map((enrolledCourse, index) => {
-									const teaching = teachings.find(
-										(teaching) => teaching._id === enrolledCourse
-									);
-									const instructorNames = teaching?.theoryInstructors.map(
-										(instructor) => instructor.user.surname
-									);
+									const teaching = findTeaching(enrolledCourse);
+									const instructorNames = getInstructorNames(teaching);
 									return (
 										<Row
 											key={index}
@@ -91,10 +85,7 @@ export default function MyCoursesCard() {
 								{/* {numOfPages > 1 ? <PageButton /> : null} */}
 							</>
 						) : (
-							<span className="text-gray-500 animated--grow-in d-flex justify-content-center">
-								<FontAwesomeIcon className="text-gray-300 px-2" icon={faSpinner} />
-								You are not enrolled in any courses.
-							</span>
+							<SpinnerComponent message="You are not enrolled in any courses." />
 						)}
 					</div>
 				</div>

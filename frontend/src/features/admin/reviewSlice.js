@@ -1,7 +1,15 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { extractErrorMessage } from '../../utils/errorMessage';
-import { Toast } from '../../constants/sweetAlertNotification';
-import { DEFINE_REVIEW, DELETE_REVIEW, GET_REVIEW, UPDATE_REVIEW } from '../actions';
+import {
+	displayErrorNotification,
+	displaySuccessNotification,
+} from '../../constants/sweetAlertNotification';
+import {
+	DEFINE_REVIEW,
+	DELETE_REVIEW,
+	GET_REVIEW,
+	UPDATE_REVIEW,
+} from '../actions';
 import reviewService from './services/reviewService';
 
 const initialState = {
@@ -11,13 +19,16 @@ const initialState = {
 	editReviewId: '',
 };
 
-export const defineReview = createAsyncThunk(DEFINE_REVIEW, async (data, thunkAPI) => {
-	try {
-		return await reviewService.defineReview(data);
-	} catch (error) {
-		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+export const defineReview = createAsyncThunk(
+	DEFINE_REVIEW,
+	async (data, thunkAPI) => {
+		try {
+			return await reviewService.defineReview(data);
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
 	}
-});
+);
 
 export const getReview = createAsyncThunk(GET_REVIEW, async (_, thunkAPI) => {
 	try {
@@ -38,13 +49,16 @@ export const updateReview = createAsyncThunk(
 	}
 );
 
-export const deleteReview = createAsyncThunk(DELETE_REVIEW, async (reviewId, thunkAPI) => {
-	try {
-		return await reviewService.deleteReview(reviewId);
-	} catch (error) {
-		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+export const deleteReview = createAsyncThunk(
+	DELETE_REVIEW,
+	async (reviewId, thunkAPI) => {
+		try {
+			return await reviewService.deleteReview(reviewId);
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
 	}
-});
+);
 
 export const reviewSlice = createSlice({
 	name: 'review',
@@ -62,27 +76,16 @@ export const reviewSlice = createSlice({
 			})
 			.addCase(defineReview.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Success',
-					text: payload.message,
-					icon: 'success',
-				});
+				displaySuccessNotification(payload.message);
 				state.review = payload.review;
 			})
 			.addCase(defineReview.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				if (payload.includes('endDate' && 'startDate'))
-					Toast.fire({
-						title: 'Something went wrong!',
-						text: 'Review end date must be greater than review starting date.',
-						icon: 'error',
-					});
-				else
-					Toast.fire({
-						title: 'Something went wrong!',
-						text: payload,
-						icon: 'error',
-					});
+					displayErrorNotification(
+						'Review end date must be greater than review starting date.'
+					);
+				else displayErrorNotification(payload);
 			})
 			.addCase(getReview.pending, (state) => {
 				state.isLoading = true;
@@ -99,11 +102,7 @@ export const reviewSlice = createSlice({
 					payload !==
 						'Seems like there is no defined semester for current period. Define a semester first in order to define review statement configuration.'
 				) {
-					Toast.fire({
-						title: 'Something went wrong!',
-						text: payload,
-						icon: 'error',
-					});
+					displayErrorNotification(payload);
 				}
 			})
 			.addCase(updateReview.pending, (state) => {
@@ -111,47 +110,28 @@ export const reviewSlice = createSlice({
 			})
 			.addCase(updateReview.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Success',
-					text: payload.message,
-					icon: 'success',
-				});
+				displaySuccessNotification(payload.message);
 				state.review = payload.updatedReview;
 			})
 			.addCase(updateReview.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				if (payload.includes('endDate' && 'startDate'))
-					Toast.fire({
-						title: 'Something went wrong!',
-						text: 'Review end date must be greater than review starting date.',
-						icon: 'error',
-					});
-				else
-					Toast.fire({
-						title: 'Something went wrong!',
-						text: payload,
-						icon: 'error',
-					});
+					displayErrorNotification(
+						'Review end date must be greater than review starting date.'
+					);
+				else displayErrorNotification(payload);
 			})
 			.addCase(deleteReview.pending, (state) => {
 				state.isLoading = true;
 			})
 			.addCase(deleteReview.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Success',
-					text: payload.message,
-					icon: 'success',
-				});
+				displaySuccessNotification(payload.message);
 				state.review = null;
 			})
 			.addCase(deleteReview.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: payload,
-					icon: 'error',
-				});
+				displayErrorNotification(payload);
 			});
 	},
 });

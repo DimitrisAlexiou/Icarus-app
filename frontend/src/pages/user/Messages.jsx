@@ -1,9 +1,6 @@
 import { Row, Col } from 'reactstrap';
-// import { useSelector } from 'react-redux';
 
 export default function Messages() {
-	// const { user } = useSelector((state) => state.auth);
-
 	return (
 		<>
 			<Row className="mb-5 animated--grow-in">

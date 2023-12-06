@@ -1,6 +1,9 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { extractErrorMessage } from '../../utils/errorMessage';
-import { Toast } from '../../constants/sweetAlertNotification';
+import {
+	displayErrorNotification,
+	displaySuccessNotification,
+} from '../../constants/sweetAlertNotification';
 import {
 	ASSIGN_LAB_INSTRUCTORS,
 	ASSIGN_THEORY_INSTRUCTORS,
@@ -42,13 +45,16 @@ export const updateTeaching = createAsyncThunk(
 	}
 );
 
-export const getTeaching = createAsyncThunk(GET_TEACHING, async (teachingId, thunkAPI) => {
-	try {
-		return await teachingService.getTeaching(teachingId);
-	} catch (error) {
-		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+export const getTeaching = createAsyncThunk(
+	GET_TEACHING,
+	async (teachingId, thunkAPI) => {
+		try {
+			return await teachingService.getTeaching(teachingId);
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
 	}
-});
+);
 
 export const getTeachingByCourseId = createAsyncThunk(
 	GET_TEACHING_BY_COURSE_ID,
@@ -61,32 +67,42 @@ export const getTeachingByCourseId = createAsyncThunk(
 	}
 );
 
-export const deleteTeaching = createAsyncThunk(DELETE_TEACHING, async (teachingId, thunkAPI) => {
-	try {
-		return await teachingService.deleteTeaching(teachingId);
-	} catch (error) {
-		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+export const deleteTeaching = createAsyncThunk(
+	DELETE_TEACHING,
+	async (teachingId, thunkAPI) => {
+		try {
+			return await teachingService.deleteTeaching(teachingId);
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
 	}
-});
+);
 
-export const getTeachings = createAsyncThunk(GET_TEACHINGS, async (_, thunkAPI) => {
-	try {
-		const { page, search, searchStatus, searchType, sort } = thunkAPI.getState().teachings;
-		let url = `?page=${page}`;
-		// let url = `/jobs?status=${searchStatus}&jobType=${searchType}&sort=${sort}&page=${page}`;
-		return await teachingService.getTeachings(url);
-	} catch (error) {
-		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+export const getTeachings = createAsyncThunk(
+	GET_TEACHINGS,
+	async (_, thunkAPI) => {
+		try {
+			const { page, search, searchStatus, searchType, sort } =
+				thunkAPI.getState().teachings;
+			let url = `?page=${page}`;
+			// let url = `/jobs?status=${searchStatus}&jobType=${searchType}&sort=${sort}&page=${page}`;
+			return await teachingService.getTeachings(url);
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
 	}
-});
+);
 
-export const deleteTeachings = createAsyncThunk(DELETE_TEACHINGS, async (_, thunkAPI) => {
-	try {
-		return await teachingService.deleteTeachings();
-	} catch (error) {
-		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+export const deleteTeachings = createAsyncThunk(
+	DELETE_TEACHINGS,
+	async (_, thunkAPI) => {
+		try {
+			return await teachingService.deleteTeachings();
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
 	}
-});
+);
 
 export const assignTheoryInstructors = createAsyncThunk(
 	ASSIGN_THEORY_INSTRUCTORS,
@@ -202,11 +218,7 @@ export const teachingSlice = createSlice({
 			})
 			.addCase(updateTeaching.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Success',
-					text: payload.message,
-					icon: 'success',
-				});
+				displaySuccessNotification(payload.message);
 				const updatedTeachingIndex = state.teachings.findIndex(
 					(teaching) => teaching._id === payload.updatedTeaching._id
 				);
@@ -215,11 +227,7 @@ export const teachingSlice = createSlice({
 			})
 			.addCase(updateTeaching.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: payload,
-					icon: 'error',
-				});
+				displayErrorNotification(payload);
 			})
 			.addCase(getTeaching.pending, (state) => {
 				state.isLoading = true;
@@ -234,11 +242,7 @@ export const teachingSlice = createSlice({
 					payload !==
 					'Seems like the teaching that you are trying to view does not exist.'
 				)
-					Toast.fire({
-						title: 'Something went wrong!',
-						text: payload,
-						icon: 'error',
-					});
+					displayErrorNotification(payload);
 			})
 			.addCase(getTeachingByCourseId.pending, (state) => {
 				state.isLoading = true;
@@ -253,33 +257,21 @@ export const teachingSlice = createSlice({
 					payload !==
 					'Seems like the course teaching that you are trying to view does not exist.'
 				)
-					Toast.fire({
-						title: 'Something went wrong!',
-						text: payload,
-						icon: 'error',
-					});
+					displayErrorNotification(payload);
 			})
 			.addCase(deleteTeaching.pending, (state) => {
 				state.isLoading = true;
 			})
 			.addCase(deleteTeaching.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Success',
-					text: payload.message,
-					icon: 'success',
-				});
+				displaySuccessNotification(payload.message);
 				state.teachings = state.teachings.filter((teaching) => {
 					return teaching._id !== payload.teaching;
 				});
 			})
 			.addCase(deleteTeaching.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: payload,
-					icon: 'error',
-				});
+				displayErrorNotification(payload);
 			})
 			.addCase(getTeachings.pending, (state) => {
 				state.isLoading = true;
@@ -296,41 +288,25 @@ export const teachingSlice = createSlice({
 					payload !==
 					'Seems like there are no active course teachings registered in the system.'
 				)
-					Toast.fire({
-						title: 'Something went wrong!',
-						text: payload,
-						icon: 'error',
-					});
+					displayErrorNotification(payload);
 			})
 			.addCase(deleteTeachings.pending, (state) => {
 				state.isLoading = true;
 			})
 			.addCase(deleteTeachings.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Success',
-					text: payload,
-					icon: 'success',
-				});
+				displaySuccessNotification(payload);
 			})
 			.addCase(deleteTeachings.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: payload,
-					icon: 'error',
-				});
+				displayErrorNotification(payload);
 			})
 			.addCase(assignTheoryInstructors.pending, (state) => {
 				state.isLoading = true;
 			})
 			.addCase(assignTheoryInstructors.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Success',
-					text: payload.message,
-					icon: 'success',
-				});
+				displaySuccessNotification(payload.message);
 				const assignedInstructorsIndex = state.teachings.findIndex(
 					(teaching) => teaching._id === payload.assignedTheoryInstructors._id
 				);
@@ -340,22 +316,14 @@ export const teachingSlice = createSlice({
 			})
 			.addCase(assignTheoryInstructors.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: payload,
-					icon: 'error',
-				});
+				displayErrorNotification(payload);
 			})
 			.addCase(unassignTheoryInstructors.pending, (state) => {
 				state.isLoading = true;
 			})
 			.addCase(unassignTheoryInstructors.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Success',
-					text: payload.message,
-					icon: 'success',
-				});
+				displaySuccessNotification(payload.message);
 				const unassignedInstructorsIndex = state.teachings.findIndex(
 					(teaching) => teaching._id === payload.unassignedTheoryInstructors._id
 				);
@@ -364,22 +332,14 @@ export const teachingSlice = createSlice({
 			})
 			.addCase(unassignTheoryInstructors.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: payload,
-					icon: 'error',
-				});
+				displayErrorNotification(payload);
 			})
 			.addCase(assignLabInstructors.pending, (state) => {
 				state.isLoading = true;
 			})
 			.addCase(assignLabInstructors.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Success',
-					text: payload.message,
-					icon: 'success',
-				});
+				displaySuccessNotification(payload.message);
 				const assignedInstructorsIndex = state.teachings.findIndex(
 					(teaching) => teaching._id === payload.assignedLabInstructors._id
 				);
@@ -389,22 +349,14 @@ export const teachingSlice = createSlice({
 			})
 			.addCase(assignLabInstructors.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: payload,
-					icon: 'error',
-				});
+				displayErrorNotification(payload);
 			})
 			.addCase(unassignLabInstructors.pending, (state) => {
 				state.isLoading = true;
 			})
 			.addCase(unassignLabInstructors.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Success',
-					text: payload.message,
-					icon: 'success',
-				});
+				displaySuccessNotification(payload.message);
 				const unassignedInstructorsIndex = state.teachings.findIndex(
 					(teaching) => teaching._id === payload.unassignedLabInstructors._id
 				);
@@ -413,22 +365,14 @@ export const teachingSlice = createSlice({
 			})
 			.addCase(unassignLabInstructors.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: payload,
-					icon: 'error',
-				});
+				displayErrorNotification(payload);
 			})
 			.addCase(assignTheoryGrading.pending, (state) => {
 				state.isLoading = true;
 			})
 			.addCase(assignTheoryGrading.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Success',
-					text: payload.message,
-					icon: 'success',
-				});
+				displaySuccessNotification(payload.message);
 				const assignedGradingIndex = state.teachings.findIndex(
 					(teaching) => teaching._id === payload.assignedTheoryGrading._id
 				);
@@ -438,22 +382,14 @@ export const teachingSlice = createSlice({
 			})
 			.addCase(assignTheoryGrading.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: payload,
-					icon: 'error',
-				});
+				displayErrorNotification(payload);
 			})
 			.addCase(unassignTheoryGrading.pending, (state) => {
 				state.isLoading = true;
 			})
 			.addCase(unassignTheoryGrading.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Success',
-					text: payload.message,
-					icon: 'success',
-				});
+				displaySuccessNotification(payload.message);
 				const unassignedGradingIndex = state.teachings.findIndex(
 					(teaching) => teaching._id === payload.unassignedTheoryGrading._id
 				);
@@ -462,22 +398,14 @@ export const teachingSlice = createSlice({
 			})
 			.addCase(unassignTheoryGrading.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: payload,
-					icon: 'error',
-				});
+				displayErrorNotification(payload);
 			})
 			.addCase(assignLabGrading.pending, (state) => {
 				state.isLoading = true;
 			})
 			.addCase(assignLabGrading.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Success',
-					text: payload.message,
-					icon: 'success',
-				});
+				displaySuccessNotification(payload.message);
 				const assignedGradingIndex = state.teachings.findIndex(
 					(teaching) => teaching._id === payload.assignedLabGrading._id
 				);
@@ -487,22 +415,14 @@ export const teachingSlice = createSlice({
 			})
 			.addCase(assignLabGrading.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: payload,
-					icon: 'error',
-				});
+				displayErrorNotification(payload);
 			})
 			.addCase(unassignLabGrading.pending, (state) => {
 				state.isLoading = true;
 			})
 			.addCase(unassignLabGrading.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Success',
-					text: payload.message,
-					icon: 'success',
-				});
+				displaySuccessNotification(payload.message);
 				const unassignedGradingIndex = state.teachings.findIndex(
 					(teaching) => teaching._id === payload.unassignedLabGrading._id
 				);
@@ -511,15 +431,16 @@ export const teachingSlice = createSlice({
 			})
 			.addCase(unassignLabGrading.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: payload,
-					icon: 'error',
-				});
+				displayErrorNotification(payload);
 			});
 	},
 });
 
-export const { resetTeachings, changePage, handleChange, setEditTeaching, setEditTeachingGrading } =
-	teachingSlice.actions;
+export const {
+	resetTeachings,
+	changePage,
+	handleChange,
+	setEditTeaching,
+	setEditTeachingGrading,
+} = teachingSlice.actions;
 export default teachingSlice.reducer;

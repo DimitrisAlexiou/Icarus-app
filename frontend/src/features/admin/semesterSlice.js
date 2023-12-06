@@ -1,6 +1,9 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { extractErrorMessage } from '../../utils/errorMessage';
-import { Toast } from '../../constants/sweetAlertNotification';
+import {
+	displayErrorNotification,
+	displaySuccessNotification,
+} from '../../constants/sweetAlertNotification';
 import {
 	DEFINE_SEMESTER,
 	UPDATE_SEMESTER,
@@ -18,13 +21,16 @@ const initialState = {
 	editSemesterId: '',
 };
 
-export const defineSemester = createAsyncThunk(DEFINE_SEMESTER, async (data, thunkAPI) => {
-	try {
-		return await semesterService.defineSemester(data);
-	} catch (error) {
-		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+export const defineSemester = createAsyncThunk(
+	DEFINE_SEMESTER,
+	async (data, thunkAPI) => {
+		try {
+			return await semesterService.defineSemester(data);
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
 	}
-});
+);
 
 export const updateSemester = createAsyncThunk(
 	UPDATE_SEMESTER,
@@ -37,29 +43,38 @@ export const updateSemester = createAsyncThunk(
 	}
 );
 
-export const getSemesters = createAsyncThunk(GET_SEMESTERS, async (_, thunkAPI) => {
-	try {
-		return await semesterService.getSemesters();
-	} catch (error) {
-		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+export const getSemesters = createAsyncThunk(
+	GET_SEMESTERS,
+	async (_, thunkAPI) => {
+		try {
+			return await semesterService.getSemesters();
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
 	}
-});
+);
 
-export const getSemester = createAsyncThunk(GET_SEMESTER, async (_, thunkAPI) => {
-	try {
-		return await semesterService.getSemester();
-	} catch (error) {
-		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+export const getSemester = createAsyncThunk(
+	GET_SEMESTER,
+	async (_, thunkAPI) => {
+		try {
+			return await semesterService.getSemester();
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
 	}
-});
+);
 
-export const deleteSemester = createAsyncThunk(DELETE_SEMESTER, async (semesterId, thunkAPI) => {
-	try {
-		return await semesterService.deleteSemester(semesterId);
-	} catch (error) {
-		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+export const deleteSemester = createAsyncThunk(
+	DELETE_SEMESTER,
+	async (semesterId, thunkAPI) => {
+		try {
+			return await semesterService.deleteSemester(semesterId);
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
 	}
-});
+);
 
 export const semesterSlice = createSlice({
 	name: 'semester',
@@ -77,34 +92,21 @@ export const semesterSlice = createSlice({
 			})
 			.addCase(defineSemester.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Success',
-					text: payload.message,
-					icon: 'success',
-				});
+				displaySuccessNotification(payload.message);
 				state.semester = payload.semester;
 				state.semesters = [...state.semesters, payload.semester];
 			})
 			.addCase(defineSemester.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				if (payload.includes('startDate' && 'now'))
-					Toast.fire({
-						title: 'Something went wrong!',
-						text: 'Semester start date must be greater than today.',
-						icon: 'error',
-					});
+					displayErrorNotification(
+						'Semester start date must be greater than today.'
+					);
 				else if (payload.includes('endDate' && 'startDate'))
-					Toast.fire({
-						title: 'Something went wrong!',
-						text: 'Semester end date must be greater than semester start date.',
-						icon: 'error',
-					});
-				else
-					Toast.fire({
-						title: 'Something went wrong!',
-						text: payload,
-						icon: 'error',
-					});
+					displayErrorNotification(
+						'Semester end date must be greater than semester start date.'
+					);
+				else displayErrorNotification(payload);
 			})
 			.addCase(getSemesters.pending, (state) => {
 				state.isLoading = true;
@@ -116,11 +118,7 @@ export const semesterSlice = createSlice({
 			.addCase(getSemesters.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				if (payload !== 'Seems like there are no defined semesters.')
-					Toast.fire({
-						title: 'Something went wrong!',
-						text: payload,
-						icon: 'error',
-					});
+					displayErrorNotification(payload);
 			})
 			.addCase(getSemester.pending, (state) => {
 				state.isLoading = true;
@@ -131,23 +129,17 @@ export const semesterSlice = createSlice({
 			})
 			.addCase(getSemester.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				if (payload !== 'Seems like there is no defined semester for this period.')
-					Toast.fire({
-						title: 'Something went wrong!',
-						text: payload,
-						icon: 'error',
-					});
+				if (
+					payload !== 'Seems like there is no defined semester for this period.'
+				)
+					displayErrorNotification(payload);
 			})
 			.addCase(updateSemester.pending, (state) => {
 				state.isLoading = true;
 			})
 			.addCase(updateSemester.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Success',
-					text: payload.message,
-					icon: 'success',
-				});
+				displaySuccessNotification(payload.message);
 				const updatedSemesterIndex = state.semesters.findIndex(
 					(semester) => semester._id === payload.updatedSemester._id
 				);
@@ -157,34 +149,21 @@ export const semesterSlice = createSlice({
 			.addCase(updateSemester.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				if (payload.includes('startDate' && 'now'))
-					Toast.fire({
-						title: 'Something went wrong!',
-						text: 'Semester start date must be greater than today.',
-						icon: 'error',
-					});
+					displayErrorNotification(
+						'Semester start date must be greater than today.'
+					);
 				else if (payload.includes('endDate' && 'startDate'))
-					Toast.fire({
-						title: 'Something went wrong!',
-						text: 'Semester end date must be greater than semester start date.',
-						icon: 'error',
-					});
-				else
-					Toast.fire({
-						title: 'Something went wrong!',
-						text: payload,
-						icon: 'error',
-					});
+					displayErrorNotification(
+						'Semester end date must be greater than semester start date.'
+					);
+				else displayErrorNotification(payload);
 			})
 			.addCase(deleteSemester.pending, (state) => {
 				state.isLoading = true;
 			})
 			.addCase(deleteSemester.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Success',
-					text: payload.message,
-					icon: 'success',
-				});
+				displaySuccessNotification(payload.message);
 				state.semester = null;
 				state.semesters = state.semesters.filter((semester) => {
 					return semester._id !== payload.semester;
@@ -192,11 +171,7 @@ export const semesterSlice = createSlice({
 			})
 			.addCase(deleteSemester.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: payload,
-					icon: 'error',
-				});
+				displayErrorNotification(payload);
 			});
 	},
 });

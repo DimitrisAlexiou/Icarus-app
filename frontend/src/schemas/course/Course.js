@@ -5,10 +5,13 @@ import { courseIdRegex, courseTitleRegex } from '../../constants/regex';
 export const CourseSchema = Yup.object().shape({
 	courseId: Yup.string()
 		.max(9, 'Course ID must be 8 digits or less.')
-		.matches(courseIdRegex, 'Course ID must follow the pattern: 321-xxxx OR 321-xxxxx.')
+		.matches(
+			courseIdRegex,
+			'Course ID must follow the pattern: 321-xxxx OR 321-xxxxx.'
+		)
 		.required('Course ID is required.'),
 	title: Yup.string()
-		.max(40, 'Course title must be 40 characters or less.')
+		.max(60, 'Course title must be 60 characters or less.')
 		.matches(courseTitleRegex, 'Course title must be alphabetic.')
 		.required('Course title is required.'),
 	type: Yup.string()
@@ -20,7 +23,10 @@ export const CourseSchema = Yup.object().shape({
 	isObligatory: Yup.boolean().required(),
 	hasPrerequisites: Yup.boolean().required(),
 	hasLab: Yup.boolean().required(),
-	description: Yup.string().max(1500, 'Course description must be 1500 characters or less.'),
+	description: Yup.string().max(
+		1500,
+		'Course description must be 1500 characters or less.'
+	),
 	semester: Yup.string()
 		.notOneOf(['Select course semester'], 'Select semester.')
 		.required('Please select the course semester.'),
@@ -29,7 +35,10 @@ export const CourseSchema = Yup.object().shape({
 		.positive('Number must be positive.')
 		.required('ECTS value is required.'),
 	year: Yup.number()
-		.oneOf([1, 2, 3, 4, 5], 'Year should be one of the following: [1, 2, 3, 4, 5]')
+		.oneOf(
+			[1, 2, 3, 4, 5],
+			'Year should be one of the following: [1, 2, 3, 4, 5]'
+		)
 		.required('Please select the course year.'),
 	cycle: Yup.string().when('isObligatory', {
 		is: false,

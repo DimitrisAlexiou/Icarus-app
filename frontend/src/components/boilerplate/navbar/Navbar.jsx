@@ -13,7 +13,7 @@ import {
 	ModalFooter,
 } from 'reactstrap';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { logout } from '../../../features/auth/authSlice';
 import { navbarLinks } from '../../../utils/NavigationLinks';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -30,10 +30,12 @@ import MessagesNavItem from '../Inbox';
 import img from '../../../assets/images/undraw_profile.svg';
 import moment from 'moment';
 
-export default function NavBar({ isSidebarCollapsed, setSidebarCollapsed }) {
+export default function NavBar({
+	user,
+	isSidebarCollapsed,
+	setSidebarCollapsed,
+}) {
 	const [darkTheme, setDarkTheme] = useState(false);
-
-	const { user } = useSelector((store) => store.auth);
 
 	const myRef = useRef(null);
 
@@ -102,7 +104,10 @@ export default function NavBar({ isSidebarCollapsed, setSidebarCollapsed }) {
 							rel="noreferrer"
 							style={{ marginTop: '20px' }}
 						>
-							<FontAwesomeIcon className="text-white-50" icon={faGraduationCap} />
+							<FontAwesomeIcon
+								className="text-white-50"
+								icon={faGraduationCap}
+							/>
 							<span className="ml-1">ICSD Webpage</span>
 						</a>
 					</NavItem>
@@ -152,7 +157,9 @@ export default function NavBar({ isSidebarCollapsed, setSidebarCollapsed }) {
 						{user ? <NotificationsNavItem /> : null}
 					</NavItem>
 
-					<NavItem className="nav-item mx-1">{user ? <MessagesNavItem /> : null}</NavItem>
+					<NavItem className="nav-item mx-1">
+						{user ? <MessagesNavItem /> : null}
+					</NavItem>
 
 					<NavItem className="nav-item mx-1">
 						{user ? (
@@ -199,7 +206,10 @@ export default function NavBar({ isSidebarCollapsed, setSidebarCollapsed }) {
 					</NavItem>
 
 					{user ? (
-						<NavItem className="nav-item mx-1" onClick={() => setShowLogout(true)}>
+						<NavItem
+							className="nav-item mx-1"
+							onClick={() => setShowLogout(true)}
+						>
 							<NavLink className="nav-link">
 								<FontAwesomeIcon className="text-gray-400" icon={faSignOut} />
 							</NavLink>

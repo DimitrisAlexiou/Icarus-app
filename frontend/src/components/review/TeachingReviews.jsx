@@ -1,22 +1,11 @@
-import { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 import { Row, Col } from 'reactstrap';
-import {
-	getTeachingReviews,
-	getUserTeachingReviews,
-} from '../../features/reviews/teachingReviewSlice';
+import useTeachingReviews from '../../hooks/review/useTeachingReviews';
 import TeachingReviewCard from './cards/TeachingReviewCard';
 import CarouselComponent from '../Carousel';
-import Spinner from '../boilerplate/Spinner';
+import Spinner from '../boilerplate/spinners/Spinner';
 
-export default function TeachingReviews({ user }) {
-	const { teachingReviews, isLoading } = useSelector((state) => state.teachingReviews);
-
-	const dispatch = useDispatch();
-
-	useEffect(() => {
-		dispatch(user ? getUserTeachingReviews() : getTeachingReviews());
-	}, [dispatch, user]);
+export default function TeachingReviews() {
+	const { teachingReviews, isLoading } = useTeachingReviews();
 
 	return (
 		<>

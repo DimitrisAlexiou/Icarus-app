@@ -1,58 +1,84 @@
-import { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Col, Row, CardTitle, CardText } from 'reactstrap';
-import { getSemester } from '../../features/admin/semesterSlice';
+import { forwardRef, useEffect, useRef, useState } from 'react';
 import {
-	getTeachings,
-	unassignTheoryInstructors,
-	unassignLabInstructors,
-} from '../../features/courses/teachingSlice';
-import { getInstructors } from '../../features/admin/userSlice';
-import { deleteAlert } from '../../constants/sweetAlertNotification';
+	Col,
+	Row,
+	CardTitle,
+	CardText,
+	Modal,
+	ModalHeader,
+	ModalBody,
+} from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleCheck, faCircleXmark } from '@fortawesome/free-regular-svg-icons';
-import { faEllipsis, faMinus, faSpinner, faXmark } from '@fortawesome/free-solid-svg-icons';
+import {
+	faCircleCheck,
+	faCircleXmark,
+} from '@fortawesome/free-regular-svg-icons';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import useAssignTeachingInstructor from '../../hooks/teaching/useAssignTeachingInstructor';
 import AssignInstructorForm from '../../components/course/forms/AssignInstructorForm';
 import CarouselComponent from '../../components/Carousel';
 import CurrentSemester from '../../components/boilerplate/CurrentSemester';
-import Spinner from '../../components/boilerplate/Spinner';
+import Spinner from '../../components/boilerplate/spinners/Spinner';
+import SpinnerComponent from '../../components/boilerplate/spinners/SpinnerMessage';
+import Header from '../../components/boilerplate/Header';
 
 export default function AssignTeachingInstructor() {
-	const { semester, isLoading: isSemesterLoading } = useSelector((state) => state.semesters);
-	const { teachings, isLoading: isTeachingsLoading } = useSelector((state) => state.teachings);
-	const { instructors, isLoading: isInstructorsLoading } = useSelector((state) => state.users);
+	const {
+		semester,
+		teachings,
+		instructors,
+		isSemesterLoading,
+		isTeachingsLoading,
+		isInstructorsLoading,
+		availableTeachings,
+		handleUnassignTheoryInstructors,
+		handleUnassignLabInstructors,
+	} = useAssignTeachingInstructor();
 
+	const modalRef = useRef(null);
+	const [modal, setModal] = useState(false);
 	const [selectedTeaching, setSelectedTeaching] = useState(null);
-	const [formIsVisible, setFormIsVisible] = useState(false);
-	const [formIsOpen, setFormIsOpen] = useState(false);
 	const [assignedInstructorsCount, setAssignedInstructorsCount] = useState({
 		theory: 0,
 		lab: 0,
 	});
 
-	const availableTeachings = teachings.filter(
-		(teaching) => teaching.semester._id === semester._id
-	);
-
 	const handleTeachingClick = (teaching) => {
-		setSelectedTeaching((prevTeaching) => {
-			return prevTeaching === teaching ? null : teaching;
-		});
-		setFormIsVisible(true);
-		setFormIsOpen(true);
+		setSelectedTeaching(teaching);
+		setModal(true);
 	};
 
-	const dispatch = useDispatch();
+	const toggle = () => {
+		setModal(!modal);
+		setSelectedTeaching(null);
+	};
+
+	const ModalComponent = forwardRef((props, ref) => {
+		return (
+			<Modal ref={ref} isOpen={modal} toggle={toggle} className="modal-md">
+				<ModalHeader toggle={toggle}>
+					Assign Instructor (
+					<span style={{ fontWeight: 'bold', fontSize: '21px' }}>
+						{selectedTeaching?.course?.title}
+					</span>
+					)
+				</ModalHeader>
+				<ModalBody>
+					<AssignInstructorForm
+						teaching={selectedTeaching}
+						instructors={instructors}
+						isEditingTheoryInstructors={assignedInstructorsCount.theory > 0}
+						isEditingLabInstructors={assignedInstructorsCount.lab > 0}
+						setModal={setModal}
+					/>
+				</ModalBody>
+			</Modal>
+		);
+	});
 
 	useEffect(() => {
-		dispatch(getSemester());
-		dispatch(getTeachings());
-		dispatch(getInstructors());
-	}, [dispatch]);
-
-	useEffect(() => {
-		const theoryCount = selectedTeaching?.theoryInstructors.length || 0;
-		const labCount = selectedTeaching?.labInstructors.length || 0;
+		const theoryCount = selectedTeaching?.theoryInstructors?.length || 0;
+		const labCount = selectedTeaching?.labInstructors?.length || 0;
 		setAssignedInstructorsCount({ theory: theoryCount, lab: labCount });
 	}, [selectedTeaching]);
 
@@ -65,9 +91,11 @@ export default function AssignTeachingInstructor() {
 				<CurrentSemester />
 			</Row>
 
-			<h6 className="mb-4 animated--grow-in" style={{ fontWeight: 700, textAlign: 'center' }}>
-				active teachings in the current semester
-			</h6>
+			<Row className="mt-3 mb-4 justify-content-between animated--grow-in">
+				<Col className="text-center">
+					<Header title="active teachings" />
+				</Col>
+			</Row>
 
 			{isSemesterLoading || isTeachingsLoading || isInstructorsLoading ? (
 				<Spinner card />
@@ -86,48 +114,7 @@ export default function AssignTeachingInstructor() {
 										}}
 										className="text-light-cornflower-blue mb-2"
 									>
-										<Row>
-											<Col>{teaching.course.title}</Col>
-											<Col
-												xs="2"
-												sm="2"
-												md="2"
-												className="d-flex justify-content-end"
-											>
-												{teaching.theoryInstructors.length ||
-												teaching.labInstructors.length ? (
-													formIsOpen && selectedTeaching === teaching ? (
-														<FontAwesomeIcon
-															className="text-muted clickable"
-															style={{
-																textAlign: 'justify',
-																fontWeight: '700',
-																fontSize: 13,
-															}}
-															icon={faMinus}
-															onClick={() => {
-																setFormIsVisible(false);
-																setFormIsOpen(false);
-															}}
-														/>
-													) : (
-														<FontAwesomeIcon
-															className="text-muted clickable"
-															style={{
-																textAlign: 'justify',
-																fontWeight: '700',
-																fontSize: 15,
-															}}
-															icon={faEllipsis}
-															onClick={(e) => {
-																e.stopPropagation();
-																handleTeachingClick(teaching);
-															}}
-														/>
-													)
-												) : null}
-											</Col>
-										</Row>
+										{teaching.course.title}
 									</CardTitle>
 									<CardText
 										style={{
@@ -175,14 +162,7 @@ export default function AssignTeachingInstructor() {
 														icon={faXmark}
 														onClick={(e) => {
 															e.stopPropagation();
-															deleteAlert(() =>
-																dispatch(
-																	unassignTheoryInstructors(
-																		teaching._id
-																	)
-																)
-															);
-															setFormIsVisible(false);
+															handleUnassignTheoryInstructors(teaching);
 														}}
 													/>
 												</Col>
@@ -231,136 +211,111 @@ export default function AssignTeachingInstructor() {
 											</Col>
 										</Row>
 									</CardText>
-									<CardText>
-										<Row className="d-flex align-items-center">
-											<Col>
-												<small
-													className={
-														teaching.labInstructors.length
-															? 'text-success pill-label'
-															: 'text-muted pill-label'
-													}
-													style={{
-														textAlign: 'justify',
-														fontWeight: '700',
-														fontSize: 12,
-													}}
-												>
-													{teaching.labInstructors.length ? (
-														<>
-															<FontAwesomeIcon icon={faCircleCheck} />
-															<span className="mx-2">Lab</span>
-														</>
-													) : (
-														<>Lab</>
-													)}
-												</small>
-											</Col>
-											{teaching.labInstructors.length ? (
-												<Col className="d-flex justify-content-end">
-													<FontAwesomeIcon
-														className="text-muted clickable"
+									{teaching.course.hasLab ? (
+										<CardText>
+											<Row className="d-flex align-items-center">
+												<Col>
+													<small
+														className={
+															teaching.labInstructors.length
+																? 'text-success pill-label'
+																: 'text-muted pill-label'
+														}
 														style={{
 															textAlign: 'justify',
 															fontWeight: '700',
-															fontSize: 13,
+															fontSize: 12,
 														}}
-														icon={faXmark}
-														onClick={(e) => {
-															e.stopPropagation();
-															deleteAlert(() =>
-																dispatch(
-																	unassignLabInstructors(
-																		teaching._id
-																	)
-																)
-															);
-															setFormIsVisible(false);
-														}}
-													/>
+													>
+														{teaching.labInstructors.length ? (
+															<>
+																<FontAwesomeIcon icon={faCircleCheck} />
+																<span className="mx-2">Lab</span>
+															</>
+														) : (
+															<>Lab</>
+														)}
+													</small>
 												</Col>
-											) : null}
-										</Row>
-										<Row className="mt-1">
-											<Col>
-												<small
-													className={
-														teaching.labInstructors.length
-															? 'text-success'
-															: 'text-muted'
-													}
-													style={{
-														textAlign: 'justify',
-														fontWeight: '700',
-														fontSize: 14,
-													}}
-												>
-													{teaching.labInstructors.length ? (
-														teaching.labInstructors
-															.map((instructor) => {
-																return instructor
-																	? instructor.user.surname
-																	: '';
-															})
-															.join(' | ')
-													) : (
-														<small
-															className={
-																teaching.labInstructors.length
-																	? 'text-success'
-																	: 'text-muted'
-															}
+												{teaching.labInstructors.length ? (
+													<Col className="d-flex justify-content-end">
+														<FontAwesomeIcon
+															className="text-muted clickable"
 															style={{
 																textAlign: 'justify',
-																fontWeight: '500',
-																fontSize: 11,
+																fontWeight: '700',
+																fontSize: 13,
 															}}
-														>
-															<FontAwesomeIcon icon={faCircleXmark} />
-															<span className="mx-2">Unassigned</span>
-														</small>
-													)}
-												</small>
-											</Col>
-										</Row>
-									</CardText>
+															icon={faXmark}
+															onClick={(e) => {
+																e.stopPropagation();
+																handleUnassignLabInstructors(teaching);
+															}}
+														/>
+													</Col>
+												) : null}
+											</Row>
+											<Row className="mt-1">
+												<Col>
+													<small
+														className={
+															teaching.labInstructors.length
+																? 'text-success'
+																: 'text-muted'
+														}
+														style={{
+															textAlign: 'justify',
+															fontWeight: '700',
+															fontSize: 14,
+														}}
+													>
+														{teaching.labInstructors.length ? (
+															teaching.labInstructors
+																.map((instructor) => {
+																	return instructor
+																		? instructor.user.surname
+																		: '';
+																})
+																.join(' | ')
+														) : (
+															<small
+																className={
+																	teaching.labInstructors.length
+																		? 'text-success'
+																		: 'text-muted'
+																}
+																style={{
+																	textAlign: 'justify',
+																	fontWeight: '500',
+																	fontSize: 11,
+																}}
+															>
+																<FontAwesomeIcon icon={faCircleXmark} />
+																<span className="mx-2">Unassigned</span>
+															</small>
+														)}
+													</small>
+												</Col>
+											</Row>
+										</CardText>
+									) : null}
 								</>
 							)}
 							onObjectClick={(teaching) => {
 								handleTeachingClick(teaching);
 							}}
 						/>
-						{selectedTeaching && formIsVisible ? (
-							<Col className="animated--grow-in" xl="4" lg="6" md="8" sm="3">
-								<div className="card shadow mb-4">
-									<div className="card-body">
-										<AssignInstructorForm
-											teaching={selectedTeaching}
-											instructors={instructors}
-											isEditingTheoryInstructors={
-												assignedInstructorsCount.theory > 0
-											}
-											isEditingLabInstructors={
-												assignedInstructorsCount.lab > 0
-											}
-											setFormIsVisible={setFormIsVisible}
-										/>
-									</div>
-								</div>
-							</Col>
-						) : null}
+						<ModalComponent ref={modalRef} toggle={toggle} />
 					</>
 				) : (
-					<span className="mt-5 mb-5 text-gray-500 animated--grow-in d-flex justify-content-center">
-						<FontAwesomeIcon className="fa-1x text-gray-300 px-4" icon={faSpinner} />
-						There are no active teachings available in the current semester.
+					<span className="mt-5 mb-5">
+						<SpinnerComponent message="There are no active teachings available in the current semester." />
 					</span>
 				)
 			) : (
-				<span className="mb-5 text-gray-500 animated--grow-in d-flex justify-content-center">
-					<FontAwesomeIcon className="fa-1x text-gray-300 px-4" icon={faSpinner} />
-					There are no teachings available right now.
-				</span>
+				<div className="mb-5">
+					<SpinnerComponent message="There are no teachings available right now." />
+				</div>
 			)}
 		</>
 	);

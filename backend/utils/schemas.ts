@@ -43,12 +43,18 @@ export const userSchema = Joi.object({
 	}),
 	facultyType: Joi.string().when('type', {
 		is: UserType.instructor,
-		then: Joi.string().valid(FacultyType.DEP, FacultyType.EDIP, FacultyType.ETEP).required(),
+		then: Joi.string()
+			.valid(FacultyType.DEP, FacultyType.EDIP, FacultyType.ETEP)
+			.required(),
 		otherwise: Joi.string(),
 	}),
 	degree: Joi.string().when('type', {
 		is: UserType.instructor,
-		then: Joi.string().valid(Degree.Assistant, Degree.Associate, Degree.Professor),
+		then: Joi.string().valid(
+			Degree.Assistant,
+			Degree.Associate,
+			Degree.Professor
+		),
 		otherwise: Joi.string(),
 	}),
 	instructorEntranceYear: Joi.number().when('type', {
@@ -80,7 +86,7 @@ export const profileSchema = Joi.object({
 
 export const courseSchema = Joi.object({
 	courseId: Joi.string().max(9).pattern(courseIdRegex).required(),
-	title: Joi.string().max(40).pattern(courseTitleRegex).required(),
+	title: Joi.string().max(60).pattern(courseTitleRegex).required(),
 	type: Joi.string()
 		.valid(CourseType.Undergraduate, CourseType.Master, CourseType.Mixed)
 		.required(),
@@ -111,7 +117,9 @@ export const courseSchema = Joi.object({
 			}),
 			prerequisiteType: Joi.string().when('hasPrerequisites', {
 				is: true,
-				then: Joi.string().valid(PrerequisiteType.Hard, PrerequisiteType.Soft).required(),
+				then: Joi.string()
+					.valid(PrerequisiteType.Hard, PrerequisiteType.Soft)
+					.required(),
 				otherwise: Joi.string().allow(''),
 			}),
 		}).unknown()
@@ -158,7 +166,7 @@ export const instructorsAssignmentSchema = Joi.array()
 	.required();
 
 export const statementSchema = Joi.object({
-	teaching: Joi.array().items(Joi.string().required()).min(1).required(),
+	teachings: Joi.array().items(Joi.string().required()).min(1).required(),
 	semester: Joi.string().required(),
 	user: Joi.string().required(),
 });
@@ -194,7 +202,9 @@ export const generalReviewSchema = Joi.object({
 });
 
 export const semesterSchema = Joi.object({
-	type: Joi.string().valid(SemesterType.Winter, SemesterType.Spring, SemesterType.Any).required(),
+	type: Joi.string()
+		.valid(SemesterType.Winter, SemesterType.Spring, SemesterType.Any)
+		.required(),
 	academicYear: Joi.string().required(),
 	// startDate: Joi.date().when('type', {
 	// 	is: SemesterType.Any,

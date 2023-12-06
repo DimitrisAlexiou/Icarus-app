@@ -27,7 +27,10 @@ import {
 	RESET,
 	UPDATE_PROFILE,
 } from '../actions';
-import { Toast } from '../../constants/sweetAlertNotification';
+import {
+	displayErrorNotification,
+	displaySuccessNotification,
+} from '../../constants/sweetAlertNotification';
 import authService from './authService';
 
 const initialState = {
@@ -136,21 +139,27 @@ export const logout = createAsyncThunk(LOGOUT, async () => {
 	await authService.logout();
 });
 
-export const forgotPassword = createAsyncThunk(FORGOT_PASSWORD, async (user, thunkAPI) => {
-	try {
-		return await authService.forgotPassword(user);
-	} catch (error) {
-		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+export const forgotPassword = createAsyncThunk(
+	FORGOT_PASSWORD,
+	async (user, thunkAPI) => {
+		try {
+			return await authService.forgotPassword(user);
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
 	}
-});
+);
 
-export const changePassword = createAsyncThunk(CHANGE_PASSWORD, async (user, thunkAPI) => {
-	try {
-		return await authService.changePassword(user);
-	} catch (error) {
-		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+export const changePassword = createAsyncThunk(
+	CHANGE_PASSWORD,
+	async ({ userId, data }, thunkAPI) => {
+		try {
+			return await authService.changePassword(userId, data);
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
 	}
-});
+);
 
 export const getProfile = createAsyncThunk(GET_PROFILE, async (_, thunkAPI) => {
 	try {
@@ -293,25 +302,21 @@ export const authSlice = createSlice({
 			})
 			.addCase(updateProfile.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Success',
-					text: payload.message,
-					icon: 'success',
-				});
+				displaySuccessNotification(payload.message);
 				state.user.user = payload.updatedUser;
 				addUserToLocalStorage(state.user);
 			})
 			.addCase(updateProfile.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: payload,
-					icon: 'error',
-				});
+				displayErrorNotification(payload);
 			});
 	},
 });
 
-export const { reset, updateLoginStatus, resetLoginStatus, updateEnrolledCourses } =
-	authSlice.actions;
+export const {
+	reset,
+	updateLoginStatus,
+	resetLoginStatus,
+	updateEnrolledCourses,
+} = authSlice.actions;
 export default authSlice.reducer;

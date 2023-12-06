@@ -1,48 +1,15 @@
-import { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate, Link, NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { Row, Col, Nav } from 'reactstrap';
-import { Toast } from '../../constants/sweetAlertNotification';
 import { faGoogle, faGithub } from '@fortawesome/free-brands-svg-icons';
 import { FaStudiovinari } from 'react-icons/fa';
-import { reset } from '../../features/auth/authSlice';
+import useRegister from '../../hooks/auth/useRegister';
 import RegisterForm from '../../components/auth/RegisterForm';
 import SignUpInButton from '../../components/buttons/SignUpInButton';
 import FooterLanding from '../../components/boilerplate/FooterLanding';
-import Spinner from '../../components/boilerplate/Spinner';
+import Spinner from '../../components/boilerplate/spinners/Spinner';
 
 export default function Register() {
-	const { user, isError, isLoading, isSuccess, message } = useSelector((state) => state.auth);
-
-	const dispatch = useDispatch();
-	const navigate = useNavigate();
-
-	useEffect(() => {
-		if (isError) {
-			Toast.fire({
-				title: 'Something went wrong!',
-				text: message,
-				icon: 'error',
-			});
-		}
-		if (user) {
-			Toast.fire({
-				title: 'Hey!',
-				text: 'You are already logged in.',
-				icon: 'info',
-			});
-			navigate('/');
-		}
-		if (isSuccess) {
-			Toast.fire({
-				title: 'Hoorah!',
-				text: 'Account created!',
-				icon: 'success',
-			});
-			navigate('/');
-		}
-		dispatch(reset());
-	}, [dispatch, navigate, isError, isSuccess, user, message]);
+	const { isLoading } = useRegister();
 
 	return (
 		<>

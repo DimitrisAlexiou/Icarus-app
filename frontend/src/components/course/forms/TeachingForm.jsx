@@ -1,6 +1,14 @@
 import { memo, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { FormGroup, Label, Row, Col, Button, Spinner, Tooltip } from 'reactstrap';
+import {
+	FormGroup,
+	Label,
+	Row,
+	Col,
+	Button,
+	Spinner,
+	Tooltip,
+} from 'reactstrap';
 import { Formik, Form, Field, ErrorMessage, FieldArray } from 'formik';
 import { updateTeaching } from '../../../features/courses/teachingSlice';
 import { TeachingSchema } from '../../../schemas/course/Teaching';
@@ -31,8 +39,12 @@ export default function TeachingForm({ teaching, editTeachingId, setModal }) {
 				initialValues={{
 					theoryWeight: teaching ? teaching.theoryWeight : 0,
 					labWeight: teaching ? teaching.labWeight : 0,
-					theoryGradeRetentionYears: teaching ? teaching.theoryGradeRetentionYears : 0,
-					labGradeRetentionYears: teaching ? teaching.labGradeRetentionYears : 0,
+					theoryGradeRetentionYears: teaching
+						? teaching.theoryGradeRetentionYears
+						: 0,
+					labGradeRetentionYears: teaching
+						? teaching.labGradeRetentionYears
+						: 0,
 					theoryGradeThreshold: teaching ? teaching.theoryGradeThreshold : 0,
 					labGradeThreshold: teaching ? teaching.labGradeThreshold : 0,
 					books: teaching ? teaching.books : [],
@@ -51,7 +63,9 @@ export default function TeachingForm({ teaching, editTeachingId, setModal }) {
 						course: teaching.course._id,
 						semester: teaching.semester._id,
 					};
-					dispatch(updateTeaching({ teachingId: editTeachingId, data: teachingData }));
+					dispatch(
+						updateTeaching({ teachingId: editTeachingId, data: teachingData })
+					);
 					setSubmitting(false);
 					setModal(false);
 				}}
@@ -87,7 +101,11 @@ export default function TeachingForm({ teaching, editTeachingId, setModal }) {
 								)}
 							</Col>
 							<Col>
-								<FormGroup className="form-floating mb-3" id="labTooltip" floating>
+								<FormGroup
+									className="form-floating mb-3"
+									id="labTooltip"
+									floating
+								>
 									<Field
 										type="number"
 										min="0"
@@ -101,7 +119,9 @@ export default function TeachingForm({ teaching, editTeachingId, setModal }) {
 									</Label>
 									<ErrorMessage name="labWeight" component={FormErrorMessage} />
 								</FormGroup>
-								{teaching.course.hasLab ? null : <TooltipComponent field={'lab'} />}
+								{teaching.course.hasLab ? null : (
+									<TooltipComponent field={'lab'} />
+								)}
 							</Col>
 						</Row>
 						<Row>

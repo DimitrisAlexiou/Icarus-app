@@ -1,9 +1,8 @@
 import { Row, Col } from 'reactstrap';
-import { UserType } from '../../constants/enums';
-import Spinner from '../../components/boilerplate/Spinner';
-import UpdateProfileForm from '../../components/auth/UpdateProfileForm';
+import { UserType } from '../../../constants/enums';
+import UpdateProfileForm from '../../auth/UpdateProfileForm';
 
-export default function ProfileUpdateCard({ user, isLoading }) {
+export default function ProfileUpdateCard({ user }) {
 	return (
 		<>
 			<div className="profile_card  animated--grow-in">
@@ -59,7 +58,7 @@ export default function ProfileUpdateCard({ user, isLoading }) {
 							</Row>
 						</>
 					) : null}
-					{isLoading ? <Spinner card /> : <UpdateProfileForm user={user} />}
+					<UpdateProfileForm user={user} />
 				</div>
 			</div>
 		</>

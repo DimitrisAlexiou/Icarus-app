@@ -10,7 +10,10 @@ import {
 	GET_USER_INSTRUCTOR_REVIEWS,
 	UPDATE_INSTRUCTOR_REVIEW,
 } from '../actions';
-import { Toast } from '../../constants/sweetAlertNotification';
+import {
+	displayErrorNotification,
+	displaySuccessNotification,
+} from '../../constants/sweetAlertNotification';
 import instructorReviewService from './services/instructorReviewService';
 
 const initialState = {
@@ -36,7 +39,10 @@ export const updateInstructorReview = createAsyncThunk(
 	UPDATE_INSTRUCTOR_REVIEW,
 	async ({ instructorReviewId, data }, thunkAPI) => {
 		try {
-			return await instructorReviewService.updateInstructorReview(instructorReviewId, data);
+			return await instructorReviewService.updateInstructorReview(
+				instructorReviewId,
+				data
+			);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -47,7 +53,9 @@ export const getInstructorReview = createAsyncThunk(
 	GET_INSTRUCTOR_REVIEW,
 	async (instructorReviewId, thunkAPI) => {
 		try {
-			return await instructorReviewService.getInstructorReview(instructorReviewId);
+			return await instructorReviewService.getInstructorReview(
+				instructorReviewId
+			);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -58,7 +66,9 @@ export const deleteInstructorReview = createAsyncThunk(
 	DELETE_INSTRUCTOR_REVIEW,
 	async (instructorReviewId, thunkAPI) => {
 		try {
-			return await instructorReviewService.deleteInstructorReview(instructorReviewId);
+			return await instructorReviewService.deleteInstructorReview(
+				instructorReviewId
+			);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -125,31 +135,22 @@ export const instructorReviewSlice = createSlice({
 			})
 			.addCase(createInstructorReview.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Success',
-					text: payload.message,
-					icon: 'success',
-				});
-				state.instructorReviews = [...state.instructorReviews, payload.instructorReview];
+				displaySuccessNotification(payload.message);
+				state.instructorReviews = [
+					...state.instructorReviews,
+					payload.instructorReview,
+				];
 			})
 			.addCase(createInstructorReview.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: payload,
-					icon: 'error',
-				});
+				displayErrorNotification(payload);
 			})
 			.addCase(updateInstructorReview.pending, (state) => {
 				state.isLoading = true;
 			})
 			.addCase(updateInstructorReview.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Success',
-					text: payload.message,
-					icon: 'success',
-				});
+				displaySuccessNotification(payload.message);
 				const updatedInstructorReviewIndex = state.instructorReviews.findIndex(
 					(instructorReview) =>
 						instructorReview._id === payload.updatedInstructorReview._id
@@ -160,11 +161,7 @@ export const instructorReviewSlice = createSlice({
 			})
 			.addCase(updateInstructorReview.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: payload,
-					icon: 'error',
-				});
+				displayErrorNotification(payload);
 			})
 			.addCase(getInstructorReview.pending, (state) => {
 				state.isLoading = true;
@@ -179,33 +176,23 @@ export const instructorReviewSlice = createSlice({
 					payload !==
 					'Seems like the instructor review that you are trying to view does not exist.'
 				)
-					Toast.fire({
-						title: 'Something went wrong!',
-						text: payload,
-						icon: 'error',
-					});
+					displayErrorNotification(payload);
 			})
 			.addCase(deleteInstructorReview.pending, (state) => {
 				state.isLoading = true;
 			})
 			.addCase(deleteInstructorReview.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Success',
-					text: payload.message,
-					icon: 'success',
-				});
-				state.instructorReviews = state.instructorReviews.filter((instructorReview) => {
-					return instructorReview._id !== payload.instructorReview;
-				});
+				displaySuccessNotification(payload.message);
+				state.instructorReviews = state.instructorReviews.filter(
+					(instructorReview) => {
+						return instructorReview._id !== payload.instructorReview;
+					}
+				);
 			})
 			.addCase(deleteInstructorReview.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: payload,
-					icon: 'error',
-				});
+				displayErrorNotification(payload);
 			})
 			.addCase(getUserInstructorReviews.pending, (state) => {
 				state.isLoading = true;
@@ -216,31 +203,22 @@ export const instructorReviewSlice = createSlice({
 			})
 			.addCase(getUserInstructorReviews.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				if (payload !== `Seems like you haven't submitted any instructor reviews yet.`)
-					Toast.fire({
-						title: 'Something went wrong!',
-						text: payload,
-						icon: 'error',
-					});
+				if (
+					payload !==
+					`Seems like you haven't submitted any instructor reviews yet.`
+				)
+					displayErrorNotification(payload);
 			})
 			.addCase(deleteUserInstructorReviews.pending, (state) => {
 				state.isLoading = true;
 			})
 			.addCase(deleteUserInstructorReviews.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Success',
-					text: payload.message,
-					icon: 'success',
-				});
+				displaySuccessNotification(payload.message);
 			})
 			.addCase(deleteUserInstructorReviews.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: payload,
-					icon: 'error',
-				});
+				displayErrorNotification(payload);
 			})
 			.addCase(getInstructorReviews.pending, (state) => {
 				state.isLoading = true;
@@ -255,33 +233,22 @@ export const instructorReviewSlice = createSlice({
 					payload !==
 					'Seems like there are no instructor reviews registered in the system.'
 				)
-					Toast.fire({
-						title: 'Something went wrong!',
-						text: payload,
-						icon: 'error',
-					});
+					displayErrorNotification(payload);
 			})
 			.addCase(deleteInstructorReviews.pending, (state) => {
 				state.isLoading = true;
 			})
 			.addCase(deleteInstructorReviews.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Success',
-					text: payload.message,
-					icon: 'success',
-				});
+				displaySuccessNotification(payload.message);
 			})
 			.addCase(deleteInstructorReviews.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				Toast.fire({
-					title: 'Something went wrong!',
-					text: payload,
-					icon: 'error',
-				});
+				displayErrorNotification(payload);
 			});
 	},
 });
 
-export const { resetInstructorReview, setEditInstructorReview } = instructorReviewSlice.actions;
+export const { resetInstructorReview, setEditInstructorReview } =
+	instructorReviewSlice.actions;
 export default instructorReviewSlice.reducer;

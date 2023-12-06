@@ -14,10 +14,12 @@ import { deleteAlert } from '../../constants/sweetAlertNotification';
 import DataTable from '../DataTable';
 import Switch from 'react-switch';
 import CourseForm from '../../components/course/forms/CourseForm';
-import Spinner from '../../components/boilerplate/Spinner';
+import Spinner from '../../components/boilerplate/spinners/Spinner';
 
 export default function CoursesDataTable({ courses, cycles, semesters }) {
-	const { isLoading, isEditingCourse, editCourseId } = useSelector((state) => state.courses);
+	const { isLoading, isEditingCourse, editCourseId } = useSelector(
+		(state) => state.courses
+	);
 
 	const modalRef = useRef(null);
 	const [modal, setModal] = useState(false);
@@ -51,11 +53,8 @@ export default function CoursesDataTable({ courses, cycles, semesters }) {
 	};
 
 	const handleSwitchToggle = (courseId, checked) => {
-		if (checked) {
-			dispatch(activateCourse(courseId));
-		} else {
-			dispatch(deActivateCourse(courseId));
-		}
+		if (checked) dispatch(activateCourse(courseId));
+		else dispatch(deActivateCourse(courseId));
 	};
 
 	const handleCourseRowClick = (course) => {
@@ -65,7 +64,13 @@ export default function CoursesDataTable({ courses, cycles, semesters }) {
 	const ModalComponent = forwardRef((props, ref) => {
 		return (
 			<Modal ref={ref} isOpen={modal} toggle={toggle} className="modal-lg">
-				<ModalHeader toggle={toggle}>Edit Course ({currentCourse.title})</ModalHeader>
+				<ModalHeader toggle={toggle}>
+					Edit Course (
+					<span style={{ fontWeight: 'bold', fontSize: '21px' }}>
+						{currentCourse.title}
+					</span>
+					)
+				</ModalHeader>
 				<ModalBody>
 					<CourseForm
 						course={currentCourse}

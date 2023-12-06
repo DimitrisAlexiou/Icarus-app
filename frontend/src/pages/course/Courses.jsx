@@ -1,26 +1,13 @@
 import { Link } from 'react-router-dom';
 import { Card, CardText, CardTitle, Row, Col } from 'reactstrap';
-// import { useSelector } from 'react-redux';
 
 export default function Courses() {
-	// const { user } = useSelector((state) => state.auth);
-
 	return (
 		<>
 			<Row className="mb-4 animated--grow-in">
 				<Col>
 					<h3 className="text-gray-800 font-weight-bold">Studies</h3>
 				</Col>
-				{/* {user.user.isAdmin ? (
-					<Col className="px-3 d-flex justify-content-end">
-						<Link
-							to="/course/new"
-							className="btn btn-light-cornflower-blue align-self-center"
-						>
-							Add Course
-						</Link>
-					</Col>
-				) : null} */}
 			</Row>
 
 			<Row className="justify-content-center animated--grow-in">

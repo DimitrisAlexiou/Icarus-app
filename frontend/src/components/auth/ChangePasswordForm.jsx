@@ -2,13 +2,13 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { FormGroup, Label, Row, Col, Button, Spinner } from 'reactstrap';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { PasswordSchema } from '../../schemas/auth/ChangePassword';
+import { ChangePasswordSchema } from '../../schemas/auth/ChangePassword';
 import { changePassword } from '../../features/auth/authSlice';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import FormErrorMessage from '../form/FormErrorMessage';
 
-export default function ChangePasswordForm() {
+export default function ChangePasswordForm({user}) {
 	const [showOldPassword, setShowOldPassword] = useState(false);
 	const [showNewPassword, setShowNewPassword] = useState(false);
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -23,14 +23,14 @@ export default function ChangePasswordForm() {
 					newPassword: '',
 					confirmPassword: '',
 				}}
-				validationSchema={PasswordSchema}
+				validationSchema={ChangePasswordSchema}
 				onSubmit={(values, { setSubmitting }) => {
-					const user = {
+					const userPassToUpdate = {
 						password: values.newPassword,
 					};
-					console.log(user);
+					console.log(userPassToUpdate);
 					console.log('TRIGGERED');
-					dispatch(changePassword(user));
+					dispatch(changePassword({ userId: user.user._id, data: userPassToUpdate }));
 					setSubmitting(false);
 				}}
 				validateOnMount

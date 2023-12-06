@@ -26,84 +26,96 @@ interface AuthenticatedRequest extends Request {
 	user?: UserProps;
 }
 
-export const viewCourses = tryCatch(async (_: Request, res: Response): Promise<Response> => {
-	const courses = await getCourses();
+export const viewCourses = tryCatch(
+	async (_: Request, res: Response): Promise<Response> => {
+		const courses = await getCourses();
 
-	if (!courses.length)
-		throw new CustomError('Seems like there are no courses registered in the system.', 404);
+		if (!courses.length)
+			throw new CustomError(
+				'Seems like there are no courses registered in the system.',
+				404
+			);
 
-	return res.status(200).json(courses);
-});
+		return res.status(200).json(courses);
+	}
+);
 
-export const viewCourse = tryCatch(async (req: Request, res: Response): Promise<Response> => {
-	const { id } = req.params;
-	const course = await getCourseById(id);
+export const viewCourse = tryCatch(
+	async (req: Request, res: Response): Promise<Response> => {
+		const { id } = req.params;
+		const course = await getCourseById(id);
 
-	if (!course)
-		throw new CustomError(
-			'Seems like the course that you are trying to view does not exist.',
-			404
-		);
+		if (!course)
+			throw new CustomError(
+				'Seems like the course that you are trying to view does not exist.',
+				404
+			);
 
-	if (!course.isObligatory)
-		await course.populate({
-			path: 'cycle',
-			match: { cycle: { $exists: true, $ne: null } },
+		if (!course.isObligatory)
+			await course.populate({
+				path: 'cycle',
+				match: { cycle: { $exists: true, $ne: null } },
+			});
+
+		if (course.hasPrerequisites)
+			await course.populate({
+				path: 'prerequisites.prerequisite',
+				select: 'title',
+				match: { prerequisites: { $exists: true } },
+			});
+
+		return res.status(200).json(course);
+	}
+);
+
+export const newCourse = tryCatch(
+	async (req: Request, res: Response): Promise<Response> => {
+		const {
+			courseId,
+			title,
+			type,
+			isObligatory,
+			hasPrerequisites,
+			hasLab,
+			description,
+			semester,
+			ects,
+			year,
+			cycle,
+			prerequisites,
+			isActive,
+		} = req.body;
+
+		if (!courseId || !title || !type || !semester || !ects || !year)
+			throw new CustomError('Please fill in all the required fields.', 400);
+
+		const existingCourse = await getCourseByCourseId(courseId);
+		if (existingCourse)
+			throw new CustomError(
+				'Seems like a course with this ID already exists.',
+				409
+			);
+
+		const course = await createCourse({
+			courseId,
+			title,
+			type,
+			isObligatory,
+			hasPrerequisites,
+			hasLab,
+			description,
+			semester,
+			ects,
+			year,
+			cycle,
+			prerequisites,
+			isActive,
+			status: 'new',
 		});
 
-	if (course.hasPrerequisites)
-		await course.populate({
-			path: 'prerequisites.prerequisite',
-			select: 'title',
-			match: { prerequisites: { $exists: true } },
-		});
-
-	return res.status(200).json(course);
-});
-
-export const newCourse = tryCatch(async (req: Request, res: Response): Promise<Response> => {
-	const {
-		courseId,
-		title,
-		type,
-		isObligatory,
-		hasPrerequisites,
-		hasLab,
-		description,
-		semester,
-		ects,
-		year,
-		cycle,
-		prerequisites,
-		isActive,
-	} = req.body;
-
-	if (!courseId || !title || !type || !semester || !ects || !year)
-		throw new CustomError('Please fill in all the required fields.', 400);
-
-	const existingCourse = await getCourseByCourseId(courseId);
-	if (existingCourse)
-		throw new CustomError('Seems like a course with this ID already exists.', 409);
-
-	const course = await createCourse({
-		courseId,
-		title,
-		type,
-		isObligatory,
-		hasPrerequisites,
-		hasLab,
-		description,
-		semester,
-		ects,
-		year,
-		cycle,
-		prerequisites,
-		isActive,
-		status: 'new',
-	});
-
-	return res.status(201).json({ message: 'Course created!', course });
-});
+		return res.status(201).json({ message: 'Course created!', course });
+	}
+);
 
 export const enrollCourse = tryCatch(
 	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
@@ -122,7 +134,10 @@ export const enrollCourse = tryCatch(
 
 		const currentSemester = await getCurrentSemester(new Date());
 		if (teaching.semester._id.toString() !== currentSemester._id.toString())
-			throw new CustomError('Course semester does not match the current semester.', 400);
+			throw new CustomError(
+				'Course semester does not match the current semester.',
+				400
+			);
 
 		if (student.enrolledCourses.includes(teaching._id))
 			throw new CustomError('Student is already enrolled in this course.', 400);
@@ -139,11 +154,16 @@ export const disenrollCourse = tryCatch(
 		const { id } = req.params;
 		const userId = req.user.id;
 
-		const student = await getStudentByUserId(userId).populate('enrolledCourses');
+		const student = await getStudentByUserId(userId).populate(
+			'enrolledCourses'
+		);
 		if (!student) throw new CustomError('Student not found.', 404);
 
-		const isEnrolled = student.enrolledCourses.some((teaching) => teaching._id.equals(id));
-		if (!isEnrolled) throw new CustomError('Student is not enrolled in this course.', 400);
+		const isEnrolled = student.enrolledCourses.some((teaching) =>
+			teaching._id.equals(id)
+		);
+		if (!isEnrolled)
+			throw new CustomError('Student is not enrolled in this course.', 400);
 
 		student.enrolledCourses = student.enrolledCourses.filter(
 			(teaching) => !teaching._id.equals(id)
@@ -151,18 +171,21 @@ export const disenrollCourse = tryCatch(
 
 		await student.save();
 
-		return res.status(200).json({ message: 'Disenroll from course.', student });
+		return res
+			.status(200)
+			.json({ message: 'Disenrolled from course.', student });
 	}
 );
 
 export const viewEnrolledCourses = tryCatch(
 	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const userId = req.user.id;
-
+		console.log(userId);
 		const student = await getStudentByUserId(userId).populate({
 			path: 'enrolledCourses',
 			model: 'Course',
 		});
+		console.log(student);
 
 		if (!student) throw new CustomError('Student not found.', 404);
 
@@ -170,7 +193,10 @@ export const viewEnrolledCourses = tryCatch(
 	}
 );
 
-export const activateCourse = async (req: Request, res: Response): Promise<Response> => {
+export const activateCourse = async (
+	req: Request,
+	res: Response
+): Promise<Response> => {
 	const { id } = req.params;
 
 	let activatedCourse;
@@ -181,7 +207,11 @@ export const activateCourse = async (req: Request, res: Response): Promise<Respo
 	try {
 		session.startTransaction();
 
-		activatedCourse = await updateCourseById(id, { isActive: true }, { session });
+		activatedCourse = await updateCourseById(
+			id,
+			{ isActive: true },
+			{ session }
+		);
 
 		if (!activatedCourse)
 			throw new CustomError(
@@ -227,10 +257,15 @@ export const activateCourse = async (req: Request, res: Response): Promise<Respo
 		session.endSession();
 	}
 
-	return res.status(201).json({ message: 'Course activated!', activatedCourse, teaching });
+	return res
+		.status(201)
+		.json({ message: 'Course activated!', activatedCourse, teaching });
 };
 
-export const deActivateCourse = async (req: Request, res: Response): Promise<Response> => {
+export const deActivateCourse = async (
+	req: Request,
+	res: Response
+): Promise<Response> => {
 	const { id } = req.params;
 
 	let deactivatedCourse;
@@ -240,7 +275,11 @@ export const deActivateCourse = async (req: Request, res: Response): Promise<Res
 	try {
 		session.startTransaction();
 
-		deactivatedCourse = await updateCourseById(id, { isActive: false }, { session });
+		deactivatedCourse = await updateCourseById(
+			id,
+			{ isActive: false },
+			{ session }
+		);
 
 		if (!deactivatedCourse)
 			throw new CustomError(
@@ -259,76 +298,87 @@ export const deActivateCourse = async (req: Request, res: Response): Promise<Res
 		session.endSession();
 	}
 
-	return res.status(200).json({ message: 'Course deactivated.', deactivatedCourse });
+	return res
+		.status(200)
+		.json({ message: 'Course deactivated.', deactivatedCourse });
 };
 
-export const updateCourse = tryCatch(async (req: Request, res: Response): Promise<Response> => {
-	// const {
-	// 	courseId,
-	// 	title,
-	// 	type,
-	// 	isObligatory,
-	// 	hasPrerequisites,
-	// 	hasLab,
-	// 	semester,
-	// 	ects,
-	// 	year,
-	// 	cycle,
-	// 	prerequisites,
-	// 	isActive,
-	// } = req.body;
+export const updateCourse = tryCatch(
+	async (req: Request, res: Response): Promise<Response> => {
+		// const {
+		// 	courseId,
+		// 	title,
+		// 	type,
+		// 	isObligatory,
+		// 	hasPrerequisites,
+		// 	hasLab,
+		// 	semester,
+		// 	ects,
+		// 	year,
+		// 	cycle,
+		// 	prerequisites,
+		// 	isActive,
+		// } = req.body;
 
-	// if (
-	// 	!courseId ||
-	// 	!title ||
-	// 	!type ||
-	// 	!hasPrerequisites ||
-	// 	!prerequisites ||
-	// 	!semester ||
-	// 	!year ||
-	// 	!cycle ||
-	// 	!ects ||
-	// 	!hasLab ||
-	// 	!isObligatory ||
-	// 	!isActive
-	// )
-	// 	throw new CustomError('Please fill in all the required fields.', 400);
+		// if (
+		// 	!courseId ||
+		// 	!title ||
+		// 	!type ||
+		// 	!hasPrerequisites ||
+		// 	!prerequisites ||
+		// 	!semester ||
+		// 	!year ||
+		// 	!cycle ||
+		// 	!ects ||
+		// 	!hasLab ||
+		// 	!isObligatory ||
+		// 	!isActive
+		// )
+		// 	throw new CustomError('Please fill in all the required fields.', 400);
 
-	const { id } = req.params;
-	const updatedCourse = await updateCourseById(id, { ...req.body });
+		const { id } = req.params;
+		const updatedCourse = await updateCourseById(id, { ...req.body });
 
-	if (!updatedCourse)
-		throw new CustomError(
-			'Seems like the course that you are trying to update does not exist.',
-			404
-		);
+		if (!updatedCourse)
+			throw new CustomError(
+				'Seems like the course that you are trying to update does not exist.',
+				404
+			);
 
-	return res.status(200).json({ message: 'Course updated!', updatedCourse });
-});
+		return res.status(200).json({ message: 'Course updated!', updatedCourse });
+	}
+);
 
-export const deleteCourse = tryCatch(async (req: Request, res: Response): Promise<Response> => {
-	const { id } = req.params;
+export const deleteCourse = tryCatch(
+	async (req: Request, res: Response): Promise<Response> => {
+		const { id } = req.params;
 
-	const teaching = await getTeachingByCourseId(id);
+		const teaching = await getTeachingByCourseId(id);
 
-	if (teaching)
-		throw new CustomError(
-			'This course can not be deleted because it has an active teaching.',
-			400
-		);
+		if (teaching)
+			throw new CustomError(
+				'This course can not be deleted because it has an active teaching.',
+				400
+			);
 
-	const courseToDelete = await deleteCourseById(id);
+		const courseToDelete = await deleteCourseById(id);
 
-	if (!courseToDelete)
-		throw new CustomError(
-			'Seems like the course that you are trying to delete does not exist.',
-			404
-		);
+		if (!courseToDelete)
+			throw new CustomError(
+				'Seems like the course that you are trying to delete does not exist.',
+				404
+			);
 
-	return res.status(200).json({ message: 'Course deleted.', course: courseToDelete._id });
-});
+		return res
+			.status(200)
+			.json({ message: 'Course deleted.', course: courseToDelete._id });
+	}
+);
 
-export const deleteSystemCourses = async (_: Request, res: Response): Promise<Response> => {
+export const deleteSystemCourses = async (
+	_: Request,
+	res: Response
+): Promise<Response> => {
 	const session = await startSession();
 
 	try {
@@ -346,5 +396,7 @@ export const deleteSystemCourses = async (_: Request, res: Response): Promise<Re
 		session.endSession();
 	}
 
-	return res.status(200).json({ message: 'Courses existing in the system deleted.' });
+	return res
+		.status(200)
+		.json({ message: 'Courses existing in the system deleted.' });
 };

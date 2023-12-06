@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { FormGroup, Row, Col, Button, Spinner } from 'reactstrap';
 import { Formik, FieldArray, Form, ErrorMessage } from 'formik';
@@ -7,28 +8,31 @@ import {
 	setEditStatement,
 	updateStatement,
 } from '../../../features/courses/statementSlice';
-import FormErrorMessage from '../../form/FormErrorMessage';
-import { useEffect, useState } from 'react';
+import {
+	addSelectedTeachingsToLocalStorage,
+	getSelectedTeachingsFromLocalStorage,
+	removeSelectedTeachingsFromLocalStorage,
+} from '../../../utils/localStorage';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleXmark } from '@fortawesome/free-regular-svg-icons';
+import FormErrorMessage from '../../form/FormErrorMessage';
 
-const StatementForm = ({
+export default function StatementForm({
 	statement,
 	user,
 	semester,
-	teachings,
-	courses,
+	availableTeachings,
 	isEditingStatement,
 	editStatementId,
-}) => {
-	const [selectedCourses, setSelectedCourses] = useState([]);
+}) {
+	const [selectedTeachings, setSelectedTeachings] = useState([]);
 	const [availableCourses, setAvailableCourses] = useState([]);
 
-	const handleCourseSelect = (courseId) => {
-		if (!selectedCourses.includes(courseId)) {
-			setSelectedCourses((prevCourses) => [...prevCourses, courseId]);
-			setAvailableCourses((prevCourses) =>
-				prevCourses.filter((course) => course._id !== courseId)
+	const handleTeachingSelect = (teachingId) => {
+		if (!selectedTeachings.includes(teachingId)) {
+			setSelectedTeachings((prevTeachings) => [...prevTeachings, teachingId]);
+			setAvailableCourses((prevTeachings) =>
+				prevTeachings.filter((teaching) => teaching._id !== teachingId)
 			);
 		}
 	};
@@ -36,32 +40,35 @@ const StatementForm = ({
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		setAvailableCourses(courses.filter((course) => !selectedCourses.includes(course._id)));
-	}, [courses, selectedCourses]);
+		setAvailableCourses(
+			availableTeachings.filter(
+				(teaching) => !selectedTeachings.includes(teaching._id)
+			)
+		);
+	}, [availableTeachings, selectedTeachings]);
 
 	useEffect(() => {
-		const storedSelectedCourses = localStorage.getItem('selectedCourses');
-		if (storedSelectedCourses) setSelectedCourses(JSON.parse(storedSelectedCourses));
+		const storedSelectedTeachings = getSelectedTeachingsFromLocalStorage();
+		if (storedSelectedTeachings)
+			setSelectedTeachings(JSON.parse(storedSelectedTeachings));
 	}, []);
 
 	useEffect(() => {
-		localStorage.setItem('selectedCourses', JSON.stringify(selectedCourses));
-	}, [selectedCourses]);
+		addSelectedTeachingsToLocalStorage(selectedTeachings);
+	}, [selectedTeachings]);
 
 	return (
 		<>
 			<Formik
 				initialValues={{
-					teaching: [],
+					teaching: statement ? statement.teaching : [],
 				}}
+				enableReinitialize={true}
 				validationSchema={StatementSchema}
-				onSubmit={({ setSubmitting }) => {
-					const selectedStatementCourses = selectedCourses.map((courseId) => ({
-						_id: courseId,
-					}));
+				onSubmit={(values, { setSubmitting }) => {
 					const statement = {
-						teaching: selectedStatementCourses,
-						semester: semester,
+						teachings: selectedTeachings,
+						semester: semester._id,
 						user: user.user._id,
 					};
 					if (isEditingStatement) {
@@ -71,21 +78,23 @@ const StatementForm = ({
 								data: statement,
 							})
 						);
+						setSubmitting(false);
+						setSelectedTeachings([]);
+						setAvailableCourses([]);
+						removeSelectedTeachingsFromLocalStorage();
 						dispatch(
 							setEditStatement({
 								isEditingStatement: false,
 								editStatementId: '',
 							})
 						);
-						setSubmitting(false);
-						localStorage.removeItem('selectedCourses');
 						return;
 					}
-					console.log(statement);
-					// dispatch(createStatement(statement));
+					dispatch(createStatement(statement));
 					setSubmitting(false);
-					setSelectedCourses([]);
-					localStorage.removeItem('selectedCourses');
+					setSelectedTeachings([]);
+					setAvailableCourses([]);
+					removeSelectedTeachingsFromLocalStorage();
 				}}
 				validateOnMount
 			>
@@ -95,9 +104,9 @@ const StatementForm = ({
 							<FormGroup className="text-center">
 								<FieldArray name="teaching">
 									{({ push }) =>
-										availableCourses.map((course) => (
+										availableCourses.map((teaching) => (
 											<small
-												key={course._id}
+												key={teaching._id}
 												style={{
 													textAlign: 'justify',
 													fontWeight: '500',
@@ -105,11 +114,11 @@ const StatementForm = ({
 												}}
 												className="mx-2 pill-label mb-2 clickable"
 												onClick={() => {
-													push(course._id);
-													handleCourseSelect(course._id);
+													push(teaching._id);
+													handleTeachingSelect(teaching._id);
 												}}
 											>
-												{course.title}
+												{teaching.course.title}
 											</small>
 										))
 									}
@@ -118,9 +127,11 @@ const StatementForm = ({
 							</FormGroup>
 						</Row>
 						<Row className="mb-3">
-							{selectedCourses.map((courseId, index) => {
-								const course = courses.find((c) => c._id === courseId);
-								if (!course) return null;
+							{selectedTeachings.map((teachingId, index) => {
+								const teaching = availableTeachings.find(
+									(c) => c._id === teachingId
+								);
+								if (!teaching) return null;
 								return (
 									<Row key={index}>
 										<Col xl="6" lg="6" md="12" sm="12" xs="12">
@@ -128,7 +139,7 @@ const StatementForm = ({
 												<b>Course ID</b>
 											</label>
 											<p style={{ textAlign: 'justify' }}>
-												{course.courseId}
+												{teaching.course.courseId}
 											</p>
 											<hr />
 										</Col>
@@ -136,12 +147,14 @@ const StatementForm = ({
 											<label>
 												<b>Course Title</b>
 											</label>
-											<p style={{ textAlign: 'justify' }}>{course.title}</p>
+											<p style={{ textAlign: 'justify' }}>
+												{teaching.course.title}
+											</p>
 											<hr />
 										</Col>
 										<Col xl="1">
 											<small
-												key={course._id}
+												key={teaching.course._id}
 												style={{
 													display: 'inline-flex',
 													alignItems: 'center',
@@ -153,14 +166,12 @@ const StatementForm = ({
 													className="clickable"
 													icon={faCircleXmark}
 													onClick={() => {
-														setSelectedCourses((prevCourses) =>
-															prevCourses.filter(
-																(id) => id !== courseId
-															)
+														setSelectedTeachings((prevTeachings) =>
+															prevTeachings.filter((id) => id !== teachingId)
 														);
-														setAvailableCourses((prevCourses) => [
-															...prevCourses,
-															course,
+														setAvailableCourses((prevTeachings) => [
+															...prevTeachings,
+															teaching,
 														]);
 													}}
 												/>
@@ -176,12 +187,10 @@ const StatementForm = ({
 								<Button
 									onClick={() => {
 										handleReset();
-										setSelectedCourses([]);
-										setAvailableCourses(courses);
+										setSelectedTeachings([]);
+										setAvailableCourses(availableTeachings);
 									}}
-									disabled={
-										!dirty || isSubmitting || selectedCourses.length === 0
-									}
+									disabled={!dirty || isSubmitting || !selectedTeachings.length}
 								>
 									Clear
 								</Button>
@@ -205,6 +214,4 @@ const StatementForm = ({
 			</Formik>
 		</>
 	);
-};
-
-export default StatementForm;
+}

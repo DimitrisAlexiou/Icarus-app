@@ -1,116 +1,280 @@
-import { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { Col, Row, Input, Card, CardTitle, CardText, Nav } from 'reactstrap';
-import { NavLink } from 'react-router-dom';
-import { getCourses } from '../../features/courses/courseSlice';
-import { faBook } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { CourseType } from '../../constants/enums';
+import { Col, Row, Card, CardTitle, CardText, Nav } from 'reactstrap';
+import { Link, NavLink } from 'react-router-dom';
+import { academicYearStart } from '../../utils/academicYears';
 import { FaStudiovinari } from 'react-icons/fa';
-import CourseItem from '../../components/course/CourseItem';
-import Notification from '../../components/boilerplate/Notification';
 import BreadcrumbNav from '../../components/boilerplate/Breadcrumb';
-import PageButton from '../../components/buttons/PageButton';
-import Skeleton from '../../components/boilerplate/Skeleton';
-import Spinner from '../../components/boilerplate/Spinner';
 import BackButton from '../../components/buttons/BackButton';
-import CarouselComponent from '../../components/Carousel';
-import Search from '../../components/form/Search';
 
-export default function MscCourses() {
-	const {
-		courses,
-		page,
-		numOfPages,
-		search,
-		searchSemester,
-		searchCycle,
-		searchHasLab,
-		sort,
-		isLoading,
-	} = useSelector((state) => state.courses);
-	const { user } = useSelector((state) => state.auth);
-
-	const dispatch = useDispatch();
-
-	useEffect(() => {
-		dispatch(getCourses());
-	}, [dispatch]);
-
-	const masterCourses = courses.filter(
-		(course) => course.type === CourseType.Master && course.isObligatory
-	);
-
+export default function Msc({ user }) {
 	return (
 		<>
 			{user ? (
 				<>
-					<Row className="mb-3 animated--grow-in">
-						<Col sm="12" xs="12" md="12" lg="9">
-							<BreadcrumbNav
-								className="animated--grow-in"
-								link={'/course'}
-								header={'Courses'}
-								active={'Master'}
-							/>
-						</Col>
-						<Col className="d-flex justify-content-end">
-							<Input
-								type="text"
-								placeholder={`Search . . .`}
-								// value={searchQuery}
-								// onChange={handleSearchQueryChange}
-							/>
-						</Col>
-					</Row>
-
-					{/* <Search /> */}
+					<BreadcrumbNav
+						link={'/course'}
+						header={'Studies'}
+						active={'Master of Science'}
+					/>
 
 					<Row className="mb-3 animated--grow-in">
 						<Col sm="12" xs="12" md="12" lg="9">
 							<h3 className="mb-3 text-gray-800 font-weight-bold animated--grow-in">
-								Master
+								Master of Science
 							</h3>
 						</Col>
 					</Row>
 
-					{masterCourses.length ? (
-						<>
-							<Row className="d-flex justify-content-center animated--grow-in">
-								{masterCourses.map((course) => (
-									<Col
-										key={course._id}
-										xs="12"
-										sm="12"
-										md="12"
-										lg="5"
-										xl="5"
-										className="mb-3 mx-auto"
-									>
-										{isLoading ? (
-											<Skeleton />
-										) : (
-											<CourseItem key={course._id} course={course} />
-										)}
-									</Col>
-								))}
-							</Row>
-							<Col className="d-flex justify-content-end">
-								<h6 className="text-gray-400 font-weight-bold">
-									{masterCourses.length} course
-									{masterCourses.length > 1 && 's'}
-								</h6>
-							</Col>
-							{numOfPages > 1 ? <PageButton /> : null}
-						</>
-					) : (
-						<Notification
-							icon={<FontAwesomeIcon icon={faBook} />}
-							message={'There are no Msc courses available right now !'}
-							link={'/course'}
-							// linkMessage={'Back to Studies'}
-						/>
-					)}
+					<Row className="mb-4 justify-content-center animated--grow-in">
+						<Col md="7" lg="4" className="mb-3">
+							<Link
+								style={{
+									textDecoration: 'none',
+								}}
+								to="/course/msc/infoSec"
+							>
+								<Card className="card-animate" body color="primary" inverse>
+									<CardTitle tag="h5">
+										Information and Communication Systems Security
+									</CardTitle>
+									<CardText className="mt-3">
+										<small
+											style={{
+												textAlign: 'justify',
+												fontWeight: '700',
+												fontSize: 13,
+											}}
+										>
+											Starting Date: October {academicYearStart}
+										</small>
+									</CardText>
+									<CardText>
+										<small
+											style={{
+												textAlign: 'justify',
+												fontWeight: '700',
+												fontSize: 13,
+											}}
+										>
+											Duration: 3 semesters (part time: up to 6 semesters)
+										</small>
+									</CardText>
+									<CardText>
+										<small
+											style={{
+												textAlign: 'justify',
+												fontWeight: '700',
+												fontSize: 13,
+											}}
+										>
+											ECTS: 90
+										</small>
+									</CardText>
+								</Card>
+							</Link>
+						</Col>
+						<Col md="7" lg="4">
+							<Link
+								style={{
+									textDecoration: 'none',
+								}}
+								to="/course/msc/ics-conversion"
+							>
+								<Card className="card-animate" body color="warning" inverse>
+									<CardTitle tag="h5">
+										Information and Communication Systems
+									</CardTitle>
+									<CardText className="mt-3">
+										<small
+											style={{
+												textAlign: 'justify',
+												fontWeight: '700',
+												fontSize: 13,
+											}}
+										>
+											Starting Date: October {academicYearStart}
+										</small>
+									</CardText>
+									<CardText>
+										<small
+											style={{
+												textAlign: 'justify',
+												fontWeight: '700',
+												fontSize: 13,
+											}}
+										>
+											Duration: 3 semesters (part time: up to 6 semesters)
+										</small>
+									</CardText>
+									<CardText>
+										<small
+											style={{
+												textAlign: 'justify',
+												fontWeight: '700',
+												fontSize: 13,
+											}}
+										>
+											ECTS: 90
+										</small>
+									</CardText>
+								</Card>
+							</Link>
+						</Col>
+					</Row>
+
+					<Row className="mb-4 justify-content-center animated--grow-in">
+						<Col md="7" lg="4" className="mb-3">
+							<Link
+								style={{
+									textDecoration: 'none',
+								}}
+								to="/course/msc/egov"
+							>
+								<Card className="card-animate" body color="success" inverse>
+									<CardTitle tag="h5">E-Government</CardTitle>
+									<CardText className="mt-3">
+										<small
+											style={{
+												textAlign: 'justify',
+												fontWeight: '700',
+												fontSize: 13,
+											}}
+										>
+											Starting Date: October {academicYearStart}
+										</small>
+									</CardText>
+									<CardText>
+										<small
+											style={{
+												textAlign: 'justify',
+												fontWeight: '700',
+												fontSize: 13,
+											}}
+										>
+											Duration: 3 semesters (part time: up to 6 semesters)
+										</small>
+									</CardText>
+									<CardText>
+										<small
+											style={{
+												textAlign: 'justify',
+												fontWeight: '700',
+												fontSize: 13,
+											}}
+										>
+											ECTS: 90
+										</small>
+									</CardText>
+								</Card>
+							</Link>
+						</Col>
+						<Col md="7" lg="4">
+							<Link
+								style={{
+									textDecoration: 'none',
+								}}
+								to="/course/msc/iot"
+							>
+								<Card className="card-animate" body color="info" inverse>
+									<CardTitle tag="h5">Internet of Things</CardTitle>
+									<CardText className="mt-3">
+										<small
+											style={{
+												textAlign: 'justify',
+												fontWeight: '700',
+												fontSize: 13,
+											}}
+										>
+											Starting Date: October {academicYearStart}
+										</small>
+									</CardText>
+									<CardText>
+										<small
+											style={{
+												textAlign: 'justify',
+												fontWeight: '700',
+												fontSize: 13,
+											}}
+										>
+											Duration: 4 semesters (part time: up to 8 semesters)
+										</small>
+									</CardText>
+									<CardText>
+										<small
+											style={{
+												textAlign: 'justify',
+												fontWeight: '700',
+												fontSize: 13,
+											}}
+										>
+											ECTS: 120
+										</small>
+									</CardText>
+								</Card>
+							</Link>
+						</Col>
+					</Row>
+
+					<Row className="mb-4 justify-content-center animated--grow-in">
+						<Col md="7" lg="4" className="mb-3">
+							<Link
+								style={{
+									textDecoration: 'none',
+								}}
+								to="/course/msc/innovation"
+							>
+								<Card className="card-animate" body color="danger" inverse>
+									<CardTitle tag="h5">
+										Digital Innovation and Startup Entrepreneurship
+									</CardTitle>
+									<CardTitle tag="h6">
+										<small
+											style={{
+												textAlign: 'justify',
+												fontWeight: '500',
+												fontSize: 10,
+											}}
+										>
+											In collaboration with the National Technical University of
+											Athens
+										</small>
+									</CardTitle>
+									<CardText className="mt-3">
+										<small
+											style={{
+												textAlign: 'justify',
+												fontWeight: '700',
+												fontSize: 13,
+											}}
+										>
+											Starting Date: October {academicYearStart}
+										</small>
+									</CardText>
+									<CardText>
+										<small
+											style={{
+												textAlign: 'justify',
+												fontWeight: '700',
+												fontSize: 13,
+											}}
+										>
+											Duration: 4 semesters (part time: up to 8 semesters)
+										</small>
+									</CardText>
+									<CardText>
+										<small
+											style={{
+												textAlign: 'justify',
+												fontWeight: '700',
+												fontSize: 13,
+											}}
+										>
+											ECTS: 120
+										</small>
+									</CardText>
+								</Card>
+							</Link>
+						</Col>
+					</Row>
 				</>
 			) : (
 				<div className="bg-gradient-primary">
@@ -143,144 +307,292 @@ export default function MscCourses() {
 													Master
 												</h3>
 											</Col>
-											{masterCourses.length ? (
-												<Col className="d-flex justify-content-end">
-													<BackButton url={'/studies'} />
-												</Col>
-											) : null}
+											<Col className="d-flex justify-content-end">
+												<BackButton url={'/studies'} />
+											</Col>
 										</Row>
-										{isLoading ? (
-											<Spinner card />
-										) : masterCourses.length ? (
-											<>
-												<Row className="justify-content-center animated--grow-in">
-													<Card body color="info">
-														<CarouselComponent
-															objects={masterCourses}
-															renderItem={(course) => (
-																<>
-																	<CardTitle
-																		style={{
-																			textAlign: 'justify',
-																			fontWeight: '700',
-																			fontSize: 15,
-																		}}
-																		className="text-light-cornflower-blue mb-2"
-																	>
-																		{course.title}
-																	</CardTitle>
-																	<CardText>
-																		<small
-																			className="text-muted"
-																			style={{
-																				textAlign:
-																					'justify',
-																				fontWeight: '700',
-																				fontSize: 13,
-																				overflow: 'hidden',
-																				textOverflow:
-																					'ellipsis',
-																				display:
-																					'-webkit-box',
-																				lineHeight: '20px',
-																				maxHeight: '80px',
-																				WebkitLineClamp: 3,
-																				WebkitBoxOrient:
-																					'vertical',
-																			}}
-																		>
-																			{course.description}
-																		</small>
-																	</CardText>
-																	<Row>
-																		<Col>
-																			<CardText
-																				style={{
-																					textAlign:
-																						'justify',
-																					fontWeight:
-																						'600',
-																					fontSize: 11,
-																				}}
-																			>
-																				{course.courseId}
-																			</CardText>
-																		</Col>
-																		<Col className="d-flex justify-content-end">
-																			<CardText
-																				style={{
-																					textAlign:
-																						'justify',
-																					fontWeight:
-																						'600',
-																					fontSize: 11,
-																				}}
-																			>
-																				<small
-																					className="text-muted pill-label"
-																					style={{
-																						textAlign:
-																							'justify',
-																						fontWeight:
-																							'700',
-																						fontSize: 10,
-																					}}
-																				>
-																					ECTS
-																				</small>
-																				{course.ects}
-																			</CardText>
-																		</Col>
-																		<Col className="d-flex justify-content-end">
-																			<CardText
-																				style={{
-																					textAlign:
-																						'justify',
-																					fontWeight:
-																						'600',
-																					fontSize: 11,
-																				}}
-																			>
-																				<small
-																					className="text-muted pill-label"
-																					style={{
-																						textAlign:
-																							'justify',
-																						fontWeight:
-																							'700',
-																						fontSize: 10,
-																					}}
-																				>
-																					Year
-																				</small>
-																				{course.year}
-																			</CardText>
-																		</Col>
-																	</Row>
-																</>
-															)}
-														/>
+
+										<Row className="mb-4 justify-content-center animated--grow-in">
+											<Col md="7" lg="5" className="mb-3">
+												<Link
+													style={{
+														textDecoration: 'none',
+													}}
+													to="/studies/msc/infoSec"
+												>
+													<Card
+														className="card-animate"
+														body
+														color="primary"
+														inverse
+													>
+														<CardTitle tag="h5">
+															Information and Communication Systems Security
+														</CardTitle>
+														<CardText className="mt-3">
+															<small
+																style={{
+																	textAlign: 'justify',
+																	fontWeight: '700',
+																	fontSize: 13,
+																}}
+															>
+																Starting Date: October {academicYearStart}
+															</small>
+														</CardText>
+														<CardText>
+															<small
+																style={{
+																	textAlign: 'justify',
+																	fontWeight: '700',
+																	fontSize: 13,
+																}}
+															>
+																Duration: 3 semesters (part time: up to 6
+																semesters)
+															</small>
+														</CardText>
+														<CardText>
+															<small
+																style={{
+																	textAlign: 'justify',
+																	fontWeight: '700',
+																	fontSize: 13,
+																}}
+															>
+																ECTS: 90
+															</small>
+														</CardText>
 													</Card>
-												</Row>
-												<Row className="mt-3 animated--grow-in">
-													<Col className="d-flex justify-content-end">
-														<h6 className="text-gray-400 font-weight-bold">
-															{masterCourses.length} course
-															{masterCourses.length > 1 && 's'}
-														</h6>
-													</Col>
-													{numOfPages > 1 ? <PageButton /> : null}
-												</Row>
-											</>
-										) : (
-											<Notification
-												icon={<FontAwesomeIcon icon={faBook} />}
-												message={
-													'There are no Msc courses available right now !'
-												}
-												link={user ? '/course' : '/studies'}
-											/>
-										)}
+												</Link>
+											</Col>
+											<Col md="7" lg="5">
+												<Link
+													style={{
+														textDecoration: 'none',
+													}}
+													to="/studies/msc/ics-conversion"
+												>
+													<Card
+														className="card-animate"
+														body
+														color="warning"
+														inverse
+													>
+														<CardTitle tag="h5">
+															Information and Communication Systems
+														</CardTitle>
+														<CardText className="mt-3">
+															<small
+																style={{
+																	textAlign: 'justify',
+																	fontWeight: '700',
+																	fontSize: 13,
+																}}
+															>
+																Starting Date: October {academicYearStart}
+															</small>
+														</CardText>
+														<CardText>
+															<small
+																style={{
+																	textAlign: 'justify',
+																	fontWeight: '700',
+																	fontSize: 13,
+																}}
+															>
+																Duration: 3 semesters (part time: up to 6
+																semesters)
+															</small>
+														</CardText>
+														<CardText>
+															<small
+																style={{
+																	textAlign: 'justify',
+																	fontWeight: '700',
+																	fontSize: 13,
+																}}
+															>
+																ECTS: 90
+															</small>
+														</CardText>
+													</Card>
+												</Link>
+											</Col>
+										</Row>
+
+										<Row className="mb-4 justify-content-center animated--grow-in">
+											<Col md="7" lg="5" className="mb-3">
+												<Link
+													style={{
+														textDecoration: 'none',
+													}}
+													to="/studies/msc/egov"
+												>
+													<Card
+														className="card-animate"
+														body
+														color="success"
+														inverse
+													>
+														<CardTitle tag="h5">E-Government</CardTitle>
+														<CardText className="mt-3">
+															<small
+																style={{
+																	textAlign: 'justify',
+																	fontWeight: '700',
+																	fontSize: 13,
+																}}
+															>
+																Starting Date: October {academicYearStart}
+															</small>
+														</CardText>
+														<CardText>
+															<small
+																style={{
+																	textAlign: 'justify',
+																	fontWeight: '700',
+																	fontSize: 13,
+																}}
+															>
+																Duration: 3 semesters (part time: up to 6
+																semesters)
+															</small>
+														</CardText>
+														<CardText>
+															<small
+																style={{
+																	textAlign: 'justify',
+																	fontWeight: '700',
+																	fontSize: 13,
+																}}
+															>
+																ECTS: 90
+															</small>
+														</CardText>
+													</Card>
+												</Link>
+											</Col>
+											<Col md="7" lg="5">
+												<Link
+													style={{
+														textDecoration: 'none',
+													}}
+													to="/studies/msc/iot"
+												>
+													<Card
+														className="card-animate"
+														body
+														color="info"
+														inverse
+													>
+														<CardTitle tag="h5">Internet of Things</CardTitle>
+														<CardText className="mt-3">
+															<small
+																style={{
+																	textAlign: 'justify',
+																	fontWeight: '700',
+																	fontSize: 13,
+																}}
+															>
+																Starting Date: October {academicYearStart}
+															</small>
+														</CardText>
+														<CardText>
+															<small
+																style={{
+																	textAlign: 'justify',
+																	fontWeight: '700',
+																	fontSize: 13,
+																}}
+															>
+																Duration: 4 semesters (part time: up to 8
+																semesters)
+															</small>
+														</CardText>
+														<CardText>
+															<small
+																style={{
+																	textAlign: 'justify',
+																	fontWeight: '700',
+																	fontSize: 13,
+																}}
+															>
+																ECTS: 120
+															</small>
+														</CardText>
+													</Card>
+												</Link>
+											</Col>
+										</Row>
+
+										<Row className="mb-4 justify-content-center animated--grow-in">
+											<Col md="7" lg="5" className="mb-3">
+												<Link
+													style={{
+														textDecoration: 'none',
+													}}
+													to="/studies/msc/innovation"
+												>
+													<Card
+														className="card-animate"
+														body
+														color="danger"
+														inverse
+													>
+														<CardTitle tag="h5">
+															Digital Innovation and Startup Entrepreneurship
+														</CardTitle>
+														<CardTitle tag="h6">
+															<small
+																style={{
+																	textAlign: 'justify',
+																	fontWeight: '500',
+																	fontSize: 10,
+																}}
+															>
+																In collaboration with the National Technical
+																University of Athens
+															</small>
+														</CardTitle>
+														<CardText className="mt-3">
+															<small
+																style={{
+																	textAlign: 'justify',
+																	fontWeight: '700',
+																	fontSize: 13,
+																}}
+															>
+																Starting Date: October {academicYearStart}
+															</small>
+														</CardText>
+														<CardText>
+															<small
+																style={{
+																	textAlign: 'justify',
+																	fontWeight: '700',
+																	fontSize: 13,
+																}}
+															>
+																Duration: 4 semesters (part time: up to 8
+																semesters)
+															</small>
+														</CardText>
+														<CardText>
+															<small
+																style={{
+																	textAlign: 'justify',
+																	fontWeight: '700',
+																	fontSize: 13,
+																}}
+															>
+																ECTS: 120
+															</small>
+														</CardText>
+													</Card>
+												</Link>
+											</Col>
+										</Row>
 									</div>
 								</div>
 							</Col>

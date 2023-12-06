@@ -1,15 +1,24 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Row, Col, Badge, Button } from 'reactstrap';
-import { deleteCycle, deleteCycles, setEditCycle } from '../../../features/admin/cyclesSlice';
+import {
+	deleteCycle,
+	deleteCycles,
+	setEditCycle,
+} from '../../../features/admin/cyclesSlice';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt, faEdit } from '@fortawesome/free-regular-svg-icons';
 import { deleteAlert } from '../../../constants/sweetAlertNotification';
 import CycleForm from '../forms/CycleForm';
-import Spinner from '../../boilerplate/Spinner';
+import Spinner from '../../boilerplate/spinners/Spinner';
 
-const CycleCard = ({ cycles, isCyclesLoading, isEditingCycle, editCycleId }) => {
+const CycleCard = ({
+	cycles,
+	isCyclesLoading,
+	isEditingCycle,
+	editCycleId,
+}) => {
 	const [editedCycleIndex, setEditedCycleIndex] = useState(-1);
 	const [addingCycle, setAddingCycle] = useState(false);
 	const dispatch = useDispatch();
@@ -86,6 +95,7 @@ const CycleCard = ({ cycles, isCyclesLoading, isEditingCycle, editCycleId }) => 
 										{addingCycle ? (
 											<Col xs="2" sm="6" md="6" className="text-right mt-1">
 												<FontAwesomeIcon
+													className="clickable"
 													onClick={() => setAddingCycle(false)}
 													icon={faXmark}
 												/>
@@ -117,6 +127,7 @@ const CycleCard = ({ cycles, isCyclesLoading, isEditingCycle, editCycleId }) => 
 										</Col>
 										<Col xs="2" sm="6" md="6" className="text-right mt-1">
 											<FontAwesomeIcon
+												className="clickable"
 												onClick={() => {
 													setEditedCycleIndex(-1);
 													dispatch(
@@ -160,23 +171,16 @@ const CycleCard = ({ cycles, isCyclesLoading, isEditingCycle, editCycleId }) => 
 																					fontSize: 15,
 																				}}
 																				onClick={() => {
-																					setEditedCycleIndex(
-																						index
-																					);
+																					setEditedCycleIndex(index);
 																					dispatch(
-																						setEditCycle(
-																							{
-																								isEditingCycle: true,
-																								editCycleId:
-																									cycle._id,
-																							}
-																						)
+																						setEditCycle({
+																							isEditingCycle: true,
+																							editCycleId: cycle._id,
+																						})
 																					);
 																				}}
 																			>
-																				<FontAwesomeIcon
-																					icon={faEdit}
-																				/>
+																				<FontAwesomeIcon icon={faEdit} />
 																			</Button>
 																		</Col>
 																		<Col>
@@ -187,21 +191,12 @@ const CycleCard = ({ cycles, isCyclesLoading, isEditingCycle, editCycleId }) => 
 																					fontSize: 15,
 																				}}
 																				onClick={async () =>
-																					deleteAlert(
-																						() =>
-																							dispatch(
-																								deleteCycle(
-																									cycle._id
-																								)
-																							)
+																					deleteAlert(() =>
+																						dispatch(deleteCycle(cycle._id))
 																					)
 																				}
 																			>
-																				<FontAwesomeIcon
-																					icon={
-																						faTrashAlt
-																					}
-																				/>
+																				<FontAwesomeIcon icon={faTrashAlt} />
 																			</Button>
 																		</Col>
 																	</Row>
@@ -250,9 +245,7 @@ const CycleCard = ({ cycles, isCyclesLoading, isEditingCycle, editCycleId }) => 
 																fontSize: 15,
 															}}
 															onClick={async () =>
-																deleteAlert(() =>
-																	dispatch(deleteCycles())
-																)
+																deleteAlert(() => dispatch(deleteCycles()))
 															}
 														>
 															<FontAwesomeIcon icon={faTrashAlt} />
