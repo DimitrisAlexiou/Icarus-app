@@ -143,7 +143,15 @@ export const enrollCourse = tryCatch(
 			throw new CustomError('Student is already enrolled in this course.', 400);
 
 		student.enrolledCourses.push(teaching._id);
-		await student.save();
+
+		(await student.save()).populate({
+			path: 'enrolledCourses',
+			model: 'Teaching',
+			populate: {
+				path: 'course',
+				model: 'Course',
+			},
+		});
 
 		return res.status(201).json({ message: 'Enrolled to Course!', student });
 	}
@@ -169,7 +177,14 @@ export const disenrollCourse = tryCatch(
 			(teaching) => !teaching._id.equals(id)
 		);
 
-		await student.save();
+		(await student.save()).populate({
+			path: 'enrolledCourses',
+			model: 'Teaching',
+			populate: {
+				path: 'course',
+				model: 'Course',
+			},
+		});
 
 		return res
 			.status(200)
@@ -180,12 +195,15 @@ export const disenrollCourse = tryCatch(
 export const viewEnrolledCourses = tryCatch(
 	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const userId = req.user.id;
-		console.log(userId);
+
 		const student = await getStudentByUserId(userId).populate({
 			path: 'enrolledCourses',
-			model: 'Course',
+			model: 'Teaching',
+			populate: {
+				path: 'course',
+				model: 'Course',
+			},
 		});
-		console.log(student);
 
 		if (!student) throw new CustomError('Student not found.', 404);
 

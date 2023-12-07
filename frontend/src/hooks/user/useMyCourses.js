@@ -35,6 +35,8 @@ const useMyCourses = () => {
 		(teaching) => !enrolledCourses.includes(teaching._id)
 	);
 
+	const hasMoreAvailableCoursesToEnroll = filteredAvailableTeachings.length > 0;
+
 	const handleCourseEnrollment = (teaching) => {
 		// const prerequisitesMet = arePrerequisitesMet(teaching);
 
@@ -49,9 +51,7 @@ const useMyCourses = () => {
 	};
 
 	const handleNavigateToCoursePortfolio = (enrolledCourse) => {
-		const teaching = teachings.find(
-			(teaching) => teaching._id === enrolledCourse
-		);
+		const teaching = findTeaching(enrolledCourse);
 		navigate('/teaching/' + teaching._id + '/portfolio');
 	};
 
@@ -101,6 +101,7 @@ const useMyCourses = () => {
 		isTeachingsLoading,
 		availableTeachings,
 		filteredAvailableTeachings,
+		hasMoreAvailableCoursesToEnroll,
 		enrolledCourses,
 		PrerequisiteType,
 		disenrollCourse,

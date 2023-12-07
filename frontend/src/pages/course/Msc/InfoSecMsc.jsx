@@ -36,16 +36,15 @@ export default function InfoSecMsc({ user }) {
 		<>
 			{user ? (
 				<>
-					<Row className="mb-3 animated--grow-in">
+					<Row className="mb-3">
 						<Col sm="12" xs="12" md="12" lg="9">
 							<BreadcrumbNav
-								className="animated--grow-in"
 								link={'/course/msc'}
 								header={'Master'}
 								active={'Information and Communication Systems Security'}
 							/>
 						</Col>
-						<Col className="d-flex justify-content-end">
+						<Col className="animated--grow-in d-flex justify-content-end">
 							<Input
 								type="text"
 								placeholder={`Search . . .`}

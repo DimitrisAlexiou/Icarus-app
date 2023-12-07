@@ -46,7 +46,6 @@ export default function Statements() {
 		availableTeachings,
 		isStatementSubmitted,
 		currentStatement,
-		getStudentStatements,
 		dispatch,
 	} = useStatements();
 

@@ -17,6 +17,7 @@ export default function MyCourses() {
 		isTeachingsLoading,
 		availableTeachings,
 		filteredAvailableTeachings,
+		hasMoreAvailableCoursesToEnroll,
 		enrolledCourses,
 		findTeaching,
 		handleCourseEnrollment,
@@ -48,9 +49,9 @@ export default function MyCourses() {
 			{isSemesterLoading || isTeachingsLoading ? (
 				<Spinner card />
 			) : teachings.length > 0 && semester ? (
-				availableTeachings.length > 0 ? (
+				hasMoreAvailableCoursesToEnroll ? (
 					<CarouselComponent
-						objects={availableTeachings}
+						objects={filteredAvailableTeachings}
 						renderItem={(teaching) => (
 							<>
 								<CardTitle
@@ -90,9 +91,13 @@ export default function MyCourses() {
 					/>
 				) : (
 					<div className="mt-5 mb-5">
-						<SpinnerComponent message="There are no active courses available in the current semester." />
+						<SpinnerComponent message="There are no more active courses available to select." />
 					</div>
 				)
+			) : availableTeachings.length > 0 ? (
+				<div className="mt-5 mb-5">
+					<SpinnerComponent message="There are no active courses available in the current semester." />
+				</div>
 			) : (
 				<div className="mb-5">
 					<SpinnerComponent message="There are no courses available right now." />

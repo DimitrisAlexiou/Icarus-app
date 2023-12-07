@@ -68,5 +68,3 @@ export const deleteStudentByUserId = (id: string, session: ClientSession) => {
 	return Student.findOneAndDelete({ user: id }).session(session);
 };
 export const deleteStudents = () => Student.deleteMany();
-export const enrollCourseById = (id: string, teaching: Record<string, any>) =>
-	Student.findByIdAndUpdate(id, teaching, { new: true });

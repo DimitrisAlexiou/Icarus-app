@@ -88,7 +88,6 @@ const useStatements = () => {
 		availableTeachings,
 		isStatementSubmitted,
 		currentStatement,
-		getStudentStatements,
 		dispatch,
 	};
 };
