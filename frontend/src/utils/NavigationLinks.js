@@ -111,7 +111,7 @@ export const sidebarAdminUtilityLinks = [
 	{
 		id: 13,
 		text: 'Calendar',
-		path: '/calendar',
+		path: '/admin/calendar',
 		icon: <FontAwesomeIcon icon={faCalendarDays} />,
 	},
 ];
@@ -124,11 +124,16 @@ export const sidebarCourseConfigDropDown = [
 	},
 	{
 		id: 2,
+		text: 'Create Statement',
+		path: 'statement/new',
+	},
+	{
+		id: 3,
 		text: 'Assign Instructor',
 		path: 'teaching/assign',
 	},
 	{
-		id: 3,
+		id: 4,
 		text: 'Teaching Grading',
 		path: 'teaching/grading',
 	},
@@ -212,13 +217,13 @@ export const sidebarInstructorCourseLinks = [
 	},
 	{
 		id: 2,
-		text: 'My Courses',
+		text: 'My Teachings',
 		path: '/teachings',
 		icon: <FontAwesomeIcon icon={faBookOpen} />,
 	},
 	{
 		id: 3,
-		text: 'Course Grading',
+		text: 'Teaching Grading',
 		path: '/teaching/grading',
 		icon: <FontAwesomeIcon icon={faPersonChalkboard} />,
 	},

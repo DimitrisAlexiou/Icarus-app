@@ -37,6 +37,7 @@ const useGeneralreview = () => {
 		isSemesterLoading,
 		isGeneralaReviewLoading,
 		findTeaching,
+		dispatch,
 	};
 };
 

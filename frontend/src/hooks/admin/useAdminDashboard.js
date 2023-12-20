@@ -19,9 +19,12 @@ import { deleteAlert } from '../../constants/sweetAlertNotification';
 const useAdminDashboard = () => {
 	const dispatch = useDispatch();
 
-	const { courses, isLoading: coursesIsLoading } = useSelector(
-		(state) => state.courses
-	);
+	const {
+		courses,
+		isLoading: coursesIsLoading,
+		isEditingCourse,
+		editCourseId,
+	} = useSelector((state) => state.courses);
 	const { teachings, isLoading: teachingsIsLoading } = useSelector(
 		(state) => state.teachings
 	);
@@ -37,9 +40,12 @@ const useAdminDashboard = () => {
 	const { cycles, isLoading: cyclesIsLoading } = useSelector(
 		(state) => state.cycles
 	);
-	const { semesters, isLoading: semestersIsLoading } = useSelector(
-		(state) => state.semesters
-	);
+	const {
+		semesters,
+		isLoading: semestersIsLoading,
+		isEditingSemester,
+		editSemesterId,
+	} = useSelector((state) => state.semesters);
 	const { notes, isLoading: notesIsLoading } = useSelector(
 		(state) => state.notes
 	);
@@ -94,6 +100,10 @@ const useAdminDashboard = () => {
 		teachingReviewsIsLoading,
 		instructorReviewsIsLoading,
 		generalReviewsIsLoading,
+		isEditingSemester,
+		editSemesterId,
+		isEditingCourse,
+		editCourseId,
 		deleteSystemCourses,
 		dispatch,
 	};

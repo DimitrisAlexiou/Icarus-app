@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { FormGroup, Label, Row, Col, Button, Spinner, Input } from 'reactstrap';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import {
@@ -15,10 +14,9 @@ export default function AssignInstructorForm({
 	isEditingTheoryInstructors,
 	isEditingLabInstructors,
 	setModal,
+	dispatch,
 }) {
 	const [selectedPart, setSelectedPart] = useState('theory');
-
-	const dispatch = useDispatch();
 
 	return (
 		<>
@@ -37,20 +35,22 @@ export default function AssignInstructorForm({
 						</Label>
 					</FormGroup>
 				</Col>
-				<Col md="5">
-					<FormGroup className="mx-1 mb-3 mt-3" check>
-						<Input
-							type="radio"
-							name="teachingPart"
-							value="lab"
-							checked={selectedPart === 'lab'}
-							onChange={() => setSelectedPart('lab')}
-						/>
-						<Label for="lab" className="mx-2 text-gray-500">
-							Lab
-						</Label>
-					</FormGroup>
-				</Col>
+				{teaching.course.hasLab ? (
+					<Col md="5">
+						<FormGroup className="mx-1 mb-3 mt-3" check>
+							<Input
+								type="radio"
+								name="teachingPart"
+								value="lab"
+								checked={selectedPart === 'lab'}
+								onChange={() => setSelectedPart('lab')}
+							/>
+							<Label for="lab" className="mx-2 text-gray-500">
+								Lab
+							</Label>
+						</FormGroup>
+					</Col>
+				) : null}
 			</Row>
 
 			<Formik

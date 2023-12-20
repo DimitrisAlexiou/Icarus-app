@@ -12,6 +12,7 @@ export default function NewCourse() {
 		coursesIsLoading,
 		cyclesIsLoading,
 		semestersIsLoading,
+		dispatch,
 	} = useNewCourse();
 
 	return (
@@ -66,7 +67,7 @@ export default function NewCourse() {
 								<CourseForm
 									courses={courses}
 									cycles={cycles}
-									semesters={semesters}
+									dispatch={dispatch}
 								/>
 							)}
 						</div>

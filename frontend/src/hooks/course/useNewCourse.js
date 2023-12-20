@@ -30,6 +30,7 @@ const useNewCourse = () => {
 		coursesIsLoading,
 		cyclesIsLoading,
 		semestersIsLoading,
+		dispatch,
 	};
 };
 

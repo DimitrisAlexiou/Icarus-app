@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { FormGroup, Label, Row, Col, Button, Spinner } from 'reactstrap';
 import { Formik, Field, ErrorMessage, Form } from 'formik';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -8,9 +7,8 @@ import { LoginSchema } from '../../schemas/auth/Login';
 import { login } from '../../features/auth/authSlice';
 import FormErrorMessage from '../form/FormErrorMessage';
 
-export default function LoginForm() {
+export default function LoginForm({ dispatch }) {
 	const [showPassword, setShowPassword] = useState(false);
-	const dispatch = useDispatch();
 
 	return (
 		<>

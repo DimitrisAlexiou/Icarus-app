@@ -1,10 +1,16 @@
 import mongoose, { Schema, model, Document, ClientSession } from 'mongoose';
-import { passwordRegex, emailRegex } from '../../utils/constants';
+import {
+	passwordRegex,
+	emailRegex,
+	STUDENT,
+	INSTRUCTOR,
+	ADMIN,
+} from '../../utils/constants';
 
 export enum UserType {
-	student = 'Student',
-	instructor = 'Instructor',
-	admin = 'Admin',
+	student = STUDENT,
+	instructor = INSTRUCTOR,
+	admin = ADMIN,
 }
 
 export interface UserProps extends Document {
@@ -123,7 +129,8 @@ export const User = model<UserProps>('User', userSchema);
 
 export const getUsers = () => User.find();
 export const getUserById = (id: string) => User.findById(id);
-export const getUserByUsername = (username: string) => User.findOne({ username });
+export const getUserByUsername = (username: string) =>
+	User.findOne({ username });
 export const updateUserById = (
 	id: string,
 	user: Record<string, any>,

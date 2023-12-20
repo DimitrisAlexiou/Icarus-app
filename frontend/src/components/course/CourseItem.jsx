@@ -17,7 +17,7 @@ export default function CourseItem({ course }) {
 						</Col>
 						<Col xs="3" sm="3" md="3" lg="4" xl="3">
 							{course.isActive === true ? (
-								<Badge color="info" pill>
+								<Badge color="success" pill>
 									Active
 								</Badge>
 							) : (
@@ -54,12 +54,14 @@ export default function CourseItem({ course }) {
 							WebkitBoxOrient: 'vertical',
 						}}
 					>
-						{course.description ? course.description : 'No description available.'}
+						{course.description
+							? course.description
+							: 'No description available.'}
 					</p>
 				</div>
 				{course.hasPrerequisites ? (
 					<div
-						className="card-footer text-info"
+						className="card-footer text-warning"
 						style={{
 							textAlign: 'justify',
 							fontWeight: '600',

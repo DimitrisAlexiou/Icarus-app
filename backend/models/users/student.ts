@@ -1,4 +1,5 @@
 import mongoose, { Schema, model, ClientSession } from 'mongoose';
+import { STUDENT } from '../../utils/constants';
 
 export enum StudentType {
 	Undergraduate = 'Undergraduate',
@@ -12,6 +13,7 @@ export interface StudentProps extends Document {
 	entranceYear: number;
 	user: mongoose.Types.ObjectId;
 	enrolledCourses?: Array<mongoose.Types.ObjectId>;
+	passedTeachings?: Array<mongoose.Types.ObjectId>;
 }
 
 const studentSchema = new Schema<StudentProps>(
@@ -42,18 +44,24 @@ const studentSchema = new Schema<StudentProps>(
 				ref: 'Teaching',
 			},
 		],
+		passedTeachings: [
+			{
+				type: Schema.Types.ObjectId,
+				ref: 'Teaching',
+			},
+		],
 	},
 	{
 		timestamps: true,
 	}
 );
 
-export const Student = model<StudentProps>('Student', studentSchema);
+export const Student = model<StudentProps>(STUDENT, studentSchema);
 
 export const getStudents = () =>
 	Student.find().populate({
 		path: 'user',
-		select: 'name surname email',
+		populate: [{ path: 'notes' }, { path: 'events' }],
 	});
 export const getStudentById = (id: mongoose.Types.ObjectId) =>
 	Student.findById(id).populate('user');
@@ -64,7 +72,6 @@ export const updateStudentById = (
 	student: Record<string, any>,
 	options?: Record<string, any>
 ) => Student.findByIdAndUpdate(id, student, { new: true });
-export const deleteStudentByUserId = (id: string, session: ClientSession) => {
-	return Student.findOneAndDelete({ user: id }).session(session);
-};
+export const deleteStudentByUserId = (id: string, session: ClientSession) =>
+	Student.findOneAndDelete({ user: id }).session(session);
 export const deleteStudents = () => Student.deleteMany();

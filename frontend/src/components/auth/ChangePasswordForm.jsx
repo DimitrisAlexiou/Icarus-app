@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import FormErrorMessage from '../form/FormErrorMessage';
 
-export default function ChangePasswordForm({user}) {
+export default function ChangePasswordForm({ user }) {
 	const [showOldPassword, setShowOldPassword] = useState(false);
 	const [showNewPassword, setShowNewPassword] = useState(false);
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -30,7 +30,9 @@ export default function ChangePasswordForm({user}) {
 					};
 					console.log(userPassToUpdate);
 					console.log('TRIGGERED');
-					dispatch(changePassword({ userId: user.user._id, data: userPassToUpdate }));
+					dispatch(
+						changePassword({ userId: user.user._id, data: userPassToUpdate })
+					);
 					setSubmitting(false);
 				}}
 				validateOnMount
@@ -48,7 +50,10 @@ export default function ChangePasswordForm({user}) {
 									<Label for="oldPassword" className="text-gray-600">
 										Old Password
 									</Label>
-									<ErrorMessage name="oldPassword" component={FormErrorMessage} />
+									<ErrorMessage
+										name="oldPassword"
+										component={FormErrorMessage}
+									/>
 								</FormGroup>
 							</Col>
 							<Col
@@ -80,7 +85,10 @@ export default function ChangePasswordForm({user}) {
 									<Label for="newPassword" className="text-gray-600">
 										New Password
 									</Label>
-									<ErrorMessage name="newPassword" component={FormErrorMessage} />
+									<ErrorMessage
+										name="newPassword"
+										component={FormErrorMessage}
+									/>
 								</FormGroup>
 							</Col>
 							<Col

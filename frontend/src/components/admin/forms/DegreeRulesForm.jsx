@@ -1,4 +1,3 @@
-import { useDispatch } from 'react-redux';
 import { FormGroup, Label, Row, Col, Button, Spinner } from 'reactstrap';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { DegreeRulesSchema } from '../../../schemas/admin/DegreeRules';
@@ -10,9 +9,12 @@ import {
 } from '../../../features/admin/degreeRulesSlice';
 import FormErrorMessage from '../../form/FormErrorMessage';
 
-export default function DegreeRulesForm({ degreeRules, isEditingDegreeRules, editDegreeRulesId }) {
-	const dispatch = useDispatch();
-
+export default function DegreeRulesForm({
+	degreeRules,
+	isEditingDegreeRules,
+	editDegreeRulesId,
+	dispatch,
+}) {
 	return (
 		<>
 			<Formik

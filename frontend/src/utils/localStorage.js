@@ -59,15 +59,3 @@ export const getLastAttemptedUsernameFromLocalStorage = () => {
 export const removeLastAttemptedUsernameFromLocalStorage = () => {
 	localStorage.removeItem('lastAttemptedUsername');
 };
-
-export const removeSelectedTeachingsFromLocalStorage = () => {
-	localStorage.removeItem('selectedTeachings');
-};
-
-export const getSelectedTeachingsFromLocalStorage = () => {
-	localStorage.getItem('selectedTeachings');
-};
-
-export const addSelectedTeachingsToLocalStorage = (selectedTeachings) => {
-	localStorage.setItem('selectedTeachings', JSON.stringify(selectedTeachings));
-};

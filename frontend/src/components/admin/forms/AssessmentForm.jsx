@@ -1,4 +1,3 @@
-import { useDispatch } from 'react-redux';
 import { FormGroup, Label, Row, Col, Button, Spinner } from 'reactstrap';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { AssessmentSchema } from '../../../schemas/admin/Assessment';
@@ -15,15 +14,18 @@ export default function AssessmentForm({
 	isEditingAssessment,
 	editAssessmentId,
 	semester,
+	dispatch,
 }) {
-	const dispatch = useDispatch();
-
 	return (
 		<>
 			<Formik
 				initialValues={{
-					startDate: assessment ? new Date(assessment.vaccineStartDate) : new Date(),
-					endDate: assessment ? new Date(assessment.vaccineEndDate) : new Date(),
+					startDate: assessment
+						? new Date(assessment.vaccineStartDate)
+						: new Date(),
+					endDate: assessment
+						? new Date(assessment.vaccineEndDate)
+						: new Date(),
 					period: assessment ? assessment.period : 0,
 					semesterStartDate: new Date(semester.startDate),
 				}}

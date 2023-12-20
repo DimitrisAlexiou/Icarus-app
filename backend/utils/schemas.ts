@@ -2,6 +2,7 @@ import Joi from 'joi';
 import {
 	courseIdRegex,
 	courseTitleRegex,
+	masterCourseIdRegex,
 	nameRegex,
 	passwordRegex,
 	studentIdRegex,
@@ -85,7 +86,20 @@ export const profileSchema = Joi.object({
 });
 
 export const courseSchema = Joi.object({
-	courseId: Joi.string().max(9).pattern(courseIdRegex).required(),
+	courseId: Joi.string()
+		.max(9)
+		.when('type', {
+			is: [CourseType.Undergraduate, CourseType.Mixed],
+			then: Joi.string().pattern(
+				courseIdRegex,
+				'Course ID must follow the pattern: 321-xxxx OR 321-xxxxx.'
+			),
+			otherwise: Joi.string().pattern(
+				masterCourseIdRegex,
+				'Course ID must follow the pattern 1000..up to 9999.'
+			),
+		})
+		.required(),
 	title: Joi.string().max(60).pattern(courseTitleRegex).required(),
 	type: Joi.string()
 		.valid(CourseType.Undergraduate, CourseType.Master, CourseType.Mixed)
@@ -169,6 +183,7 @@ export const statementSchema = Joi.object({
 	teachings: Joi.array().items(Joi.string().required()).min(1).required(),
 	semester: Joi.string().required(),
 	user: Joi.string().required(),
+	type: Joi.string().required(),
 });
 
 export const teachingReviewSchema = Joi.object({

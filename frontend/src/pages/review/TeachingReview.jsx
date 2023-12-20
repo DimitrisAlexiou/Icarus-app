@@ -18,6 +18,7 @@ export default function TeachingReview() {
 		isSemesterLoading,
 		isTeachingReviewLoading,
 		findTeaching,
+		dispatch,
 	} = useTeachingReview();
 
 	const [selectedTeaching, setSelectedTeaching] = useState(null);
@@ -165,6 +166,7 @@ export default function TeachingReview() {
 										teaching={selectedTeaching}
 										setFormIsVisible={setFormIsVisible}
 										setFormIsOpen={setFormIsOpen}
+										dispatch={dispatch}
 									/>
 								)}
 							</div>

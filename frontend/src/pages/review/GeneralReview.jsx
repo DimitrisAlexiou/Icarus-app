@@ -18,6 +18,7 @@ export default function GeneralReview() {
 		isSemesterLoading,
 		isGeneralaReviewLoading,
 		findTeaching,
+		dispatch,
 	} = useGeneralreview();
 
 	const [selectedTeaching, setSelectedTeaching] = useState(null);
@@ -165,6 +166,7 @@ export default function GeneralReview() {
 										teaching={selectedTeaching}
 										setFormIsVisible={setFormIsVisible}
 										setFormIsOpen={setFormIsOpen}
+										dispatch={dispatch}
 									/>
 								)}
 							</div>

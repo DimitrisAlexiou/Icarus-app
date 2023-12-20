@@ -37,6 +37,7 @@ const useTeachingReview = () => {
 		isSemesterLoading,
 		isTeachingReviewLoading,
 		findTeaching,
+		dispatch,
 	};
 };
 

@@ -9,7 +9,7 @@ import FooterLanding from '../../components/boilerplate/FooterLanding';
 import Spinner from '../../components/boilerplate/spinners/Spinner';
 
 export default function Register() {
-	const { isLoading } = useRegister();
+	const { isLoading, dispatch } = useRegister();
 
 	return (
 		<>
@@ -51,7 +51,11 @@ export default function Register() {
 													</h4>
 												</div>
 
-												{isLoading ? <Spinner card /> : <RegisterForm />}
+												{isLoading ? (
+													<Spinner card />
+												) : (
+													<RegisterForm dispatch={dispatch} />
+												)}
 
 												<hr />
 												<Row>

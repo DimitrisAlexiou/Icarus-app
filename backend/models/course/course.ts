@@ -1,4 +1,5 @@
-import mongoose, { ClientSession, Schema, model } from 'mongoose';
+import { SemesterType } from '../../models/admin/semester';
+import mongoose, { Schema, model } from 'mongoose';
 
 export enum CourseType {
 	Undergraduate = 'Undergraduate',
@@ -22,7 +23,7 @@ export interface CourseProps {
 			prerequisiteType: PrerequisiteType;
 		}
 	];
-	semester: mongoose.Types.ObjectId;
+	semester: SemesterType;
 	cycle: mongoose.Types.ObjectId;
 	year: number;
 	ects: number;
@@ -30,7 +31,6 @@ export interface CourseProps {
 	isObligatory: boolean;
 	hasPrerequisites: boolean;
 	isActive: boolean;
-	teaching?: mongoose.Types.ObjectId | null;
 }
 
 const courseSchema = new Schema<CourseProps>(
@@ -72,8 +72,8 @@ const courseSchema = new Schema<CourseProps>(
 			default: null,
 		},
 		semester: {
-			type: Schema.Types.ObjectId,
-			ref: 'Semester',
+			type: String,
+			enum: Object.values(SemesterType),
 			required: true,
 		},
 		year: {
@@ -113,9 +113,22 @@ const courseSchema = new Schema<CourseProps>(
 
 export const Course = model<CourseProps>('Course', courseSchema);
 
-export const getCourses = () => Course.find();
-export const getCourseById = (id: string) => Course.findById(id).populate('semester');
-export const getCourseByCourseId = (courseId: string) => Course.findOne({ courseId });
+export const getCourses = () =>
+	Course.find()
+		.populate({
+			path: 'prerequisites.prerequisite',
+			select: 'title',
+		})
+		.populate('cycle');
+export const getCourseById = (id: string) =>
+	Course.findById(id)
+		.populate({
+			path: 'prerequisites.prerequisite',
+			select: 'title',
+		})
+		.populate('cycle');
+export const getCourseByCourseId = (courseId: string) =>
+	Course.findOne({ courseId });
 export const createCourse = (values: Record<string, any>) =>
 	new Course(values).save().then((course) => course.toObject());
 export const updateCourseById = (

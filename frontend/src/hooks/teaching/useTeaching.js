@@ -1,10 +1,11 @@
 import { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { getTeaching } from '../../features/courses/teachingSlice';
 
 const useTeaching = () => {
 	const dispatch = useDispatch();
+	const navigate = useNavigate();
 
 	const { teaching, isLoading } = useSelector((state) => state.teachings);
 	const { teachingId } = useParams();
@@ -13,7 +14,11 @@ const useTeaching = () => {
 		dispatch(getTeaching(teachingId));
 	}, [dispatch, teachingId]);
 
-	return { teaching, isLoading };
+	const handleTeachingPortfolio = (teaching) => {
+		navigate('/teaching/' + teaching._id + '/portfolio');
+	};
+
+	return { teaching, isLoading, handleTeachingPortfolio };
 };
 
 export default useTeaching;

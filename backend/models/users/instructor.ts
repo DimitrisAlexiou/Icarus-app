@@ -1,4 +1,5 @@
 import mongoose, { Schema, model, ClientSession } from 'mongoose';
+import { INSTRUCTOR } from '../../utils/constants';
 
 export enum FacultyType {
 	DEP = 'DEP',
@@ -46,7 +47,7 @@ const instructorSchema = new Schema<InstructorProps>(
 	}
 );
 
-export const Instructor = model<InstructorProps>('Instructor', instructorSchema);
+export const Instructor = model<InstructorProps>(INSTRUCTOR, instructorSchema);
 
 export const getInstructors = () =>
 	Instructor.find().populate({
@@ -55,15 +56,13 @@ export const getInstructors = () =>
 	});
 export const getInstructorById = (id: mongoose.Types.ObjectId) =>
 	Instructor.findById(id).populate('user');
-export const getInstructorByUserId = (userId: string) => {
-	return Instructor.findOne({ user: userId });
-};
+export const getInstructorByUserId = (userId: string) =>
+	Instructor.findOne({ user: userId });
 export const updateInstructorById = (
 	id: string,
 	instructor: Record<string, any>,
 	options?: Record<string, any>
 ) => Instructor.findByIdAndUpdate(id, instructor, { new: true });
-export const deleteInstructorByUserId = (id: string, session: ClientSession) => {
-	return Instructor.findOneAndDelete({ user: id }).session(session);
-};
+export const deleteInstructorByUserId = (id: string, session: ClientSession) =>
+	Instructor.findOneAndDelete({ user: id }).session(session);
 export const deleteInstructors = () => Instructor.deleteMany();

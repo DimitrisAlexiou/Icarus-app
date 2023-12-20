@@ -30,6 +30,20 @@ export const enrollAlert = (callback) => {
 	});
 };
 
+export const finalizeAlert = (callback) => {
+	Swal.fire({
+		title: 'Finalize Course Statement?',
+		text: 'Your current course statement will be finalized if accept!',
+		icon: INFO,
+		showCancelButton: true,
+		confirmButtonColor: '#3085d6',
+		cancelButtonColor: '#d33',
+		confirmButtonText: 'Finalize',
+	}).then((result) => {
+		if (result.isConfirmed) callback();
+	});
+};
+
 export const deleteAlert = (callback) => {
 	Swal.fire({
 		title: 'Are you sure?',

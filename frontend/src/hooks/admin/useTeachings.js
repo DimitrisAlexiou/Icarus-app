@@ -27,7 +27,7 @@ const useTeachings = () => {
 		dispatch(getTeachings());
 	}, [dispatch]);
 
-	const filteredTeachings = user.user.isAdmin
+	const instructorTeachings = user.user.isAdmin
 		? teachings
 		: teachings.filter(
 				(teaching) =>
@@ -51,6 +51,23 @@ const useTeachings = () => {
 		deleteAlert(() => dispatch(deleteTeaching(teaching._id)));
 	};
 
+	const getInstructorLabel = (teaching) => {
+		const theoryInstructor = teaching.theoryInstructors.find(
+			(instructor) => instructor.user._id === user.user._id
+		);
+		const labInstructor = teaching.labInstructors.find(
+			(instructor) => instructor.user._id === user.user._id
+		);
+
+		const instructorLabels = [];
+
+		if (theoryInstructor) instructorLabels.push('Theory');
+
+		if (labInstructor) instructorLabels.push('Lab');
+
+		return instructorLabels;
+	};
+
 	return {
 		teachings,
 		user,
@@ -58,12 +75,13 @@ const useTeachings = () => {
 		isEditingTeaching,
 		isEditingTeachingGrading,
 		editTeachingId,
-		filteredTeachings,
+		instructorTeachings,
 		setEditTeaching,
 		setEditTeachingGrading,
 		handleTeachingRowClick,
 		handleDeleteTeachings,
 		handleDeleteTeaching,
+		getInstructorLabel,
 		dispatch,
 	};
 };

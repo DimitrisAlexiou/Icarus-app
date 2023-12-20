@@ -24,14 +24,18 @@ const TeachingCard = ({ teaching }) => {
 					<label>
 						<b>Theory Grade Retention Years</b>
 					</label>
-					<p style={{ textAlign: 'justify' }}>{teaching.theoryGradeRetentionYears}</p>
+					<p style={{ textAlign: 'justify' }}>
+						{teaching.theoryGradeRetentionYears}
+					</p>
 					<hr />
 				</Col>
 				<Col>
 					<label>
 						<b>Lab Grade Retention Years</b>
 					</label>
-					<p style={{ textAlign: 'justify' }}>{teaching.labGradeRetentionYears}</p>
+					<p style={{ textAlign: 'justify' }}>
+						{teaching.labGradeRetentionYears}
+					</p>
 					<hr />
 				</Col>
 			</Row>
@@ -40,7 +44,9 @@ const TeachingCard = ({ teaching }) => {
 					<label>
 						<b>Theory Grade Threshold</b>
 					</label>
-					<p style={{ textAlign: 'justify' }}>{teaching.theoryGradeThreshold}</p>
+					<p style={{ textAlign: 'justify' }}>
+						{teaching.theoryGradeThreshold}
+					</p>
 					<hr />
 				</Col>
 				<Col>
@@ -101,7 +107,7 @@ const TeachingCard = ({ teaching }) => {
 						) : teaching.course.hasLab ? (
 							<p>Not yet assigned</p>
 						) : (
-							<p>Not applicable</p>
+							<p className="text-warning">Not applicable</p>
 						)}
 					</div>
 					<hr />

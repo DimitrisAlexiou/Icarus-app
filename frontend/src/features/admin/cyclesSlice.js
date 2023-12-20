@@ -163,7 +163,7 @@ export const cyclesSlice = createSlice({
 			})
 			.addCase(deleteCycle.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				displayErrorNotification(payload.message);
+				displayErrorNotification(payload);
 			})
 			.addCase(deleteCycles.pending, (state) => {
 				state.isLoading = true;

@@ -1,7 +1,9 @@
-import { useDispatch } from 'react-redux';
 import { FormGroup, Label, Row, Col, Button, Spinner, Input } from 'reactstrap';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { SemesterSchema, SemesterUpdateSchema } from '../../../schemas/admin/Semester';
+import {
+	SemesterSchema,
+	SemesterUpdateSchema,
+} from '../../../schemas/admin/Semester';
 import {
 	defineSemester,
 	setEditSemester,
@@ -17,9 +19,8 @@ export default function SemesterForm({
 	isEditingSemester,
 	editSemesterId,
 	setAddingSemester,
+	dispatch,
 }) {
-	const dispatch = useDispatch();
-
 	// const renderDatePickerFields = (type) => {
 	// 	if (type !== SemesterType.Any) return <DatePickerField />;
 	// };
@@ -28,7 +29,12 @@ export default function SemesterForm({
 		if (type !== SemesterType.Any)
 			return (
 				<FormGroup className="form-floating mb-3" floating>
-					<Field type="number" min="1" className="form-control" name="grading" />
+					<Field
+						type="number"
+						min="1"
+						className="form-control"
+						name="grading"
+					/>
 					<Label for="grading" className="text-gray-600">
 						Grading period
 					</Label>
@@ -47,7 +53,9 @@ export default function SemesterForm({
 					// startDate: semester ? new Date(semester.startDate) : new Date(),
 					// endDate: semester ? new Date(semester.endDate) : new Date(),
 				}}
-				validationSchema={isEditingSemester ? SemesterUpdateSchema : SemesterSchema}
+				validationSchema={
+					isEditingSemester ? SemesterUpdateSchema : SemesterSchema
+				}
 				onSubmit={(values, { setSubmitting }) => {
 					const semester = {
 						type: values.type,
@@ -114,7 +122,11 @@ export default function SemesterForm({
 							</Col>
 							<Col>
 								<FormGroup className="form-floating mb-3" floating>
-									<Field as="select" className="form-control" name="academicYear">
+									<Field
+										as="select"
+										className="form-control"
+										name="academicYear"
+									>
 										<option default> Select academic year </option>
 										{academicYears.map((year) => (
 											<option

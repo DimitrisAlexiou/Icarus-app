@@ -10,6 +10,7 @@ import {
 	deleteUser,
 } from '../../features/admin/userSlice';
 import { deleteAlert } from '../../constants/sweetAlertNotification';
+import { UserType } from '../../constants/enums';
 
 const useUsers = () => {
 	const dispatch = useDispatch();
@@ -36,8 +37,11 @@ const useUsers = () => {
 		deleteAlert(() => dispatch(deleteUsers()));
 	};
 
+	const students = users.filter((user) => user.type === UserType.student);
+
 	return {
 		users,
+		students,
 		isLoading,
 		isEditingUser,
 		editUserId,

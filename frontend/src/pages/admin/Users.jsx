@@ -65,6 +65,7 @@ export default function Users() {
 						setModal={setModal}
 						isEditingUser={isEditingUser}
 						editUserId={editUserId}
+						dispatch={dispatch}
 					/>
 				</ModalBody>
 			</Modal>
@@ -81,7 +82,11 @@ export default function Users() {
 			>
 				<ModalHeader toggle={toggleNewUser}>New User</ModalHeader>
 				<ModalBody>
-					<RegisterForm newUser={newUser} setNewUser={setNewUser} />
+					<RegisterForm
+						newUser={newUser}
+						setNewUser={setNewUser}
+						dispatch={dispatch}
+					/>
 				</ModalBody>
 			</Modal>
 		);

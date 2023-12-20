@@ -1,5 +1,4 @@
 import { memo, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import {
 	FormGroup,
 	Label,
@@ -14,8 +13,12 @@ import { updateTeaching } from '../../../features/courses/teachingSlice';
 import { TeachingSchema } from '../../../schemas/course/Teaching';
 import FormErrorMessage from '../../form/FormErrorMessage';
 
-export default function TeachingForm({ teaching, editTeachingId, setModal }) {
-	const dispatch = useDispatch();
+export default function TeachingForm({
+	teaching,
+	editTeachingId,
+	setModal,
+	dispatch,
+}) {
 	const [tooltip, setTooltipOpen] = useState(null);
 
 	const TooltipComponent = memo(({ field }) => {

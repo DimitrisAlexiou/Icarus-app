@@ -5,6 +5,7 @@ export { default as Phd } from './Phd';
 export { default as Courses } from './Courses';
 export { default as Course } from './Course';
 export { default as NewCourse } from './NewCourse';
+export { default as CreateStatement } from './CreateStatement';
 export { default as InfoSecMsc } from './Msc/InfoSecMsc';
 // export { default as IotMsc } from './Msc/IotMsc';
 // export { default as InnovationMsc } from './Msc/InnovationMsc';

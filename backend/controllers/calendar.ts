@@ -3,7 +3,7 @@ import { startSession } from 'mongoose';
 import {
 	createEvent,
 	getEventByEventId,
-	getEvents,
+	getUserEvents,
 	deleteEvent,
 	deleteEvents,
 	updateEventById,
@@ -51,7 +51,8 @@ export const updateEvent = tryCatch(
 	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const { title, startDate, endDate, allDay } = req.body;
 
-		if (!title) throw new CustomError('Please fill in all the required fields.', 400);
+		if (!title)
+			throw new CustomError('Please fill in all the required fields.', 400);
 
 		const { id } = req.params;
 		const updatedEvent = await updateEventById(id, {
@@ -69,12 +70,13 @@ export const updateEvent = tryCatch(
 	}
 );
 
-export const viewEvents = tryCatch(
+export const viewUserEvents = tryCatch(
 	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const userId = req.user.id;
-		const userEvents = await getEvents(userId);
+		const userEvents = await getUserEvents(userId);
 
-		if (!userEvents.length) throw new CustomError('Seems like there are no events.', 404);
+		if (!userEvents.length)
+			throw new CustomError('Seems like there are no events.', 404);
 
 		return res.status(200).json(userEvents);
 	}
@@ -91,7 +93,9 @@ export const deleteUserEvent = tryCatch(
 				404
 			);
 
-		return res.status(200).json({ message: 'Event deleted.', event: eventToDelete._id });
+		return res
+			.status(200)
+			.json({ message: 'Event deleted.', event: eventToDelete._id });
 	}
 );
 
@@ -116,5 +120,7 @@ export const deleteUserEvents = async (
 		session.endSession();
 	}
 
-	return res.status(200).json({ message: 'User events existing in the system deleted.' });
+	return res
+		.status(200)
+		.json({ message: 'User events existing in the system deleted.' });
 };

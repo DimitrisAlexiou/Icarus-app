@@ -1,14 +1,22 @@
-import { useDispatch } from 'react-redux';
 import { FormGroup, Label, Row, Col, Button, Spinner, Input } from 'reactstrap';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { addEvent, setEditEvent, updateEvent } from '../../features/calendar/eventSlice';
+import {
+	addEvent,
+	setEditEvent,
+	updateEvent,
+} from '../../features/calendar/eventSlice';
 import { EventSchema } from '../../schemas/calendar/Event';
 import FormErrorMessage from '../form/FormErrorMessage';
 import DatePickerField from '../form/DatePickerField';
 
-export default function EventForm({ event, user, isEditingEvent, editEventId, setModal }) {
-	const dispatch = useDispatch();
-
+export default function EventForm({
+	event,
+	user,
+	isEditingEvent,
+	editEventId,
+	setModal,
+	dispatch,
+}) {
 	return (
 		<>
 			<Formik
@@ -71,9 +79,7 @@ export default function EventForm({ event, user, isEditingEvent, editEventId, se
 												role="switch"
 												name="allDay"
 												checked={field.value}
-												onChange={() =>
-													setFieldValue('allDay', !values.allDay)
-												}
+												onChange={() => setFieldValue('allDay', !values.allDay)}
 											/>
 										)}
 									</Field>

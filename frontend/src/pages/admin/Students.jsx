@@ -1,11 +1,26 @@
-import { Row, Col } from 'reactstrap';
+import { forwardRef } from 'react';
+import { Row, Col, Modal, ModalHeader, ModalBody } from 'reactstrap';
 import useStudents from '../../hooks/admin/useStudents';
+import useModal from '../../hooks/generic/useModal';
 import DataTable from '../../components/DataTable';
+import UserCard from '../../components/admin/cards/UserCard';
 import Spinner from '../../components/boilerplate/spinners/Spinner';
 import SpinnerComponent from '../../components/boilerplate/spinners/SpinnerMessage';
 
 export default function Students() {
-	const { students, isLoading, dataTableConfig } = useStudents();
+	const { modal, selectedItem, openModal, closeModal } = useModal();
+	const { students, isLoading, dataTableConfig } = useStudents({ openModal });
+
+	const ModalComponent = forwardRef((props, ref) => {
+		return (
+			<Modal ref={ref} isOpen={modal} toggle={closeModal} className="modal-lg">
+				<ModalHeader toggle={closeModal}>User Information</ModalHeader>
+				<ModalBody>
+					<UserCard student={selectedItem} />
+				</ModalBody>
+			</Modal>
+		);
+	});
 
 	return (
 		<>
@@ -44,6 +59,8 @@ export default function Students() {
 					</Col>
 				</Row>
 			)}
+
+			<ModalComponent toggle={closeModal} />
 		</>
 	);
 }

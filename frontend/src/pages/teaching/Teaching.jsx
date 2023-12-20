@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom';
 import { Row, Col, NavItem, Nav } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowUp91 } from '@fortawesome/free-solid-svg-icons';
+import { STUDENT } from '../../constants/strings';
 import useTeaching from '../../hooks/teaching/useTeaching';
 import TeachingCard from '../../components/course/cards/TeachingCard';
 import GradingCard from '../../components/course/cards/GradingCard';
@@ -10,22 +11,23 @@ import BreadcrumbNav from '../../components/boilerplate/Breadcrumb';
 import Spinner from '../../components/boilerplate/spinners/Spinner';
 import BackButton from '../../components/buttons/BackButton';
 
-export default function Teaching() {
-	const { teaching, isLoading } = useTeaching();
+export default function Teaching({ user }) {
+	const { teaching, isLoading, handleTeachingPortfolio } = useTeaching();
 	const [gradingForm, setGradingForm] = useState(false);
 
 	return (
 		<>
-			<Row className="animated--grow-in">
-				<Col>
-					<BreadcrumbNav
-						className="animated--grow-in"
-						link={'/teachings'}
-						header={'Teachings'}
-						active={teaching?.course?.title}
-					/>
-				</Col>
-			</Row>
+			{user.user.type === STUDENT ? null : (
+				<Row className="animated--grow-in">
+					<Col>
+						<BreadcrumbNav
+							link={'/teachings'}
+							header={'Teachings'}
+							active={teaching?.course?.title}
+						/>
+					</Col>
+				</Row>
+			)}
 			<Row className="mb-3 animated--grow-in">
 				<Col className="text-sm-left text-center" sm="6" xs="6" md="6">
 					<Row className="mt-sm-0 mt-3">
@@ -60,17 +62,14 @@ export default function Teaching() {
 						</div>
 					</Nav>
 				</Col>
-				<Col md="1" className="d-flex justify-content-end pb-4">
-					<BackButton url={`/course/${teaching?.course?._id}`} />
-				</Col>
 			</Row>
 			<Row className="justify-content-center animated--grow-in">
 				<Col sm="12" md="11" lg="10" xl="8">
 					<div className="card shadow mb-4">
 						<div className="card-header py-3">
 							<h6 className="m-0 font-weight-bold text-primary">
-								<Row>
-									<Col>
+								<Row className="align-items-center">
+									<Col md="6">
 										<small
 											style={{
 												textAlign: 'justify',
@@ -83,7 +82,20 @@ export default function Teaching() {
 												: 'Teaching Information'}
 										</small>
 									</Col>
-									<Col className="d-flex justify-content-end">
+									<Col md="1">
+										<small
+											className="text-muted pill-label clickable"
+											style={{
+												textAlign: 'justify',
+												fontWeight: '700',
+												fontSize: 12,
+											}}
+											onClick={() => handleTeachingPortfolio(teaching)}
+										>
+											Portfolio
+										</small>
+									</Col>
+									<Col md="4" className="text-right">
 										<small
 											className="text-muted pill-label"
 											style={{
@@ -94,6 +106,9 @@ export default function Teaching() {
 										>
 											{teaching?.semester?.type} Semester
 										</small>
+									</Col>
+									<Col md="1" className="text-right">
+										<BackButton url={`/course/${teaching?.course?._id}`} />
 									</Col>
 								</Row>
 							</h6>

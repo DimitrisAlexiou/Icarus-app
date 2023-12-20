@@ -18,7 +18,7 @@ export default function Teachings() {
 		isEditingTeaching,
 		isEditingTeachingGrading,
 		editTeachingId,
-		filteredTeachings,
+		instructorTeachings,
 		setEditTeaching,
 		setEditTeachingGrading,
 		handleTeachingRowClick,
@@ -77,9 +77,10 @@ export default function Teachings() {
 				<ModalBody>
 					<TeachingForm
 						teaching={currentTeaching}
-						setModal={setModal}
 						isEditingTeaching={isEditingTeaching}
 						editTeachingId={editTeachingId}
+						setModal={setModal}
+						dispatch={dispatch}
 					/>
 				</ModalBody>
 			</Modal>
@@ -121,6 +122,7 @@ export default function Teachings() {
 						setModalGrading={setModalGrading}
 						isEditingTeachingGrading={isEditingTeachingGrading}
 						editTeachingId={editTeachingId}
+						dispatch={dispatch}
 					/>
 				</ModalBody>
 			</Modal>
@@ -222,7 +224,7 @@ export default function Teachings() {
 
 			{isLoading ? (
 				<CustomSpinner card />
-			) : filteredTeachings.length > 0 ? (
+			) : instructorTeachings.length > 0 ? (
 				<Row className="justify-content-center animated--grow-in">
 					<Col
 						className="card card-body mb-3"
@@ -233,7 +235,7 @@ export default function Teachings() {
 						xl="12"
 					>
 						<DataTable
-							data={filteredTeachings}
+							data={instructorTeachings}
 							config={dataTableConfig}
 							sortColumns={['course', 'courseId', 'semester']}
 							searchMessage={'by Course or Course ID'}

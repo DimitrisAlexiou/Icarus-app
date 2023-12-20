@@ -33,6 +33,7 @@ export default function AssignTeachingInstructor() {
 		availableTeachings,
 		handleUnassignTheoryInstructors,
 		handleUnassignLabInstructors,
+		dispatch,
 	} = useAssignTeachingInstructor();
 
 	const modalRef = useRef(null);
@@ -55,7 +56,7 @@ export default function AssignTeachingInstructor() {
 
 	const ModalComponent = forwardRef((props, ref) => {
 		return (
-			<Modal ref={ref} isOpen={modal} toggle={toggle} className="modal-md">
+			<Modal ref={ref} isOpen={modal} toggle={toggle} className="modal-lg">
 				<ModalHeader toggle={toggle}>
 					Assign Instructor (
 					<span style={{ fontWeight: 'bold', fontSize: '21px' }}>
@@ -70,6 +71,7 @@ export default function AssignTeachingInstructor() {
 						isEditingTheoryInstructors={assignedInstructorsCount.theory > 0}
 						isEditingLabInstructors={assignedInstructorsCount.lab > 0}
 						setModal={setModal}
+						dispatch={dispatch}
 					/>
 				</ModalBody>
 			</Modal>

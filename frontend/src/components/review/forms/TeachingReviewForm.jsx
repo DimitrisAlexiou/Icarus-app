@@ -1,4 +1,3 @@
-import { useDispatch } from 'react-redux';
 import { FormGroup, Label, Row, Col, Button, Spinner } from 'reactstrap';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { TeachingReviewSchema } from '../../../schemas/review/TeachingReview';
@@ -18,9 +17,8 @@ export default function TeachingReviewForm({
 	editTeachingReviewId,
 	setFormIsVisible,
 	setFormIsOpen,
+	dispatch,
 }) {
-	const dispatch = useDispatch();
-
 	return (
 		<>
 			<Formik
@@ -29,10 +27,18 @@ export default function TeachingReviewForm({
 						? teachingReview.clear_course_objectives
 						: 1,
 					course_material: teachingReview ? teachingReview.course_material : 1,
-					course_comprehension: teachingReview ? teachingReview.course_comprehension : 1,
-					examination_method: teachingReview ? teachingReview.examination_method : 1,
-					course_difficulty: teachingReview ? teachingReview.course_difficulty : 1,
-					course_activities: teachingReview ? teachingReview.course_activities : 1,
+					course_comprehension: teachingReview
+						? teachingReview.course_comprehension
+						: 1,
+					examination_method: teachingReview
+						? teachingReview.examination_method
+						: 1,
+					course_difficulty: teachingReview
+						? teachingReview.course_difficulty
+						: 1,
+					course_activities: teachingReview
+						? teachingReview.course_activities
+						: 1,
 				}}
 				validationSchema={TeachingReviewSchema}
 				onSubmit={(values, { setSubmitting }) => {
@@ -77,7 +83,10 @@ export default function TeachingReviewForm({
 					<Form>
 						<FormGroup className="form-floating mb-3 mt-2" floating>
 							<Row>
-								<Label for="clear_course_objectives" className="text-gray-600 mt-2">
+								<Label
+									for="clear_course_objectives"
+									className="text-gray-600 mt-2"
+								>
 									Clear course objectives
 								</Label>
 								<Field className="form-control" name="clear_course_objectives">
@@ -120,11 +129,17 @@ export default function TeachingReviewForm({
 									)}
 								</Field>
 							</Row>
-							<ErrorMessage name="course_material" component={FormErrorMessage} />
+							<ErrorMessage
+								name="course_material"
+								component={FormErrorMessage}
+							/>
 						</FormGroup>
 						<FormGroup className="form-floating mb-3" floating>
 							<Row>
-								<Label for="course_comprehension" className="text-gray-600 mt-2">
+								<Label
+									for="course_comprehension"
+									className="text-gray-600 mt-2"
+								>
 									Better course comprehension due to course material
 								</Label>
 								<Field className="form-control" name="course_comprehension">
@@ -167,7 +182,10 @@ export default function TeachingReviewForm({
 									)}
 								</Field>
 							</Row>
-							<ErrorMessage name="examination_method" component={FormErrorMessage} />
+							<ErrorMessage
+								name="examination_method"
+								component={FormErrorMessage}
+							/>
 						</FormGroup>
 						<FormGroup className="form-floating mb-3" floating>
 							<Row>
@@ -189,7 +207,10 @@ export default function TeachingReviewForm({
 									)}
 								</Field>
 							</Row>
-							<ErrorMessage name="course_difficulty" component={FormErrorMessage} />
+							<ErrorMessage
+								name="course_difficulty"
+								component={FormErrorMessage}
+							/>
 						</FormGroup>
 						<FormGroup className="form-floating mb-3" floating>
 							<Row>
@@ -211,7 +232,10 @@ export default function TeachingReviewForm({
 									)}
 								</Field>
 							</Row>
-							<ErrorMessage name="course_activities" component={FormErrorMessage} />
+							<ErrorMessage
+								name="course_activities"
+								component={FormErrorMessage}
+							/>
 						</FormGroup>
 						<Row>
 							<Col sm="6" md="6" xs="12" className="text-sm-left text-center">

@@ -1,4 +1,3 @@
-import { useDispatch } from 'react-redux';
 import { Row, Col, Badge, Button } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
@@ -16,9 +15,8 @@ const DegreeRulesCard = ({
 	isDegreeRulesLoading,
 	isEditingDegreeRules,
 	editDegreeRulesId,
+	dispatch,
 }) => {
-	const dispatch = useDispatch();
-
 	return (
 		<>
 			<Col xl="6" lg="12" md="12" sm="12">
@@ -36,6 +34,7 @@ const DegreeRulesCard = ({
 												degreeRules={degreeRules}
 												isEditingDegreeRules={isEditingDegreeRules}
 												editDegreeRulesId={editDegreeRulesId}
+												dispatch={dispatch}
 											/>
 											<Col
 												className="text-warning mt-2"

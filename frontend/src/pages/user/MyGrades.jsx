@@ -18,14 +18,15 @@ import {
 	faLightbulb,
 	faCircle,
 } from '@fortawesome/free-regular-svg-icons';
-import { academicSemesters, getOrdinalSemesters } from '../../utils/semesters';
+import { academicSemesters } from '../../utils/academicSemesters';
+import { getOrdinalNumbers } from '../../utils/ordinalNumbers';
 import { myGradesCategories } from '../../utils/NavigationLinks';
 import DoughnutChart from '../../components/charts/Doughnut';
 
 export default function MyGrades({ user }) {
 	const [selectedCategory, setSelectedCategory] = useState('Recent Grades');
 
-	const passedCourses = ['Mobile and Wireless Networks Security'];
+	const passedTeachings = ['Mobile and Wireless Networks Security'];
 
 	return (
 		<>
@@ -210,7 +211,7 @@ export default function MyGrades({ user }) {
 										</small>
 									</Col>
 								</Row>
-								{passedCourses.map((course) => (
+								{passedTeachings.map((course) => (
 									<div key={course}>
 										<ul className="list-group list-group-flush">
 											<li className="list-group-item">
@@ -495,7 +496,7 @@ export default function MyGrades({ user }) {
 														className="mr-2 text-gray-600"
 														icon={faCircleDot}
 													/>
-													{getOrdinalSemesters(semester)} Semester
+													{getOrdinalNumbers(semester)} Semester
 												</h6>
 											</Col>
 										</Row>

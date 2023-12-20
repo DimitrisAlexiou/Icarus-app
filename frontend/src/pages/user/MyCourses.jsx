@@ -2,7 +2,6 @@ import { Row, Col, CardTitle, CardText } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import useMyCourses from '../../hooks/user/useMyCourses';
-import BreadcrumbNav from '../../components/boilerplate/Breadcrumb';
 import Spinner from '../../components/boilerplate/spinners/Spinner';
 import SpinnerComponent from '../../components/boilerplate/spinners/SpinnerMessage';
 import CarouselComponent from '../../components/Carousel';
@@ -27,13 +26,6 @@ export default function MyCourses() {
 
 	return (
 		<>
-			<BreadcrumbNav
-				className="animated--grow-in"
-				link={'/my-courses'}
-				header={'My Courses'}
-				active={'My Courses'}
-			/>
-
 			<Row className="mb-4 animated--grow-in">
 				<Col>
 					<h3 className="text-gray-800 font-weight-bold">My Courses</h3>
@@ -43,6 +35,15 @@ export default function MyCourses() {
 			<Row className="mb-4 justify-content-between animated--grow-in">
 				<Col className="text-center">
 					<Header title="active courses in the current semester" />
+					<h6
+						className="text-muted pill-label"
+						style={{
+							fontWeight: '700',
+							fontSize: 15,
+						}}
+					>
+						{filteredAvailableTeachings.length}
+					</h6>
 				</Col>
 			</Row>
 
@@ -76,15 +77,37 @@ export default function MyCourses() {
 										{teaching.course.isObligatory ? 'Obligatory' : 'Optional'}
 									</small>
 								</CardText>
-								<CardText
-									style={{
-										textAlign: 'justify',
-										fontWeight: '600',
-										fontSize: 11,
-									}}
-								>
-									{teaching.course.courseId}
-								</CardText>
+								<Row>
+									<Col>
+										<CardText
+											style={{
+												textAlign: 'justify',
+												fontWeight: '600',
+												fontSize: 11,
+											}}
+										>
+											{teaching.course.courseId}
+										</CardText>
+									</Col>
+									<Col xs="auto" className="d-flex justify-content-end">
+										<CardText
+											className={
+												teaching.course.hasPrerequisites
+													? 'text-warning'
+													: 'text-success'
+											}
+											style={{
+												textAlign: 'justify',
+												fontWeight: '600',
+												fontSize: 11,
+											}}
+										>
+											{teaching.course.hasPrerequisites
+												? 'Prerequisites'
+												: 'No Prerequisites'}
+										</CardText>
+									</Col>
+								</Row>
 							</>
 						)}
 						onObjectClick={(teaching) => handleCourseEnrollment(teaching)}
@@ -107,6 +130,15 @@ export default function MyCourses() {
 			<Row className="mt-3 mb-4 justify-content-between animated--grow-in">
 				<Col className="text-center">
 					<Header title="enrolled courses" />
+					<h6
+						className="text-muted pill-label"
+						style={{
+							fontWeight: '700',
+							fontSize: 15,
+						}}
+					>
+						{enrolledCourses.length}
+					</h6>
 				</Col>
 			</Row>
 
@@ -158,15 +190,37 @@ export default function MyCourses() {
 										{teaching?.course?.isObligatory ? 'Obligatory' : 'Optional'}
 									</small>
 								</CardText>
-								<CardText
-									style={{
-										textAlign: 'justify',
-										fontWeight: '600',
-										fontSize: 11,
-									}}
-								>
-									{teaching?.course?.courseId}
-								</CardText>
+								<Row>
+									<Col>
+										<CardText
+											style={{
+												textAlign: 'justify',
+												fontWeight: '600',
+												fontSize: 11,
+											}}
+										>
+											{teaching?.course?.courseId}
+										</CardText>
+									</Col>
+									<Col xs="auto" className="d-flex justify-content-end">
+										<CardText
+											className={
+												teaching?.course?.hasPrerequisites
+													? 'text-warning'
+													: 'text-success'
+											}
+											style={{
+												textAlign: 'justify',
+												fontWeight: '600',
+												fontSize: 11,
+											}}
+										>
+											{teaching?.course?.hasPrerequisites
+												? 'Prerequisites'
+												: 'No Prerequisites'}
+										</CardText>
+									</Col>
+								</Row>
 							</>
 						);
 					}}

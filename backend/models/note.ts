@@ -54,5 +54,9 @@ export const updateNoteById = (id: string, note: Record<string, any>) =>
 export const deleteNote = (id: string) => Note.findByIdAndDelete(id);
 export const deleteNotes = (userId: string, session: ClientSession) =>
 	Note.deleteMany({ owner: userId }).session(session);
-export const getAllNotes = () => Note.find();
+export const getAllNotes = () =>
+	Note.find().populate({
+		path: 'owner',
+		select: 'name surname email',
+	});
 export const deleteAllNotes = () => Note.deleteMany();

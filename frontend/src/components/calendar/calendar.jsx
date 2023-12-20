@@ -9,7 +9,6 @@ import {
 	CardTitle,
 	CardText,
 } from 'reactstrap';
-import { useSelector, useDispatch } from 'react-redux';
 import { deleteEvent, setEditEvent } from '../../features/calendar/eventSlice';
 import { deleteAlert } from '../../constants/sweetAlertNotification';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -26,11 +25,18 @@ import Spinner from '../boilerplate/spinners/Spinner';
 import CarouselComponent from '../Carousel';
 import Header from '../boilerplate/Header';
 import EventForm from './EventForm';
+import SpinnerComponent from '../boilerplate/spinners/SpinnerMessage';
 
 export default function Calendar() {
-	const { events, isLoading, isEditingEvent, editEventId, handleDeleteEvents } =
-		useCalendar();
-	const { user } = useSelector((state) => state.auth);
+	const {
+		user,
+		events,
+		isLoading,
+		isEditingEvent,
+		editEventId,
+		handleDeleteEvents,
+		dispatch,
+	} = useCalendar();
 
 	const calendarRef = useRef(null);
 	const [selectedEvent, setSelectedEvent] = useState(null);
@@ -51,8 +57,6 @@ export default function Calendar() {
 			setSelectedEvent(null);
 		}
 	};
-
-	const dispatch = useDispatch();
 
 	const handleDateClick = (selected) => {
 		const calendarApi = selected.view.calendar;
@@ -107,6 +111,7 @@ export default function Calendar() {
 						isEditingEvent={isEditingEvent}
 						editEventId={editEventId}
 						setModal={setModal}
+						dispatch={dispatch}
 					/>
 				</ModalBody>
 			</Modal>
@@ -120,6 +125,15 @@ export default function Calendar() {
 					<Row className="mb-4 animated--grow-in">
 						<Col>
 							<Header title="Events" />
+							<h6
+								className="text-muted pill-label"
+								style={{
+									fontWeight: '700',
+									fontSize: 15,
+								}}
+							>
+								{events.length}
+							</h6>
 						</Col>
 						<Col className="d-flex justify-content-end">
 							<Button
@@ -184,17 +198,13 @@ export default function Calendar() {
 					<Col>
 						<div className="profile_card">
 							<div className="card-body">
-								<div className="align-items-center text-center">
-									<span className="text-gray-500 animated--grow-in d-flex justify-content-center">
-										There are no events available right now.
-									</span>
-								</div>
+								<SpinnerComponent message="There are no events available right now." />
 							</div>
 						</div>
 					</Col>
 				</Row>
 			)}
-			<Row className=" animated--grow-in mt-4 mb-5">
+			<Row className="animated--grow-in mt-3 mb-5">
 				<Col md="12" lg="10" xl="8" className="mx-auto">
 					<div className="profile_card">
 						<div className="card-body">

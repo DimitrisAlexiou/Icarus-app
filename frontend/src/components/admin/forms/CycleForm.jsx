@@ -1,13 +1,20 @@
 import { FormGroup, Label, Row, Col, Button, Spinner } from 'reactstrap';
 import { Formik, FieldArray, Field, Form, ErrorMessage } from 'formik';
 import { CycleEditSchema, CycleSchema } from '../../../schemas/admin/Cycle';
-import { defineCycle, setEditCycle, updateCycle } from '../../../features/admin/cyclesSlice';
-import { useDispatch } from 'react-redux';
+import {
+	defineCycle,
+	setEditCycle,
+	updateCycle,
+} from '../../../features/admin/cyclesSlice';
 import FormErrorMessage from '../../form/FormErrorMessage';
 
-const CycleForm = ({ cycle, isEditingCycle, editCycleId, setAddingCycle }) => {
-	const dispatch = useDispatch();
-
+const CycleForm = ({
+	cycle,
+	isEditingCycle,
+	editCycleId,
+	setAddingCycle,
+	dispatch,
+}) => {
 	return (
 		<>
 			<Formik
@@ -68,10 +75,7 @@ const CycleForm = ({ cycle, isEditingCycle, editCycleId, setAddingCycle }) => {
 											{values.cycle.map((_, index) => (
 												<Row key={index}>
 													<Col xs="11" sm="11" md="11" lg="11" xl="11">
-														<FormGroup
-															className="form-floating mb-3"
-															floating
-														>
+														<FormGroup className="form-floating mb-3" floating>
 															<Field
 																type="text"
 																className="form-control"

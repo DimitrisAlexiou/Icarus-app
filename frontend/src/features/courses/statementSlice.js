@@ -13,13 +13,17 @@ import {
 	GET_STATEMENTS,
 	DELETE_STATEMENTS,
 	GET_STUDENT_STATEMENTS,
+	FINALIZE_STATEMENT,
 } from '../actions';
+import { AssessmentType } from '../../constants/enums';
 
 const initialState = {
 	statements: [],
 	statement: {},
+	vaccine: {},
 	isLoading: false,
 	isEditingStatement: false,
+	isEditingVaccine: false,
 	editStatementId: '',
 };
 
@@ -39,6 +43,17 @@ export const createStatement = createAsyncThunk(
 	async (data, thunkAPI) => {
 		try {
 			return await statementService.createStatement(data);
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
+	}
+);
+
+export const finalizeStatement = createAsyncThunk(
+	FINALIZE_STATEMENT,
+	async (statementId, thunkAPI) => {
+		try {
+			return await statementService.finalizeStatement(statementId);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -108,6 +123,15 @@ export const statementSlice = createSlice({
 		setEditStatement: (state, { payload }) => {
 			return { ...state, isEditingStatement: true, ...payload };
 		},
+		setEditVaccine: (state, { payload }) => {
+			return { ...state, isEditingVaccine: true, ...payload };
+		},
+		setStatement: (state, action) => {
+			state.statement = action.payload;
+		},
+		setVaccine: (state, action) => {
+			state.vaccine = action.payload;
+		},
 	},
 	extraReducers: (builder) => {
 		builder
@@ -137,17 +161,44 @@ export const statementSlice = createSlice({
 				state.isLoading = false;
 				displayErrorNotification(payload);
 			})
+			.addCase(finalizeStatement.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(finalizeStatement.fulfilled, (state, { payload }) => {
+				state.isLoading = false;
+				displaySuccessNotification(payload.message);
+				const finalizedStatementIndex = state.statements.findIndex(
+					(statement) => statement._id === payload.finalizedStatement._id
+				);
+				if (finalizedStatementIndex !== -1)
+					state.statements[finalizedStatementIndex] =
+						payload.finalizedStatement;
+			})
+			.addCase(finalizeStatement.rejected, (state, { payload }) => {
+				state.isLoading = false;
+				displayErrorNotification(payload);
+			})
 			.addCase(updateStatement.pending, (state) => {
 				state.isLoading = true;
 			})
 			.addCase(updateStatement.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
 				displaySuccessNotification(payload.message);
-				const updatedStatementIndex = state.statements.findIndex(
-					(statement) => statement._id === payload.updatedStatement._id
+				state.statements = state.statements.map((statement) =>
+					statement._id === payload.updatedStatement._id
+						? payload.updatedStatement
+						: statement
 				);
-				if (updatedStatementIndex !== -1)
-					state.statements[updatedStatementIndex] = payload.updatedStatement;
+				if (payload.updatedStatement.type === AssessmentType.Assessment) {
+					const isCurrentStatement =
+						state.statement &&
+						state.statement._id === payload.updatedStatement._id;
+					if (isCurrentStatement) state.statement = payload.updatedStatement;
+				} else if (payload.updatedStatement.type === AssessmentType.Vaccine) {
+					const isCurrentVaccine =
+						state.vaccine && state.vaccine._id === payload.updatedStatement._id;
+					if (isCurrentVaccine) state.vaccine = payload.updatedStatement;
+				}
 			})
 			.addCase(updateStatement.rejected, (state, { payload }) => {
 				state.isLoading = false;
@@ -211,5 +262,11 @@ export const statementSlice = createSlice({
 	},
 });
 
-export const { resetStatements, setEditStatement } = statementSlice.actions;
+export const {
+	resetStatements,
+	setEditStatement,
+	setEditVaccine,
+	setStatement,
+	setVaccine,
+} = statementSlice.actions;
 export default statementSlice.reducer;

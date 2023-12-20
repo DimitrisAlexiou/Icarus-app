@@ -31,6 +31,7 @@ export default function Configuration() {
 		editCycleId,
 		academicYearEnd,
 		academicYearStart,
+		dispatch,
 	} = useConfiguration();
 
 	return (
@@ -64,6 +65,7 @@ export default function Configuration() {
 					isSemesterLoading={isSemesterLoading}
 					isEditingSemester={isEditingSemester}
 					editSemesterId={editSemesterId}
+					dispatch={dispatch}
 				/>
 				<AssessementCard
 					assessment={assessment}
@@ -71,6 +73,7 @@ export default function Configuration() {
 					isAssessmentLoading={isAssessmentLoading}
 					isEditingAssessment={isEditingAssessment}
 					editAssessmentId={editAssessmentId}
+					dispatch={dispatch}
 				/>
 			</Row>
 
@@ -81,12 +84,14 @@ export default function Configuration() {
 					isReviewLoading={isReviewLoading}
 					isEditingReview={isEditingReview}
 					editReviewId={editReviewId}
+					dispatch={dispatch}
 				/>
 				<DegreeRulesCard
 					degreeRules={degreeRules}
 					isDegreeRulesLoading={isDegreeRulesLoading}
 					isEditingDegreeRules={isEditingDegreeRules}
 					editDegreeRulesId={editDegreeRulesId}
+					dispatch={dispatch}
 				/>
 			</Row>
 
@@ -96,6 +101,7 @@ export default function Configuration() {
 					isCyclesLoading={isCyclesLoading}
 					isEditingCycle={isEditingCycle}
 					editCycleId={editCycleId}
+					dispatch={dispatch}
 				/>
 			</Row>
 		</>

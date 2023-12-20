@@ -50,6 +50,7 @@ const useAssignTeachingInstructor = () => {
 		availableTeachings,
 		handleUnassignTheoryInstructors,
 		handleUnassignLabInstructors,
+		dispatch,
 	};
 };
 

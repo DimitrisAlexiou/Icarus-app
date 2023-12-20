@@ -12,7 +12,8 @@ import Spinner from '../../components/boilerplate/spinners/Spinner';
 import FooterLanding from '../../components/boilerplate/FooterLanding';
 
 export default function Login() {
-	const { isLoading, isAccountLocked, handleResetLoginStatus } = useLogin();
+	const { isLoading, isAccountLocked, handleResetLoginStatus, dispatch } =
+		useLogin();
 
 	return (
 		<>
@@ -96,7 +97,11 @@ export default function Login() {
 															Welcome Back !
 														</h4>
 													</div>
-													{isLoading ? <Spinner card /> : <LoginForm />}
+													{isLoading ? (
+														<Spinner card />
+													) : (
+														<LoginForm dispatch={dispatch} />
+													)}
 													<hr />
 													<Row>
 														<Col

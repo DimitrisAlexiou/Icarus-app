@@ -80,6 +80,7 @@ const GradingCard = ({ teaching }) => {
 			) : (
 				<p>Not yet assigned</p>
 			)}
+			<hr />
 			<Row>
 				<Col xl="6" lg="6" md="12" sm="12" xs="12">
 					<small
@@ -153,8 +154,10 @@ const GradingCard = ({ teaching }) => {
 						</Row>
 					</Row>
 				))
-			) : (
+			) : teaching.course.hasLab ? (
 				<p>Not yet assigned</p>
+			) : (
+				<p className="text-warning">Not applicable</p>
 			)}
 		</>
 	);

@@ -20,6 +20,10 @@ import {
 	UPDATE_COURSE,
 } from '../actions';
 import { updateEnrolledCourses } from '../auth/authSlice';
+import {
+	updateTeachingsAfterActivation,
+	updateTeachingsAfterDeactivation,
+} from './teachingSlice';
 import { WARNING } from '../../constants/strings';
 
 const initialFiltersState = {
@@ -91,7 +95,9 @@ export const activateCourse = createAsyncThunk(
 	ACTIVATE_COURSE,
 	async (courseId, thunkAPI) => {
 		try {
-			return await courseService.activateCourse(courseId);
+			const response = await courseService.activateCourse(courseId);
+			thunkAPI.dispatch(updateTeachingsAfterActivation(response));
+			return response;
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -102,7 +108,9 @@ export const deActivateCourse = createAsyncThunk(
 	DEACTIVATE_COURSE,
 	async (courseId, thunkAPI) => {
 		try {
-			return await courseService.deActivateCourse(courseId);
+			const response = await courseService.deActivateCourse(courseId);
+			thunkAPI.dispatch(updateTeachingsAfterDeactivation(response));
+			return response;
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}

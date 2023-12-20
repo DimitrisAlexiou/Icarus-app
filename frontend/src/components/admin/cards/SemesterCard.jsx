@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { Row, Col, Badge, Button } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
@@ -14,6 +13,7 @@ const SemesterCard = ({
 	isSemesterLoading,
 	isEditingSemester,
 	editSemesterId,
+	dispatch,
 }) => {
 	const {
 		semester,
@@ -24,8 +24,6 @@ const SemesterCard = ({
 	} = useSemesterCard();
 
 	const [addingSemester, setAddingSemester] = useState(false);
-
-	const dispatch = useDispatch();
 
 	return (
 		<>
@@ -38,81 +36,83 @@ const SemesterCard = ({
 								{isSemesterLoading ? (
 									<Spinner card />
 								) : !semester || addingSemester ? (
-									<>
-										<Row>
-											{addingSemester ? (
-												<>
-													<Col>
-														<small
-															className="text-muted pill-label mb-3"
-															style={{
-																textAlign: 'justify',
-																fontWeight: '700',
-																fontSize: 15,
-															}}
-														>
-															Defined Semesters
-														</small>
-													</Col>
-													<Row>
-														{semesters.map((semester) => (
-															<Col key={semester._id} md="4" className="mb-3">
-																<b
+									<Row>
+										{addingSemester ? (
+											<>
+												<Col>
+													<small
+														className="text-muted pill-label mb-3"
+														style={{
+															textAlign: 'justify',
+															fontWeight: '700',
+															fontSize: 15,
+														}}
+													>
+														Defined Semesters
+													</small>
+												</Col>
+												<Row>
+													{semesters.map((semester) => (
+														<Col key={semester._id} md="4" className="mb-3">
+															<b
+																style={{
+																	textAlign: 'justify',
+																	fontWeight: '600',
+																	fontSize: 14,
+																}}
+															>
+																{semester.type}{' '}
+																<small
+																	className="text-muted pill-label"
 																	style={{
 																		textAlign: 'justify',
-																		fontWeight: '600',
-																		fontSize: 14,
+																		fontWeight: '700',
+																		fontSize: 11,
 																	}}
 																>
-																	{semester.type}{' '}
-																	<small
-																		className="text-muted pill-label"
-																		style={{
-																			textAlign: 'justify',
-																			fontWeight: '700',
-																			fontSize: 11,
-																		}}
-																	>
-																		{semester.academicYear}
-																	</small>
-																</b>
-															</Col>
-														))}
-													</Row>
-												</>
-											) : null}
-											<SemesterForm setAddingSemester={setAddingSemester} />
-											<Col
-												className="text-warning mt-2"
-												style={{
-													textAlign: 'justify',
-													fontWeight: '600',
-													fontSize: 12,
-												}}
-											>
-												{addingSemester
-													? 'Adding a new semester . . .'
-													: !semesters
-													? 'Semesters have not been defined yet!'
-													: 'Semester has not been defined for current period!'}
+																	{semester.academicYear}
+																</small>
+															</b>
+														</Col>
+													))}
+												</Row>
+											</>
+										) : null}
+										<SemesterForm
+											setAddingSemester={setAddingSemester}
+											dispatch={dispatch}
+										/>
+										<Col
+											className="text-warning mt-2"
+											style={{
+												textAlign: 'justify',
+												fontWeight: '600',
+												fontSize: 12,
+											}}
+										>
+											{addingSemester
+												? 'Adding a new semester . . .'
+												: !semesters
+												? 'Semesters have not been defined yet!'
+												: 'Semester has not been defined for current period!'}
+										</Col>
+										{addingSemester ? (
+											<Col xs="2" sm="6" md="6" className="text-right mt-1">
+												<FontAwesomeIcon
+													className="clickable"
+													onClick={() => setAddingSemester(false)}
+													icon={faXmark}
+												/>
 											</Col>
-											{addingSemester ? (
-												<Col xs="2" sm="6" md="6" className="text-right mt-1">
-													<FontAwesomeIcon
-														className="clickable"
-														onClick={() => setAddingSemester(false)}
-														icon={faXmark}
-													/>
-												</Col>
-											) : null}
-										</Row>
-									</>
+										) : null}
+									</Row>
 								) : isEditingSemester ? (
 									<>
 										<SemesterForm
 											semester={semester}
 											isEditingSemester={isEditingSemester}
 											editSemesterId={editSemesterId}
+											dispatch={dispatch}
 										/>
 										<Row>
 											<Col

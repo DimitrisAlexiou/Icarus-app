@@ -23,16 +23,13 @@ export default function Course() {
 						{course.title}
 					</h3>
 				</Col>
-				<Col className="text-right px-3">
-					<BackButton url={'/course/undergraduate'} />
-				</Col>
 			</Row>
 
 			<Row className="justify-content-center animated--grow-in">
 				<Col xs="12" sm="12" md="12" lg="10" xl="10">
 					<div className="card shadow mb-4">
 						<div className="card-header py-3">
-							<Row>
+							<Row className="d-flex justify-content-between align-items-center">
 								<Col md="6">
 									<h6 className="m-0 font-weight-bold text-primary">
 										Course Information
@@ -50,10 +47,8 @@ export default function Course() {
 													}}
 													icon={faChalkboard}
 												/>
-											</Col>
-											<Col className="d-flex justify-content-end">
 												<small
-													className="text-muted pill-label clickable-no-padding"
+													className="mx-2 text-muted pill-label clickable-no-padding"
 													style={{
 														textAlign: 'justify',
 														fontWeight: '700',
@@ -67,6 +62,9 @@ export default function Course() {
 										</Row>
 									</Col>
 								) : null}
+								<Col md="1" sm="1">
+									<BackButton url={'/course/undergraduate'} />
+								</Col>
 							</Row>
 						</div>
 						{isCourseLoading || isTeachingLoading ? (

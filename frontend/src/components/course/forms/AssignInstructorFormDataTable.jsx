@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { FormGroup, Label, Row, Col, Button, Spinner, Input } from 'reactstrap';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import {
@@ -17,8 +16,6 @@ export default function AssignInstructorFormDataTable({
 	setModal,
 }) {
 	const [selectedPart, setSelectedPart] = useState('theory');
-
-	const dispatch = useDispatch();
 
 	return (
 		<>

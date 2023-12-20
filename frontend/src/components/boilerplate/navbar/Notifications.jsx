@@ -6,7 +6,6 @@ import {
 	DropdownItem,
 } from 'reactstrap';
 import { NavLink } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBell, faFileAlt } from '@fortawesome/free-regular-svg-icons';
 import {
@@ -28,8 +27,6 @@ export default function Notifications() {
 	const [dropdownOpen, setDropdownOpen] = useState(false);
 
 	const toggle = () => setDropdownOpen((prevState) => !prevState);
-
-	const dispatch = useDispatch();
 
 	// useEffect(() => {
 	// 	dispatch(getNotifications());

@@ -1,5 +1,4 @@
 import { useState, useRef, forwardRef } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { Button, Row, Col, Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
@@ -9,17 +8,18 @@ import {
 } from '../../features/admin/semesterSlice';
 import { deleteAlert } from '../../constants/sweetAlertNotification';
 import { SemesterType } from '../../constants/enums';
-import { academicYearEnd, academicYearStart } from '../../utils/academicYears';
 import moment from 'moment';
 import DataTable from '../DataTable';
 import SemesterForm from '../../components/admin/forms/SemesterForm';
 import Spinner from '../../components/boilerplate/spinners/Spinner';
 
-export default function SemestersDataTable({ semesters }) {
-	const { isLoading, isEditingSemester, editSemesterId } = useSelector(
-		(state) => state.semesters
-	);
-
+export default function SemestersDataTable({
+	semesters,
+	semestersIsLoading,
+	isEditingSemester,
+	editSemesterId,
+	dispatch,
+}) {
 	const modalRef = useRef(null);
 	const [modal, setModal] = useState(false);
 	const [currentSemester, setCurrentSemester] = useState({
@@ -28,8 +28,6 @@ export default function SemestersDataTable({ semesters }) {
 		startDate: '',
 		endDate: '',
 	});
-
-	const dispatch = useDispatch();
 
 	const toggle = () => {
 		setModal(!modal);
@@ -56,6 +54,7 @@ export default function SemestersDataTable({ semesters }) {
 						semester={currentSemester}
 						isEditingSemester={isEditingSemester}
 						editSemesterId={editSemesterId}
+						dispatch={dispatch}
 					/>
 				</ModalBody>
 			</Modal>
@@ -79,36 +78,32 @@ export default function SemestersDataTable({ semesters }) {
 		{
 			name: 'startDate',
 			label: 'Start Date',
-			render: (semester) =>
-				semester.type !== SemesterType.Any
-					? moment(semester.startDate).format('DD/MM/YYYY')
-					: `${academicYearStart}-${academicYearEnd}`,
+			render: (semester) => moment(semester.startDate).format('DD/MM/YYYY'),
 		},
 		{
 			name: 'endDate',
 			label: 'End Date',
-			render: (semester) =>
-				semester.type !== SemesterType.Any
-					? moment(semester.endDate).format('DD/MM/YYYY')
-					: `${academicYearStart}-${academicYearEnd}`,
+			render: (semester) => moment(semester.endDate).format('DD/MM/YYYY'),
 		},
 		{
 			name: 'actions',
 			label: 'Actions',
 			render: (semester) => (
 				<Row style={{ width: '150px' }}>
-					<Col xs="6" sm="4" className="mb-2">
-						<Button
-							className="btn btn-light"
-							onClick={() => {
-								dispatch(setEditSemester({ editSemesterId: semester._id }));
-								setCurrentSemester(semester);
-								setModal(true);
-							}}
-						>
-							<FontAwesomeIcon icon={faEdit} />
-						</Button>
-					</Col>
+					{semester.type !== SemesterType.Any ? (
+						<Col xs="6" sm="4" className="mb-2">
+							<Button
+								className="btn btn-light"
+								onClick={() => {
+									dispatch(setEditSemester({ editSemesterId: semester._id }));
+									setCurrentSemester(semester);
+									setModal(true);
+								}}
+							>
+								<FontAwesomeIcon icon={faEdit} />
+							</Button>
+						</Col>
+					) : null}
 					<Col sm="4">
 						<Button
 							className="btn btn-light"
@@ -127,7 +122,7 @@ export default function SemestersDataTable({ semesters }) {
 	return (
 		<>
 			<div className="card card-body">
-				{isLoading ? (
+				{semestersIsLoading ? (
 					<Spinner card />
 				) : (
 					<>

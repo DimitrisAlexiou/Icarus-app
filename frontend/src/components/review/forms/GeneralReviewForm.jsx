@@ -1,4 +1,3 @@
-import { useDispatch } from 'react-redux';
 import { FormGroup, Label, Row, Col, Button, Spinner } from 'reactstrap';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { GeneralReviewSchema } from '../../../schemas/review/GeneralReview';
@@ -17,15 +16,16 @@ export default function GeneralReviewForm({
 	editGeneralReviewId,
 	setFormIsVisible,
 	setFormIsOpen,
+	dispatch,
 }) {
-	const dispatch = useDispatch();
-
 	return (
 		<>
 			<Formik
 				initialValues={{
 					course_opinion: generalReview ? generalReview.course_opinion : '',
-					instructor_opinion: generalReview ? generalReview.instructor_opinion : '',
+					instructor_opinion: generalReview
+						? generalReview.instructor_opinion
+						: '',
 					likes: generalReview ? generalReview.likes : '',
 					dislikes: generalReview ? generalReview.dislikes : '',
 				}}
@@ -77,7 +77,10 @@ export default function GeneralReviewForm({
 							<Label for="course_opinion" className="text-gray-600">
 								What is your opinion about the course?
 							</Label>
-							<ErrorMessage name="course_opinion" component={FormErrorMessage} />
+							<ErrorMessage
+								name="course_opinion"
+								component={FormErrorMessage}
+							/>
 						</FormGroup>
 
 						<FormGroup className="form-floating mb-3" floating>
@@ -90,7 +93,10 @@ export default function GeneralReviewForm({
 							<Label for="instructor_opinion" className="text-gray-600">
 								What is your opinion about the instructor(s)?
 							</Label>
-							<ErrorMessage name="instructor_opinion" component={FormErrorMessage} />
+							<ErrorMessage
+								name="instructor_opinion"
+								component={FormErrorMessage}
+							/>
 						</FormGroup>
 
 						<FormGroup className="form-floating mb-3" floating>

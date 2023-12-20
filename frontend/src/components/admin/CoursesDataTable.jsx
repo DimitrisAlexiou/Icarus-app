@@ -1,6 +1,5 @@
 import { useState, forwardRef, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col, Button, Modal, ModalHeader, ModalBody } from 'reactstrap';
 import {
 	deleteCourse,
@@ -16,11 +15,14 @@ import Switch from 'react-switch';
 import CourseForm from '../../components/course/forms/CourseForm';
 import Spinner from '../../components/boilerplate/spinners/Spinner';
 
-export default function CoursesDataTable({ courses, cycles, semesters }) {
-	const { isLoading, isEditingCourse, editCourseId } = useSelector(
-		(state) => state.courses
-	);
-
+export default function CoursesDataTable({
+	courses,
+	cycles,
+	coursesIsLoading,
+	isEditingCourse,
+	editCourseId,
+	dispatch,
+}) {
 	const modalRef = useRef(null);
 	const [modal, setModal] = useState(false);
 	const [currentCourse, setCurrentCourse] = useState({
@@ -39,7 +41,6 @@ export default function CoursesDataTable({ courses, cycles, semesters }) {
 		isActive: '',
 	});
 
-	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
 	const toggle = () => {
@@ -76,9 +77,9 @@ export default function CoursesDataTable({ courses, cycles, semesters }) {
 						course={currentCourse}
 						courses={courses}
 						cycles={cycles}
-						semesters={semesters}
 						isEditingCourse={isEditingCourse}
 						editCourseId={editCourseId}
+						dispatch={dispatch}
 					/>
 				</ModalBody>
 			</Modal>
@@ -137,7 +138,14 @@ export default function CoursesDataTable({ courses, cycles, semesters }) {
 			name: 'actions',
 			label: 'Actions',
 			render: (course) => (
-				<Row style={{ width: '150px' }}>
+				<Row
+					id="actionsTooltip"
+					style={{
+						width: '150px',
+						pointerEvents: course.isActive ? 'none' : 'auto',
+						opacity: course.isActive ? 0.6 : 1,
+					}}
+				>
 					<Col xs="6" sm="4" className="mb-2">
 						<Button
 							className="btn btn-light"
@@ -170,7 +178,7 @@ export default function CoursesDataTable({ courses, cycles, semesters }) {
 	return (
 		<>
 			<div className="card card-body">
-				{isLoading ? (
+				{coursesIsLoading ? (
 					<Spinner card />
 				) : (
 					<>

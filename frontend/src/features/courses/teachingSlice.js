@@ -210,6 +210,16 @@ export const teachingSlice = createSlice({
 		setEditTeachingGrading: (state, { payload }) => {
 			return { ...state, isEditingTeachingGrading: true, ...payload };
 		},
+		updateTeachingsAfterActivation: (state, { payload }) => {
+			state.teachings = [...state.teachings, payload.teaching];
+		},
+		updateTeachingsAfterDeactivation: (state, { payload }) => {
+			const deactivatedCourseId = payload.deactivatedCourse._id;
+
+			state.teachings = state.teachings.filter(
+				(teaching) => teaching.course._id !== deactivatedCourseId
+			);
+		},
 	},
 	extraReducers: (builder) => {
 		builder
@@ -442,5 +452,7 @@ export const {
 	handleChange,
 	setEditTeaching,
 	setEditTeachingGrading,
+	updateTeachingsAfterActivation,
+	updateTeachingsAfterDeactivation,
 } = teachingSlice.actions;
 export default teachingSlice.reducer;

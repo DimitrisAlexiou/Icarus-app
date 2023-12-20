@@ -6,7 +6,6 @@ import {
 	DropdownItem,
 } from 'reactstrap';
 import { Link } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEnvelope } from '@fortawesome/free-regular-svg-icons';
 // import { getMessages, reset } from '../../features/messages/messagesSlice';
@@ -20,8 +19,6 @@ export default function Inbox() {
 	const [dropdownOpen, setDropdownOpen] = useState(false);
 
 	const toggle = () => setDropdownOpen((prevState) => !prevState);
-
-	const dispatch = useDispatch();
 
 	// useEffect(() => {
 	// 	dispatch(getMessages());

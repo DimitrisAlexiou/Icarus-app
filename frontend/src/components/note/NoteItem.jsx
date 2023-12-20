@@ -1,14 +1,14 @@
-import { useDispatch } from 'react-redux';
 import { Row, Col, Card } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExclamation } from '@fortawesome/free-solid-svg-icons';
 import { faCircle, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
-import { deleteUserNote, updateImportance } from '../../features/notes/noteSlice';
+import {
+	deleteUserNote,
+	updateImportance,
+} from '../../features/notes/noteSlice';
 import moment from 'moment';
 
-export default function NoteItem({ note, setSelectedCategory }) {
-	const dispatch = useDispatch();
-
+export default function NoteItem({ note, setSelectedCategory, dispatch }) {
 	return (
 		<>
 			<div className="note-has-grid mb-4">

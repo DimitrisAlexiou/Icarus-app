@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { FormGroup, Label, Row, Col, Button, Spinner } from 'reactstrap';
 import { Formik, Field, ErrorMessage, Form } from 'formik';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -7,14 +6,17 @@ import { faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import { UserSchema } from '../../schemas/auth/User';
 import { register } from '../../features/auth/authSlice';
 import { addUser } from '../../features/admin/userSlice';
-import { UserType, StudentType, Degree, FacultyType } from '../../constants/enums';
+import {
+	UserType,
+	StudentType,
+	Degree,
+	FacultyType,
+} from '../../constants/enums';
 import FormErrorMessage from '../form/FormErrorMessage';
 
-export default function RegisterForm({ newUser, setNewUser }) {
+export default function RegisterForm({ newUser, setNewUser, dispatch }) {
 	const [showPassword, setShowPassword] = useState(false);
 	const [selectedType, setSelectedType] = useState('');
-
-	const dispatch = useDispatch();
 
 	const handleTypeChange = (e) => {
 		setSelectedType(e.target.value);
@@ -52,7 +54,12 @@ export default function RegisterForm({ newUser, setNewUser }) {
 			<Row>
 				<Col md="5">
 					<FormGroup className="form-floating mb-3" floating>
-						<Field type="number" min="0" className="form-control" name="entranceYear" />
+						<Field
+							type="number"
+							min="0"
+							className="form-control"
+							name="entranceYear"
+						/>
 						<Label for="entranceYear" className="text-gray-600">
 							Entrance Year
 						</Label>
@@ -107,7 +114,10 @@ export default function RegisterForm({ newUser, setNewUser }) {
 						<Label for="instructorEntranceYear" className="text-gray-600">
 							Entrance Year
 						</Label>
-						<ErrorMessage name="instructorEntranceYear" component={FormErrorMessage} />
+						<ErrorMessage
+							name="instructorEntranceYear"
+							component={FormErrorMessage}
+						/>
 					</FormGroup>
 				</Col>
 			</Row>

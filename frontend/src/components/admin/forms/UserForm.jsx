@@ -1,15 +1,17 @@
-import { useDispatch } from 'react-redux';
 import { FormGroup, Label, Row, Col, Button, Spinner, Input } from 'reactstrap';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { updateUser } from '../../../features/admin/userSlice';
-import { Degree, FacultyType, StudentType, UserType } from '../../../constants/enums';
+import {
+	Degree,
+	FacultyType,
+	StudentType,
+	UserType,
+} from '../../../constants/enums';
 import { UserUpdateSchema } from '../../../schemas/admin/UserUpdate';
 import moment from 'moment';
 import FormErrorMessage from '../../form/FormErrorMessage';
 
-export default function UserForm({ user, setModal, editUserId }) {
-	const dispatch = useDispatch();
-
+export default function UserForm({ user, setModal, editUserId, dispatch }) {
 	const studentFields = (
 		<>
 			<Row>
@@ -42,7 +44,12 @@ export default function UserForm({ user, setModal, editUserId }) {
 			<Row>
 				<Col md="5">
 					<FormGroup className="form-floating mb-3" floating>
-						<Field type="number" min="0" className="form-control" name="entranceYear" />
+						<Field
+							type="number"
+							min="0"
+							className="form-control"
+							name="entranceYear"
+						/>
 						<Label for="entranceYear" className="text-gray-600">
 							Entrance Year
 						</Label>
@@ -97,7 +104,10 @@ export default function UserForm({ user, setModal, editUserId }) {
 						<Label for="instructorEntranceYear" className="text-gray-600">
 							Entrance Year
 						</Label>
-						<ErrorMessage name="instructorEntranceYear" component={FormErrorMessage} />
+						<ErrorMessage
+							name="instructorEntranceYear"
+							component={FormErrorMessage}
+						/>
 					</FormGroup>
 				</Col>
 			</Row>
@@ -116,18 +126,25 @@ export default function UserForm({ user, setModal, editUserId }) {
 					studentId: user && user.student ? user.student.studentId : '',
 					studentType: user && user.student ? user.student.studentType : '',
 					entranceYear: user && user.student ? user.student.entranceYear : '',
-					facultyType: user && user.instructor ? user.instructor.facultyType : '',
+					facultyType:
+						user && user.instructor ? user.instructor.facultyType : '',
 					degree: user && user.instructor ? user.instructor.degree : '',
 					instructorEntranceYear:
-						user && user.instructor ? user.instructor.instructorEntranceYear : '',
+						user && user.instructor
+							? user.instructor.instructorEntranceYear
+							: '',
 					isAdmin: user ? user.isAdmin : false,
 					loginFailedAttempts: user ? user.loginFailedAttempts : 0,
 					lastLogin:
 						user && user.lastLogin !== null
 							? moment(user.lastLogin).format('DD/MM/YYYY HH:mm:ss')
 							: 'inactive',
-					createdAt: user ? moment(user.createdAt).format('DD/MM/YYYY HH:mm:ss') : '',
-					updatedAt: user ? moment(user.updatedAt).format('DD/MM/YYYY HH:mm:ss') : '',
+					createdAt: user
+						? moment(user.createdAt).format('DD/MM/YYYY HH:mm:ss')
+						: '',
+					updatedAt: user
+						? moment(user.updatedAt).format('DD/MM/YYYY HH:mm:ss')
+						: '',
 				}}
 				validationSchema={UserUpdateSchema}
 				onSubmit={(values, { setSubmitting }) => {

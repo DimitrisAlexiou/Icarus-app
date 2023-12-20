@@ -21,6 +21,7 @@ import NoteForm from '../../components/note/NoteForm';
 import NoteItem from '../../components/note/NoteItem';
 import Spinner from '../../components/boilerplate/spinners/Spinner';
 import Header from '../../components/boilerplate/Header';
+import UserNotes from '../../components/admin/UserNotes';
 
 export default function Notes() {
 	const {
@@ -69,6 +70,7 @@ export default function Notes() {
 						editNoteId={editNoteId}
 						setSelectedCategory={setSelectedCategory}
 						setModal={setModal}
+						dispatch={dispatch}
 					/>
 				</ModalBody>
 			</Modal>
@@ -195,6 +197,15 @@ export default function Notes() {
 				<Row className="mb-4 justify-content-between animated--grow-in">
 					<Col className="text-center">
 						<Header title="User Notes" />
+						<h6
+							className="text-muted pill-label"
+							style={{
+								fontWeight: '700',
+								fontSize: 15,
+							}}
+						>
+							{notes.length}
+						</h6>
 					</Col>
 				</Row>
 			) : null}
@@ -202,29 +213,49 @@ export default function Notes() {
 			{filteredNotesByCategory.length ? (
 				isLoading ? (
 					<Spinner card />
+				) : user.user.isAdmin ? (
+					<UserNotes
+						notes={notes}
+						filteredNotesByCategory={filteredNotesByCategory}
+						setEditNote={setEditNote}
+						setSelectedCategory={setSelectedCategory}
+						setSelectedNote={setSelectedNote}
+						setModal={setModal}
+						dispatch={dispatch}
+					/>
 				) : (
-					<Row className="animated--grow-in">
-						{filteredNotesByCategory.map((note) => (
-							<Col
-								key={note._id}
-								xs="12"
-								sm="12"
-								md="6"
-								lg="4"
-								xl="3"
-								onClick={() => {
-									dispatch(setEditNote({ editNoteId: note._id }));
-									setSelectedNote(note);
-									setModal(true);
-								}}
-							>
-								<NoteItem
-									note={note}
-									setSelectedCategory={setSelectedCategory}
-								/>
-							</Col>
-						))}
-					</Row>
+					<>
+						<Row className="animated--grow-in">
+							{filteredNotesByCategory.map((note) => (
+								<Col
+									key={note._id}
+									xs="12"
+									sm="12"
+									md="6"
+									lg="4"
+									xl="3"
+									onClick={() => {
+										dispatch(setEditNote({ editNoteId: note._id }));
+										setSelectedNote(note);
+										setModal(true);
+									}}
+								>
+									<NoteItem
+										note={note}
+										setSelectedCategory={setSelectedCategory}
+										dispatch={dispatch}
+									/>
+								</Col>
+							))}
+						</Row>
+						<Col className="d-flex justify-content-end">
+							<h6 className="mb-3 text-gray-400 font-weight-bold animated--grow-in">
+								{notes.length} note
+								{notes.length > 1 && 's'}
+							</h6>
+						</Col>
+						{/* {numOfPages > 1 ? <PageButton /> : null} */}
+					</>
 				)
 			) : (
 				<div className="animated--grow-in">

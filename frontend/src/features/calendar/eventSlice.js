@@ -10,6 +10,7 @@ import {
 	DELETE_EVENT,
 	DELETE_EVENTS,
 	GET_EVENTS,
+	GET_USER_EVENTS,
 } from '../actions';
 import eventService from './eventService';
 
@@ -21,13 +22,16 @@ const initialState = {
 	editEventId: '',
 };
 
-export const getEvents = createAsyncThunk(GET_EVENTS, async (_, thunkAPI) => {
-	try {
-		return await eventService.getEvents();
-	} catch (error) {
-		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+export const getUserEvents = createAsyncThunk(
+	GET_USER_EVENTS,
+	async (_, thunkAPI) => {
+		try {
+			return await eventService.getUserEvents();
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
 	}
-});
+);
 
 export const addEvent = createAsyncThunk(
 	CREATE_EVENT,
@@ -62,6 +66,14 @@ export const deleteEvent = createAsyncThunk(
 	}
 );
 
+export const getEvents = createAsyncThunk(GET_EVENTS, async (_, thunkAPI) => {
+	try {
+		return await eventService.getEvents();
+	} catch (error) {
+		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+	}
+});
+
 export const deleteEvents = createAsyncThunk(
 	DELETE_EVENTS,
 	async (_, thunkAPI) => {
@@ -84,14 +96,14 @@ export const eventSlice = createSlice({
 	},
 	extraReducers: (builder) => {
 		builder
-			.addCase(getEvents.pending, (state) => {
+			.addCase(getUserEvents.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(getEvents.fulfilled, (state, { payload }) => {
+			.addCase(getUserEvents.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
 				state.events = payload;
 			})
-			.addCase(getEvents.rejected, (state, { payload }) => {
+			.addCase(getUserEvents.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				if (payload !== 'Seems like there are no events.')
 					displayErrorNotification(payload);
@@ -149,6 +161,20 @@ export const eventSlice = createSlice({
 			.addCase(deleteEvents.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				displayErrorNotification(payload);
+			})
+			.addCase(getEvents.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(getEvents.fulfilled, (state, { payload }) => {
+				state.isLoading = false;
+				state.events = payload;
+			})
+			.addCase(getEvents.rejected, (state, { payload }) => {
+				state.isLoading = false;
+				if (
+					payload !== 'Seems like there are no events registered in the system.'
+				)
+					displayErrorNotification(payload);
 			});
 	},
 });

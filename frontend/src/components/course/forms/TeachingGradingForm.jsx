@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { FormGroup, Label, Row, Col, Button, Spinner, Input } from 'reactstrap';
 import {
@@ -21,10 +20,9 @@ export default function TeachingGradingForm({
 	isEditingTeachingGrading,
 	setModalGrading,
 	user,
+	dispatch,
 }) {
 	const [selectedPart, setSelectedPart] = useState('theory');
-
-	const dispatch = useDispatch();
 
 	const canEditTheory =
 		teaching.theoryInstructors.some(

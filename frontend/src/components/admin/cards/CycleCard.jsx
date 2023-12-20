@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { Row, Col, Badge, Button } from 'reactstrap';
 import {
 	deleteCycle,
@@ -18,10 +17,10 @@ const CycleCard = ({
 	isCyclesLoading,
 	isEditingCycle,
 	editCycleId,
+	dispatch,
 }) => {
 	const [editedCycleIndex, setEditedCycleIndex] = useState(-1);
 	const [addingCycle, setAddingCycle] = useState(false);
-	const dispatch = useDispatch();
 
 	return (
 		<>
@@ -79,7 +78,10 @@ const CycleCard = ({
 												))}
 											</>
 										) : null}
-										<CycleForm setAddingCycle={setAddingCycle} />
+										<CycleForm
+											setAddingCycle={setAddingCycle}
+											dispatch={dispatch}
+										/>
 										<Col
 											className="text-warning mt-2"
 											style={{
@@ -111,6 +113,7 @@ const CycleCard = ({
 														cycle={cycle}
 														isEditingCycle={isEditingCycle}
 														editCycleId={editCycleId}
+														dispatch={dispatch}
 													/>
 												) : null}
 											</div>

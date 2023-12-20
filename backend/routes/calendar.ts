@@ -1,6 +1,6 @@
 import express from 'express';
 import {
-	viewEvents,
+	viewUserEvents,
 	addEvent,
 	deleteUserEvent,
 	deleteUserEvents,
@@ -15,7 +15,7 @@ export default (router: express.Router) => {
 	// @access  Private
 	router
 		.route('/calendar')
-		.get(authorize, isOwner, viewEvents)
+		.get(authorize, isOwner, viewUserEvents)
 		.post(authorize, validateCalendar, addEvent)
 		.delete(authorize, isOwner, deleteUserEvents);
 

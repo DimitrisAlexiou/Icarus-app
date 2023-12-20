@@ -14,11 +14,6 @@ export default function MyCoursesCard() {
 
 	return (
 		<>
-			{/* <Row className="mb-3 justify-content-center animated--grow-in">
-				<Col xs="12" sm="12" md="12" lg="10" xl="9">
-					<h6 className="text-gray-500 font-weight-bold">enrolled courses</h6>
-				</Col>
-			</Row> */}
 			<Row className="justify-content-center animated--grow-in mb-3">
 				<h6
 					className="animated--grow-in text-gray-500"

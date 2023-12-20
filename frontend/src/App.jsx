@@ -18,6 +18,7 @@ import {
 	Phd,
 	Course,
 	NewCourse,
+	CreateStatement,
 	InfoSecMsc,
 } from './pages/course/index';
 import {
@@ -52,6 +53,7 @@ import {
 } from './pages/user/index';
 import Notes from './pages/note/Notes';
 import Calendar from './components/calendar/Calendar';
+import AdminCalendar from './components/admin/AdminCalendar';
 import SharedLayout from './components/boilerplate/SharedLayout';
 import ProtectedRoute from './components/boilerplate/ProtectedRoute';
 import { ThemeProvider } from '@mui/material';
@@ -109,6 +111,14 @@ export default function App() {
 									}
 								/>
 								<Route
+									path="/admin/calendar"
+									element={
+										<ProtectedRoute user={user} allowedRoles={[UserType.admin]}>
+											<AdminCalendar />
+										</ProtectedRoute>
+									}
+								/>
+								<Route
 									path="/users"
 									element={
 										<ProtectedRoute user={user} allowedRoles={[UserType.admin]}>
@@ -162,11 +172,8 @@ export default function App() {
 								<Route
 									path="/teaching/:teachingId"
 									element={
-										<ProtectedRoute
-											user={user}
-											allowedRoles={[UserType.admin, UserType.instructor]}
-										>
-											<Teaching />
+										<ProtectedRoute user={user}>
+											<Teaching user={user} />
 										</ProtectedRoute>
 									}
 								/>
@@ -307,6 +314,14 @@ export default function App() {
 									element={
 										<ProtectedRoute user={user}>
 											<Statements />
+										</ProtectedRoute>
+									}
+								/>
+								<Route
+									path="/statement/new"
+									element={
+										<ProtectedRoute user={user} allowedRoles={[UserType.admin]}>
+											<CreateStatement />
 										</ProtectedRoute>
 									}
 								/>

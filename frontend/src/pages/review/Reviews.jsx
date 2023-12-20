@@ -17,7 +17,7 @@ export default function Reviews() {
 						Reviews
 					</h3>
 				</Col>
-				<Col xl="3" md="6" className="text-right">
+				<Col xl="3" md="6" className="text-center">
 					<Card className="card-note">
 						<CardBody>
 							{isLoading ? (

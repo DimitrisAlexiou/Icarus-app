@@ -75,6 +75,7 @@ const useConfiguration = () => {
 		editCycleId,
 		academicYearEnd,
 		academicYearStart,
+		dispatch,
 	};
 };
 

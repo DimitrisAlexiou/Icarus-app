@@ -18,7 +18,9 @@ export default function UpdateProfileForm({ user }) {
 					username: user.user.username,
 					email: user.user.email,
 					degree:
-						user.user.type === UserType.instructor ? user.user.instructor.degree : '',
+						user.user.type === UserType.instructor
+							? user.user.instructor.degree
+							: '',
 				}}
 				validationSchema={!user.user.isAdmin ? UserProfileSchema : null}
 				onSubmit={(values, { setSubmitting }) => {
@@ -29,8 +31,11 @@ export default function UpdateProfileForm({ user }) {
 						email: values.email,
 						type: user.user.type,
 					};
-					if (user.user.type === UserType.instructor) userToUpdate.degree = values.degree;
-					dispatch(updateProfile({ userId: user.user._id, data: userToUpdate }));
+					if (user.user.type === UserType.instructor)
+						userToUpdate.degree = values.degree;
+					dispatch(
+						updateProfile({ userId: user.user._id, data: userToUpdate })
+					);
 					setSubmitting(false);
 				}}
 				validateOnMount

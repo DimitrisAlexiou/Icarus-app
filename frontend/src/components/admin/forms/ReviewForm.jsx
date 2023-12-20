@@ -1,14 +1,21 @@
-import { useDispatch } from 'react-redux';
 import { FormGroup, Label, Row, Col, Button, Spinner } from 'reactstrap';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { ReviewSchema } from '../../../schemas/admin/Review';
-import { defineReview, setEditReview, updateReview } from '../../../features/admin/reviewSlice';
+import {
+	defineReview,
+	setEditReview,
+	updateReview,
+} from '../../../features/admin/reviewSlice';
 import FormErrorMessage from '../../form/FormErrorMessage';
 import DatePickerField from '../../form/DatePickerField';
 
-export default function ReviewForm({ review, isEditingReview, editReviewId, semester }) {
-	const dispatch = useDispatch();
-
+export default function ReviewForm({
+	review,
+	isEditingReview,
+	editReviewId,
+	semester,
+	dispatch,
+}) {
 	return (
 		<>
 			<Formik
@@ -61,7 +68,10 @@ export default function ReviewForm({ review, isEditingReview, editReviewId, seme
 									<Label for="startAfter" className="text-gray-600">
 										Review start
 									</Label>
-									<ErrorMessage name="startAfter" component={FormErrorMessage} />
+									<ErrorMessage
+										name="startAfter"
+										component={FormErrorMessage}
+									/>
 								</FormGroup>
 							</Col>
 						</Row>

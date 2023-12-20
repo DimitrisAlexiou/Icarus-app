@@ -27,8 +27,12 @@ import { deleteNotes } from '../../models/note';
 import { tryCatch } from '../../utils/tryCatch';
 import bcrypt from 'bcryptjs';
 import CustomError from '../../utils/CustomError';
+import { INSTRUCTOR, STUDENT } from '../../utils/constants';
 
-export const addUser = async (req: Request, res: Response): Promise<Response> => {
+export const addUser = async (
+	req: Request,
+	res: Response
+): Promise<Response> => {
 	const {
 		name,
 		surname,
@@ -50,20 +54,35 @@ export const addUser = async (req: Request, res: Response): Promise<Response> =>
 		session.startTransaction();
 
 		if (!name || !surname || !username || !email || !password) {
-			if (type === UserType.student && (!studentId || !entranceYear || !studentType))
-				throw new CustomError('Please fill in all the student required fields.', 400);
+			if (
+				type === UserType.student &&
+				(!studentId || !entranceYear || !studentType)
+			)
+				throw new CustomError(
+					'Please fill in all the student required fields.',
+					400
+				);
 			else if (type === UserType.instructor && !facultyType)
-				throw new CustomError('Please fill in all the instructor required fields.', 400);
+				throw new CustomError(
+					'Please fill in all the instructor required fields.',
+					400
+				);
 
 			throw new CustomError('Please fill in all the required fields.', 400);
 		}
 
 		const userExists = await User.findOne({ email: email }).session(session);
 		if (userExists)
-			throw new CustomError('Seems like a user with this email already exists.', 400);
+			throw new CustomError(
+				'Seems like a user with this email already exists.',
+				400
+			);
 
-		const usernameTaken = await User.findOne({ username: username }).session(session);
-		if (usernameTaken) throw new CustomError('Seems like this username is taken.', 400);
+		const usernameTaken = await User.findOne({ username: username }).session(
+			session
+		);
+		if (usernameTaken)
+			throw new CustomError('Seems like this username is taken.', 400);
 
 		const salt = await bcrypt.genSalt(12);
 		const hashedPassword = await bcrypt.hash(password, salt);
@@ -97,7 +116,9 @@ export const addUser = async (req: Request, res: Response): Promise<Response> =>
 			await session.commitTransaction();
 			session.endSession();
 
-			return res.status(201).json({ message: 'Student account created successfully.', user });
+			return res
+				.status(201)
+				.json({ message: 'Student account created successfully.', user });
 		} else if (user.type === UserType.instructor) {
 			const instructor = new Instructor({
 				facultyType,
@@ -127,24 +148,32 @@ export const addUser = async (req: Request, res: Response): Promise<Response> =>
 	}
 };
 
-export const getSystemUsers = tryCatch(async (_: Request, res: Response): Promise<Response> => {
-	const users = await getUsers()
-		.populate({
-			path: 'student',
-			model: Student,
-		})
-		.populate({
-			path: 'instructor',
-			model: Instructor,
-		});
+export const getSystemUsers = tryCatch(
+	async (_: Request, res: Response): Promise<Response> => {
+		const users = await getUsers()
+			.populate({
+				path: 'student',
+				model: Student,
+			})
+			.populate({
+				path: 'instructor',
+				model: Instructor,
+			});
 
-	if (!users.length)
-		throw new CustomError('Seems like there are no users registered in the system.', 404);
+		if (!users.length)
+			throw new CustomError(
+				'Seems like there are no users registered in the system.',
+				404
+			);
 
-	return res.status(200).json(users);
-});
+		return res.status(200).json(users);
+	}
+);
 
-export const deleteSystemUsers = async (_: Request, res: Response): Promise<Response> => {
+export const deleteSystemUsers = async (
+	_: Request,
+	res: Response
+): Promise<Response> => {
 	const session = await startSession();
 
 	try {
@@ -163,10 +192,15 @@ export const deleteSystemUsers = async (_: Request, res: Response): Promise<Resp
 		session.endSession();
 	}
 
-	return res.status(200).json({ message: 'Users existing in the system deleted.' });
+	return res
+		.status(200)
+		.json({ message: 'Users existing in the system deleted.' });
 };
 
-export const deleteUser = async (req: Request, res: Response): Promise<Response> => {
+export const deleteUser = async (
+	req: Request,
+	res: Response
+): Promise<Response> => {
 	const { id } = req.params;
 	const session = await startSession();
 	let userToDelete;
@@ -182,9 +216,10 @@ export const deleteUser = async (req: Request, res: Response): Promise<Response>
 				404
 			);
 
-		if (userToDelete.type === 'Student') await deleteStudentByUserId(id, session);
+		if (userToDelete.type === STUDENT) await deleteStudentByUserId(id, session);
 
-		if (userToDelete.type === 'Instructor') await deleteInstructorByUserId(id, session);
+		if (userToDelete.type === INSTRUCTOR)
+			await deleteInstructorByUserId(id, session);
 
 		await deleteEvents(id, session);
 		await deleteNotes(id, session);
@@ -198,10 +233,15 @@ export const deleteUser = async (req: Request, res: Response): Promise<Response>
 		session.endSession();
 	}
 
-	return res.status(200).json({ message: 'User deleted.', user: userToDelete._id });
+	return res
+		.status(200)
+		.json({ message: 'User deleted.', user: userToDelete._id });
 };
 
-export const updateUser = async (req: Request, res: Response): Promise<Response> => {
+export const updateUser = async (
+	req: Request,
+	res: Response
+): Promise<Response> => {
 	const {
 		username,
 		name,
@@ -224,15 +264,27 @@ export const updateUser = async (req: Request, res: Response): Promise<Response>
 		session.startTransaction();
 
 		if (!name || !surname || !username || !email) {
-			if (type === UserType.student && (!studentId || !entranceYear || !studentType)) {
-				throw new CustomError('Please fill in all the student required fields.', 400);
+			if (
+				type === UserType.student &&
+				(!studentId || !entranceYear || !studentType)
+			) {
+				throw new CustomError(
+					'Please fill in all the student required fields.',
+					400
+				);
 			} else if (
 				type === UserType.instructor &&
 				(!facultyType || !degree || !instructorEntranceYear)
 			) {
-				throw new CustomError('Please fill in all the instructor required fields.', 400);
+				throw new CustomError(
+					'Please fill in all the instructor required fields.',
+					400
+				);
 			}
-			throw new CustomError('Please fill in all the user required fields.', 400);
+			throw new CustomError(
+				'Please fill in all the user required fields.',
+				400
+			);
 		}
 
 		const { id } = req.params;
@@ -289,7 +341,9 @@ export const updateUser = async (req: Request, res: Response): Promise<Response>
 		await session.commitTransaction();
 		session.endSession();
 
-		return res.status(200).json({ message: 'User account updated.', updatedUser });
+		return res
+			.status(200)
+			.json({ message: 'User account updated.', updatedUser });
 	} catch (error) {
 		await session.abortTransaction();
 		session.endSession();
@@ -298,39 +352,58 @@ export const updateUser = async (req: Request, res: Response): Promise<Response>
 	}
 };
 
-export const activateUser = tryCatch(async (req: Request, res: Response): Promise<Response> => {
-	const { id } = req.params;
+export const activateUser = tryCatch(
+	async (req: Request, res: Response): Promise<Response> => {
+		const { id } = req.params;
 
-	const activatedUser = await updateUserById(id, { isActive: true, loginFailedAttempts: 0 });
-	if (!activatedUser)
-		throw new CustomError(
-			'Seems like the user account that you are trying to activate does not exist.',
-			400
-		);
+		const activatedUser = await updateUserById(id, {
+			isActive: true,
+			loginFailedAttempts: 0,
+		});
+		if (!activatedUser)
+			throw new CustomError(
+				'Seems like the user account that you are trying to activate does not exist.',
+				400
+			);
 
-	return res.status(200).json({ message: 'User account activated.', activatedUser });
-});
+		return res
+			.status(200)
+			.json({ message: 'User account activated.', activatedUser });
+	}
+);
 
-export const deActivateUser = tryCatch(async (req: Request, res: Response): Promise<Response> => {
-	const { id } = req.params;
+export const deActivateUser = tryCatch(
+	async (req: Request, res: Response): Promise<Response> => {
+		const { id } = req.params;
 
-	const deactivatedUser = await updateUserById(id, { isActive: false, loginFailedAttempts: 0 });
-	if (!deactivatedUser)
-		throw new CustomError(
-			'Seems like the user account that you are trying to deactivate does not exist.',
-			400
-		);
+		const deactivatedUser = await updateUserById(id, {
+			isActive: false,
+			loginFailedAttempts: 0,
+		});
+		if (!deactivatedUser)
+			throw new CustomError(
+				'Seems like the user account that you are trying to deactivate does not exist.',
+				400
+			);
 
-	return res.status(200).json({ message: 'User account deactivated.', deactivatedUser });
-});
+		return res
+			.status(200)
+			.json({ message: 'User account deactivated.', deactivatedUser });
+	}
+);
 
-export const getSystemStudents = tryCatch(async (_: Request, res: Response): Promise<Response> => {
-	const students = await getStudents();
-	if (!students.length)
-		throw new CustomError('Seems like there are no students registered in the system.', 404);
+export const getSystemStudents = tryCatch(
+	async (_: Request, res: Response): Promise<Response> => {
+		const students = await getStudents();
+		if (!students.length)
+			throw new CustomError(
+				'Seems like there are no students registered in the system.',
+				404
+			);
 
-	return res.status(200).json(students);
-});
+		return res.status(200).json(students);
+	}
+);
 
 export const getSystemInstructors = tryCatch(
 	async (_: Request, res: Response): Promise<Response> => {

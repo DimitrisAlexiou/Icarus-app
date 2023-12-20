@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { FormGroup, Label, Row, Col, Button, Input, Spinner } from 'reactstrap';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -24,6 +23,7 @@ export default function NoteForm({
 	editNoteId,
 	setSelectedCategory,
 	setModal,
+	dispatch,
 }) {
 	const [inputValue, setInputValue] = useState('');
 	const [value, setValue] = useState([]);
@@ -81,8 +81,6 @@ export default function NoteForm({
 		}
 	};
 
-	const dispatch = useDispatch();
-
 	return (
 		<>
 			<Formik
@@ -91,7 +89,10 @@ export default function NoteForm({
 					text: note ? note.text : '',
 					file: note ? note.file : '',
 					categories: note
-						? note.categories.map((category) => ({ label: category, value: category }))
+						? note.categories.map((category) => ({
+								label: category,
+								value: category,
+						  }))
 						: [],
 					importance: note ? note.importance : false,
 				}}
@@ -156,7 +157,10 @@ export default function NoteForm({
 									<Label for="importance" className="mx-1 text-gray-600">
 										Important
 									</Label>
-									<ErrorMessage name="importance" component={FormErrorMessage} />
+									<ErrorMessage
+										name="importance"
+										component={FormErrorMessage}
+									/>
 								</FormGroup>
 							</Col>
 						</Row>
@@ -316,8 +320,7 @@ export default function NoteForm({
 													}
 													style={{
 														backgroundColor:
-															categoryColors[option.label] ||
-															'transparent',
+															categoryColors[option.label] || 'transparent',
 													}}
 												>
 													{option.label}
@@ -337,7 +340,10 @@ export default function NoteForm({
 											}}
 										/>
 									)}
-									<ErrorMessage name="categories" component={FormErrorMessage} />
+									<ErrorMessage
+										name="categories"
+										component={FormErrorMessage}
+									/>
 								</FormGroup>
 							</>
 						) : null}

@@ -18,7 +18,11 @@ import {
 } from '../../models/course/teaching';
 import { UserProps } from '../../models/users/user';
 import { getStudentByUserId } from '../../models/users/student';
-import { getCurrentSemester } from '../../models/admin/semester';
+import {
+	getCurrentSemester,
+	getSemesterByTypeAndAcademicYear,
+} from '../../models/admin/semester';
+import { getCurrentAcademicYear } from '../../controllers/admin/semester';
 import { tryCatch } from '../../utils/tryCatch';
 import CustomError from '../../utils/CustomError';
 
@@ -50,19 +54,6 @@ export const viewCourse = tryCatch(
 				'Seems like the course that you are trying to view does not exist.',
 				404
 			);
-
-		if (!course.isObligatory)
-			await course.populate({
-				path: 'cycle',
-				match: { cycle: { $exists: true, $ne: null } },
-			});
-
-		if (course.hasPrerequisites)
-			await course.populate({
-				path: 'prerequisites.prerequisite',
-				select: 'title',
-				match: { prerequisites: { $exists: true } },
-			});
 
 		return res.status(200).json(course);
 	}
@@ -251,7 +242,13 @@ export const activateCourse = async (
 			labGradeRetentionYears = 4;
 		}
 
-		if (activatedCourse.isActive)
+		if (activatedCourse.isActive) {
+			const academicYear = getCurrentAcademicYear(new Date());
+			const semester = await getSemesterByTypeAndAcademicYear(
+				activatedCourse.semester,
+				academicYear
+			);
+
 			teaching = await createTeaching(
 				{
 					labWeight,
@@ -261,10 +258,11 @@ export const activateCourse = async (
 					theoryGradeThreshold,
 					labGradeThreshold,
 					course: activatedCourse._id,
-					semester: activatedCourse.semester,
+					semester: semester,
 				},
 				{ session }
 			);
+		}
 
 		await session.commitTransaction();
 	} catch (error) {
@@ -378,6 +376,36 @@ export const deleteCourse = tryCatch(
 				'This course can not be deleted because it has an active teaching.',
 				400
 			);
+
+		//TODO check if the course to be deleted is a prerequisite for another course
+		// const courses = await getCourses();
+		// const course = courses.find((c) => c._id.toString() === id);
+
+		// if (!course)
+		// 	throw new CustomError(
+		// 		'Seems like the course that you are trying to delete does not exist.',
+		// 		404
+		// 	);
+
+		// const courseId = course._id.toString();
+
+		// const coursesWithThisAsPrerequisite = courses.filter((c) => {
+		// 	const prerequisites = c.prerequisites.map((p) =>
+		// 		p.prerequisite.toString()
+		// 	);
+		// 	return prerequisites.includes(courseId) && c._id.toString() !== courseId;
+		// });
+
+		// if (coursesWithThisAsPrerequisite.length > 0) {
+		// 	const coursesWithPrerequisitesTitles = coursesWithThisAsPrerequisite.map(
+		// 		(c) => c.title
+		// 	);
+
+		// 	throw new CustomError(
+		// 		`This course cannot be deleted because it is a prerequisite for the following courses: ${coursesWithPrerequisitesTitles}`,
+		// 		400
+		// 	);
+		// }
 
 		const courseToDelete = await deleteCourseById(id);
 

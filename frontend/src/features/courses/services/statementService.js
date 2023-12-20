@@ -14,7 +14,10 @@ const createStatement = async (data) => {
 };
 
 const updateStatement = async (statementId, data) => {
-	const response = await axiosFetch.put(API_URL_STATEMENT + '/' + statementId, data);
+	const response = await axiosFetch.put(
+		API_URL_STATEMENT + '/' + statementId,
+		data
+	);
 
 	return response.data;
 };
@@ -26,7 +29,17 @@ const getStatement = async (statementId) => {
 };
 
 const deleteStatement = async (statementId) => {
-	const response = await axiosFetch.delete(API_URL_STATEMENT + '/' + statementId);
+	const response = await axiosFetch.delete(
+		API_URL_STATEMENT + '/' + statementId
+	);
+
+	return response.data;
+};
+
+const finalizeStatement = async (statementId) => {
+	const response = await axiosFetch.put(
+		API_URL_STATEMENT + '/' + statementId + '/finalize'
+	);
 
 	return response.data;
 };
@@ -46,6 +59,7 @@ const deleteStatements = async () => {
 const statementService = {
 	getStudentStatements,
 	createStatement,
+	finalizeStatement,
 	updateStatement,
 	getStatement,
 	deleteStatement,

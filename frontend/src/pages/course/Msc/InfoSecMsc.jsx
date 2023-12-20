@@ -12,6 +12,7 @@ import {
 import { faBook } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { FaStudiovinari } from 'react-icons/fa';
+import { CourseType } from '../../../constants/enums';
 import useCourses from '../../../hooks/course/useCourses';
 import Skeleton from '../../../components/boilerplate/Skeleton';
 import Spinner from '../../../components/boilerplate/spinners/Spinner';
@@ -30,7 +31,7 @@ export default function InfoSecMsc({ user }) {
 		filteredCourses,
 		Obligatory,
 		handleNavigationClick,
-	} = useCourses();
+	} = useCourses(CourseType.Master);
 
 	return (
 		<>

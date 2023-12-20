@@ -1,14 +1,25 @@
 import * as Yup from 'yup';
 import { CourseType, PrerequisiteType } from '../../constants/enums';
-import { courseIdRegex, courseTitleRegex } from '../../constants/regex';
+import {
+	courseIdRegex,
+	courseTitleRegex,
+	masterCourseIdRegex,
+} from '../../constants/regex';
 
 export const CourseSchema = Yup.object().shape({
 	courseId: Yup.string()
 		.max(9, 'Course ID must be 8 digits or less.')
-		.matches(
-			courseIdRegex,
-			'Course ID must follow the pattern: 321-xxxx OR 321-xxxxx.'
-		)
+		.when('type', {
+			is: (type) => [CourseType.Undergraduate, CourseType.Mixed].includes(type),
+			then: Yup.string().matches(
+				courseIdRegex,
+				'Course ID must follow the pattern: 321-xxxx OR 321-xxxxx.'
+			),
+			otherwise: Yup.string().matches(
+				masterCourseIdRegex,
+				'Course ID must follow the pattern 1000..up to 9999.'
+			),
+		})
 		.required('Course ID is required.'),
 	title: Yup.string()
 		.max(60, 'Course title must be 60 characters or less.')

@@ -1,5 +1,4 @@
 import { useState, useEffect, useMemo, memo } from 'react';
-import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
 	FormGroup,
@@ -18,16 +17,20 @@ import {
 	updateCourse,
 } from '../../../features/courses/courseSlice';
 import { FormCheckbox } from '../../form/FormCheckbox';
-import { CourseType, PrerequisiteType } from '../../../constants/enums';
+import {
+	CourseType,
+	PrerequisiteType,
+	SemesterType,
+} from '../../../constants/enums';
 import FormErrorMessage from '../../form/FormErrorMessage';
 
 export default function CourseForm({
 	course,
 	courses,
 	cycles,
-	semesters,
 	isEditingCourse,
 	editCourseId,
+	dispatch,
 }) {
 	const courseYearOptions = useMemo(
 		() => ({
@@ -68,7 +71,7 @@ export default function CourseForm({
 		setIsObligatory(!isObligatory);
 	};
 
-	const TooltipComponent = memo(() => {
+	const TooltipComponent = memo(({ type }) => {
 		return (
 			<Tooltip
 				placement="top"
@@ -76,7 +79,11 @@ export default function CourseForm({
 				target="courseIdTooltip"
 				toggle={() => setTooltipOpen(!tooltip)}
 			>
-				Course ID: 321-xxxx or 321-xxxxx
+				{type === CourseType.Undergraduate || type === CourseType.Mixed
+					? 'Course ID: 321-xxxx or 321-xxxxx'
+					: type === CourseType.Master
+					? 'Course ID: 1000..up to 9999'
+					: 'Select the course type first'}
 			</Tooltip>
 		);
 	});
@@ -87,7 +94,6 @@ export default function CourseForm({
 		);
 	}, [course]);
 
-	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
 	return (
@@ -153,31 +159,6 @@ export default function CourseForm({
 					<Form>
 						<Row>
 							<Col md="4">
-								<FormGroup
-									id="courseIdTooltip"
-									className="form-floating mb-3"
-									floating
-								>
-									<Field type="text" className="form-control" name="courseId" />
-									<Label for="courseId" className="text-gray-600">
-										Course ID
-									</Label>
-									<ErrorMessage name="courseId" component={FormErrorMessage} />
-								</FormGroup>
-								<TooltipComponent />
-							</Col>
-							<Col md="8">
-								<FormGroup className="form-floating mb-3" floating>
-									<Field type="text" className="form-control" name="title" />
-									<Label for="title" className="text-gray-600">
-										Course Title
-									</Label>
-									<ErrorMessage name="title" component={FormErrorMessage} />
-								</FormGroup>
-							</Col>
-						</Row>
-						<Row>
-							<Col md="4">
 								<FormGroup className="form-floating mb-3" floating>
 									<Field
 										as="select"
@@ -204,6 +185,36 @@ export default function CourseForm({
 									</Label>
 									<ErrorMessage name="type" component={FormErrorMessage} />
 								</FormGroup>
+							</Col>
+							<Col md="8">
+								<FormGroup className="form-floating mb-3" floating>
+									<Field type="text" className="form-control" name="title" />
+									<Label for="title" className="text-gray-600">
+										Course Title
+									</Label>
+									<ErrorMessage name="title" component={FormErrorMessage} />
+								</FormGroup>
+							</Col>
+						</Row>
+						<Row>
+							<Col md="4">
+								<FormGroup
+									id="courseIdTooltip"
+									className="form-floating mb-3"
+									floating
+								>
+									<Field
+										type="text"
+										className="form-control"
+										name="courseId"
+										disabled={!values.type}
+									/>
+									<Label for="courseId" className="text-gray-600">
+										Course ID
+									</Label>
+									<ErrorMessage name="courseId" component={FormErrorMessage} />
+								</FormGroup>
+								<TooltipComponent type={values.type} />
 							</Col>
 							<Col md="3">
 								<FormGroup className="mx-1 mb-3 mt-3" check>
@@ -261,11 +272,13 @@ export default function CourseForm({
 								<FormGroup className="form-floating mb-3" floating>
 									<Field as="select" className="form-control" name="semester">
 										<option default>Select course semester</option>
-										{semesters.map((semester) => (
-											<option key={semester._id} value={semester._id}>
-												{semester.type}
-											</option>
-										))}
+										<option value={SemesterType.Winter}>
+											{SemesterType.Winter}
+										</option>
+										<option value={SemesterType.Spring}>
+											{SemesterType.Spring}
+										</option>
+										<option value={SemesterType.Any}>{SemesterType.Any}</option>
 									</Field>
 									<Label for="semester" className="text-gray-600">
 										Course Semester
@@ -290,11 +303,7 @@ export default function CourseForm({
 						</Row>
 						<Row>
 							<Col md="6">
-								<FormGroup
-									id="courseYearTooltip"
-									className="form-floating mb-3"
-									floating
-								>
+								<FormGroup className="form-floating mb-3" floating>
 									<Field
 										as="select"
 										className="form-control"

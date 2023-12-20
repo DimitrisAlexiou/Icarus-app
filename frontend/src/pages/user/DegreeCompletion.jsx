@@ -13,34 +13,34 @@ export default function DegreeCompletion() {
 
 			<Row className="mb-4 animated--grow-in justify-content-center">
 				<Col
-					xl="3"
-					className="nav nav-pills p-2 bg-white mb-3 rounded-pill align-items-center"
+					xl="4"
+					lg="6"
+					md="10"
+					className="nav p-1 bg-white rounded-pill align-items-center text-center"
 				>
-					<Row className="d-flex justify-content-center">
-						{degreeCompletionCategories.map((degreeCompletionCategory) => {
-							const { id, text, icon } = degreeCompletionCategory;
-							return (
-								<Col key={id} className="text-center" xs="auto">
-									<NavItem className="nav-item mx-1">
-										<NavLink
-											style={{ fontSize: '0.9rem' }}
-											className={`nav-link ${
-												selectedCategory === text
-													? 'font-weight-bold text-gray-600 clickable'
-													: 'text-gray-500 clickable'
-											}`}
-											onClick={() => {
-												setSelectedCategory(text);
-											}}
-										>
-											<Col>{icon}</Col>
-											<span>{text}</span>
-										</NavLink>
-									</NavItem>
-								</Col>
-							);
-						})}
-					</Row>
+					{degreeCompletionCategories.map((degreeCompletionCategory) => {
+						const { id, text, icon } = degreeCompletionCategory;
+						return (
+							<Col xl="6" lg="6" md="6" key={id}>
+								<NavItem>
+									<NavLink
+										style={{ fontSize: '0.9rem' }}
+										className={`nav-link ${
+											selectedCategory === text
+												? 'font-weight-bold text-gray-600 clickable'
+												: 'text-gray-500 clickable'
+										}`}
+										onClick={() => {
+											setSelectedCategory(text);
+										}}
+									>
+										<Col>{icon}</Col>
+										<Col>{text}</Col>
+									</NavLink>
+								</NavItem>
+							</Col>
+						);
+					})}
 				</Col>
 			</Row>
 			<Row className="animated--grow-in">

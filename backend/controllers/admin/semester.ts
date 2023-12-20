@@ -49,14 +49,18 @@ export const defineSemester = tryCatch(
 			const [, endYear] = academicYear.split('-');
 			startDate = new Date(`${endYear}-02-01`);
 			endDate = new Date(`${endYear}-05-31`);
+		} else if (type === SemesterType.Any) {
+			const [startYear, endYear] = academicYear.split('-');
+			startDate = new Date(`${startYear}-10-01`);
+			endDate = new Date(`${endYear}-05-31`);
 		}
 
 		const semester = await createSemester({
 			type,
 			academicYear,
 			grading: type === SemesterType.Any ? null : grading,
-			startDate: type === SemesterType.Any ? null : startDate,
-			endDate: type === SemesterType.Any ? null : endDate,
+			startDate: startDate,
+			endDate: endDate,
 			status: 'new',
 		});
 
@@ -136,12 +140,10 @@ export const deleteSemester = tryCatch(
 				404
 			);
 
-		return res
-			.status(200)
-			.json({
-				message: 'Defined semester deleted.',
-				semester: semesterToDelete._id,
-			});
+		return res.status(200).json({
+			message: 'Defined semester deleted.',
+			semester: semesterToDelete._id,
+		});
 	}
 );
 
@@ -151,3 +153,16 @@ export const deleteSystemSemesters = tryCatch(
 		return res.status(200).json({ message: 'Defined semesters deleted.' });
 	}
 );
+
+export const getCurrentAcademicYear = (currentDate: Date): string => {
+	const currentMonth = currentDate.getMonth() + 1;
+	const currentYear = currentDate.getFullYear();
+
+	let academicYear: string;
+
+	if (currentMonth >= 10 || currentMonth <= 1)
+		academicYear = `${currentYear}-${currentYear + 1}`;
+	else academicYear = `${currentYear - 1}-${currentYear}`;
+
+	return academicYear;
+};

@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getCourses } from '../../features/courses/courseSlice';
 import { CourseType } from '../../constants/enums';
 
-const useCourses = () => {
+const useCourses = (courseType = CourseType.Undergraduate) => {
 	const dispatch = useDispatch();
 
 	const {
@@ -38,18 +38,17 @@ const useCourses = () => {
 	// 	};
 	// }, [dispatch, hasMore, isFetching]);
 
-	const filteredMscCourses = courses.filter(
-		(course) =>
-			course.type === CourseType.Master && course.isObligatory === Obligatory
-	);
-
 	useEffect(() => {
 		dispatch(getCourses());
 	}, [dispatch]);
 
 	useEffect(() => {
-		setFilteredCourses(filteredMscCourses);
-	}, [courses, Obligatory, filteredMscCourses]);
+		const filtered = courses.filter(
+			(course) =>
+				course.type === courseType && course.isObligatory === Obligatory
+		);
+		setFilteredCourses(filtered);
+	}, [courses, Obligatory, courseType]);
 
 	const handleNavigationClick = (isObligatory) => {
 		setObligatory(isObligatory);

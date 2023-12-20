@@ -30,7 +30,7 @@ const useRegister = () => {
 		dispatch(reset());
 	}, [dispatch, navigate, isError, isSuccess, user, message]);
 
-	return { isLoading };
+	return { isLoading, dispatch };
 };
 
 export default useRegister;

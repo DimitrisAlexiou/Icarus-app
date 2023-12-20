@@ -43,7 +43,7 @@ const useLogin = () => {
 		dispatch(resetLoginStatus());
 	};
 
-	return { isLoading, isAccountLocked, handleResetLoginStatus };
+	return { isLoading, isAccountLocked, handleResetLoginStatus, dispatch };
 };
 
 export default useLogin;

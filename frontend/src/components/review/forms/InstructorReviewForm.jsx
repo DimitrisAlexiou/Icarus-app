@@ -1,4 +1,3 @@
-import { useDispatch } from 'react-redux';
 import { FormGroup, Label, Row, Col, Button, Spinner } from 'reactstrap';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { InstructorReviewSchema } from '../../../schemas/review/InstructorReview';
@@ -18,9 +17,8 @@ export default function InstructorReviewForm({
 	editInstructorReviewId,
 	setFormIsVisible,
 	setFormIsOpen,
+	dispatch,
 }) {
-	const dispatch = useDispatch();
-
 	return (
 		<>
 			<Formik

@@ -1,7 +1,9 @@
+import { ADMIN, INSTRUCTOR, STUDENT } from './strings';
+
 export const UserType = {
-	student: 'Student',
-	instructor: 'Instructor',
-	admin: 'Admin',
+	student: STUDENT,
+	instructor: INSTRUCTOR,
+	admin: ADMIN,
 };
 
 export const FacultyType = {
@@ -44,4 +46,14 @@ export const ExaminationType = {
 	Final: 'Final',
 	Exercise: 'Exercise',
 	Project: 'Project',
+};
+
+export const AssessmentStatus = {
+	Finalized: 'Finalized',
+	Pending: 'Pending',
+};
+
+export const AssessmentType = {
+	Assessment: 'Assessment',
+	Vaccine: 'Vaccine',
 };

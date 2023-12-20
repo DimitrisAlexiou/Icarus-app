@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import {
 	Card,
@@ -13,7 +12,6 @@ import {
 import { faBook } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { FaStudiovinari } from 'react-icons/fa';
-import { CourseType } from '../../constants/enums';
 import useCourses from '../../hooks/course/useCourses';
 import Skeleton from '../../components/boilerplate/Skeleton';
 import Spinner from '../../components/boilerplate/spinners/Spinner';
@@ -23,36 +21,15 @@ import Notification from '../../components/boilerplate/Notification';
 import PageButton from '../../components/buttons/PageButton';
 import BackButton from '../../components/buttons/BackButton';
 import CarouselComponent from '../../components/Carousel';
-import Search from '../../components/form/Search';
 
 export default function Undergraduate({ user }) {
 	const {
-		courses,
-		page,
 		numOfPages,
-		search,
-		searchSemester,
-		searchCycle,
-		searchHasLab,
-		sort,
 		isLoading,
+		filteredCourses,
+		Obligatory,
+		handleNavigationClick,
 	} = useCourses();
-
-	const [Obligatory, setObligatory] = useState(true);
-	const [filteredCourses, setFilteredCourses] = useState([]);
-
-	useEffect(() => {
-		const filtered = courses.filter(
-			(course) =>
-				course.type === CourseType.Undergraduate &&
-				course.isObligatory === Obligatory
-		);
-		setFilteredCourses(filtered);
-	}, [courses, Obligatory]);
-
-	const handleNavigationClick = (isObligatory) => {
-		setObligatory(isObligatory);
-	};
 
 	return (
 		<>
@@ -80,7 +57,7 @@ export default function Undergraduate({ user }) {
 
 					<Row className="mb-3 animated--grow-in">
 						<Col xs="12" sm="12" md="9" className="text-sm-left text-center">
-							<h3 className="mt-sm-0 mt-3 text-gray-800 font-weight-bold animated--grow-in">
+							<h3 className="mt-sm-0 mt-3 text-gray-800 font-weight-bold">
 								Undergraduate
 							</h3>
 						</Col>

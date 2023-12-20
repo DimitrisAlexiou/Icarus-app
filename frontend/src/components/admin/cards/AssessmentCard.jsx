@@ -1,4 +1,3 @@
-import { useDispatch } from 'react-redux';
 import { Row, Col, Badge, Button } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -18,9 +17,8 @@ const AssessementCard = ({
 	isAssessmentLoading,
 	isEditingAssessment,
 	editAssessmentId,
+	dispatch,
 }) => {
-	const dispatch = useDispatch();
-
 	return (
 		<>
 			<Col xl="6" lg="12" md="12" sm="12">
@@ -51,6 +49,7 @@ const AssessementCard = ({
 												isEditingAssessment={isEditingAssessment}
 												editAssessmentId={editAssessmentId}
 												semester={semester}
+												dispatch={dispatch}
 											/>
 											<Col
 												className="text-warning mt-2"

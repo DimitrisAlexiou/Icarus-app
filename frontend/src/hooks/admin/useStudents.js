@@ -1,14 +1,12 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import { Row, Col, Button } from 'reactstrap';
 import { faInfo } from '@fortawesome/free-solid-svg-icons';
 import { getStudents, resetUsers } from '../../features/admin/userSlice';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-const useStudents = () => {
+const useStudents = ({ openModal }) => {
 	const dispatch = useDispatch();
-	const navigate = useNavigate();
 
 	const { students, isLoading } = useSelector((state) => state.users);
 
@@ -57,7 +55,7 @@ const useStudents = () => {
 						<Button
 							className="btn btn-light"
 							onClick={() => {
-								navigate(`/user/${student.user._id}`);
+								handleStudentClick(student);
 							}}
 						>
 							<FontAwesomeIcon icon={faInfo} />
@@ -67,6 +65,10 @@ const useStudents = () => {
 			),
 		},
 	];
+
+	const handleStudentClick = (student) => {
+		openModal(student);
+	};
 
 	return {
 		students,

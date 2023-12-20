@@ -13,6 +13,7 @@ export const API_URL_ADMIN_REVIEW_TEACHING = `${BASE_URL}/admin/review/teaching`
 export const API_URL_ADMIN_REVIEW_INSTRUCTOR = `${BASE_URL}/admin/review/instructor`;
 export const API_URL_ADMIN_REVIEW_GENERAL = `${BASE_URL}/admin/review/general`;
 export const API_URL_ADMIN_NOTES = `${BASE_URL}/admin/notes`;
+export const API_URL_ADMIN_EVENTS = `${BASE_URL}/admin/events`;
 export const API_URL_USERS = `${BASE_URL}/admin/users`;
 export const API_URL_COURSE = `${BASE_URL}/course`;
 export const API_URL_STATEMENT = `${BASE_URL}/statement`;

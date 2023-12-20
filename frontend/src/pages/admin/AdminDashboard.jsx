@@ -46,7 +46,12 @@ export default function AdminDashboard() {
 		teachingReviewsIsLoading,
 		instructorReviewsIsLoading,
 		generalReviewsIsLoading,
+		isEditingSemester,
+		editSemesterId,
+		isEditingCourse,
+		editCourseId,
 		deleteSystemCourses,
+		dispatch,
 	} = useAdminDashboard();
 
 	return (
@@ -385,7 +390,10 @@ export default function AdminDashboard() {
 							<CoursesDataTable
 								courses={courses}
 								cycles={cycles}
-								semesters={semesters}
+								coursesIsLoading={coursesIsLoading}
+								isEditingCourse={isEditingCourse}
+								editCourseId={editCourseId}
+								dispatch={dispatch}
 							/>
 						</Col>
 					</Row>
@@ -428,7 +436,13 @@ export default function AdminDashboard() {
 					</Row>
 					<Row className="justify-content-center animated--grow-in mb-3">
 						<Col xs="12" sm="12" md="12" lg="12" xl="12">
-							<SemestersDataTable semesters={semesters} />
+							<SemestersDataTable
+								semesters={semesters}
+								semestersIsLoading={semestersIsLoading}
+								isEditingSemester={isEditingSemester}
+								editSemesterId={editSemesterId}
+								dispatch={dispatch}
+							/>
 						</Col>
 					</Row>
 				</>
@@ -446,7 +460,9 @@ export default function AdminDashboard() {
 				</Row>
 			)}
 
-			<Calendar />
+			<Row className="mt-4">
+				<Calendar />
+			</Row>
 		</>
 	);
 }

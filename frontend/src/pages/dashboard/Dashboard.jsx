@@ -1,8 +1,8 @@
 import { Col, Row } from 'reactstrap';
 import AdminDashboard from '../admin/AdminDashboard';
-import InstructorDashboard from './InstructorDashboard';
-import StudentDashboard from './StudentDashboard';
 import CurrentSemester from '../../components/boilerplate/CurrentSemester';
+import CurrentSetatement from '../../components/boilerplate/CurrentStatement';
+import UserDashboard from './UserDashboard';
 
 export default function Dashboard({ user }) {
 	return (
@@ -13,15 +13,15 @@ export default function Dashboard({ user }) {
 						<Col>
 							<h3 className="text-gray-800 font-weight-bold">Dashboard</h3>
 						</Col>
+						{user.user.student ? <CurrentSetatement /> : null}
 						<CurrentSemester />
 					</Row>
+
 					{user.user.isAdmin ? (
 						<AdminDashboard />
-					) : user.user.student ? (
-						<StudentDashboard />
-					) : user.user.instructor ? (
-						<InstructorDashboard />
-					) : null}
+					) : (
+						<UserDashboard user={user} />
+					)}
 				</>
 			) : null}
 		</>

@@ -7,9 +7,14 @@ import {
 	viewStudentStatements,
 	deleteSystemStatements,
 	viewStatements,
+	finalizeStatement,
 } from '../../controllers/course/statement';
 import { validateStatement } from '../../middleware/validations';
-import { authorize, checkUserRole, isOwner } from '../../middleware/authMiddleware';
+import {
+	authorize,
+	checkUserRole,
+	isOwner,
+} from '../../middleware/authMiddleware';
 import { UserType } from '../../models/users/user';
 
 export default (router: express.Router) => {
@@ -22,7 +27,7 @@ export default (router: express.Router) => {
 		.delete(authorize, checkUserRole([UserType.admin]), deleteSystemStatements);
 
 	// @desc    Get / Create Statements
-	// @route   GET/POST/DELETE /api/statement
+	// @route   GET/POST /api/statement
 	// @access  Private
 	router
 		.route('/statement')
@@ -44,7 +49,12 @@ export default (router: express.Router) => {
 	// @access  Private
 	router
 		.route('/statement/:id')
-		.get(authorize, isOwner, checkUserRole([UserType.admin, UserType.student]), viewStatement)
+		.get(
+			authorize,
+			isOwner,
+			checkUserRole([UserType.admin, UserType.student]),
+			viewStatement
+		)
 		.delete(
 			authorize,
 			isOwner,
@@ -57,5 +67,17 @@ export default (router: express.Router) => {
 			checkUserRole([UserType.admin, UserType.student]),
 			validateStatement,
 			updateStatement
+		);
+
+	// @desc    Finalize Statement
+	// @route   PUT /api/statement/:id/finalize
+	// @access  Private
+	router
+		.route('/statement/:statementId/finalize')
+		.put(
+			authorize,
+			isOwner,
+			checkUserRole([UserType.admin, UserType.student]),
+			finalizeStatement
 		);
 };
