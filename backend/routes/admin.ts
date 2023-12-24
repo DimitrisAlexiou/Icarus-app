@@ -50,6 +50,7 @@ import {
 	validateReview,
 	validateDegreeRules,
 	validateUser,
+	validateMasterProgram,
 } from '../middleware/validations';
 import {
 	getSystemTeachingReviews,
@@ -71,6 +72,14 @@ import {
 	deleteAllUsersEvents,
 	getAllUsersEvents,
 } from '../controllers/admin/events';
+import {
+	defineMasterProgram,
+	deleteMasterProgram,
+	deleteSystemMasterPrograms,
+	updateMasterProgram,
+	viewMasterProgram,
+	viewMasterPrograms,
+} from '../controllers/admin/master';
 import { authorize, checkUserRole } from '../middleware/authMiddleware';
 import { UserType } from '../models/users/user';
 
@@ -309,4 +318,36 @@ export default (router: express.Router) => {
 		.route('/admin/events')
 		.get(authorize, getAllUsersEvents)
 		.delete(authorize, deleteAllUsersEvents);
+
+	// @desc    Define / View / Delete Master Programs
+	// @route   POST/GET/DELETE /api/admin/configuration/master
+	// @access  Private
+	router
+		.route('/admin/configuration/master')
+		.get(viewMasterPrograms)
+		.post(
+			authorize,
+			checkUserRole([UserType.admin]),
+			validateMasterProgram,
+			defineMasterProgram
+		)
+		.delete(
+			authorize,
+			checkUserRole([UserType.admin]),
+			deleteSystemMasterPrograms
+		);
+
+	// @desc    View / Update / Delete
+	// @route   GET/PUT/DELETE /api/admin/configuration/master/:id
+	// @access  Private
+	router
+		.route('/admin/configuration/master/:id')
+		.get(viewMasterProgram)
+		.put(
+			authorize,
+			checkUserRole([UserType.admin]),
+			validateMasterProgram,
+			updateMasterProgram
+		)
+		.delete(authorize, checkUserRole([UserType.admin]), deleteMasterProgram);
 };

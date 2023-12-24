@@ -65,7 +65,7 @@ export default function DegreeRulesForm({
 										name="courses"
 									/>
 									<Label for="courses" className="text-gray-600">
-										Obligatory passed Courses
+										Obligatory Courses
 									</Label>
 									<ErrorMessage name="courses" component={FormErrorMessage} />
 								</FormGroup>
@@ -79,7 +79,7 @@ export default function DegreeRulesForm({
 										name="cycles"
 									/>
 									<Label for="cycles" className="text-gray-600">
-										Obligatory closed Cycles
+										Obligatory Cycles
 									</Label>
 									<ErrorMessage name="cycles" component={FormErrorMessage} />
 								</FormGroup>
@@ -95,7 +95,7 @@ export default function DegreeRulesForm({
 										name="cycleCourses"
 									/>
 									<Label for="cycleCourses" className="text-gray-600">
-										Passed courses for Cycle completion
+										Cycle completion
 									</Label>
 									<ErrorMessage
 										name="cycleCourses"
@@ -107,7 +107,7 @@ export default function DegreeRulesForm({
 								<FormGroup className="mx-1 mb-3" check>
 									<Field name="practice" component={FormCheckbox} />
 									<Label for="practice" className="text-gray-500">
-										Obligatory Practice
+										Practice
 									</Label>
 								</FormGroup>
 							</Col>

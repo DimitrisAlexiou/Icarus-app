@@ -1,4 +1,4 @@
-import { NavLink } from 'react-router-dom';
+import { NavLink, useParams } from 'react-router-dom';
 import {
 	Card,
 	CardText,
@@ -12,37 +12,37 @@ import {
 import { faBook } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { FaStudiovinari } from 'react-icons/fa';
-import { CourseType } from '../../../constants/enums';
-import useCourses from '../../../hooks/course/useCourses';
-import Skeleton from '../../../components/boilerplate/Skeleton';
-import Spinner from '../../../components/boilerplate/spinners/Spinner';
-import CourseItem from '../../../components/course/CourseItem';
-import BreadcrumbNav from '../../../components/boilerplate/Breadcrumb';
-import Notification from '../../../components/boilerplate/Notification';
-import PageButton from '../../../components/buttons/PageButton';
-import BackButton from '../../../components/buttons/BackButton';
-import CarouselComponent from '../../../components/Carousel';
-import Search from '../../../components/form/Search';
+import { CourseType } from '../../constants/enums';
+import useCourses from '../../hooks/course/useCourses';
+import useMasters from '../../hooks/course/useMasters';
+import Skeleton from '../../components/boilerplate/Skeleton';
+import Spinner from '../../components/boilerplate/spinners/Spinner';
+import CourseItem from '../../components/course/CourseItem';
+import BreadcrumbNav from '../../components/boilerplate/Breadcrumb';
+import Notification from '../../components/boilerplate/Notification';
+import PageButton from '../../components/buttons/PageButton';
+import BackButton from '../../components/buttons/BackButton';
+import CarouselComponent from '../../components/Carousel';
+import Search from '../../components/form/Search';
 
-export default function InfoSecMsc({ user }) {
-	const {
-		numOfPages,
-		isLoading,
-		filteredCourses,
-		Obligatory,
-		handleNavigationClick,
-	} = useCourses(CourseType.Master);
+export default function Master({ user }) {
+	const { masterId } = useParams();
+	const { numOfPages, isLoading, filteredCourses } = useCourses(
+		CourseType.Master,
+		masterId
+	);
+	const { master } = useMasters(masterId);
 
 	return (
 		<>
 			{user ? (
 				<>
-					<Row className="mb-3">
+					<Row>
 						<Col sm="12" xs="12" md="12" lg="9">
 							<BreadcrumbNav
 								link={'/course/msc'}
 								header={'Master'}
-								active={'Information and Communication Systems Security'}
+								active={master.title}
 							/>
 						</Col>
 						<Col className="animated--grow-in d-flex justify-content-end">
@@ -57,46 +57,11 @@ export default function InfoSecMsc({ user }) {
 
 					{/* <Search /> */}
 
-					<Row className="mb-3 animated--grow-in">
-						<Col xs="12" sm="12" md="7" className="text-sm-left text-center">
+					<Row className="mb-4 animated--grow-in">
+						<Col className="text-sm-left text-center">
 							<h3 className="mt-sm-0 mt-3 text-gray-800 font-weight-bold animated--grow-in">
-								Information and Communication Systems Security
+								{master.title}
 							</h3>
-						</Col>
-						<Col
-							xs="12"
-							sm="12"
-							md="5"
-							className="mt-sm-0 mt-3 d-flex justify-content-end align-items-center"
-						>
-							<Nav className="justify-content-between navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow sticky-top">
-								<div className="navbar-nav">
-									<NavItem className="nav-item mx-1">
-										<NavLink
-											className={`nav-link ${
-												Obligatory === true
-													? 'font-weight-bold text-gray-500'
-													: ''
-											}`}
-											onClick={() => handleNavigationClick(true)}
-										>
-											<span className="ml-2">Obligatory</span>
-										</NavLink>
-									</NavItem>
-									<NavItem className="nav-item mx-1">
-										<NavLink
-											className={`nav-link ${
-												Obligatory === false
-													? 'font-weight-bold text-gray-500'
-													: ''
-											}`}
-											onClick={() => handleNavigationClick(false)}
-										>
-											<span className="ml-2">Optional</span>
-										</NavLink>
-									</NavItem>
-								</div>
-							</Nav>
 						</Col>
 					</Row>
 
@@ -131,11 +96,7 @@ export default function InfoSecMsc({ user }) {
 					) : (
 						<Notification
 							icon={<FontAwesomeIcon icon={faBook} />}
-							message={
-								Obligatory
-									? 'There are no obligatory courses available right now !'
-									: 'There are no optional courses available right now !'
-							}
+							message={`There are no ${master.title} courses available right now !`}
 							link={'/course/msc'}
 						/>
 					)}
@@ -168,45 +129,11 @@ export default function InfoSecMsc({ user }) {
 										<Row className="mb-4 animated--grow-in">
 											<Col>
 												<h3 className="text-gray-800 font-weight-bold">
-													Information and Communication Systems Security
+													{master.title}
 												</h3>
 											</Col>
-											<Col
-												xs="12"
-												sm="12"
-												md="5"
-												className="mt-sm-0 mt-3 d-flex justify-content-end align-items-center"
-											>
-												<Nav className="justify-content-between navbar navbar-expand navbar-light bg-white topbar static-top shadow sticky-top">
-													<div className="navbar-nav">
-														<NavItem className="nav-item mx-1">
-															<NavLink
-																className={`nav-link ${
-																	Obligatory === true
-																		? 'font-weight-bold text-gray-500'
-																		: ''
-																}`}
-																onClick={() => handleNavigationClick(true)}
-															>
-																<span className="ml-2">Obligatory</span>
-															</NavLink>
-														</NavItem>
-														<NavItem className="nav-item mx-1">
-															<NavLink
-																className={`nav-link ${
-																	Obligatory === false
-																		? 'font-weight-bold text-gray-500'
-																		: ''
-																}`}
-																onClick={() => handleNavigationClick(false)}
-															>
-																<span className="ml-2">Optional</span>
-															</NavLink>
-														</NavItem>
-													</div>
-												</Nav>
-											</Col>
 										</Row>
+
 										{isLoading ? (
 											<Spinner card />
 										) : filteredCourses.length ? (
@@ -322,11 +249,7 @@ export default function InfoSecMsc({ user }) {
 										) : (
 											<Notification
 												icon={<FontAwesomeIcon icon={faBook} />}
-												message={
-													Obligatory
-														? 'There are no obligatory courses available right now !'
-														: 'There are no optional courses available right now !'
-												}
+												message={`There are no ${master.title} courses available right now !`}
 												link={user ? '/course/msc' : '/studies'}
 											/>
 										)}

@@ -9,12 +9,9 @@ import {
 	faClockRotateLeft,
 	faChalkboard,
 	faListCheck,
+	faGraduationCap,
 } from '@fortawesome/free-solid-svg-icons';
-import {
-	faNoteSticky,
-	faComment,
-	faTrashAlt,
-} from '@fortawesome/free-regular-svg-icons';
+import { faComment, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import useAdminDashboard from '../../hooks/admin/useAdminDashboard';
 import Calendar from '../../components/calendar/Calendar';
 import CoursesDataTable from '../../components/admin/CoursesDataTable';
@@ -31,8 +28,8 @@ export default function AdminDashboard() {
 		students,
 		instructors,
 		cycles,
+		masters,
 		semesters,
-		notes,
 		teachingReviews,
 		instructorReviews,
 		generalReviews,
@@ -41,8 +38,8 @@ export default function AdminDashboard() {
 		isStatementsLoading,
 		usersIsLoading,
 		cyclesIsLoading,
+		mastersIsLoading,
 		semestersIsLoading,
-		notesIsLoading,
 		teachingReviewsIsLoading,
 		instructorReviewsIsLoading,
 		generalReviewsIsLoading,
@@ -56,154 +53,167 @@ export default function AdminDashboard() {
 
 	return (
 		<>
-			{coursesIsLoading ||
-			teachingsIsLoading ||
-			isStatementsLoading ||
-			cyclesIsLoading ||
-			semestersIsLoading ||
-			notesIsLoading ? (
+			{coursesIsLoading || teachingsIsLoading || isStatementsLoading ? (
 				<Spinner card />
 			) : (
-				<Row className="animated--grow-in">
-					<Col xl="3" md="6" className="mb-4">
-						<div className="card border-left-success shadow h-100 py-2">
-							<div className="card-body">
-								<Row className="no-gutters align-items-center">
-									<Col className="mr-2">
-										<div className="text-xs font-weight-bold text-success text-uppercase mb-1">
-											Courses
+				<>
+					<Badge color="success" className="mb-3 animated--grow-in">
+						Courses
+					</Badge>
+					<Row className="animated--grow-in">
+						<Col xl="3" md="6" className="mb-4">
+							<div className="card border-left-success shadow h-100 py-2">
+								<div className="card-body">
+									<Row className="no-gutters align-items-center">
+										<Col className="mr-2">
+											<div className="text-xs font-weight-bold text-success text-uppercase mb-1">
+												Courses
+											</div>
+											<div className="h5 mb-0 font-weight-bold text-gray-800">
+												{courses && courses.length ? courses.length : 0}
+											</div>
+										</Col>
+										<div className="col-auto">
+											<i className="fa-2x text-gray-300">
+												<FontAwesomeIcon icon={faBook} />
+											</i>
 										</div>
-										<div className="h5 mb-0 font-weight-bold text-gray-800">
-											{courses && courses.length ? courses.length : 0}
-										</div>
-									</Col>
-									<div className="col-auto">
-										<i className="fa-2x text-gray-300">
-											<FontAwesomeIcon icon={faBook} />
-										</i>
-									</div>
-								</Row>
+									</Row>
+								</div>
 							</div>
-						</div>
-					</Col>
+						</Col>
 
-					<Col xl="3" md="6" className="mb-4">
-						<div className="card border-left-success shadow h-100 py-2">
-							<div className="card-body">
-								<Row className="no-gutters align-items-center">
-									<Col className="mr-2">
-										<div className="text-xs font-weight-bold text-success text-uppercase mb-1">
-											Active Teachings
+						<Col xl="3" md="6" className="mb-4">
+							<div className="card border-left-success shadow h-100 py-2">
+								<div className="card-body">
+									<Row className="no-gutters align-items-center">
+										<Col className="mr-2">
+											<div className="text-xs font-weight-bold text-success text-uppercase mb-1">
+												Active Teachings
+											</div>
+											<div className="h5 mb-0 font-weight-bold text-gray-800">
+												{teachings && teachings.length ? teachings.length : 0}
+											</div>
+										</Col>
+										<div className="col-auto">
+											<i className="fa-2x text-gray-300">
+												<FontAwesomeIcon icon={faChalkboard} />
+											</i>
 										</div>
-										<div className="h5 mb-0 font-weight-bold text-gray-800">
-											{teachings && teachings.length ? teachings.length : 0}
-										</div>
-									</Col>
-									<div className="col-auto">
-										<i className="fa-2x text-gray-300">
-											<FontAwesomeIcon icon={faChalkboard} />
-										</i>
-									</div>
-								</Row>
+									</Row>
+								</div>
 							</div>
-						</div>
-					</Col>
+						</Col>
 
-					<Col xl="3" md="6" className="mb-4">
-						<div className="card border-left-success shadow h-100 py-2">
-							<div className="card-body">
-								<Row className="no-gutters align-items-center">
-									<Col className="mr-2">
-										<div className="text-xs font-weight-bold text-success text-uppercase mb-1">
-											Student Course Statements
+						<Col xl="3" md="6" className="mb-4">
+							<div className="card border-left-success shadow h-100 py-2">
+								<div className="card-body">
+									<Row className="no-gutters align-items-center">
+										<Col className="mr-2">
+											<div className="text-xs font-weight-bold text-success text-uppercase mb-1">
+												Student Course Statements
+											</div>
+											<div className="h5 mb-0 font-weight-bold text-gray-800">
+												{statements && statements.length
+													? statements.length
+													: 0}
+											</div>
+										</Col>
+										<div className="col-auto">
+											<i className="fa-2x text-gray-300">
+												<FontAwesomeIcon icon={faListCheck} />
+											</i>
 										</div>
-										<div className="h5 mb-0 font-weight-bold text-gray-800">
-											{statements && statements.length ? statements.length : 0}
-										</div>
-									</Col>
-									<div className="col-auto">
-										<i className="fa-2x text-gray-300">
-											<FontAwesomeIcon icon={faListCheck} />
-										</i>
-									</div>
-								</Row>
+									</Row>
+								</div>
 							</div>
-						</div>
-					</Col>
+						</Col>
+					</Row>
+				</>
+			)}
 
-					<Col xl="3" md="6" className="mb-4">
-						<div className="card border-left-warning shadow h-100 py-2">
-							<div className="card-body">
-								<Row className="no-gutters align-items-center">
-									<Col className="mr-2">
-										<div className="text-xs font-weight-bold text-warning text-uppercase mb-1">
-											Semesters
+			{cyclesIsLoading || semestersIsLoading || mastersIsLoading ? (
+				<Spinner card />
+			) : (
+				<>
+					<Badge color="warning" className="mb-3 animated--grow-in">
+						System
+					</Badge>
+					<Row className="animated--grow-in">
+						<Col xl="3" md="6" className="mb-4">
+							<div className="card border-left-warning shadow h-100 py-2">
+								<div className="card-body">
+									<Row className="no-gutters align-items-center">
+										<Col className="mr-2">
+											<div className="text-xs font-weight-bold text-warning text-uppercase mb-1">
+												Semesters
+											</div>
+											<div className="h5 mb-0 font-weight-bold text-gray-800">
+												{semesters && semesters.length ? semesters.length : 0}
+											</div>
+										</Col>
+										<div className="col-auto">
+											<i className="fa-2x text-gray-300">
+												<FontAwesomeIcon icon={faClockRotateLeft} />
+											</i>
 										</div>
-										<div className="h5 mb-0 font-weight-bold text-gray-800">
-											{semesters && semesters.length ? semesters.length : 0}
-										</div>
-									</Col>
-									<div className="col-auto">
-										<i className="fa-2x text-gray-300">
-											<FontAwesomeIcon icon={faClockRotateLeft} />
-										</i>
-									</div>
-								</Row>
+									</Row>
+								</div>
 							</div>
-						</div>
-					</Col>
+						</Col>
 
-					<Col xl="3" md="6" className="mb-4">
-						<div className="card border-left-dark shadow h-100 py-2">
-							<div className="card-body">
-								<Row className="no-gutters align-items-center">
-									<Col className="mr-2">
-										<div className="text-xs font-weight-bold text-warning text-uppercase mb-1">
-											Cycles
+						<Col xl="3" md="6" className="mb-4">
+							<div className="card border-left-warning shadow h-100 py-2">
+								<div className="card-body">
+									<Row className="no-gutters align-items-center">
+										<Col className="mr-2">
+											<div className="text-xs font-weight-bold text-warning text-uppercase mb-1">
+												Cycles
+											</div>
+											<div className="h5 mb-0 font-weight-bold text-gray-800">
+												{cycles ? cycles.length : 0}
+											</div>
+										</Col>
+										<div className="col-auto">
+											<i className="fa-2x text-gray-300">
+												<FontAwesomeIcon icon={faLayerGroup} />
+											</i>
 										</div>
-										<div className="h5 mb-0 font-weight-bold text-gray-800">
-											{cycles ? cycles.length : 0}
-										</div>
-									</Col>
-									<div className="col-auto">
-										<i className="fa-2x text-gray-300">
-											<FontAwesomeIcon icon={faLayerGroup} />
-										</i>
-									</div>
-								</Row>
+									</Row>
+								</div>
 							</div>
-						</div>
-					</Col>
+						</Col>
 
-					<Col xl="3" md="6" className="mb-4">
-						<div className="card border-left-primary shadow h-100 py-2">
-							<div className="card-body">
-								<Row className="no-gutters align-items-center">
-									<Col className="mr-2">
-										<div className="text-xs font-weight-bold text-primary text-uppercase mb-1">
-											Notes
+						<Col xl="3" md="6" className="mb-4">
+							<div className="card border-left-warning shadow h-100 py-2">
+								<div className="card-body">
+									<Row className="no-gutters align-items-center">
+										<Col className="mr-2">
+											<div className="text-xs font-weight-bold text-warning text-uppercase mb-1">
+												Master Programs
+											</div>
+											<div className="h5 mb-0 font-weight-bold text-gray-800">
+												{masters ? masters.length : 0}
+											</div>
+										</Col>
+										<div className="col-auto">
+											<i className="fa-2x text-gray-300">
+												<FontAwesomeIcon icon={faGraduationCap} />
+											</i>
 										</div>
-										<div className="h5 mb-0 font-weight-bold text-gray-800">
-											{notes && notes.length ? notes.length : 0}
-										</div>
-									</Col>
-									<div className="col-auto">
-										<i className="fa-2x text-gray-300">
-											<FontAwesomeIcon icon={faNoteSticky} />
-										</i>
-									</div>
-								</Row>
+									</Row>
+								</div>
 							</div>
-						</div>
-					</Col>
-				</Row>
+						</Col>
+					</Row>
+				</>
 			)}
 
 			{usersIsLoading ? (
 				<Spinner card />
 			) : (
 				<>
-					<Badge color="info" className="mb-3 animated--grow-in">
+					<Badge color="dark" className="mb-3 animated--grow-in">
 						Users
 					</Badge>
 					<Row className="animated--grow-in">
@@ -212,7 +222,7 @@ export default function AdminDashboard() {
 								<div className="card-body">
 									<Row className="no-gutters align-items-center">
 										<Col className="mr-2">
-											<div className="text-xs font-weight-bold text-warning text-uppercase mb-1">
+											<div className="text-xs font-weight-bold text-dark text-uppercase mb-1">
 												Users
 											</div>
 											<div className="h5 mb-0 font-weight-bold text-gray-800">
@@ -230,11 +240,11 @@ export default function AdminDashboard() {
 						</Col>
 
 						<Col xl="3" md="6" className="mb-4">
-							<div className="card border-left-info shadow h-100 py-2">
+							<div className="card border-left-dark shadow h-100 py-2">
 								<div className="card-body">
 									<Row className="no-gutters align-items-center">
 										<Col className="mr-2">
-											<div className="text-xs font-weight-bold text-info text-uppercase mb-1">
+											<div className="text-xs font-weight-bold text-dark text-uppercase mb-1">
 												Students
 											</div>
 											<div className="h5 mb-0 font-weight-bold text-gray-800">
@@ -252,11 +262,11 @@ export default function AdminDashboard() {
 						</Col>
 
 						<Col xl="3" md="6" className="mb-4">
-							<div className="card border-left-primary shadow h-100 py-2">
+							<div className="card border-left-dark shadow h-100 py-2">
 								<div className="card-body">
 									<Row className="no-gutters align-items-center">
 										<Col className="mr-2">
-											<div className="text-xs font-weight-bold text-primary text-uppercase mb-1">
+											<div className="text-xs font-weight-bold text-dark text-uppercase mb-1">
 												Instructors
 											</div>
 											<div className="h5 mb-0 font-weight-bold text-gray-800">
@@ -284,7 +294,7 @@ export default function AdminDashboard() {
 				<Spinner card />
 			) : (
 				<>
-					<Badge color="info" className="mb-3 animated--grow-in">
+					<Badge color="primary" className="mb-3 animated--grow-in">
 						Reviews
 					</Badge>
 					<Row className="animated--grow-in">
@@ -369,7 +379,7 @@ export default function AdminDashboard() {
 				<>
 					<Row className="animated--grow-in mb-3">
 						<Col>
-							<Badge color="info">Courses</Badge>
+							<Badge color="success">Courses</Badge>
 						</Col>
 						<Col>
 							{courses ? (
@@ -390,6 +400,7 @@ export default function AdminDashboard() {
 							<CoursesDataTable
 								courses={courses}
 								cycles={cycles}
+								masters={masters}
 								coursesIsLoading={coursesIsLoading}
 								isEditingCourse={isEditingCourse}
 								editCourseId={editCourseId}
@@ -418,7 +429,7 @@ export default function AdminDashboard() {
 				<>
 					<Row className="animated--grow-in mb-3">
 						<Col>
-							<Badge color="info">Semesters</Badge>
+							<Badge color="warning">Semesters</Badge>
 						</Col>
 						<Col>
 							{semesters ? (

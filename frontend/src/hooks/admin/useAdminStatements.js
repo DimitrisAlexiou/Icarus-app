@@ -3,19 +3,18 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getSemester } from '../../features/admin/semesterSlice';
 import { getAssessment } from '../../features/admin/assessmentSlice';
 import { getTeachings } from '../../features/courses/teachingSlice';
+import { getStudents } from '../../features/admin/userSlice';
 import {
 	deleteStatement,
 	finalizeStatement,
-	getStudentStatements,
+	getStatements,
 	setEditStatement,
 	setEditVaccine,
-	setStatement,
-	setVaccine,
 } from '../../features/courses/statementSlice';
 import { finalizeAlert } from '../../constants/sweetAlertNotification';
 import { PrerequisiteType, AssessmentType } from '../../constants/enums';
 
-const useStatements = () => {
+const useAdminStatements = () => {
 	const dispatch = useDispatch();
 
 	const { semester, isLoading: isSemesterLoading } = useSelector(
@@ -35,6 +34,7 @@ const useStatements = () => {
 		(state) => state.teachings
 	);
 	const { user } = useSelector((state) => state.auth);
+	const { students } = useSelector((state) => state.users);
 	const student = user.user.student;
 
 	const currentDate = new Date();
@@ -136,19 +136,9 @@ const useStatements = () => {
 		dispatch(getSemester());
 		dispatch(getAssessment());
 		dispatch(getTeachings());
-		dispatch(getStudentStatements());
+		dispatch(getStudents());
+		dispatch(getStatements());
 	}, [dispatch]);
-
-	useEffect(() => {
-		if (isStatementSubmitted) dispatch(setStatement(currentStatement));
-		if (isVaccineSubmitted) dispatch(setVaccine(currentVaccine));
-	}, [
-		currentStatement,
-		currentVaccine,
-		isStatementSubmitted,
-		isVaccineSubmitted,
-		dispatch,
-	]);
 
 	const handleFinalizeStatement = (statement) => {
 		finalizeAlert(() => dispatch(finalizeStatement(statement._id)));
@@ -156,14 +146,12 @@ const useStatements = () => {
 
 	return {
 		user,
+		students,
 		semester,
-		assessment,
 		statements,
-		teachings,
 		isSemesterLoading,
 		isAssessmentLoading,
 		isStatementsLoading,
-		isTeachingsLoading,
 		isEditingStatement,
 		isEditingVaccine,
 		editStatementId,
@@ -186,4 +174,4 @@ const useStatements = () => {
 	};
 };
 
-export default useStatements;
+export default useAdminStatements;

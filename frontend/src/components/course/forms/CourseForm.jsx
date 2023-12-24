@@ -28,6 +28,7 @@ export default function CourseForm({
 	course,
 	courses,
 	cycles,
+	masters,
 	isEditingCourse,
 	editCourseId,
 	dispatch,
@@ -111,6 +112,7 @@ export default function CourseForm({
 					ects: course ? course.ects : 0,
 					year: course ? course.year : '',
 					cycle: course ? course.cycle : '',
+					master: course ? course.master : '',
 					prerequisites: course ? course.prerequisites : [],
 				}}
 				enableReinitialize={true}
@@ -131,6 +133,7 @@ export default function CourseForm({
 						ects: values.ects,
 						year: values.year,
 						cycle: values.cycle ? values.cycle : null,
+						master: values.master ? values.master : null,
 						prerequisites: values.prerequisites.some(Boolean)
 							? values.prerequisites
 							: [],
@@ -223,6 +226,7 @@ export default function CourseForm({
 										name="isObligatory"
 										component={FormCheckbox}
 										onClick={handleIsObligatory}
+										disabled={!values.type || values.type === CourseType.Master}
 									/>
 									<Label for="isObligatory" className="text-gray-500">
 										Obligatory
@@ -286,11 +290,12 @@ export default function CourseForm({
 									<ErrorMessage name="semester" component={FormErrorMessage} />
 								</FormGroup>
 							</Col>
-							<Col md="6">
+							<Col md="3">
 								<FormGroup className="form-floating mb-3" floating>
 									<Field
 										type="number"
 										min="0"
+										step="0.5"
 										className="form-control"
 										name="ects"
 									/>
@@ -300,9 +305,7 @@ export default function CourseForm({
 									<ErrorMessage name="ects" component={FormErrorMessage} />
 								</FormGroup>
 							</Col>
-						</Row>
-						<Row>
-							<Col md="6">
+							<Col md="3">
 								<FormGroup className="form-floating mb-3" floating>
 									<Field
 										as="select"
@@ -329,6 +332,26 @@ export default function CourseForm({
 									<ErrorMessage name="year" component={FormErrorMessage} />
 								</FormGroup>
 							</Col>
+						</Row>
+						<Row>
+							{values.type === CourseType.Master ? (
+								<Col md="6">
+									<FormGroup className="form-floating mb-3" floating>
+										<Field as="select" className="form-control" name="master">
+											<option default>Select master program</option>
+											{masters.map((master) => (
+												<option key={master._id} value={master._id}>
+													{master.title}
+												</option>
+											))}
+										</Field>
+										<Label for="master" className="text-gray-600">
+											Master Program
+										</Label>
+										<ErrorMessage name="master" component={FormErrorMessage} />
+									</FormGroup>
+								</Col>
+							) : null}
 							<Col md="6">
 								{isEditingCourse &&
 								course.cycle &&

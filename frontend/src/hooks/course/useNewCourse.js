@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getCourses } from '../../features/courses/courseSlice';
 import { getCycles } from '../../features/admin/cyclesSlice';
 import { getSemesters } from '../../features/admin/semesterSlice';
+import { getMasters } from '../../features/admin/masterProgramSlice';
 
 const useNewCourse = () => {
 	const dispatch = useDispatch();
@@ -16,20 +17,26 @@ const useNewCourse = () => {
 	const { semesters, isLoading: semestersIsLoading } = useSelector(
 		(state) => state.semesters
 	);
+	const { masters, isLoading: mastersIsLoading } = useSelector(
+		(state) => state.masters
+	);
 
 	useEffect(() => {
 		dispatch(getCourses());
 		dispatch(getCycles());
 		dispatch(getSemesters());
+		dispatch(getMasters());
 	}, [dispatch]);
 
 	return {
 		courses,
 		cycles,
 		semesters,
+		masters,
 		coursesIsLoading,
 		cyclesIsLoading,
 		semestersIsLoading,
+		mastersIsLoading,
 		dispatch,
 	};
 };

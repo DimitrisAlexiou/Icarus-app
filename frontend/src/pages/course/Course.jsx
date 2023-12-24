@@ -1,6 +1,7 @@
 import { Row, Col } from 'reactstrap';
 import { faChalkboard } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { CourseType } from '../../constants/enums';
 import useCourse from '../../hooks/course/useCourse';
 import CourseCard from '../../components/course/cards/CourseCard';
 import BackButton from '../../components/buttons/BackButton';
@@ -63,7 +64,11 @@ export default function Course() {
 									</Col>
 								) : null}
 								<Col md="1" sm="1">
-									<BackButton url={'/course/undergraduate'} />
+									{course.type !== CourseType.Master ? (
+										<BackButton url={'/course/undergraduate'} />
+									) : (
+										<BackButton url={`/course/msc/${course.master?._id}`} />
+									)}
 								</Col>
 							</Row>
 						</div>

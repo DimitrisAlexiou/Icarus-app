@@ -25,6 +25,7 @@ export interface CourseProps {
 	];
 	semester: SemesterType;
 	cycle: mongoose.Types.ObjectId;
+	master: mongoose.Types.ObjectId;
 	year: number;
 	ects: number;
 	hasLab: boolean;
@@ -86,6 +87,11 @@ const courseSchema = new Schema<CourseProps>(
 			ref: 'Cycle',
 			default: null,
 		},
+		master: {
+			type: Schema.Types.ObjectId,
+			ref: 'MasterProgram',
+			default: null,
+		},
 		ects: {
 			type: Number,
 			required: true,
@@ -119,14 +125,16 @@ export const getCourses = () =>
 			path: 'prerequisites.prerequisite',
 			select: 'title',
 		})
-		.populate('cycle');
+		.populate('cycle')
+		.populate('master');
 export const getCourseById = (id: string) =>
 	Course.findById(id)
 		.populate({
 			path: 'prerequisites.prerequisite',
 			select: 'title',
 		})
-		.populate('cycle');
+		.populate('cycle')
+		.populate('master');
 export const getCourseByCourseId = (courseId: string) =>
 	Course.findOne({ courseId });
 export const createCourse = (values: Record<string, any>) =>

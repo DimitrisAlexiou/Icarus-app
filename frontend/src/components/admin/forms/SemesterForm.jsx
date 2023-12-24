@@ -1,9 +1,6 @@
 import { FormGroup, Label, Row, Col, Button, Spinner, Input } from 'reactstrap';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import {
-	SemesterSchema,
-	SemesterUpdateSchema,
-} from '../../../schemas/admin/Semester';
+import { SemesterSchema } from '../../../schemas/admin/Semester';
 import {
 	defineSemester,
 	setEditSemester,
@@ -12,7 +9,6 @@ import {
 import { SemesterType } from '../../../constants/enums';
 import { academicYears } from '../../../utils/academicYears';
 import FormErrorMessage from '../../form/FormErrorMessage';
-// import DatePickerField from '../../form/DatePickerField';
 
 export default function SemesterForm({
 	semester,
@@ -21,10 +17,6 @@ export default function SemesterForm({
 	setAddingSemester,
 	dispatch,
 }) {
-	// const renderDatePickerFields = (type) => {
-	// 	if (type !== SemesterType.Any) return <DatePickerField />;
-	// };
-
 	const renderGradingField = (type) => {
 		if (type !== SemesterType.Any)
 			return (
@@ -50,22 +42,16 @@ export default function SemesterForm({
 					type: semester ? semester.type : '',
 					grading: semester ? semester.grading : 0,
 					academicYear: semester ? semester.academicYear : '',
-					// startDate: semester ? new Date(semester.startDate) : new Date(),
-					// endDate: semester ? new Date(semester.endDate) : new Date(),
 				}}
-				validationSchema={
-					isEditingSemester ? SemesterUpdateSchema : SemesterSchema
-				}
+				validationSchema={SemesterSchema}
 				onSubmit={(values, { setSubmitting }) => {
 					const semester = {
 						type: values.type,
 						academicYear: values.academicYear,
 					};
-					if (values.type !== SemesterType.Any) {
-						// semester.startDate = values.startDate;
-						// semester.endDate = values.endDate;
+					if (values.type !== SemesterType.Any)
 						semester.grading = values.grading;
-					}
+
 					if (isEditingSemester) {
 						dispatch(
 							updateSemester({
@@ -120,34 +106,40 @@ export default function SemesterForm({
 									<ErrorMessage name="type" component={FormErrorMessage} />
 								</FormGroup>
 							</Col>
-							<Col>
+							<Col>{renderGradingField(values.type)}</Col>
+						</Row>
+						<Row>
+							<Col md="7">
 								<FormGroup className="form-floating mb-3" floating>
-									<Field
-										as="select"
-										className="form-control"
-										name="academicYear"
-									>
-										<option default> Select academic year </option>
-										{academicYears.map((year) => (
-											<option
-												key={year.value}
-												value={year.value}
-												label={year.label}
-											/>
-										))}
-									</Field>
-
+									{isEditingSemester ? (
+										<Input
+											type="text"
+											className="form-control"
+											value={values.academicYear}
+											disabled
+										/>
+									) : (
+										<Field
+											as="select"
+											className="form-control"
+											name="academicYear"
+										>
+											<option default> Select academic year </option>
+											{academicYears.map((year) => (
+												<option
+													key={year.value}
+													value={year.value}
+													label={year.label}
+												/>
+											))}
+										</Field>
+									)}
 									<Label for="academicYear" className="text-gray-600">
 										Academic year
 									</Label>
 								</FormGroup>
 							</Col>
 						</Row>
-						<Row>
-							<Col></Col>
-							<Col md="5">{renderGradingField(values.type)}</Col>
-						</Row>
-						{/* <Row>{renderDatePickerFields(values.type)}</Row> */}
 						<Row className="mb-3">
 							<Col sm="6" md="6" xs="12" className="text-sm-left text-center">
 								<Button onClick={handleReset} disabled={!dirty || isSubmitting}>

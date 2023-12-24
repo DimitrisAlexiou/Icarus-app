@@ -2,12 +2,12 @@ import { useRef, useState, forwardRef } from 'react';
 import { Row, Col, Button, Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { faChalkboardTeacher } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import useInstructors from '../../hooks/admin/useInstructors';
-import AssignInstructorFormDataTable from '../../components/course/forms/AssignInstructorFormDataTable';
-import DataTable from '../../components/DataTable';
-import Spinner from '../../components/boilerplate/spinners/Spinner';
-import SpinnerComponent from '../../components/boilerplate/spinners/SpinnerMessage';
-import Header from '../../components/boilerplate/Header';
+import useInstructors from '../../../hooks/admin/useInstructors';
+import AssignInstructorFormDataTable from '../../../components/course/forms/AssignInstructorFormDataTable';
+import DataTable from '../../../components/DataTable';
+import Spinner from '../../../components/boilerplate/spinners/Spinner';
+import SpinnerComponent from '../../../components/boilerplate/spinners/SpinnerMessage';
+import Header from '../../../components/boilerplate/Header';
 
 export default function Instructors() {
 	const { instructors, isLoading } = useInstructors();

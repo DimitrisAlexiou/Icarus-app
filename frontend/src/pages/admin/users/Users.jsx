@@ -2,13 +2,13 @@ import { useState, forwardRef, useRef } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, Row, Col } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
-import useUsers from '../../hooks/admin/useUsers';
-import DataTable from '../../components/DataTable';
+import useUsers from '../../../hooks/admin/useUsers';
+import DataTable from '../../../components/DataTable';
 import Switch from 'react-switch';
-import UserForm from '../../components/admin/forms/UserForm';
-import RegisterForm from '../../components/auth/RegisterForm';
-import CustomSpinner from '../../components/boilerplate/spinners/Spinner';
-import SpinnerComponent from '../../components/boilerplate/spinners/SpinnerMessage';
+import UserForm from '../../../components/admin/forms/UserForm';
+import RegisterForm from '../../../components/auth/RegisterForm';
+import CustomSpinner from '../../../components/boilerplate/spinners/Spinner';
+import SpinnerComponent from '../../../components/boilerplate/spinners/SpinnerMessage';
 
 export default function Users() {
 	const {

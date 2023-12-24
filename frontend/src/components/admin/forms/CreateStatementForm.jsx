@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Row, Col, Button, Label, FormGroup, Form, Input } from 'reactstrap';
+import { Row, Col, Button, Label, FormGroup, Form } from 'reactstrap';
 import { ErrorMessage, Field, FieldArray, Formik } from 'formik';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleXmark } from '@fortawesome/free-regular-svg-icons';
 import { StatementSchema } from '../../../schemas/user/Statement';
-import { AssessmentType } from '../../../constants/enums';
 import { createStatement } from '../../../features/courses/statementSlice';
 import Spinner from '../../../components/boilerplate/spinners/Spinner';
 import FormErrorMessage from '../../../components/form/FormErrorMessage';
@@ -13,6 +12,7 @@ import Header from '../../boilerplate/Header';
 export default function CreateStatementForm({
 	students,
 	semester,
+	type,
 	canSubmitAvailableTeachings,
 	dispatch,
 }) {
@@ -43,17 +43,17 @@ export default function CreateStatementForm({
 		<>
 			<Formik
 				initialValues={{
+					student: '',
 					teaching: [],
-					type: AssessmentType.Assessment,
 				}}
 				enableReinitialize={true}
 				validationSchema={StatementSchema}
 				onSubmit={(values, { setSubmitting }) => {
 					const statement = {
 						teachings: selectedTeachings,
+						type: type,
 						semester: semester._id,
 						user: values.student,
-						type: values.type,
 					};
 					console.log('Creating statement: ', statement);
 					dispatch(createStatement(statement));
@@ -61,16 +61,16 @@ export default function CreateStatementForm({
 				}}
 				validateOnMount
 			>
-				{({ isSubmitting, dirty, handleReset, setFieldValue }) => (
+				{({ isSubmitting, dirty, handleReset }) => (
 					<Form>
-						<Row className="align-items-center">
-							<Col>
+						<Row className="d-flex justify-content-center">
+							<Col xl="8" lg="7">
 								<FormGroup className="form-floating mb-3" floating>
 									<Field as="select" className="form-control" name="student">
 										<option default>Select student</option>
 										{students.map((student) => (
 											<option key={student._id} value={student._id}>
-												{student.name} {student.surname}
+												{student.user.name} {student.user.surname}
 											</option>
 										))}
 									</Field>
@@ -78,32 +78,6 @@ export default function CreateStatementForm({
 										Student
 									</Label>
 									<ErrorMessage name="student" component={FormErrorMessage} />
-								</FormGroup>
-							</Col>
-							<Col className="text-right">
-								<FormGroup switch>
-									<Field name="type">
-										{({ field }) => (
-											<Input
-												type="switch"
-												role="switch"
-												name="type"
-												checked={field.value === AssessmentType.Vaccine}
-												onChange={() => {
-													setFieldValue(
-														'type',
-														field.value === AssessmentType.Assessment
-															? AssessmentType.Vaccine
-															: AssessmentType.Assessment
-													);
-												}}
-											/>
-										)}
-									</Field>
-									<Label for="type" className="mx-1 text-gray-600">
-										Vaccine
-									</Label>
-									<ErrorMessage name="type" component={FormErrorMessage} />
 								</FormGroup>
 							</Col>
 						</Row>
@@ -165,6 +139,7 @@ export default function CreateStatementForm({
 										<Col xl="1">
 											<small
 												key={teaching.course._id}
+												className="text-danger"
 												style={{
 													display: 'inline-flex',
 													alignItems: 'center',

@@ -8,46 +8,27 @@ import {
 	ModalBody,
 	ModalHeader,
 } from 'reactstrap';
-import { deleteAlert } from '../../constants/sweetAlertNotification';
-import useStatements from '../../hooks/user/useStatements';
-import useModal from '../../hooks/generic/useModal';
-import StatementCard from '../../components/course/cards/StatementCard';
-import CurrentSemester from '../../components/boilerplate/CurrentSemester';
-import Spinner from '../../components/boilerplate/spinners/Spinner';
-import VaccineStatement from '../../components/statement/VaccineStatement';
-import AssessmentStatement from '../../components/statement/AssessmentStatement';
-import PreviousStatements from '../../components/statement/PreviousStatements';
+import useAdminStatements from '../../../hooks/admin/useAdminStatements';
+import useModal from '../../../hooks/generic/useModal';
+import StatementCard from '../../../components/course/cards/StatementCard';
+import CurrentSemester from '../../../components/boilerplate/CurrentSemester';
+import Spinner from '../../../components/boilerplate/spinners/Spinner';
+import PreviousStatements from '../../../components/statement/PreviousStatements';
 
 export default function Statements() {
 	const {
 		user,
 		semester,
-		assessment,
 		statements,
 		isSemesterLoading,
 		isAssessmentLoading,
 		isStatementsLoading,
-		isTeachingsLoading,
-		isEditingStatement,
-		isEditingVaccine,
-		editStatementId,
-		setEditStatement,
-		setEditVaccine,
-		deleteStatement,
 		assessmentIsAvailable,
 		vaccineIsAvailable,
 		assessmentEndDate,
 		vaccineEndDate,
-		canSubmitAvailableTeachings,
-		canSubmitAvailableVaccineTeachings,
-		isStatementSubmitted,
-		isVaccineSubmitted,
-		currentStatement,
-		currentVaccineStatement,
 		previousStatements,
-		handleFinalizeStatement,
-		dispatch,
-	} = useStatements();
+	} = useAdminStatements();
 
 	const { modal, selectedItem, openModal, closeModal } = useModal();
 
@@ -135,50 +116,6 @@ export default function Statements() {
 			/>
 
 			<ModalComponent toggle={closeModal} />
-
-			<AssessmentStatement
-				user={user}
-				semester={semester}
-				assessment={assessment}
-				isSemesterLoading={isSemesterLoading}
-				isStatementsLoading={isStatementsLoading}
-				isTeachingsLoading={isTeachingsLoading}
-				canSubmitAvailableTeachings={canSubmitAvailableTeachings}
-				assessmentIsAvailable={assessmentIsAvailable}
-				isStatementSubmitted={isStatementSubmitted}
-				isEditingStatement={isEditingStatement}
-				editStatementId={editStatementId}
-				setEditStatement={setEditStatement}
-				currentStatement={currentStatement}
-				handleFinalizeStatement={handleFinalizeStatement}
-				deleteStatement={deleteStatement}
-				deleteAlert={deleteAlert}
-				dispatch={dispatch}
-			/>
-
-			{vaccineIsAvailable || isVaccineSubmitted ? (
-				<VaccineStatement
-					user={user}
-					semester={semester}
-					assessment={assessment}
-					isSemesterLoading={isSemesterLoading}
-					isStatementsLoading={isStatementsLoading}
-					isTeachingsLoading={isTeachingsLoading}
-					canSubmitAvailableVaccineTeachings={
-						canSubmitAvailableVaccineTeachings
-					}
-					vaccineIsAvailable={vaccineIsAvailable}
-					isVaccineSubmitted={isVaccineSubmitted}
-					isEditingVaccine={isEditingVaccine}
-					editStatementId={editStatementId}
-					setEditVaccine={setEditVaccine}
-					currentVaccineStatement={currentVaccineStatement}
-					handleFinalizeStatement={handleFinalizeStatement}
-					deleteStatement={deleteStatement}
-					deleteAlert={deleteAlert}
-					dispatch={dispatch}
-				/>
-			) : null}
 		</>
 	);
 }

@@ -17,6 +17,7 @@ import {
 	calendarSchema,
 	courseActivationSchema,
 	instructorsAssignmentSchema,
+	masterProgramSchema,
 } from '../utils/schemas';
 import { UserProps } from '../models/users/user';
 import CustomError from '../utils/CustomError';
@@ -256,6 +257,23 @@ export const validateCalendar = (
 	const { error } = calendarSchema.validate(req.body);
 	if (error) {
 		console.error('❌ Calendar schema validation: '.yellow.bold, error);
+		throw new CustomError(error.message, 400);
+	}
+
+	next();
+};
+
+export const validateMasterProgram = (
+	req: Request,
+	_: Response,
+	next: NextFunction
+) => {
+	const { error } = masterProgramSchema.validate(req.body);
+	if (error) {
+		console.error(
+			'❌ Master program configuration schema validation: '.yellow.bold,
+			error
+		);
 		throw new CustomError(error.message, 400);
 	}
 

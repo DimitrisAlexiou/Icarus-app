@@ -5,12 +5,12 @@ import { getTeachings } from '../../features/courses/teachingSlice';
 import { getStatements } from '../../features/courses/statementSlice';
 import { getSemesters } from '../../features/admin/semesterSlice';
 import { getCycles } from '../../features/admin/cyclesSlice';
+import { getMasters } from '../../features/admin/masterProgramSlice';
 import {
 	getInstructors,
 	getStudents,
 	getUsers,
 } from '../../features/admin/userSlice';
-import { getNotes } from '../../features/notes/noteSlice';
 import { getTeachingReviews } from '../../features/reviews/teachingReviewSlice';
 import { getInstructorReviews } from '../../features/reviews/instructorReviewSlice';
 import { getGeneralReviews } from '../../features/reviews/generalReviewSlice';
@@ -40,15 +40,15 @@ const useAdminDashboard = () => {
 	const { cycles, isLoading: cyclesIsLoading } = useSelector(
 		(state) => state.cycles
 	);
+	const { masters, isLoading: mastersIsLoading } = useSelector(
+		(state) => state.masters
+	);
 	const {
 		semesters,
 		isLoading: semestersIsLoading,
 		isEditingSemester,
 		editSemesterId,
 	} = useSelector((state) => state.semesters);
-	const { notes, isLoading: notesIsLoading } = useSelector(
-		(state) => state.notes
-	);
 	const { teachingReviews, isLoading: teachingReviewsIsLoading } = useSelector(
 		(state) => state.teachingReviews
 	);
@@ -67,7 +67,7 @@ const useAdminDashboard = () => {
 		dispatch(getUsers());
 		dispatch(getStudents());
 		dispatch(getInstructors());
-		dispatch(getNotes());
+		dispatch(getMasters());
 		dispatch(getTeachingReviews());
 		dispatch(getInstructorReviews());
 		dispatch(getGeneralReviews());
@@ -86,7 +86,7 @@ const useAdminDashboard = () => {
 		instructors,
 		cycles,
 		semesters,
-		notes,
+		masters,
 		teachingReviews,
 		instructorReviews,
 		generalReviews,
@@ -95,8 +95,8 @@ const useAdminDashboard = () => {
 		isStatementsLoading,
 		usersIsLoading,
 		cyclesIsLoading,
+		mastersIsLoading,
 		semestersIsLoading,
-		notesIsLoading,
 		teachingReviewsIsLoading,
 		instructorReviewsIsLoading,
 		generalReviewsIsLoading,

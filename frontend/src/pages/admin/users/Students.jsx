@@ -1,11 +1,11 @@
 import { forwardRef } from 'react';
 import { Row, Col, Modal, ModalHeader, ModalBody } from 'reactstrap';
-import useStudents from '../../hooks/admin/useStudents';
-import useModal from '../../hooks/generic/useModal';
-import DataTable from '../../components/DataTable';
-import UserCard from '../../components/admin/cards/UserCard';
-import Spinner from '../../components/boilerplate/spinners/Spinner';
-import SpinnerComponent from '../../components/boilerplate/spinners/SpinnerMessage';
+import useStudents from '../../../hooks/admin/useStudents';
+import useModal from '../../../hooks/generic/useModal';
+import DataTable from '../../../components/DataTable';
+import UserCard from '../../../components/admin/cards/UserCard';
+import Spinner from '../../../components/boilerplate/spinners/Spinner';
+import SpinnerComponent from '../../../components/boilerplate/spinners/SpinnerMessage';
 
 export default function Students() {
 	const { modal, selectedItem, openModal, closeModal } = useModal();

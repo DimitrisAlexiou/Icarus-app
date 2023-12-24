@@ -18,6 +18,7 @@ import Spinner from '../../components/boilerplate/spinners/Spinner';
 export default function CoursesDataTable({
 	courses,
 	cycles,
+	masters,
 	coursesIsLoading,
 	isEditingCourse,
 	editCourseId,
@@ -77,6 +78,7 @@ export default function CoursesDataTable({
 						course={currentCourse}
 						courses={courses}
 						cycles={cycles}
+						masters={masters}
 						isEditingCourse={isEditingCourse}
 						editCourseId={editCourseId}
 						dispatch={dispatch}

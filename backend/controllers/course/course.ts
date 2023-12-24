@@ -73,6 +73,7 @@ export const newCourse = tryCatch(
 			ects,
 			year,
 			cycle,
+			master,
 			prerequisites,
 			isActive,
 		} = req.body;
@@ -99,6 +100,7 @@ export const newCourse = tryCatch(
 			ects,
 			year,
 			cycle,
+			master,
 			prerequisites,
 			isActive,
 			status: 'new',

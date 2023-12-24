@@ -1,14 +1,15 @@
 import { Row, Col } from 'reactstrap';
-import useNewCourse from '../../hooks/course/useNewCourse';
-import CourseForm from '../../components/course/forms/CourseForm';
-import BackButton from '../../components/buttons/BackButton';
-import Spinner from '../../components/boilerplate/spinners/Spinner';
+import useNewCourse from '../../../hooks/course/useNewCourse';
+import CourseForm from '../../../components/course/forms/CourseForm';
+import BackButton from '../../../components/buttons/BackButton';
+import Spinner from '../../../components/boilerplate/spinners/Spinner';
 
 export default function NewCourse() {
 	const {
 		courses,
 		cycles,
 		semesters,
+		masters,
 		coursesIsLoading,
 		cyclesIsLoading,
 		semestersIsLoading,
@@ -67,6 +68,7 @@ export default function NewCourse() {
 								<CourseForm
 									courses={courses}
 									cycles={cycles}
+									masters={masters}
 									dispatch={dispatch}
 								/>
 							)}

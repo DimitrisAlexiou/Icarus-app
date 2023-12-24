@@ -208,3 +208,12 @@ export const DELETE_SEMESTER = createAction(
 	'admin/configuration/delete_semester'
 );
 export const GET_SEMESTERS = createAction('admin/configuration/get_semesters');
+
+export const DEFINE_MASTER = createAction('admin/configuration/define_master');
+export const UPDATE_MASTER = createAction('admin/configuration/update_master');
+export const GET_MASTER = createAction('admin/configuration/get_master');
+export const GET_MASTERS = createAction('admin/configuration/get_masters');
+export const DELETE_MASTER = createAction('admin/configuration/delete_master');
+export const DELETE_MASTERS = createAction(
+	'admin/configuration/delete_masters'
+);

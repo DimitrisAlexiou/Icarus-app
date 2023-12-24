@@ -5,6 +5,7 @@ import { getAssessment } from '../../features/admin/assessmentSlice';
 import { getReview } from '../../features/admin/reviewSlice';
 import { getDegreeRules } from '../../features/admin/degreeRulesSlice';
 import { getCycles } from '../../features/admin/cyclesSlice';
+import { getMasters } from '../../features/admin/masterProgramSlice';
 import { academicYearEnd, academicYearStart } from '../../utils/academicYears';
 
 const useConfiguration = () => {
@@ -41,6 +42,12 @@ const useConfiguration = () => {
 		isEditingCycle,
 		editCycleId,
 	} = useSelector((state) => state.cycles);
+	const {
+		masters,
+		isLoading: isMastersLoading,
+		isEditingMaster,
+		editMasterId,
+	} = useSelector((state) => state.masters);
 
 	useEffect(() => {
 		dispatch(getSemester());
@@ -49,6 +56,7 @@ const useConfiguration = () => {
 		dispatch(getReview());
 		dispatch(getDegreeRules());
 		dispatch(getCycles());
+		dispatch(getMasters());
 	}, [dispatch]);
 
 	return {
@@ -58,11 +66,13 @@ const useConfiguration = () => {
 		review,
 		degreeRules,
 		cycles,
+		masters,
 		isSemesterLoading,
 		isAssessmentLoading,
 		isReviewLoading,
 		isDegreeRulesLoading,
 		isCyclesLoading,
+		isMastersLoading,
 		isEditingSemester,
 		editSemesterId,
 		isEditingAssessment,
@@ -73,6 +83,8 @@ const useConfiguration = () => {
 		editDegreeRulesId,
 		isEditingCycle,
 		editCycleId,
+		isEditingMaster,
+		editMasterId,
 		academicYearEnd,
 		academicYearStart,
 		dispatch,

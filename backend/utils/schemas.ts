@@ -122,6 +122,11 @@ export const courseSchema = Joi.object({
 		then: Joi.string().required(),
 		otherwise: Joi.string().allow(null),
 	}),
+	master: Joi.when('type', {
+		is: CourseType.Master,
+		then: Joi.string().required(),
+		otherwise: Joi.string().allow(null),
+	}),
 	prerequisites: Joi.array().items(
 		Joi.object({
 			prerequisite: Joi.string().when('hasPrerequisites', {
@@ -279,4 +284,11 @@ export const calendarSchema = Joi.object({
 	endDate: Joi.date().required(),
 	allDay: Joi.boolean().required(),
 	owner: Joi.string().required(),
+});
+
+export const masterProgramSchema = Joi.object({
+	title: Joi.string().max(60).pattern(courseTitleRegex).required(),
+	startDate: Joi.date().required(),
+	duration: Joi.number().min(1).required(),
+	ects: Joi.number().min(1).required(),
 });

@@ -1,18 +1,19 @@
 import { Row, Col } from 'reactstrap';
-import CreateStatementForm from '../../components/admin/forms/CreateStatementForm';
-import useStatements from '../../hooks/user/useStatements';
-import useUsers from '../../hooks/admin/useUsers';
-import Spinner from '../../components/boilerplate/spinners/Spinner';
+import { AssessmentType } from '../../../constants/enums';
+import CreateStatementForm from '../../../components/admin/forms/CreateStatementForm';
+import Spinner from '../../../components/boilerplate/spinners/Spinner';
+import useAdminStatements from '../../../hooks/admin/useAdminStatements';
 
 export default function CreateStatement() {
 	const {
+		students,
+		isStudentsLoading,
 		semester,
 		isSemesterLoading,
 		isTeachingsLoading,
 		canSubmitAvailableTeachings,
 		dispatch,
-	} = useStatements();
-	const { students, isLoading } = useUsers();
+	} = useAdminStatements();
 
 	// {
 	// 	user.user.isAdmin ? (
@@ -72,33 +73,36 @@ export default function CreateStatement() {
 				<Col className="d-flex justify-content-end"></Col>
 			</Row>
 
-			{isLoading || isSemesterLoading || isTeachingsLoading ? (
+			{isStudentsLoading || isSemesterLoading || isTeachingsLoading ? (
 				<Spinner card />
 			) : (
-				<Row className="justify-content-center animated--grow-in">
-					<Col xl="7" lg="11" md="12">
-						<div className="card shadow mb-5">
-							<div className="card-header py-3">
-								<Row className="align-items-center">
-									<Col>
-										<h6 className="m-0 font-weight-bold text-primary">
-											Select from the available courses below to create a new
-											course statement
-										</h6>
-									</Col>
-								</Row>
+				<>
+					<Row className="justify-content-center animated--grow-in">
+						<Col xl="7" lg="11" md="12">
+							<div className="card shadow mb-5">
+								<div className="card-header py-3">
+									<Row className="align-items-center">
+										<Col>
+											<h6 className="m-0 font-weight-bold text-primary">
+												Select from the available courses below to create a new
+												course statement
+											</h6>
+										</Col>
+									</Row>
+								</div>
+								<div className="card-body">
+									<CreateStatementForm
+										students={students}
+										semester={semester}
+										type={AssessmentType.Assessment}
+										canSubmitAvailableTeachings={canSubmitAvailableTeachings}
+										dispatch={dispatch}
+									/>
+								</div>
 							</div>
-							<div className="card-body">
-								<CreateStatementForm
-									students={students}
-									semester={semester}
-									canSubmitAvailableTeachings={canSubmitAvailableTeachings}
-									dispatch={dispatch}
-								/>
-							</div>
-						</div>
-					</Col>
-				</Row>
+						</Col>
+					</Row>
+				</>
 			)}
 		</>
 	);

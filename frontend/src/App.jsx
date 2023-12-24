@@ -17,9 +17,7 @@ import {
 	Msc,
 	Phd,
 	Course,
-	NewCourse,
-	CreateStatement,
-	InfoSecMsc,
+	Master,
 } from './pages/course/index';
 import {
 	Teaching,
@@ -39,6 +37,10 @@ import {
 	Instructors,
 	Students,
 	Teachings,
+	NewCourse,
+	CreateStatement,
+	CreateVaccine,
+	AdminStatements,
 } from './pages/admin/index';
 import {
 	MyCourses,
@@ -86,7 +88,7 @@ export default function App() {
 								element={<Undergraduate />}
 							/>
 							<Route path="/studies/msc" element={<Msc />} />
-							<Route path="/studies/msc/infoSec" element={<InfoSecMsc />} />
+							<Route path="/studies/msc/master" element={<Master />} />
 							<Route path="/studies/phd" element={<Phd />} />
 							<Route path="*" element={<NotFound />} />
 							<Route
@@ -107,6 +109,14 @@ export default function App() {
 									element={
 										<ProtectedRoute user={user} allowedRoles={[UserType.admin]}>
 											<AdminDashboard />
+										</ProtectedRoute>
+									}
+								/>
+								<Route
+									path="/admin/statements"
+									element={
+										<ProtectedRoute user={user}>
+											<AdminStatements />
 										</ProtectedRoute>
 									}
 								/>
@@ -229,10 +239,10 @@ export default function App() {
 									}
 								/>
 								<Route
-									path="/course/msc/infoSec"
+									path="/course/msc/:masterId"
 									element={
 										<ProtectedRoute user={user}>
-											<InfoSecMsc user={user} />
+											<Master user={user} />
 										</ProtectedRoute>
 									}
 								/>
@@ -322,6 +332,14 @@ export default function App() {
 									element={
 										<ProtectedRoute user={user} allowedRoles={[UserType.admin]}>
 											<CreateStatement />
+										</ProtectedRoute>
+									}
+								/>
+								<Route
+									path="/vaccine/new"
+									element={
+										<ProtectedRoute user={user} allowedRoles={[UserType.admin]}>
+											<CreateVaccine />
 										</ProtectedRoute>
 									}
 								/>

@@ -1,5 +1,5 @@
 import { Row, Col, Badge } from 'reactstrap';
-import { PrerequisiteType } from '../../../constants/enums';
+import { CourseType, PrerequisiteType } from '../../../constants/enums';
 
 const CourseCard = ({ course }) => {
 	return (
@@ -49,10 +49,16 @@ const CourseCard = ({ course }) => {
 				</Col>
 				<Col>
 					<label>
-						<b>Cycle</b>
+						<b>{course.type !== CourseType.Master ? 'Cycle' : 'Master'}</b>
 					</label>
 					<p style={{ textAlign: 'justify' }}>
-						{course.cycle ? course.cycle.cycle : 'Course is obligatory'}
+						{course.type !== CourseType.Master
+							? course.cycle
+								? course.cycle.cycle
+								: 'Course is obligatory'
+							: course.master
+							? course.master.title
+							: 'Master title not available'}
 					</p>
 					<hr />
 				</Col>

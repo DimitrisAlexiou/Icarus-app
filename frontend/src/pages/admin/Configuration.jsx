@@ -5,6 +5,7 @@ import AssessementCard from '../../components/admin/cards/AssessmentCard';
 import ReviewCard from '../../components/admin/cards/ReviewCard';
 import DegreeRulesCard from '../../components/admin/cards/DegreeRulesCard';
 import CycleCard from '../../components/admin/cards/CycleCard';
+import MastersCard from '../../components/admin/cards/MastersCard';
 
 export default function Configuration() {
 	const {
@@ -14,11 +15,13 @@ export default function Configuration() {
 		review,
 		degreeRules,
 		cycles,
+		masters,
 		isSemesterLoading,
 		isAssessmentLoading,
 		isReviewLoading,
 		isDegreeRulesLoading,
 		isCyclesLoading,
+		isMastersLoading,
 		isEditingSemester,
 		editSemesterId,
 		isEditingAssessment,
@@ -29,6 +32,8 @@ export default function Configuration() {
 		editDegreeRulesId,
 		isEditingCycle,
 		editCycleId,
+		isEditingMaster,
+		editMasterId,
 		academicYearEnd,
 		academicYearStart,
 		dispatch,
@@ -101,6 +106,13 @@ export default function Configuration() {
 					isCyclesLoading={isCyclesLoading}
 					isEditingCycle={isEditingCycle}
 					editCycleId={editCycleId}
+					dispatch={dispatch}
+				/>
+				<MastersCard
+					masters={masters}
+					isMastersLoading={isMastersLoading}
+					isEditingMaster={isEditingMaster}
+					editMasterId={editMasterId}
 					dispatch={dispatch}
 				/>
 			</Row>

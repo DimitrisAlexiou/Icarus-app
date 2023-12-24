@@ -78,7 +78,7 @@ export const sidebarAdminDataLinks = [
 	{
 		id: 8,
 		text: 'Statements',
-		path: '/statements',
+		path: '/admin/statements',
 		icon: <FontAwesomeIcon icon={faListCheck} />,
 	},
 	{
@@ -129,11 +129,16 @@ export const sidebarCourseConfigDropDown = [
 	},
 	{
 		id: 3,
+		text: 'Create Vaccine',
+		path: 'vaccine/new',
+	},
+	{
+		id: 4,
 		text: 'Assign Instructor',
 		path: 'teaching/assign',
 	},
 	{
-		id: 4,
+		id: 5,
 		text: 'Teaching Grading',
 		path: 'teaching/grading',
 	},
