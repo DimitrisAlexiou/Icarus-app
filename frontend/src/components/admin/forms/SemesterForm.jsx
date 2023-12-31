@@ -1,5 +1,5 @@
-import { FormGroup, Label, Row, Col, Button, Spinner, Input } from 'reactstrap';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Row, Col, Spinner } from 'reactstrap';
+import { Formik, Form } from 'formik';
 import { SemesterSchema } from '../../../schemas/admin/Semester';
 import {
 	defineSemester,
@@ -8,7 +8,11 @@ import {
 } from '../../../features/admin/semesterSlice';
 import { SemesterType } from '../../../constants/enums';
 import { academicYears } from '../../../utils/academicYears';
-import FormErrorMessage from '../../form/FormErrorMessage';
+import NumberField from '../../form/NumberField';
+import SelectField from '../../form/SelectField';
+import TextField from '../../form/TextField';
+import ClearButton from '../../buttons/ClearButton';
+import SubmitButton from '../../buttons/SubmitButton';
 
 export default function SemesterForm({
 	semester,
@@ -19,20 +23,7 @@ export default function SemesterForm({
 }) {
 	const renderGradingField = (type) => {
 		if (type !== SemesterType.Any)
-			return (
-				<FormGroup className="form-floating mb-3" floating>
-					<Field
-						type="number"
-						min="1"
-						className="form-control"
-						name="grading"
-					/>
-					<Label for="grading" className="text-gray-600">
-						Grading period
-					</Label>
-					<ErrorMessage name="grading" component={FormErrorMessage} />
-				</FormGroup>
-			);
+			return <NumberField min="1" name="grading" label="Grading period" />;
 	};
 
 	return (
@@ -78,77 +69,77 @@ export default function SemesterForm({
 					<Form>
 						<Row>
 							<Col md="7">
-								<FormGroup className="form-floating mb-3" floating>
-									{isEditingSemester ? (
-										<Input
-											type="text"
-											className="form-control"
-											value={values.type}
-											disabled
-										/>
-									) : (
-										<Field as="select" className="form-control" name="type">
-											<option default>Select semester type</option>
-											<option value={SemesterType.Winter}>
-												{SemesterType.Winter}
-											</option>
-											<option value={SemesterType.Spring}>
-												{SemesterType.Spring}
-											</option>
-											<option value={SemesterType.Any}>
-												{SemesterType.Any}
-											</option>
-										</Field>
-									)}
-									<Label for="type" className="text-gray-600">
-										Semester type
-									</Label>
-									<ErrorMessage name="type" component={FormErrorMessage} />
-								</FormGroup>
+								{isEditingSemester ? (
+									<TextField
+										name="type"
+										label="Semester type"
+										value={values.type}
+										disabled={true}
+									/>
+								) : (
+									<SelectField
+										name="type"
+										label="Semester type"
+										options={
+											<>
+												<option className="text-gray-300" default>
+													Select semester type
+												</option>
+												<option value={SemesterType.Winter}>
+													{SemesterType.Winter}
+												</option>
+												<option value={SemesterType.Spring}>
+													{SemesterType.Spring}
+												</option>
+												<option value={SemesterType.Any}>
+													{SemesterType.Any}
+												</option>
+											</>
+										}
+									/>
+								)}
 							</Col>
 							<Col>{renderGradingField(values.type)}</Col>
 						</Row>
 						<Row>
 							<Col md="7">
-								<FormGroup className="form-floating mb-3" floating>
-									{isEditingSemester ? (
-										<Input
-											type="text"
-											className="form-control"
-											value={values.academicYear}
-											disabled
-										/>
-									) : (
-										<Field
-											as="select"
-											className="form-control"
-											name="academicYear"
-										>
-											<option default> Select academic year </option>
-											{academicYears.map((year) => (
-												<option
-													key={year.value}
-													value={year.value}
-													label={year.label}
-												/>
-											))}
-										</Field>
-									)}
-									<Label for="academicYear" className="text-gray-600">
-										Academic year
-									</Label>
-								</FormGroup>
+								{isEditingSemester ? (
+									<TextField
+										name="academicYear"
+										label="Academic year"
+										value={values.academicYear}
+										disabled={true}
+									/>
+								) : (
+									<SelectField
+										name="academicYear"
+										label="Academic year"
+										options={
+											<>
+												<option className="text-gray-300" default>
+													Select academic year
+												</option>
+												{academicYears.map((year) => (
+													<option
+														key={year.value}
+														value={year.value}
+														label={year.label}
+													/>
+												))}
+											</>
+										}
+									/>
+								)}
 							</Col>
 						</Row>
 						<Row className="mb-3">
-							<Col sm="6" md="6" xs="12" className="text-sm-left text-center">
-								<Button onClick={handleReset} disabled={!dirty || isSubmitting}>
-									Clear
-								</Button>
-							</Col>
-							<Col className="text-sm-right text-center mt-sm-0 mt-3">
-								<Button type="submit" color="primary" disabled={isSubmitting}>
-									{isSubmitting ? (
+							<ClearButton
+								onClick={handleReset}
+								disabled={!dirty || isSubmitting}
+							/>
+							<SubmitButton
+								body={
+									isSubmitting ? (
 										<>
 											Please wait <Spinner type="grow" size="sm" />
 										</>
@@ -156,9 +147,10 @@ export default function SemesterForm({
 										'Update'
 									) : (
 										'Configure'
-									)}
-								</Button>
-							</Col>
+									)
+								}
+								disabled={isSubmitting}
+							/>
 						</Row>
 					</Form>
 				)}

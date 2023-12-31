@@ -1,12 +1,14 @@
-import { FormGroup, Label, Row, Col, Button, Spinner } from 'reactstrap';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Row, Spinner } from 'reactstrap';
+import { Formik, Form } from 'formik';
 import { GeneralReviewSchema } from '../../../schemas/review/GeneralReview';
 import {
 	createGeneralReview,
 	setEditGeneralReview,
 	updateGeneralReview,
 } from '../../../features/reviews/generalReviewSlice';
-import FormErrorMessage from '../../form/FormErrorMessage';
+import TextAreaField from '../../form/TextAreaField';
+import ClearButton from '../../buttons/ClearButton';
+import SubmitButton from '../../buttons/SubmitButton';
 
 export default function GeneralReviewForm({
 	user,
@@ -67,73 +69,34 @@ export default function GeneralReviewForm({
 			>
 				{({ isSubmitting, dirty, handleReset }) => (
 					<Form>
-						<FormGroup className="form-floating mb-3" floating>
-							<Field
-								as="textarea"
-								className="form-control"
-								style={{ height: '100px', text_align: 'justify' }}
-								name="course_opinion"
-							/>
-							<Label for="course_opinion" className="text-gray-600">
-								What is your opinion about the course?
-							</Label>
-							<ErrorMessage
-								name="course_opinion"
-								component={FormErrorMessage}
-							/>
-						</FormGroup>
+						<TextAreaField
+							name="course_opinion"
+							label="What is your opinion about the course?"
+						/>
 
-						<FormGroup className="form-floating mb-3" floating>
-							<Field
-								as="textarea"
-								className="form-control"
-								style={{ height: '100px', text_align: 'justify' }}
-								name="instructor_opinion"
-							/>
-							<Label for="instructor_opinion" className="text-gray-600">
-								What is your opinion about the instructor(s)?
-							</Label>
-							<ErrorMessage
-								name="instructor_opinion"
-								component={FormErrorMessage}
-							/>
-						</FormGroup>
+						<TextAreaField
+							name="instructor_opinion"
+							label="What is your opinion about the instructor(s)?"
+						/>
 
-						<FormGroup className="form-floating mb-3" floating>
-							<Field
-								as="textarea"
-								className="form-control"
-								style={{ height: '100px', text_align: 'justify' }}
-								name="likes"
-							/>
-							<Label for="likes" className="text-gray-600">
-								What did you liked about this course?
-							</Label>
-							<ErrorMessage name="likes" component={FormErrorMessage} />
-						</FormGroup>
+						<TextAreaField
+							name="likes"
+							label="What did you liked about this course?"
+						/>
 
-						<FormGroup className="form-floating mb-3" floating>
-							<Field
-								as="textarea"
-								className="form-control"
-								style={{ height: '100px', text_align: 'justify' }}
-								name="dislikes"
-							/>
-							<Label for="dislikes" className="text-gray-600">
-								What did you disliked about this course?
-							</Label>
-							<ErrorMessage name="dislikes" component={FormErrorMessage} />
-						</FormGroup>
+						<TextAreaField
+							name="dislikes"
+							label="What did you disliked about this course?"
+						/>
 
 						<Row>
-							<Col sm="6" md="6" xs="12" className="text-sm-left text-center">
-								<Button onClick={handleReset} disabled={!dirty || isSubmitting}>
-									Clear
-								</Button>
-							</Col>
-							<Col className="text-sm-right text-center mt-sm-0 mt-3">
-								<Button type="submit" color="primary" disabled={isSubmitting}>
-									{isSubmitting ? (
+							<ClearButton
+								onClick={handleReset}
+								disabled={!dirty || isSubmitting}
+							/>
+							<SubmitButton
+								body={
+									isSubmitting ? (
 										<>
 											Please wait <Spinner type="grow" size="sm" />
 										</>
@@ -141,9 +104,10 @@ export default function GeneralReviewForm({
 										'Update'
 									) : (
 										'Review'
-									)}
-								</Button>
-							</Col>
+									)
+								}
+								disabled={isSubmitting}
+							/>
 						</Row>
 					</Form>
 				)}

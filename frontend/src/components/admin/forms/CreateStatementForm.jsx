@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Row, Col, Button, Label, FormGroup, Form } from 'reactstrap';
-import { ErrorMessage, Field, FieldArray, Formik } from 'formik';
+import { Row, Col, FormGroup, Form } from 'reactstrap';
+import { ErrorMessage, FieldArray, Formik } from 'formik';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleXmark } from '@fortawesome/free-regular-svg-icons';
 import { StatementSchema } from '../../../schemas/user/Statement';
@@ -8,6 +8,9 @@ import { createStatement } from '../../../features/courses/statementSlice';
 import Spinner from '../../../components/boilerplate/spinners/Spinner';
 import FormErrorMessage from '../../../components/form/FormErrorMessage';
 import Header from '../../boilerplate/Header';
+import SelectField from '../../form/SelectField';
+import ClearButton from '../../buttons/ClearButton';
+import SubmitButton from '../../buttons/SubmitButton';
 
 export default function CreateStatementForm({
 	students,
@@ -65,20 +68,22 @@ export default function CreateStatementForm({
 					<Form>
 						<Row className="d-flex justify-content-center">
 							<Col xl="8" lg="7">
-								<FormGroup className="form-floating mb-3" floating>
-									<Field as="select" className="form-control" name="student">
-										<option default>Select student</option>
-										{students.map((student) => (
-											<option key={student._id} value={student._id}>
-												{student.user.name} {student.user.surname}
+								<SelectField
+									name="student"
+									label="Student"
+									options={
+										<>
+											<option className="text-gray-300" default>
+												Select student
 											</option>
-										))}
-									</Field>
-									<Label for="student" className="text-gray-600">
-										Student
-									</Label>
-									<ErrorMessage name="student" component={FormErrorMessage} />
-								</FormGroup>
+											{students.map((student) => (
+												<option key={student._id} value={student._id}>
+													{student.user.name} {student.user.surname}
+												</option>
+											))}
+										</>
+									}
+								/>
 							</Col>
 						</Row>
 						<Col className="text-center mb-3">
@@ -166,30 +171,27 @@ export default function CreateStatementForm({
 								);
 							})}
 						</Row>
-						<Row className="mb-3">
-							<Col sm="6" md="6" xs="12" className="text-sm-left text-center">
-								<Button
-									onClick={() => {
-										handleReset();
-										setSelectedTeachings([]);
-										setAvailableCourses(canSubmitAvailableTeachings);
-									}}
-									disabled={!dirty || isSubmitting || !selectedTeachings.length}
-								>
-									Clear
-								</Button>
-							</Col>
-							<Col className="text-sm-right text-center mt-sm-0 mt-3">
-								<Button type="submit" color="primary" disabled={isSubmitting}>
-									{isSubmitting ? (
+						<Row>
+							<ClearButton
+								onClick={() => {
+									handleReset();
+									setSelectedTeachings([]);
+									setAvailableCourses(canSubmitAvailableTeachings);
+								}}
+								disabled={!dirty || isSubmitting || !selectedTeachings.length}
+							/>
+							<SubmitButton
+								body={
+									isSubmitting ? (
 										<>
 											Please wait <Spinner type="grow" size="sm" />
 										</>
 									) : (
 										'Create'
-									)}
-								</Button>
-							</Col>
+									)
+								}
+								disabled={isSubmitting}
+							/>
 						</Row>
 					</Form>
 				)}

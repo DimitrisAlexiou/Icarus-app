@@ -2,7 +2,7 @@ import * as Yup from 'yup';
 import { passwordRegex } from '../../constants/regex';
 
 export const ChangePasswordSchema = Yup.object().shape({
-	password: Yup.string()
+	oldPassword: Yup.string()
 		.min(8, 'Password is too short - should be 8 chars minimum.')
 		.matches(
 			passwordRegex,

@@ -1,12 +1,14 @@
 import { useState } from 'react';
-import { FormGroup, Label, Row, Col, Button, Spinner, Input } from 'reactstrap';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Row, Col, Spinner } from 'reactstrap';
+import { Formik, Form } from 'formik';
 import {
 	assignLabInstructors,
 	assignTheoryInstructors,
 } from '../../../features/courses/teachingSlice';
 import { AssignInstructorSchema } from '../../../schemas/course/AssignInstructor';
-import FormErrorMessage from '../../form/FormErrorMessage';
+import RadioField from '../../form/RadioField';
+import ClearButton from '../../buttons/ClearButton';
+import SubmitButton from '../../buttons/SubmitButton';
 
 export default function AssignInstructorFormDataTable({
 	teachings,
@@ -19,34 +21,27 @@ export default function AssignInstructorFormDataTable({
 
 	return (
 		<>
-			<Row style={{ textAlign: 'center' }} className="justify-content-center">
+			<Row
+				style={{ textAlign: 'center' }}
+				className="justify-content-center mb-3 mt-2"
+			>
 				<Col md="5">
-					<FormGroup className="mx-1 mb-3 mt-3" check>
-						<Input
-							type="radio"
-							name="teachingPart"
-							value="theory"
-							checked={selectedPart === 'theory'}
-							onChange={() => setSelectedPart('theory')}
-						/>
-						<Label for="theory" className="mx-2 text-gray-500">
-							Theory
-						</Label>
-					</FormGroup>
+					<RadioField
+						name="theory"
+						value="theory"
+						label="Theory"
+						checked={selectedPart === 'theory'}
+						onChange={() => setSelectedPart('theory')}
+					/>
 				</Col>
 				<Col md="5">
-					<FormGroup className="mx-1 mb-3 mt-3" check>
-						<Input
-							type="radio"
-							name="teachingPart"
-							value="lab"
-							checked={selectedPart === 'lab'}
-							onChange={() => setSelectedPart('lab')}
-						/>
-						<Label for="lab" className="mx-2 text-gray-500">
-							Lab
-						</Label>
-					</FormGroup>
+					<RadioField
+						name="lab"
+						value="lab"
+						label="Lab"
+						checked={selectedPart === 'lab'}
+						onChange={() => setSelectedPart('lab')}
+					/>
 				</Col>
 			</Row>
 
@@ -271,20 +266,16 @@ export default function AssignInstructorFormDataTable({
 							</FormGroup> */}
 						</Row>
 						<Row>
-							<Col sm="6" md="6" xs="6" className="text-sm-left text-center">
-								<Button
-									onClick={() => {
-										handleReset();
-										setSelectedPart('theory');
-									}}
-									disabled={!dirty || isSubmitting}
-								>
-									Clear
-								</Button>
-							</Col>
-							<Col className="text-sm-right text-center">
-								<Button type="submit" color="primary" disabled={isSubmitting}>
-									{isSubmitting ? (
+							<ClearButton
+								onClick={() => {
+									handleReset();
+									setSelectedPart('theory');
+								}}
+								disabled={!dirty || isSubmitting}
+							/>
+							<SubmitButton
+								body={
+									isSubmitting ? (
 										<>
 											Please wait <Spinner type="grow" size="sm" />
 										</>
@@ -295,9 +286,10 @@ export default function AssignInstructorFormDataTable({
 										'Update'
 									) : (
 										'Assign'
-									)}
-								</Button>
-							</Col>
+									)
+								}
+								disabled={isSubmitting}
+							/>
 						</Row>
 					</Form>
 				)}

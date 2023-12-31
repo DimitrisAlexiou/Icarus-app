@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { FormGroup, Row, Col, Button, Spinner } from 'reactstrap';
+import { FormGroup, Row, Col, Spinner } from 'reactstrap';
 import { Formik, FieldArray, Form, ErrorMessage } from 'formik';
 import { StatementSchema } from '../../../schemas/user/Statement';
 import {
@@ -11,6 +11,8 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleXmark } from '@fortawesome/free-regular-svg-icons';
 import FormErrorMessage from '../../form/FormErrorMessage';
+import ClearButton from '../../buttons/ClearButton';
+import SubmitButton from '../../buttons/SubmitButton';
 
 export default function StatementForm({
 	statement,
@@ -261,22 +263,18 @@ export default function StatementForm({
 							})}
 						</Row>
 
-						<Row className="mb-3">
-							<Col sm="6" md="6" xs="12" className="text-sm-left text-center">
-								<Button
-									onClick={() => {
-										handleReset();
-										setSelectedTeachings([]);
-										setAvailableCourses(canSubmitAvailableTeachings);
-									}}
-									disabled={!dirty || isSubmitting || !selectedTeachings.length}
-								>
-									Clear
-								</Button>
-							</Col>
-							<Col className="text-sm-right text-center mt-sm-0 mt-3">
-								<Button type="submit" color="primary" disabled={isSubmitting}>
-									{isSubmitting ? (
+						<Row>
+							<ClearButton
+								onClick={() => {
+									handleReset();
+									setSelectedTeachings([]);
+									setAvailableCourses(canSubmitAvailableTeachings);
+								}}
+								disabled={!dirty || isSubmitting || !selectedTeachings.length}
+							/>
+							<SubmitButton
+								body={
+									isSubmitting ? (
 										<>
 											Please wait <Spinner type="grow" size="sm" />
 										</>
@@ -284,9 +282,10 @@ export default function StatementForm({
 										'Update'
 									) : (
 										'Create'
-									)}
-								</Button>
-							</Col>
+									)
+								}
+								disabled={isSubmitting}
+							/>
 						</Row>
 					</Form>
 				)}

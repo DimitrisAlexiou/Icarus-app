@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { FormGroup, Label, Row, Col, Button, Spinner } from 'reactstrap';
-import { Formik, Field, ErrorMessage, Form } from 'formik';
+import { Row, Col, Button, Spinner } from 'reactstrap';
+import { Formik, Form } from 'formik';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import { UserSchema } from '../../schemas/auth/User';
@@ -12,7 +12,13 @@ import {
 	Degree,
 	FacultyType,
 } from '../../constants/enums';
-import FormErrorMessage from '../form/FormErrorMessage';
+import NumberField from '../form/NumberField';
+import TextField from '../form/TextField';
+import EmailField from '../form/EmailField';
+import SelectField from '../form/SelectField';
+import PasswordField from '../form/PasswordField';
+import ClearButton from '../buttons/ClearButton';
+import SubmitButton from '../buttons/SubmitButton';
 
 export default function RegisterForm({ newUser, setNewUser, dispatch }) {
 	const [showPassword, setShowPassword] = useState(false);
@@ -26,45 +32,30 @@ export default function RegisterForm({ newUser, setNewUser, dispatch }) {
 		<>
 			<Row>
 				<Col md="5">
-					<FormGroup className="form-floating mb-3" floating>
-						<Field type="text" className="form-control" name="studentId" />
-						<Label for="studentId" className="text-gray-600">
-							Student ID
-						</Label>
-						<ErrorMessage name="studentId" component={FormErrorMessage} />
-					</FormGroup>
+					<TextField name="studentId" label="Student ID" />
 				</Col>
 				<Col md="7">
-					<FormGroup className="form-floating mb-3" floating>
-						<Field as="select" className="form-control" name="studentType">
-							<option default>Select student type</option>
-							<option value={StudentType.Undergraduate}>
-								{StudentType.Undergraduate}
-							</option>
-							<option value={StudentType.Master}>{StudentType.Master}</option>
-							<option value={StudentType.PhD}>{StudentType.PhD}</option>
-						</Field>
-						<Label for="studentType" className="text-gray-600">
-							Student Type
-						</Label>
-						<ErrorMessage name="studentType" component={FormErrorMessage} />
-					</FormGroup>
+					<SelectField
+						name="studentType"
+						label="Student Type"
+						options={
+							<>
+								<option className="text-gray-300" default>
+									Select student type
+								</option>
+								<option value={StudentType.Undergraduate}>
+									{StudentType.Undergraduate}
+								</option>
+								<option value={StudentType.Master}>{StudentType.Master}</option>
+								<option value={StudentType.PhD}>{StudentType.PhD}</option>
+							</>
+						}
+					/>
 				</Col>
 			</Row>
 			<Row>
 				<Col md="5">
-					<FormGroup className="form-floating mb-3" floating>
-						<Field
-							type="number"
-							min="0"
-							className="form-control"
-							name="entranceYear"
-						/>
-						<Label for="entranceYear" className="text-gray-600">
-							Entrance Year
-						</Label>
-						<ErrorMessage name="entranceYear" component={FormErrorMessage} />
-					</FormGroup>
+					<NumberField name="entranceYear" min="0" label="Entrance Year" />
 				</Col>
 			</Row>
 		</>
@@ -74,51 +65,45 @@ export default function RegisterForm({ newUser, setNewUser, dispatch }) {
 		<>
 			<Row>
 				<Col md="5">
-					<FormGroup className="form-floating mb-3" floating>
-						<Field as="select" className="form-control" name="facultyType">
-							<option default>Select faculty type</option>
-							<option value={FacultyType.DEP}>{FacultyType.DEP}</option>
-							<option value={FacultyType.EDIP}>{FacultyType.EDIP}</option>
-							<option value={FacultyType.ETEP}>{FacultyType.ETEP}</option>
-						</Field>
-						<Label for="facultyType" className="text-gray-600">
-							Faculty Type
-						</Label>
-						<ErrorMessage name="facultyType" component={FormErrorMessage} />
-					</FormGroup>
+					<SelectField
+						name="facultyType"
+						label="Faculty Type"
+						options={
+							<>
+								<option className="text-gray-300" default>
+									Select faculty type
+								</option>
+								<option value={FacultyType.DEP}>{FacultyType.DEP}</option>
+								<option value={FacultyType.EDIP}>{FacultyType.EDIP}</option>
+								<option value={FacultyType.ETEP}>{FacultyType.ETEP}</option>
+							</>
+						}
+					/>
 				</Col>
 				<Col md="7">
-					<FormGroup className="form-floating mb-3" floating>
-						<Field as="select" className="form-control" name="degree">
-							<option default>Select degree type</option>
-							<option value={Degree.Assistant}>{Degree.Assistant}</option>
-							<option value={Degree.Associate}>{Degree.Associate}</option>
-							<option value={Degree.Professor}>{Degree.Professor}</option>
-						</Field>
-						<Label for="degree" className="text-gray-600">
-							Degree
-						</Label>
-						<ErrorMessage name="degree" component={FormErrorMessage} />
-					</FormGroup>
+					<SelectField
+						name="degree"
+						label="Degree"
+						options={
+							<>
+								<option className="text-gray-300" default>
+									Select degree type
+								</option>
+								<option value={Degree.Assistant}>{Degree.Assistant}</option>
+								<option value={Degree.Associate}>{Degree.Associate}</option>
+								<option value={Degree.Professor}>{Degree.Professor}</option>
+							</>
+						}
+					/>
 				</Col>
 			</Row>
 			<Row>
 				<Col md="5">
-					<FormGroup className="form-floating mb-3" floating>
-						<Field
-							type="number"
-							min="0"
-							className="form-control"
-							name="instructorEntranceYear"
-						/>
-						<Label for="instructorEntranceYear" className="text-gray-600">
-							Entrance Year
-						</Label>
-						<ErrorMessage
-							name="instructorEntranceYear"
-							component={FormErrorMessage}
-						/>
-					</FormGroup>
+					<NumberField
+						name="instructorEntranceYear"
+						min="0"
+						label="Entrance Year"
+					/>
 				</Col>
 			</Row>
 		</>
@@ -192,57 +177,27 @@ export default function RegisterForm({ newUser, setNewUser, dispatch }) {
 					<Form>
 						<Row>
 							<Col md="5">
-								<FormGroup className="form-floating mb-3" floating>
-									<Field type="text" className="form-control" name="name" />
-									<Label for="name" className="text-gray-600">
-										Name
-									</Label>
-									<ErrorMessage name="name" component={FormErrorMessage} />
-								</FormGroup>
+								<TextField name="name" label="Name" />
 							</Col>
 							<Col md="7">
-								<FormGroup className="form-floating mb-3" floating>
-									<Field type="text" className="form-control" name="surname" />
-									<Label for="surname" className="text-gray-600">
-										Surname
-									</Label>
-									<ErrorMessage name="surname" component={FormErrorMessage} />
-								</FormGroup>
+								<TextField name="surname" label="Surname" />
 							</Col>
 						</Row>
 						<Row>
 							<Col md="5">
-								<FormGroup className="form-floating mb-3" floating>
-									<Field type="text" className="form-control" name="username" />
-									<Label for="username" className="text-gray-600">
-										Username
-									</Label>
-									<ErrorMessage name="username" component={FormErrorMessage} />
-								</FormGroup>
+								<TextField name="username" label="Username" />
 							</Col>
 							<Col md="7">
-								<FormGroup className="form-group mb-3" floating>
-									<Field type="email" className="form-control" name="email" />
-									<Label for="email" className="text-gray-600">
-										Email
-									</Label>
-									<ErrorMessage name="email" component={FormErrorMessage} />
-								</FormGroup>
+								<EmailField name="email" label="Email" />
 							</Col>
 						</Row>
 						<Row>
 							<Col md="5" sm="10" xs="10">
-								<FormGroup className="form-group mb-3" floating>
-									<Field
-										type={showPassword ? 'text' : 'password'}
-										className="form-control"
-										name="password"
-									/>
-									<Label for="password" className="text-gray-600">
-										Password
-									</Label>
-									<ErrorMessage name="password" component={FormErrorMessage} />
-								</FormGroup>
+								<PasswordField
+									name="password"
+									label="Password"
+									type={showPassword ? 'text' : 'password'}
+								/>
 							</Col>
 							<Col
 								md="1"
@@ -262,64 +217,49 @@ export default function RegisterForm({ newUser, setNewUser, dispatch }) {
 								</Button>
 							</Col>
 							<Col md="6">
-								<FormGroup className="form-group mb-3" floating>
-									<Field
-										type={showPassword ? 'text' : 'password'}
-										className="form-control"
-										name="confirmPassword"
-									/>
-									<Label for="confirmPassword" className="text-gray-600">
-										Confirm Password
-									</Label>
-									<ErrorMessage
-										name="confirmPassword"
-										component={FormErrorMessage}
-									/>
-								</FormGroup>
+								<PasswordField
+									name="confirmPassword"
+									label="Confirm Password"
+									type={showPassword ? 'text' : 'password'}
+								/>
 							</Col>
 						</Row>
 						<Row>
 							<Col md="5">
-								<FormGroup className="form-floating mb-3" floating>
-									<Field
-										as="select"
-										className="form-control"
-										name="type"
-										onClick={handleTypeChange}
-									>
-										<option className="text-gray-300" default>
-											Select your role
-										</option>
-										<option value={UserType.student}>{UserType.student}</option>
-										<option value={UserType.instructor}>
-											{UserType.instructor}
-										</option>
-									</Field>
-									<Label for="type" className="text-gray-600">
-										Type
-									</Label>
-									<ErrorMessage name="type" component={FormErrorMessage} />
-								</FormGroup>
+								<SelectField
+									name="type"
+									label="Type"
+									options={
+										<>
+											<option className="text-gray-300" default>
+												Select your role
+											</option>
+											<option value={UserType.student}>
+												{UserType.student}
+											</option>
+											<option value={UserType.instructor}>
+												{UserType.instructor}
+											</option>
+										</>
+									}
+									onClick={handleTypeChange}
+								/>
 							</Col>
 						</Row>
 						{selectedType === UserType.student ? studentFields : null}
 						{selectedType === UserType.instructor ? instructorFields : null}
-						<Row className="">
-							<Col md="6" sm="6" xs="12" className="text-sm-left text-center">
-								<Button
-									onClick={() => {
-										handleReset();
-										setSelectedType('');
-										setShowPassword(false);
-									}}
-									disabled={!dirty || isSubmitting}
-								>
-									Clear
-								</Button>
-							</Col>
-							<Col className="text-sm-right text-center mt-sm-0 mt-3">
-								<Button type="submit" color="primary" disabled={isSubmitting}>
-									{isSubmitting ? (
+						<Row>
+							<ClearButton
+								onClick={() => {
+									handleReset();
+									setSelectedType('');
+									setShowPassword(false);
+								}}
+								disabled={!dirty || isSubmitting}
+							/>
+							<SubmitButton
+								body={
+									isSubmitting ? (
 										<>
 											Please wait <Spinner type="grow" size="sm" />
 										</>
@@ -327,9 +267,10 @@ export default function RegisterForm({ newUser, setNewUser, dispatch }) {
 										'Add User'
 									) : (
 										'Register'
-									)}
-								</Button>
-							</Col>
+									)
+								}
+								disabled={isSubmitting}
+							/>
 						</Row>
 					</Form>
 				)}

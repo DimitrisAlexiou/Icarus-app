@@ -1,13 +1,16 @@
-import { FormGroup, Label, Row, Col, Button, Spinner, Input } from 'reactstrap';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Row, Col, Spinner } from 'reactstrap';
+import { Formik, Form } from 'formik';
 import {
 	addEvent,
 	setEditEvent,
 	updateEvent,
 } from '../../features/calendar/eventSlice';
 import { EventSchema } from '../../schemas/calendar/Event';
-import FormErrorMessage from '../form/FormErrorMessage';
 import DatePickerField from '../form/DatePickerField';
+import TextField from '../form/TextField';
+import SwitchField from '../form/SwitchField';
+import ClearButton from '../buttons/ClearButton';
+import SubmitButton from '../buttons/SubmitButton';
 
 export default function EventForm({
 	event,
@@ -62,46 +65,27 @@ export default function EventForm({
 					<Form>
 						<Row>
 							<Col xs="8" sm="8" md="8" lg="9" xl="9">
-								<FormGroup className="form-floating mb-3" floating>
-									<Field type="text" className="form-control" name="title" />
-									<Label for="title" className="text-gray-600">
-										Title
-									</Label>
-									<ErrorMessage name="title" component={FormErrorMessage} />
-								</FormGroup>
+								<TextField name="title" label="Title" />
 							</Col>
 							<Col className="text-right">
-								<FormGroup switch>
-									<Field name="allDay">
-										{({ field }) => (
-											<Input
-												type="switch"
-												role="switch"
-												name="allDay"
-												checked={field.value}
-												onChange={() => setFieldValue('allDay', !values.allDay)}
-											/>
-										)}
-									</Field>
-									<Label for="allDay" className="mx-1 text-gray-600">
-										All day
-									</Label>
-									<ErrorMessage name="allDay" component={FormErrorMessage} />
-								</FormGroup>
+								<SwitchField
+									name="allDay"
+									label="All day"
+									onChange={() => setFieldValue('allDay', !values.allDay)}
+								/>
 							</Col>
 						</Row>
 						<Row>
 							<DatePickerField />
 						</Row>
-						<Row className="mb-3">
-							<Col sm="6" md="6" xs="12" className="text-sm-left text-center">
-								<Button onClick={handleReset} disabled={!dirty || isSubmitting}>
-									Clear
-								</Button>
-							</Col>
-							<Col className="text-sm-right text-center mt-sm-0 mt-3">
-								<Button type="submit" color="primary" disabled={isSubmitting}>
-									{isSubmitting ? (
+						<Row>
+							<ClearButton
+								onClick={handleReset}
+								disabled={!dirty || isSubmitting}
+							/>
+							<SubmitButton
+								body={
+									isSubmitting ? (
 										<>
 											Please wait <Spinner type="grow" size="sm" />
 										</>
@@ -109,9 +93,10 @@ export default function EventForm({
 										'Update'
 									) : (
 										'Add'
-									)}
-								</Button>
-							</Col>
+									)
+								}
+								disabled={isSubmitting}
+							/>
 						</Row>
 					</Form>
 				)}

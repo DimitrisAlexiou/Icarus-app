@@ -1,17 +1,12 @@
 import { memo, useState } from 'react';
-import {
-	FormGroup,
-	Label,
-	Row,
-	Col,
-	Button,
-	Spinner,
-	Tooltip,
-} from 'reactstrap';
-import { Formik, Form, Field, ErrorMessage, FieldArray } from 'formik';
+import { Row, Col, Button, Spinner, Tooltip } from 'reactstrap';
+import { Formik, Form, FieldArray } from 'formik';
 import { updateTeaching } from '../../../features/courses/teachingSlice';
 import { TeachingSchema } from '../../../schemas/course/Teaching';
-import FormErrorMessage from '../../form/FormErrorMessage';
+import NumberField from '../../form/NumberField';
+import TextField from '../../form/TextField';
+import ClearButton from '../../buttons/ClearButton';
+import SubmitButton from '../../buttons/SubmitButton';
 
 export default function TeachingForm({
 	teaching,
@@ -78,50 +73,27 @@ export default function TeachingForm({
 					<Form>
 						<Row>
 							<Col md="12" lg="6">
-								<FormGroup
-									className="form-floating mb-3"
+								<NumberField
 									id="theoryTooltip"
-									floating
-								>
-									<Field
-										type="number"
-										min="0"
-										max="100"
-										className="form-control"
-										name="theoryWeight"
-										disabled={teaching.course.hasLab ? false : true}
-									/>
-									<Label for="theoryWeight" className="text-gray-600">
-										Theory Weight
-									</Label>
-									<ErrorMessage
-										name="theoryWeight"
-										component={FormErrorMessage}
-									/>
-								</FormGroup>
+									min="0"
+									max="100"
+									name="theoryWeight"
+									disabled={teaching.course.hasLab ? false : true}
+									label="Theory Weight"
+								/>
 								{teaching.course.hasLab ? null : (
 									<TooltipComponent field={'theory'} />
 								)}
 							</Col>
 							<Col>
-								<FormGroup
-									className="form-floating mb-3"
+								<NumberField
 									id="labTooltip"
-									floating
-								>
-									<Field
-										type="number"
-										min="0"
-										max="100"
-										className="form-control"
-										name="labWeight"
-										disabled={teaching.course.hasLab ? false : true}
-									/>
-									<Label for="labWeight" className="text-gray-600">
-										Lab Weight
-									</Label>
-									<ErrorMessage name="labWeight" component={FormErrorMessage} />
-								</FormGroup>
+									min="0"
+									max="100"
+									name="labWeight"
+									disabled={teaching.course.hasLab ? false : true}
+									label="Lab Weight"
+								/>
 								{teaching.course.hasLab ? null : (
 									<TooltipComponent field={'lab'} />
 								)}
@@ -129,79 +101,36 @@ export default function TeachingForm({
 						</Row>
 						<Row>
 							<Col md="12" lg="6">
-								<FormGroup className="form-floating mb-3" floating>
-									<Field
-										type="number"
-										min="0"
-										className="form-control"
-										name="theoryGradeRetentionYears"
-									/>
-									<Label
-										for="theoryGradeRetentionYears"
-										className="text-gray-600"
-									>
-										Theory Grade Retention Years
-									</Label>
-									<ErrorMessage
-										name="theoryGradeRetentionYears"
-										component={FormErrorMessage}
-									/>
-								</FormGroup>
+								<NumberField
+									min="0"
+									name="theoryGradeRetentionYears"
+									label="Theory Grade Retention Years"
+								/>
 							</Col>
 							<Col>
-								<FormGroup className="form-floating mb-3" floating>
-									<Field
-										type="number"
-										min="0"
-										className="form-control"
-										name="labGradeRetentionYears"
-									/>
-									<Label for="labGradeRetentionYears" className="text-gray-600">
-										Lab Grade Retention Years
-									</Label>
-									<ErrorMessage
-										name="labGradeRetentionYears"
-										component={FormErrorMessage}
-									/>
-								</FormGroup>
+								<NumberField
+									min="0"
+									name="labGradeRetentionYears"
+									label="Lab Grade Retention Years"
+								/>
 							</Col>
 						</Row>
 						<Row>
 							<Col md="12" lg="6">
-								<FormGroup className="form-floating mb-3" floating>
-									<Field
-										type="number"
-										min="0"
-										step="0.1"
-										className="form-control"
-										name="theoryGradeThreshold"
-									/>
-									<Label for="theoryGradeThreshold" className="text-gray-600">
-										Theory Grade Threshold
-									</Label>
-									<ErrorMessage
-										name="theoryGradeThreshold"
-										component={FormErrorMessage}
-									/>
-								</FormGroup>
+								<NumberField
+									min="0"
+									step="0.1"
+									name="theoryGradeThreshold"
+									label="Theory Grade Threshold"
+								/>
 							</Col>
 							<Col>
-								<FormGroup className="form-floating mb-3" floating>
-									<Field
-										type="number"
-										min="0"
-										step="0.1"
-										className="form-control"
-										name="labGradeThreshold"
-									/>
-									<Label for="labGradeThreshold" className="text-gray-600">
-										Lab Grade Threshold
-									</Label>
-									<ErrorMessage
-										name="labGradeThreshold"
-										component={FormErrorMessage}
-									/>
-								</FormGroup>
+								<NumberField
+									min="0"
+									step="0.1"
+									name="labGradeThreshold"
+									label="Lab Grade Threshold"
+								/>
 							</Col>
 						</Row>
 						<small
@@ -231,27 +160,11 @@ export default function TeachingForm({
 											<div key={index}>
 												<Row>
 													<Col>
-														<FormGroup
-															className="form-floating mb-3"
-															key={index}
-															floating
-														>
-															<Field
-																type="text"
-																className="form-control"
-																name={`books.${index}`}
-															/>
-															<Label
-																for={`books.${index}`}
-																className="text-gray-600"
-															>
-																{`Book ${index + 1}`}
-															</Label>
-															<ErrorMessage
-																name={`books.${index}`}
-																component={FormErrorMessage}
-															/>
-														</FormGroup>
+														<TextField
+															name={`books.${index}`}
+															label={`Book ${index + 1}`}
+															disabled={!values.type}
+														/>
 													</Col>
 													<Col
 														xs="2"
@@ -277,22 +190,22 @@ export default function TeachingForm({
 							)}
 						</FieldArray>
 						<Row>
-							<Col sm="6" md="6" xs="12" className="text-sm-left text-center">
-								<Button onClick={handleReset} disabled={!dirty || isSubmitting}>
-									Clear
-								</Button>
-							</Col>
-							<Col className="text-sm-right text-center mt-sm-0 mt-3">
-								<Button type="submit" color="primary" disabled={isSubmitting}>
-									{isSubmitting ? (
+							<ClearButton
+								onClick={handleReset}
+								disabled={!dirty || isSubmitting}
+							/>
+							<SubmitButton
+								body={
+									isSubmitting ? (
 										<>
 											Please wait <Spinner type="grow" size="sm" />
 										</>
 									) : (
 										'Update'
-									)}
-								</Button>
-							</Col>
+									)
+								}
+								disabled={isSubmitting}
+							/>
 						</Row>
 					</Form>
 				)}

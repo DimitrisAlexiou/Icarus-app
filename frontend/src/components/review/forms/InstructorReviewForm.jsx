@@ -1,13 +1,14 @@
-import { FormGroup, Label, Row, Col, Button, Spinner } from 'reactstrap';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Row, Spinner } from 'reactstrap';
+import { Formik, Form } from 'formik';
 import { InstructorReviewSchema } from '../../../schemas/review/InstructorReview';
 import {
 	createInstructorReview,
 	setEditInstructorReview,
 	updateInstructorReview,
 } from '../../../features/reviews/instructorReviewSlice';
-import RangeSlider from 'react-bootstrap-range-slider';
-import FormErrorMessage from '../../form/FormErrorMessage';
+import RangeSliderField from '../../form/RangeSliderField';
+import ClearButton from '../../buttons/ClearButton';
+import SubmitButton from '../../buttons/SubmitButton';
 
 export default function InstructorReviewForm({
 	user,
@@ -79,152 +80,34 @@ export default function InstructorReviewForm({
 			>
 				{({ isSubmitting, dirty, handleReset }) => (
 					<Form>
-						<FormGroup className="form-floating mb-3 mt-2" floating>
-							<Row>
-								<Label for="good_organization" className="text-gray-600 mt-2">
-									Good organization of presentation material
-								</Label>
-								<Field className="form-control" name="good_organization">
-									{({ field, form }) => (
-										<RangeSlider
-											step={1}
-											min={1}
-											max={5}
-											value={field.value}
-											onChange={(e) =>
-												form.setFieldValue(field.name, e.target.value)
-											}
-											tooltipPlacement="top"
-										/>
-									)}
-								</Field>
-							</Row>
-							<ErrorMessage
-								name="good_organization"
-								component={FormErrorMessage}
-							/>
-						</FormGroup>
-						<FormGroup className="form-floating mb-3" floating>
-							<Row>
-								<Label
-									for="clear_comprehensive_answers"
-									className="text-gray-600 mt-2"
-								>
-									Clear and comprehensive answers/exemplifications/examples
-								</Label>
-								<Field
-									className="form-control"
-									name="clear_comprehensive_answers"
-								>
-									{({ field, form }) => (
-										<RangeSlider
-											step={1}
-											min={1}
-											max={5}
-											value={field.value}
-											onChange={(e) =>
-												form.setFieldValue(field.name, e.target.value)
-											}
-											tooltipPlacement="top"
-										/>
-									)}
-								</Field>
-							</Row>
-							<ErrorMessage
-								name="clear_comprehensive_answers"
-								component={FormErrorMessage}
-							/>
-						</FormGroup>
-						<FormGroup className="form-floating mb-3" floating>
-							<Row>
-								<Label
-									for="student_participation"
-									className="text-gray-600 mt-2"
-								>
-									Active student participation encouragement
-								</Label>
-								<Field className="form-control" name="student_participation">
-									{({ field, form }) => (
-										<RangeSlider
-											step={1}
-											min={1}
-											max={5}
-											value={field.value}
-											onChange={(e) =>
-												form.setFieldValue(field.name, e.target.value)
-											}
-											tooltipPlacement="top"
-										/>
-									)}
-								</Field>
-							</Row>
-							<ErrorMessage
-								name="student_participation"
-								component={FormErrorMessage}
-							/>
-						</FormGroup>
-						<FormGroup className="form-floating mb-3" floating>
-							<Row>
-								<Label for="course_consistency" className="text-gray-600 mt-2">
-									Consistency in course obligations
-								</Label>
-								<Field className="form-control" name="course_consistency">
-									{({ field, form }) => (
-										<RangeSlider
-											step={1}
-											min={1}
-											max={5}
-											value={field.value}
-											onChange={(e) =>
-												form.setFieldValue(field.name, e.target.value)
-											}
-											tooltipPlacement="top"
-										/>
-									)}
-								</Field>
-							</Row>
-							<ErrorMessage
-								name="course_consistency"
-								component={FormErrorMessage}
-							/>
-						</FormGroup>
-						<FormGroup className="form-floating mb-3" floating>
-							<Row>
-								<Label
-									for="instructor_approachable"
-									className="text-gray-600 mt-2"
-								>
-									Approachability of the Instructor
-								</Label>
-								<Field className="form-control" name="instructor_approachable">
-									{({ field, form }) => (
-										<RangeSlider
-											step={1}
-											min={1}
-											max={5}
-											value={field.value}
-											onChange={(e) =>
-												form.setFieldValue(field.name, e.target.value)
-											}
-											tooltipPlacement="top"
-										/>
-									)}
-								</Field>
-							</Row>
-							<ErrorMessage
-								name="instructor_approachable"
-								component={FormErrorMessage}
-							/>
-						</FormGroup>
+						<RangeSliderField
+							name="good_organization"
+							label="Good organization of presentation material"
+						/>
+						<RangeSliderField
+							name="clear_comprehensive_answers"
+							label="Clear and comprehensive answers/exemplifications/examples"
+						/>
+						<RangeSliderField
+							name="student_participation"
+							label="Active student participation encouragement"
+						/>
+						<RangeSliderField
+							name="course_consistency"
+							label="Consistency in course obligations"
+						/>
+						<RangeSliderField
+							name="instructor_approachable"
+							label="Approachability of the Instructor"
+						/>
 						<Row>
-							<Col sm="6" md="6" xs="12" className="text-sm-left text-center">
-								<Button onClick={handleReset} disabled={!dirty || isSubmitting}>
-									Clear
-								</Button>
-							</Col>
-							<Col className="text-sm-right text-center mt-sm-0 mt-3">
-								<Button type="submit" color="primary" disabled={isSubmitting}>
-									{isSubmitting ? (
+							<ClearButton
+								onClick={handleReset}
+								disabled={!dirty || isSubmitting}
+							/>
+							<SubmitButton
+								body={
+									isSubmitting ? (
 										<>
 											Please wait <Spinner type="grow" size="sm" />
 										</>
@@ -232,9 +115,10 @@ export default function InstructorReviewForm({
 										'Update'
 									) : (
 										'Review'
-									)}
-								</Button>
-							</Col>
+									)
+								}
+								disabled={isSubmitting}
+							/>
 						</Row>
 					</Form>
 				)}

@@ -59,10 +59,27 @@ export default function Master({ user }) {
 
 					<Row className="mb-4 animated--grow-in">
 						<Col className="text-sm-left text-center">
-							<h3 className="mt-sm-0 mt-3 text-gray-800 font-weight-bold animated--grow-in">
+							<h3 className="mt-sm-0 mt-md-3 mt-lg-0 mt-3 text-gray-800 font-weight-bold animated--grow-in">
 								{master.title}
 							</h3>
 						</Col>
+						{filteredCourses.length ? (
+							<>
+								<Col
+									xl="3"
+									lg="2"
+									md="2"
+									sm="12"
+									className="mt-sm-0 mt-md-3 mt-lg-0 d-flex justify-content-end"
+								>
+									<h6 className="text-gray-400 font-weight-bold">
+										{filteredCourses.length} course
+										{filteredCourses.length > 1 && 's'}
+									</h6>
+								</Col>
+								{numOfPages > 1 ? <PageButton /> : null}
+							</>
+						) : null}
 					</Row>
 
 					{filteredCourses.length ? (
@@ -74,7 +91,8 @@ export default function Master({ user }) {
 										xs="12"
 										sm="12"
 										md="12"
-										lg="5"
+										lg="9"
+										xl="5"
 										className="mb-3 mx-auto"
 									>
 										{isLoading ? (
@@ -85,13 +103,6 @@ export default function Master({ user }) {
 									</Col>
 								))}
 							</Row>
-							<Col className="d-flex justify-content-end">
-								<h6 className="mb-3 text-gray-400 font-weight-bold animated--grow-in">
-									{filteredCourses.length} course
-									{filteredCourses.length > 1 && 's'}
-								</h6>
-							</Col>
-							{numOfPages > 1 ? <PageButton /> : null}
 						</>
 					) : (
 						<Notification

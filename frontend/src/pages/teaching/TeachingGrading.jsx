@@ -33,6 +33,15 @@ export default function TeachingGrading() {
 			<Row className="mt-3 mb-4 justify-content-between animated--grow-in">
 				<Col className="text-center">
 					<Header title="active teachings" />
+					<h6
+						className="text-muted pill-label"
+						style={{
+							fontWeight: '700',
+							fontSize: 15,
+						}}
+					>
+						{filteredTeachings.length}
+					</h6>
 				</Col>
 			</Row>
 

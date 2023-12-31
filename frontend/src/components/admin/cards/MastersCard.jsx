@@ -37,7 +37,7 @@ const MastersCard = ({
 				<Badge color="info">Master Programs</Badge>
 				<Row className="mt-3 mb-4">
 					<Col xl="11" lg="11" md="12" sm="12">
-						<div className="card shadow mb-3 py-3">
+						<div className="card shadow mb-3 py-1">
 							<div className="card-body">
 								{isMastersLoading ? (
 									<Spinner card />
@@ -85,7 +85,7 @@ const MastersCard = ({
 												{masters.map((master, index) => (
 													<div key={master._id}>
 														<div
-															className={`card shadow py-3 ${
+															className={`card shadow py-1 ${
 																index !== masters.length - 1 ? ' mb-3' : ''
 															}`}
 														>

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import { FormGroup, Label, Row, Col, Button, Spinner } from 'reactstrap';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Row, Col, Spinner } from 'reactstrap';
+import { Formik, Form } from 'formik';
 import {
 	defineMaster,
 	updateMaster,
@@ -12,7 +12,11 @@ import {
 	academicYearStart,
 } from '../../../utils/academicYears';
 import { startOfMonth } from 'date-fns';
-import FormErrorMessage from '../../form/FormErrorMessage';
+import NumberField from '../../form/NumberField';
+import TextField from '../../form/TextField';
+import SelectField from '../../form/SelectField';
+import ClearButton from '../../buttons/ClearButton';
+import SubmitButton from '../../buttons/SubmitButton';
 
 export default function MasterProgramForm({
 	master,
@@ -104,68 +108,41 @@ export default function MasterProgramForm({
 			>
 				{({ isSubmitting, dirty, handleReset }) => (
 					<Form>
-						<FormGroup className="form-floating mb-3" floating>
-							<Field type="text" className="form-control" name="title" />
-							<Label for="title" className="text-gray-600">
-								Title
-							</Label>
-							<ErrorMessage name="title" component={FormErrorMessage} />
-						</FormGroup>
-						<FormGroup className="form-floating mb-3" floating>
-							<Field as="select" name="startDate" className="form-control">
-								<option default> Select start date </option>
-								{startDateOptions.map((option) => (
-									<option
-										key={option.value}
-										value={option.value}
-										label={option.label}
-									/>
-								))}
-							</Field>
-							<Label for="startDate" className="text-gray-600">
-								Start Date
-							</Label>
-							<ErrorMessage name="startDate" component={FormErrorMessage} />
-						</FormGroup>
+						<TextField name="title" label="Title" />
+						<SelectField
+							name="startDate"
+							label="Start Date"
+							options={
+								<>
+									<option className="text-gray-300" default>
+										Select start date
+									</option>
+									{startDateOptions.map((option) => (
+										<option
+											key={option.value}
+											value={option.value}
+											label={option.label}
+										/>
+									))}
+								</>
+							}
+						/>
 						<Row>
 							<Col>
-								<FormGroup className="form-floating mb-3" floating>
-									<Field
-										type="number"
-										min="1"
-										className="form-control"
-										name="duration"
-									/>
-									<Label for="duration" className="text-gray-600">
-										Duration
-									</Label>
-									<ErrorMessage name="duration" component={FormErrorMessage} />
-								</FormGroup>
+								<NumberField name="duration" min="1" label="Duration" />
 							</Col>
 							<Col>
-								<FormGroup className="form-floating mb-3" floating>
-									<Field
-										type="number"
-										min="1"
-										className="form-control"
-										name="ects"
-									/>
-									<Label for="ects" className="text-gray-600">
-										ECTS
-									</Label>
-									<ErrorMessage name="ects" component={FormErrorMessage} />
-								</FormGroup>
+								<NumberField name="ects" min="1" label="ECTS" />
 							</Col>
 						</Row>
 						<Row className="mb-3">
-							<Col sm="6" md="6" xs="12" className="text-sm-left text-center">
-								<Button onClick={handleReset} disabled={!dirty || isSubmitting}>
-									Clear
-								</Button>
-							</Col>
-							<Col className="text-sm-right text-center mt-sm-0 mt-3">
-								<Button type="submit" color="primary" disabled={isSubmitting}>
-									{isSubmitting ? (
+							<ClearButton
+								onClick={handleReset}
+								disabled={!dirty || isSubmitting}
+							/>
+							<SubmitButton
+								body={
+									isSubmitting ? (
 										<>
 											Please wait <Spinner type="grow" size="sm" />
 										</>
@@ -173,9 +150,10 @@ export default function MasterProgramForm({
 										'Update'
 									) : (
 										'Configure'
-									)}
-								</Button>
-							</Col>
+									)
+								}
+								disabled={isSubmitting}
+							/>
 						</Row>
 					</Form>
 				)}

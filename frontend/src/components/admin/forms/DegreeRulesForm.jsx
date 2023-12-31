@@ -1,13 +1,15 @@
-import { FormGroup, Label, Row, Col, Button, Spinner } from 'reactstrap';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Row, Col, Spinner } from 'reactstrap';
+import { Formik, Form } from 'formik';
 import { DegreeRulesSchema } from '../../../schemas/admin/DegreeRules';
-import { FormCheckbox } from '../../form/FormCheckbox';
 import {
 	defineDegreeRules,
 	setEditDegreeRules,
 	updateDegreeRules,
 } from '../../../features/admin/degreeRulesSlice';
-import FormErrorMessage from '../../form/FormErrorMessage';
+import NumberField from '../../form/NumberField';
+import CheckBoxField from '../../form/CheckBoxField';
+import ClearButton from '../../buttons/ClearButton';
+import SubmitButton from '../../buttons/SubmitButton';
 
 export default function DegreeRulesForm({
 	degreeRules,
@@ -57,70 +59,36 @@ export default function DegreeRulesForm({
 					<Form>
 						<Row>
 							<Col md="6">
-								<FormGroup className="form-floating mb-3" floating>
-									<Field
-										type="number"
-										min="0"
-										className="form-control"
-										name="courses"
-									/>
-									<Label for="courses" className="text-gray-600">
-										Obligatory Courses
-									</Label>
-									<ErrorMessage name="courses" component={FormErrorMessage} />
-								</FormGroup>
+								<NumberField
+									name="courses"
+									min="0"
+									label="Obligatory Courses"
+								/>
 							</Col>
 							<Col>
-								<FormGroup className="form-floating mb-3" floating>
-									<Field
-										type="number"
-										min="0"
-										className="form-control"
-										name="cycles"
-									/>
-									<Label for="cycles" className="text-gray-600">
-										Obligatory Cycles
-									</Label>
-									<ErrorMessage name="cycles" component={FormErrorMessage} />
-								</FormGroup>
+								<NumberField name="cycles" min="0" label="Obligatory Cycles" />
 							</Col>
 						</Row>
 						<Row>
 							<Col md="7">
-								<FormGroup className="form-floating mb-3" floating>
-									<Field
-										type="number"
-										min="0"
-										className="form-control"
-										name="cycleCourses"
-									/>
-									<Label for="cycleCourses" className="text-gray-600">
-										Cycle completion
-									</Label>
-									<ErrorMessage
-										name="cycleCourses"
-										component={FormErrorMessage}
-									/>
-								</FormGroup>
+								<NumberField
+									name="cycleCourses"
+									min="0"
+									label="Cycle completion"
+								/>
 							</Col>
 							<Col>
-								<FormGroup className="mx-1 mb-3" check>
-									<Field name="practice" component={FormCheckbox} />
-									<Label for="practice" className="text-gray-500">
-										Practice
-									</Label>
-								</FormGroup>
+								<CheckBoxField name="practice" label="Practice" />
 							</Col>
 						</Row>
 						<Row className="mb-3">
-							<Col sm="6" md="6" xs="12" className="text-sm-left text-center">
-								<Button onClick={handleReset} disabled={!dirty || isSubmitting}>
-									Clear
-								</Button>
-							</Col>
-							<Col className="text-sm-right text-center mt-sm-0 mt-3">
-								<Button type="submit" color="primary" disabled={isSubmitting}>
-									{isSubmitting ? (
+							<ClearButton
+								onClick={handleReset}
+								disabled={!dirty || isSubmitting}
+							/>
+							<SubmitButton
+								body={
+									isSubmitting ? (
 										<>
 											Please wait <Spinner type="grow" size="sm" />
 										</>
@@ -128,9 +96,10 @@ export default function DegreeRulesForm({
 										'Update'
 									) : (
 										'Configure'
-									)}
-								</Button>
-							</Col>
+									)
+								}
+								disabled={isSubmitting}
+							/>
 						</Row>
 					</Form>
 				)}

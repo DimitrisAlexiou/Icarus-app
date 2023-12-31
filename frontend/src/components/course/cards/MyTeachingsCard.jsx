@@ -2,6 +2,7 @@ import { Col, Row } from 'reactstrap';
 import useTeachings from '../../../hooks/admin/useTeachings';
 import Spinner from '../../boilerplate/spinners/Spinner';
 import SpinnerComponent from '../../boilerplate/spinners/SpinnerMessage';
+import Header from '../../boilerplate/Header';
 
 export default function MyTeachingsCard() {
 	const {
@@ -15,20 +16,18 @@ export default function MyTeachingsCard() {
 	return (
 		<>
 			<Row className="justify-content-center animated--grow-in mb-3">
-				<h6
-					className="animated--grow-in text-gray-500"
-					style={{ textAlign: 'center' }}
-				>
-					<small
+				<Col className="text-center">
+					<Header title="My Teachings" />
+					<h6
 						className="text-muted pill-label"
 						style={{
 							fontWeight: '700',
 							fontSize: 15,
 						}}
 					>
-						My Teachings
-					</small>
-				</h6>
+						{instructorTeachings.length}
+					</h6>
+				</Col>
 			</Row>
 			<div className="profile_card">
 				<div className="card-body">
@@ -82,13 +81,6 @@ export default function MyTeachingsCard() {
 											</Row>
 										);
 									})}
-									<Col className="d-flex justify-content-end">
-										<h6 className="text-gray-400 font-weight-bold animated--grow-in">
-											{instructorTeachings.length} teaching
-											{instructorTeachings.length > 1 && 's'} assigned
-										</h6>
-									</Col>
-									{/* {numOfPages > 1 ? <PageButton /> : null} */}
 								</>
 							) : (
 								<SpinnerComponent message="You are not assigned in any teachings." />

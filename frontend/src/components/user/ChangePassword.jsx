@@ -9,7 +9,7 @@ export default function ChangePassword({ user }) {
 			</h5>
 
 			<Row className="d-flex justify-content-center">
-				<Col xl="8" lg="8" md="10" sm="12" xs="12">
+				<Col xl="10" lg="10" md="10" sm="12" xs="12">
 					<div className="profile_card animated--grow-in">
 						<div className="card-body">
 							<ChangePasswordForm user={user} />

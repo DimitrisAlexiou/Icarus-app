@@ -1,13 +1,15 @@
-import { FormGroup, Label, Row, Col, Button, Spinner } from 'reactstrap';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Label, Row, Col, Spinner } from 'reactstrap';
+import { Formik, Form } from 'formik';
 import { AssessmentSchema } from '../../../schemas/admin/Assessment';
 import {
 	defineAssessment,
 	setEditAssessment,
 	updateAssessment,
 } from '../../../features/admin/assessmentSlice';
-import FormErrorMessage from '../../form/FormErrorMessage';
 import DatePickerField from '../../form/DatePickerField';
+import NumberField from '../../form/NumberField';
+import ClearButton from '../../buttons/ClearButton';
+import SubmitButton from '../../buttons/SubmitButton';
 
 export default function AssessmentForm({
 	assessment,
@@ -62,18 +64,11 @@ export default function AssessmentForm({
 					<Form>
 						<Row>
 							<Col>
-								<FormGroup className="form-floating mb-3" floating>
-									<Field
-										type="number"
-										min="1"
-										className="form-control"
-										name="period"
-									/>
-									<Label for="period" className="text-gray-600">
-										Assessment statement period
-									</Label>
-									<ErrorMessage name="period" component={FormErrorMessage} />
-								</FormGroup>
+								<NumberField
+									min="1"
+									name="period"
+									label="Assessment statement period"
+								/>
 							</Col>
 						</Row>
 						<Row>
@@ -86,14 +81,13 @@ export default function AssessmentForm({
 							<DatePickerField />
 						</Row>
 						<Row className="mb-3">
-							<Col sm="6" md="6" xs="12" className="text-sm-left text-center">
-								<Button onClick={handleReset} disabled={!dirty || isSubmitting}>
-									Clear
-								</Button>
-							</Col>
-							<Col className="text-sm-right text-center mt-sm-0 mt-3">
-								<Button type="submit" color="primary" disabled={isSubmitting}>
-									{isSubmitting ? (
+							<ClearButton
+								onClick={handleReset}
+								disabled={!dirty || isSubmitting}
+							/>
+							<SubmitButton
+								body={
+									isSubmitting ? (
 										<>
 											Please wait <Spinner type="grow" size="sm" />
 										</>
@@ -101,9 +95,10 @@ export default function AssessmentForm({
 										'Update'
 									) : (
 										'Configure'
-									)}
-								</Button>
-							</Col>
+									)
+								}
+								disabled={isSubmitting}
+							/>
 						</Row>
 					</Form>
 				)}

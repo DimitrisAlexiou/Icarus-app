@@ -36,31 +36,29 @@ export default function Portfolio() {
 					xl="10"
 					className="nav nav-pills p-2 bg-white mb-3 rounded-pill align-items-center"
 				>
-					<Row className="d-flex justify-content-center">
-						{portfolioCategories.map((portfolioCategory) => {
-							const { id, text, icon } = portfolioCategory;
-							return (
-								<Col key={id} className="text-center" xs="auto">
-									<NavItem className="nav-item mx-1">
-										<NavLink
-											style={{ fontSize: '0.9rem' }}
-											className={`nav-link ${
-												selectedCategory === text
-													? 'font-weight-bold text-gray-600 clickable'
-													: 'text-gray-500 clickable'
-											}`}
-											onClick={() => {
-												setSelectedCategory(text);
-											}}
-										>
-											<Col>{icon}</Col>
-											<span>{text}</span>
-										</NavLink>
-									</NavItem>
-								</Col>
-							);
-						})}
-					</Row>
+					{portfolioCategories.map((portfolioCategory) => {
+						const { id, text, icon } = portfolioCategory;
+						return (
+							<Col key={id} className="text-center">
+								<NavItem>
+									<NavLink
+										style={{ fontSize: '0.9rem' }}
+										className={`nav-link ${
+											selectedCategory === text
+												? 'font-weight-bold text-gray-600 clickable'
+												: 'text-gray-500 clickable'
+										}`}
+										onClick={() => {
+											setSelectedCategory(text);
+										}}
+									>
+										<Col>{icon}</Col>
+										<span>{text}</span>
+									</NavLink>
+								</NavItem>
+							</Col>
+						);
+					})}
 				</Col>
 			</Row>
 			<Row className="animated--grow-in">

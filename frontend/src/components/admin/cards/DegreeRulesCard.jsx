@@ -23,7 +23,7 @@ const DegreeRulesCard = ({
 				<Badge color="info">Degree Rules</Badge>
 				<Row className="mt-3 mb-4">
 					<Col xl="11" lg="11" md="12" sm="12">
-						<div className="card shadow mb-3 py-3">
+						<div className="card shadow mb-3 py-1">
 							<div className="card-body">
 								{isDegreeRulesLoading ? (
 									<Spinner card />

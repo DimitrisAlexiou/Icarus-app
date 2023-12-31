@@ -1,12 +1,14 @@
-import { FormGroup, Label, Row, Col, Button, Spinner } from 'reactstrap';
-import { Formik, FieldArray, Field, Form, ErrorMessage } from 'formik';
+import { Row, Col, Button, Spinner } from 'reactstrap';
+import { Formik, FieldArray, Form } from 'formik';
 import { CycleEditSchema, CycleSchema } from '../../../schemas/admin/Cycle';
 import {
 	defineCycle,
 	setEditCycle,
 	updateCycle,
 } from '../../../features/admin/cyclesSlice';
-import FormErrorMessage from '../../form/FormErrorMessage';
+import TextField from '../../form/TextField';
+import ClearButton from '../../buttons/ClearButton';
+import SubmitButton from '../../buttons/SubmitButton';
 
 const CycleForm = ({
 	cycle,
@@ -49,13 +51,7 @@ const CycleForm = ({
 				{({ isSubmitting, dirty, values, handleReset }) => (
 					<Form>
 						{isEditingCycle ? (
-							<FormGroup className="form-floating mb-3" floating>
-								<Field type="text" className="form-control" name="cycle" />
-								<Label for="cycle" className="text-gray-600">
-									Cycle
-								</Label>
-								<ErrorMessage name="cycle" component={FormErrorMessage} />
-							</FormGroup>
+							<TextField name="cycle" label="Cycle" />
 						) : (
 							<FieldArray name="cycle">
 								{({ push, remove }) => (
@@ -75,25 +71,7 @@ const CycleForm = ({
 											{values.cycle.map((_, index) => (
 												<Row key={index}>
 													<Col xs="11" sm="11" md="11" lg="11" xl="11">
-														<FormGroup className="form-floating mb-3" floating>
-															<Field
-																type="text"
-																className="form-control"
-																name={`cycle.${index}`}
-															/>
-															<Label
-																for={`cycle.${index}`}
-																className="text-gray-600"
-															>
-																{!isEditingCycle
-																	? `Cycle ${index + 1}`
-																	: `Cycle`}
-															</Label>
-															<ErrorMessage
-																name={`cycle.${index}`}
-																component={FormErrorMessage}
-															/>
-														</FormGroup>
+														<TextField name={`cycle.${index}`} label="Cycle" />
 													</Col>
 													{values.cycle.length > 1 ? (
 														<Col
@@ -121,14 +99,13 @@ const CycleForm = ({
 							</FieldArray>
 						)}
 						<Row className="mb-3">
-							<Col sm="6" md="6" xs="12" className="text-sm-left text-center">
-								<Button onClick={handleReset} disabled={!dirty || isSubmitting}>
-									Clear
-								</Button>
-							</Col>
-							<Col className="text-sm-right text-center mt-sm-0 mt-3">
-								<Button type="submit" color="primary" disabled={isSubmitting}>
-									{isSubmitting ? (
+							<ClearButton
+								onClick={handleReset}
+								disabled={!dirty || isSubmitting}
+							/>
+							<SubmitButton
+								body={
+									isSubmitting ? (
 										<>
 											Please wait <Spinner type="grow" size="sm" />
 										</>
@@ -136,9 +113,10 @@ const CycleForm = ({
 										'Update'
 									) : (
 										'Configure'
-									)}
-								</Button>
-							</Col>
+									)
+								}
+								disabled={isSubmitting}
+							/>
 						</Row>
 					</Form>
 				)}

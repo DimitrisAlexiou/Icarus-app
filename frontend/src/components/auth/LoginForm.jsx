@@ -1,11 +1,14 @@
 import { useState } from 'react';
-import { FormGroup, Label, Row, Col, Button, Spinner } from 'reactstrap';
-import { Formik, Field, ErrorMessage, Form } from 'formik';
+import { Row, Col, Button, Spinner } from 'reactstrap';
+import { Formik, Form } from 'formik';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEyeSlash } from '@fortawesome/free-regular-svg-icons';
 import { LoginSchema } from '../../schemas/auth/Login';
 import { login } from '../../features/auth/authSlice';
-import FormErrorMessage from '../form/FormErrorMessage';
+import TextField from '../form/TextField';
+import PasswordField from '../form/PasswordField';
+import ClearButton from '../buttons/ClearButton';
+import SubmitButton from '../buttons/SubmitButton';
 
 export default function LoginForm({ dispatch }) {
 	const [showPassword, setShowPassword] = useState(false);
@@ -30,26 +33,14 @@ export default function LoginForm({ dispatch }) {
 			>
 				{({ isSubmitting, dirty, handleReset }) => (
 					<Form>
-						<FormGroup className="form-floating mb-3" floating>
-							<Field type="text" className="form-control" name="username" />
-							<Label for="username" className="text-gray-600">
-								Username
-							</Label>
-							<ErrorMessage name="username" component={FormErrorMessage} />
-						</FormGroup>
+						<TextField name="username" label="Username" />
 						<Row>
 							<Col md="10" sm="10" xs="10">
-								<FormGroup className="form-group mb-3" floating>
-									<Field
-										type={showPassword ? 'text' : 'password'}
-										className="form-control"
-										name="password"
-									/>
-									<Label for="password" className="text-gray-600">
-										Password
-									</Label>
-									<ErrorMessage name="password" component={FormErrorMessage} />
-								</FormGroup>
+								<PasswordField
+									name="password"
+									label="Password"
+									type={showPassword ? 'text' : 'password'}
+								/>
 							</Col>
 							<Col
 								md="2"
@@ -69,29 +60,26 @@ export default function LoginForm({ dispatch }) {
 								</Button>
 							</Col>
 						</Row>
-						<Row className="">
-							<Col md="6" sm="6" xs="12" className="text-sm-left text-center">
-								<Button
-									onClick={() => {
-										handleReset();
-										setShowPassword(false);
-									}}
-									disabled={!dirty || isSubmitting}
-								>
-									Clear
-								</Button>
-							</Col>
-							<Col className="text-sm-right text-center mt-sm-0 mt-3">
-								<Button type="submit" color="primary" disabled={isSubmitting}>
-									{isSubmitting ? (
+						<Row>
+							<ClearButton
+								onClick={() => {
+									handleReset();
+									setShowPassword(false);
+								}}
+								disabled={!dirty || isSubmitting}
+							/>
+							<SubmitButton
+								body={
+									isSubmitting ? (
 										<>
 											Please wait <Spinner type="grow" size="sm" />
 										</>
 									) : (
 										'Login'
-									)}
-								</Button>
-							</Col>
+									)
+								}
+								disabled={isSubmitting}
+							/>
 						</Row>
 					</Form>
 				)}

@@ -55,19 +55,22 @@ export default function Undergraduate({ user }) {
 
 					{/* <Search /> */}
 
-					<Row className="mb-3 animated--grow-in">
-						<Col xs="12" sm="12" md="9" className="text-sm-left text-center">
-							<h3 className="mt-sm-0 mt-3 text-gray-800 font-weight-bold">
-								Undergraduate
-							</h3>
+					<Row className="animated--grow-in">
+						<Col
+							xs="12"
+							sm="12"
+							md="9"
+							className="mt-sm-0 mt-md-3 mt-lg-0 mt-3 text-sm-left text-center"
+						>
+							<h3 className="text-gray-800 font-weight-bold">Undergraduate</h3>
 						</Col>
 						<Col
 							xs="12"
 							sm="12"
 							md="3"
-							className="mt-sm-0 mt-3 d-flex justify-content-end align-items-center"
+							className="mt-sm-0 mt-md-3 mt-lg-0 mt-3 d-flex justify-content-end align-items-center"
 						>
-							<Nav className="justify-content-between navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow sticky-top">
+							<Nav className="justify-content-between navbar navbar-expand navbar-light bg-white topbar mb-3 static-top shadow sticky-top">
 								<div className="navbar-nav">
 									<NavItem className="nav-item mx-1">
 										<NavLink
@@ -100,6 +103,15 @@ export default function Undergraduate({ user }) {
 
 					{filteredCourses.length ? (
 						<>
+							<Row className="mb-2">
+								<Col className="d-flex justify-content-end">
+									<h6 className="text-gray-400 font-weight-bold">
+										{filteredCourses.length} course
+										{filteredCourses.length > 1 && 's'}
+									</h6>
+								</Col>
+								{numOfPages > 1 ? <PageButton /> : null}
+							</Row>
 							<Row className="justify-content-center animated--grow-in">
 								{filteredCourses.map((course) => (
 									<Col
@@ -107,7 +119,8 @@ export default function Undergraduate({ user }) {
 										xs="12"
 										sm="12"
 										md="12"
-										lg="5"
+										lg="9"
+										xl="5"
 										className="mb-3 mx-auto"
 									>
 										{isLoading ? (
@@ -118,13 +131,6 @@ export default function Undergraduate({ user }) {
 									</Col>
 								))}
 							</Row>
-							<Col className="d-flex justify-content-end">
-								<h6 className="mb-3 text-gray-400 font-weight-bold animated--grow-in">
-									{filteredCourses.length} course
-									{filteredCourses.length > 1 && 's'}
-								</h6>
-							</Col>
-							{numOfPages > 1 ? <PageButton /> : null}
 						</>
 					) : (
 						<Notification

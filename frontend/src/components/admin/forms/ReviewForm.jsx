@@ -1,13 +1,15 @@
-import { FormGroup, Label, Row, Col, Button, Spinner } from 'reactstrap';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Label, Row, Col, Spinner } from 'reactstrap';
+import { Formik, Form } from 'formik';
 import { ReviewSchema } from '../../../schemas/admin/Review';
 import {
 	defineReview,
 	setEditReview,
 	updateReview,
 } from '../../../features/admin/reviewSlice';
-import FormErrorMessage from '../../form/FormErrorMessage';
 import DatePickerField from '../../form/DatePickerField';
+import NumberField from '../../form/NumberField';
+import ClearButton from '../../buttons/ClearButton';
+import SubmitButton from '../../buttons/SubmitButton';
 
 export default function ReviewForm({
 	review,
@@ -58,21 +60,7 @@ export default function ReviewForm({
 					<Form>
 						<Row>
 							<Col>
-								<FormGroup className="form-floating mb-3" floating>
-									<Field
-										type="number"
-										min="1"
-										className="form-control"
-										name="startAfter"
-									/>
-									<Label for="startAfter" className="text-gray-600">
-										Review start
-									</Label>
-									<ErrorMessage
-										name="startAfter"
-										component={FormErrorMessage}
-									/>
-								</FormGroup>
+								<NumberField name="startAfter" min="1" label="Review start" />
 							</Col>
 						</Row>
 						<Row>
@@ -85,14 +73,13 @@ export default function ReviewForm({
 							<DatePickerField />
 						</Row>
 						<Row className="mb-3">
-							<Col sm="6" md="6" xs="12" className="text-sm-left text-center">
-								<Button onClick={handleReset} disabled={!dirty || isSubmitting}>
-									Clear
-								</Button>
-							</Col>
-							<Col className="text-sm-right text-center mt-sm-0 mt-3">
-								<Button type="submit" color="primary" disabled={isSubmitting}>
-									{isSubmitting ? (
+							<ClearButton
+								onClick={handleReset}
+								disabled={!dirty || isSubmitting}
+							/>
+							<SubmitButton
+								body={
+									isSubmitting ? (
 										<>
 											Please wait <Spinner type="grow" size="sm" />
 										</>
@@ -100,9 +87,10 @@ export default function ReviewForm({
 										'Update'
 									) : (
 										'Configure'
-									)}
-								</Button>
-							</Col>
+									)
+								}
+								disabled={isSubmitting}
+							/>
 						</Row>
 					</Form>
 				)}

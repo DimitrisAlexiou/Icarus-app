@@ -1,9 +1,9 @@
-import { FormGroup, Label, Row, Col, Card, CardBody } from 'reactstrap';
+import { FormGroup, Row, Col, Card, CardBody } from 'reactstrap';
 import { Formik, Form, Field } from 'formik';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import useSearch from '../../hooks/course/useSearch';
-import FormCheckbox from './FormCheckbox';
+import CheckBoxField from './CheckBoxField';
 
 export default function Search() {
 	const {
@@ -38,9 +38,21 @@ export default function Search() {
 										/>
 									</FormGroup>
 								</Col>
-								<Col sm="12" md="2" lg="2" xl="1">
+								<Col
+									sm="12"
+									md="2"
+									lg="2"
+									xl="1"
+									className="mx-1 mx-md-2 mx-xl-1 mb-3"
+								>
 									{/* search by semester */}
-									<FormGroup className="mx-1 mx-md-2  mx-xl-1 mb-3" check>
+									<CheckBoxField
+										name="searchSemester"
+										label="Semester"
+										value={searchSemester}
+										handleChange={handleSearch}
+									/>
+									{/* <FormGroup className="mx-1 mx-md-2 mx-xl-1 mb-3" check>
 										<Field
 											type="checkbox"
 											name="searchSemester"
@@ -51,11 +63,23 @@ export default function Search() {
 										<Label for="searchSemester" className="text-gray-600">
 											Semester
 										</Label>
-									</FormGroup>
+									</FormGroup> */}
 								</Col>
-								<Col sm="12" md="2" lg="2" xl="1">
+								<Col
+									sm="12"
+									md="2"
+									lg="2"
+									xl="1"
+									className="mx-1 mx-md-4 mx-xl-5 mb-3"
+								>
 									{/* search by cycle*/}
-									<FormGroup className="mx-1 mx-md-4 mx-xl-5 mb-3" check>
+									<CheckBoxField
+										name="searchCycle"
+										label="Cycle"
+										value={searchCycle}
+										handleChange={handleSearch}
+									/>
+									{/* <FormGroup className="mx-1 mx-md-4 mx-xl-5 mb-3" check>
 										<Field
 											type="checkbox"
 											name="searchCycle"
@@ -66,11 +90,23 @@ export default function Search() {
 										<Label for="searchCycle" className="text-gray-600">
 											Cycle
 										</Label>
-									</FormGroup>
+									</FormGroup> */}
 								</Col>
-								<Col sm="12" md="2" lg="2" xl="1">
+								<Col
+									sm="12"
+									md="2"
+									lg="2"
+									xl="1"
+									className="mx-1 mx-md-2 mx-xl-5 mb-3"
+								>
 									{/* search by lab*/}
-									<FormGroup className="mx-1 mx-md-2 mx-xl-5 mb-3" check>
+									<CheckBoxField
+										name="searchHasLab"
+										label="Lab"
+										value={searchHasLab}
+										handleChange={handleSearch}
+									/>
+									{/* <FormGroup className="mx-1 mx-md-2 mx-xl-5 mb-3" check>
 										<Field
 											type="checkbox"
 											name="searchHasLab"
@@ -81,7 +117,7 @@ export default function Search() {
 										<Label for="searchHasLab" className="text-gray-600">
 											Lab
 										</Label>
-									</FormGroup>
+									</FormGroup> */}
 								</Col>
 								<Col md="2" lg="2" xl="1" className="mx-xl-5">
 									{/* sort options */}

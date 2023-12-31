@@ -1,14 +1,14 @@
 import { Link, NavLink } from 'react-router-dom';
-import { Button, Row, Col, FormGroup, Label, Nav } from 'reactstrap';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Button, Row, Col, Nav } from 'reactstrap';
+import { Formik, Form } from 'formik';
 import { FaStudiovinari } from 'react-icons/fa';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 import { EmailSchema } from '../../schemas/auth/ForgotPassword';
 import useForgotPassword from '../../hooks/auth/useForgotPassword';
-import FormErrorMessage from '../../components/form/FormErrorMessage';
 import Spinner from '../../components/boilerplate/spinners/Spinner';
 import FooterLanding from '../../components/boilerplate/FooterLanding';
+import EmailField from '../../components/form/EmailField';
 
 export default function ForgotPassword() {
 	const { user, isLoading, handleForgotPassword } = useForgotPassword();
@@ -78,20 +78,7 @@ export default function ForgotPassword() {
 													>
 														{({ isSubmitting }) => (
 															<Form>
-																<FormGroup className="form-group mb-3" floating>
-																	<Field
-																		type="email"
-																		className="form-control"
-																		name="email"
-																	/>
-																	<Label for="email" className="text-gray-600">
-																		Email
-																	</Label>
-																	<ErrorMessage
-																		name="email"
-																		component={FormErrorMessage}
-																	/>
-																</FormGroup>
+																<EmailField name="email" label="Email" />
 																<Row className="mt-4">
 																	<Col className="text-center">
 																		<Button

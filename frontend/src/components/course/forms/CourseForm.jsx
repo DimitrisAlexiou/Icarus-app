@@ -16,13 +16,19 @@ import {
 	setEditCourse,
 	updateCourse,
 } from '../../../features/courses/courseSlice';
-import { FormCheckbox } from '../../form/FormCheckbox';
 import {
 	CourseType,
 	PrerequisiteType,
 	SemesterType,
 } from '../../../constants/enums';
 import FormErrorMessage from '../../form/FormErrorMessage';
+import NumberField from '../../form/NumberField';
+import TextField from '../../form/TextField';
+import SelectField from '../../form/SelectField';
+import TextAreaField from '../../form/TextAreaField';
+import CheckBoxField from '../../form/CheckBoxField';
+import ClearButton from '../../buttons/ClearButton';
+import SubmitButton from '../../buttons/SubmitButton';
 
 export default function CourseForm({
 	course,
@@ -184,172 +190,116 @@ export default function CourseForm({
 										))}
 									</Field>
 									<Label for="type" className="text-gray-600">
-										Course Type
+										Type
 									</Label>
 									<ErrorMessage name="type" component={FormErrorMessage} />
 								</FormGroup>
 							</Col>
 							<Col md="8">
-								<FormGroup className="form-floating mb-3" floating>
-									<Field type="text" className="form-control" name="title" />
-									<Label for="title" className="text-gray-600">
-										Course Title
-									</Label>
-									<ErrorMessage name="title" component={FormErrorMessage} />
-								</FormGroup>
+								<TextField name="title" label="Title" />
 							</Col>
 						</Row>
-						<Row>
+						<Row className="align-items-center">
 							<Col md="4">
-								<FormGroup
+								<TextField
 									id="courseIdTooltip"
-									className="form-floating mb-3"
-									floating
-								>
-									<Field
-										type="text"
-										className="form-control"
-										name="courseId"
-										disabled={!values.type}
-									/>
-									<Label for="courseId" className="text-gray-600">
-										Course ID
-									</Label>
-									<ErrorMessage name="courseId" component={FormErrorMessage} />
-								</FormGroup>
+									name="courseId"
+									label="ID"
+									disabled={!values.type}
+								/>
 								<TooltipComponent type={values.type} />
 							</Col>
 							<Col md="3">
-								<FormGroup className="mx-1 mb-3 mt-3" check>
-									<Field
-										type="checkbox"
-										name="isObligatory"
-										component={FormCheckbox}
-										onClick={handleIsObligatory}
-										disabled={!values.type || values.type === CourseType.Master}
-									/>
-									<Label for="isObligatory" className="text-gray-500">
-										Obligatory
-									</Label>
-								</FormGroup>
+								<CheckBoxField
+									name="isObligatory"
+									label="Obligatory"
+									onClick={handleIsObligatory}
+									disabled={!values.type || values.type === CourseType.Master}
+								/>
 							</Col>
 							<Col md="3">
-								<FormGroup className="mx-1 mb-3 mt-3" check>
-									<Field
-										type="checkbox"
-										name="hasPrerequisites"
-										component={FormCheckbox}
-										onClick={handlePrerequisites}
-									/>
-									<Label for="hasPrerequisites" className="text-gray-500">
-										Prerequisites
-									</Label>
-								</FormGroup>
+								<CheckBoxField
+									name="hasPrerequisites"
+									label="Prerequisites"
+									onClick={handlePrerequisites}
+								/>
 							</Col>
 							<Col md="2">
-								<FormGroup className="mx-1 mb-3 mt-3" check>
-									<Field
-										type="checkbox"
-										name="hasLab"
-										component={FormCheckbox}
-									/>
-									<Label for="hasLab" className="text-gray-500">
-										Lab
-									</Label>
-								</FormGroup>
+								<CheckBoxField name="hasLab" label="Lab" />
 							</Col>
 						</Row>
-						<FormGroup className="form-floating mb-3" floating>
-							<Field
-								as="textarea"
-								className="form-control"
-								style={{ height: '180px', text_align: 'justify' }}
-								name="description"
-							/>
-							<Label for="description" className="text-gray-600">
-								Course Description
-							</Label>
-							<ErrorMessage name="description" component={FormErrorMessage} />
-						</FormGroup>
+						<TextAreaField name="description" label="Description" />
 						<Row>
 							<Col md="6">
-								<FormGroup className="form-floating mb-3" floating>
-									<Field as="select" className="form-control" name="semester">
-										<option default>Select course semester</option>
-										<option value={SemesterType.Winter}>
-											{SemesterType.Winter}
-										</option>
-										<option value={SemesterType.Spring}>
-											{SemesterType.Spring}
-										</option>
-										<option value={SemesterType.Any}>{SemesterType.Any}</option>
-									</Field>
-									<Label for="semester" className="text-gray-600">
-										Course Semester
-									</Label>
-									<ErrorMessage name="semester" component={FormErrorMessage} />
-								</FormGroup>
+								<SelectField
+									name="semester"
+									label="Semester"
+									options={
+										<>
+											<option className="text-gray-300" default>
+												Select course semester
+											</option>
+											<option value={SemesterType.Winter}>
+												{SemesterType.Winter}
+											</option>
+											<option value={SemesterType.Spring}>
+												{SemesterType.Spring}
+											</option>
+											<option value={SemesterType.Any}>
+												{SemesterType.Any}
+											</option>
+										</>
+									}
+								/>
 							</Col>
 							<Col md="3">
-								<FormGroup className="form-floating mb-3" floating>
-									<Field
-										type="number"
-										min="0"
-										step="0.5"
-										className="form-control"
-										name="ects"
-									/>
-									<Label for="ects" className="text-gray-600">
-										Course ECTS
-									</Label>
-									<ErrorMessage name="ects" component={FormErrorMessage} />
-								</FormGroup>
+								<NumberField name="ects" min="0" step="0.5" label="ECTS" />
 							</Col>
 							<Col md="3">
-								<FormGroup className="form-floating mb-3" floating>
-									<Field
-										as="select"
-										className="form-control"
-										name="year"
-										value={values.year}
-										disabled={!values.type}
-									>
-										<option default>Select course year</option>
-										{course ? (
-											<option>{course.year}</option>
-										) : (
-											values.years &&
-											values.years.map((y) => (
-												<option key={y.value} value={y.value}>
-													{y.label}
-												</option>
-											))
-										)}
-									</Field>
-									<Label for="year" className="text-gray-600">
-										Course Year
-									</Label>
-									<ErrorMessage name="year" component={FormErrorMessage} />
-								</FormGroup>
+								<SelectField
+									name="year"
+									label="Year"
+									value={values.year}
+									disabled={!values.type}
+									options={
+										<>
+											<option className="text-gray-300" default>
+												Select course year
+											</option>
+											{course ? (
+												<option>{course.year}</option>
+											) : (
+												values.years &&
+												values.years.map((y) => (
+													<option key={y.value} value={y.value}>
+														{y.label}
+													</option>
+												))
+											)}
+										</>
+									}
+								/>
 							</Col>
 						</Row>
 						<Row>
 							{values.type === CourseType.Master ? (
 								<Col md="6">
-									<FormGroup className="form-floating mb-3" floating>
-										<Field as="select" className="form-control" name="master">
-											<option default>Select master program</option>
-											{masters.map((master) => (
-												<option key={master._id} value={master._id}>
-													{master.title}
+									<SelectField
+										name="master"
+										label="Master Program"
+										options={
+											<>
+												<option className="text-gray-300" default>
+													Select master program
 												</option>
-											))}
-										</Field>
-										<Label for="master" className="text-gray-600">
-											Master Program
-										</Label>
-										<ErrorMessage name="master" component={FormErrorMessage} />
-									</FormGroup>
+												{masters.map((master) => (
+													<option key={master._id} value={master._id}>
+														{master.title}
+													</option>
+												))}
+											</>
+										}
+									/>
 								</Col>
 							) : null}
 							<Col md="6">
@@ -358,20 +308,22 @@ export default function CourseForm({
 								isObligatory === false ? null : !isObligatory ||
 								  (course && course.cycle) ? (
 									<>
-										<FormGroup className="form-floating mb-3" floating>
-											<Field as="select" className="form-control" name="cycle">
-												<option default>Select course cycle</option>
-												{cycles.map((cycle) => (
-													<option key={cycle._id} value={cycle._id}>
-														{cycle.cycle}
+										<SelectField
+											name="cycle"
+											label="Cycle"
+											options={
+												<>
+													<option className="text-gray-300" default>
+														Select course cycle
 													</option>
-												))}
-											</Field>
-											<Label for="cycle" className="text-gray-600">
-												Course Cycle
-											</Label>
-											<ErrorMessage name="cycle" component={FormErrorMessage} />
-										</FormGroup>
+													{cycles.map((cycle) => (
+														<option key={cycle._id} value={cycle._id}>
+															{cycle.cycle}
+														</option>
+													))}
+												</>
+											}
+										/>
 									</>
 								) : null}
 							</Col>
@@ -414,63 +366,44 @@ export default function CourseForm({
 													values.prerequisites.map((prerequisite, index) => (
 														<Row key={index}>
 															<Col md="6">
-																<FormGroup
-																	className="form-floating mb-3"
-																	floating
-																>
-																	<Field
-																		as="select"
-																		className="form-control"
-																		name={`prerequisites.${index}.prerequisite`}
-																	>
-																		<option default>Select prerequisite</option>
-																		{courses.map((course) => (
-																			<option
-																				key={course._id}
-																				value={course._id}
-																			>
-																				{course.title}
+																<SelectField
+																	name={`prerequisites.${index}.prerequisite`}
+																	label={`Prerequisite ${index + 1}`}
+																	options={
+																		<>
+																			<option className="text-gray-300" default>
+																				Select prerequisite
 																			</option>
-																		))}
-																	</Field>
-																	<Label
-																		for={`prerequisites.${index}.prerequisite`}
-																		className="text-gray-600"
-																	>
-																		Prerequisite {index + 1}
-																	</Label>
-																	<ErrorMessage
-																		name={`prerequisites.${index}.prerequisite`}
-																		component={FormErrorMessage}
-																	/>
-																</FormGroup>
+																			{courses.map((course) => (
+																				<option
+																					key={course._id}
+																					value={course._id}
+																				>
+																					{course.title}
+																				</option>
+																			))}
+																		</>
+																	}
+																/>
 															</Col>
 															<Col md="5">
-																<FormGroup className="form-floating" floating>
-																	<Field
-																		as="select"
-																		className="form-control"
-																		name={`prerequisites.${index}.prerequisiteType`}
-																	>
-																		<option default>Select type</option>
-																		<option value={PrerequisiteType.Hard}>
-																			{PrerequisiteType.Hard}
-																		</option>
-																		<option value={PrerequisiteType.Soft}>
-																			{PrerequisiteType.Soft}
-																		</option>
-																	</Field>
-																	<Label
-																		for={`prerequisites.${index}.prerequisiteType`}
-																		className="text-gray-600"
-																	>
-																		Prerequisite Type
-																	</Label>
-																	<ErrorMessage
-																		name={`prerequisites.${index}.prerequisiteType`}
-																		component={FormErrorMessage}
-																	/>
-																</FormGroup>
+																<SelectField
+																	name={`prerequisites.${index}.prerequisiteType`}
+																	label="Prerequisite Type"
+																	options={
+																		<>
+																			<option className="text-gray-300" default>
+																				Select type
+																			</option>
+																			<option value={PrerequisiteType.Hard}>
+																				{PrerequisiteType.Hard}
+																			</option>
+																			<option value={PrerequisiteType.Soft}>
+																				{PrerequisiteType.Soft}
+																			</option>
+																		</>
+																	}
+																/>
 															</Col>
 															{isEditingCourse ? (
 																<Col md="1" className="text-right">
@@ -505,23 +438,19 @@ export default function CourseForm({
 							</>
 						) : null}
 						<Row>
-							<Col sm="6" md="6" xs="12" className="text-sm-left text-center">
-								<Button
-									onClick={() => {
-										handleReset();
-										if (!course) {
-											setHasPrerequisites(false);
-											setIsObligatory(true);
-										}
-									}}
-									disabled={!dirty || isSubmitting}
-								>
-									Clear
-								</Button>
-							</Col>
-							<Col className="text-sm-right text-center mt-sm-0 mt-3">
-								<Button type="submit" color="primary" disabled={isSubmitting}>
-									{isSubmitting ? (
+							<ClearButton
+								onClick={() => {
+									handleReset();
+									if (!course) {
+										setHasPrerequisites(false);
+										setIsObligatory(true);
+									}
+								}}
+								disabled={!dirty || isSubmitting}
+							/>
+							<SubmitButton
+								body={
+									isSubmitting ? (
 										<>
 											Please wait <Spinner type="grow" size="sm" />
 										</>
@@ -529,9 +458,10 @@ export default function CourseForm({
 										'Update'
 									) : (
 										'Create'
-									)}
-								</Button>
-							</Col>
+									)
+								}
+								disabled={isSubmitting}
+							/>
 						</Row>
 					</Form>
 				)}

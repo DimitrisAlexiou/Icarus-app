@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { FormGroup, Label, Row, Col, Button, Spinner, Input } from 'reactstrap';
+import { Formik, Form } from 'formik';
+import { Row, Col, Button, Spinner } from 'reactstrap';
 import {
 	assignLabGrading,
 	assignTheoryGrading,
@@ -12,7 +12,11 @@ import { ExaminationType } from '../../../constants/enums';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmarkCircle } from '@fortawesome/free-regular-svg-icons';
 import { deleteAlert } from '../../../constants/sweetAlertNotification';
-import FormErrorMessage from '../../form/FormErrorMessage';
+import NumberField from '../../form/NumberField';
+import SelectField from '../../form/SelectField';
+import RadioField from '../../form/RadioField';
+import ClearButton from '../../buttons/ClearButton';
+import SubmitButton from '../../buttons/SubmitButton';
 
 export default function TeachingGradingForm({
 	teaching,
@@ -40,19 +44,14 @@ export default function TeachingGradingForm({
 				<Col md="6">
 					<Row className="align-items-center mb-3">
 						<Col>
-							<FormGroup className="mx-1" check>
-								<Input
-									type="radio"
-									name="teachingPart"
-									value="theory"
-									checked={selectedPart === 'theory'}
-									onChange={() => setSelectedPart('theory')}
-									disabled={!canEditTheory}
-								/>
-								<Label for="theory" className="mx-2 text-gray-500">
-									Theory
-								</Label>
-							</FormGroup>
+							<RadioField
+								name="theory"
+								value="theory"
+								label="Theory"
+								checked={selectedPart === 'theory'}
+								onChange={() => setSelectedPart('theory')}
+								disabled={!canEditTheory}
+							/>
 						</Col>
 						{teaching.theoryExamination.length ? (
 							<Col className="text-right">
@@ -79,19 +78,14 @@ export default function TeachingGradingForm({
 					<Col md="6">
 						<Row className="align-items-center mb-3">
 							<Col>
-								<FormGroup className="mx-1" check>
-									<Input
-										type="radio"
-										name="teachingPart"
-										value="lab"
-										checked={selectedPart === 'lab'}
-										onChange={() => setSelectedPart('lab')}
-										disabled={!canEditLab}
-									/>
-									<Label for="lab" className="mx-2 text-gray-500">
-										Lab
-									</Label>
-								</FormGroup>
+								<RadioField
+									name="lab"
+									value="lab"
+									label="Lab"
+									checked={selectedPart === 'lab'}
+									onChange={() => setSelectedPart('lab')}
+									disabled={!canEditLab}
+								/>
 							</Col>
 							{teaching.labExamination.length ? (
 								<Col className="text-right">
@@ -222,74 +216,41 @@ export default function TeachingGradingForm({
 										</Row>
 										<Row>
 											<Col md="6">
-												<FormGroup className="form-floating mb-3" floating>
-													<Field
-														as="select"
-														name={`theoryExamination[${index}].type`}
-														className="form-control"
-													>
-														<option default>Select exam type</option>
-														{Object.values(ExaminationType).map((type) => (
-															<option key={type} value={type}>
-																{type}
+												<SelectField
+													name={`theoryExamination[${index}].type`}
+													label="Examination Type"
+													options={
+														<>
+															<option className="text-gray-300" default>
+																Select exam type
 															</option>
-														))}
-													</Field>
-													<Label
-														for={`theoryExamination[${index}].type`}
-														className="text-gray-600"
-													>
-														Examination Type
-													</Label>
-													<ErrorMessage
-														name={`theoryExamination[${index}].type`}
-														component={FormErrorMessage}
-													/>
-												</FormGroup>
+															{Object.values(ExaminationType).map((type) => (
+																<option key={type} value={type}>
+																	{type}
+																</option>
+															))}
+														</>
+													}
+												/>
 											</Col>
 											<Col md="6">
-												<FormGroup className="form-floating mb-3" floating>
-													<Field
-														type="number"
-														name={`theoryExamination[${index}].weight`}
-														min="0"
-														max="100"
-														className="form-control"
-													/>
-													<Label
-														for={`theoryExamination[${index}].weight`}
-														className="text-gray-600"
-													>
-														Weight
-													</Label>
-													<ErrorMessage
-														name={`theoryExamination[${index}].weight`}
-														component={FormErrorMessage}
-													/>
-												</FormGroup>
+												<NumberField
+													name={`theoryExamination[${index}].weight`}
+													min="0"
+													max="100"
+													label="Weight"
+												/>
 											</Col>
 										</Row>
 										<Row>
 											<Col md="6">
-												<FormGroup className="form-floating mb-3" floating>
-													<Field
-														type="number"
-														name={`theoryExamination[${index}].lowerGradeThreshold`}
-														min="0"
-														max="10"
-														className="form-control"
-													/>
-													<Label
-														for={`theoryExamination[${index}].lowerGradeThreshold`}
-														className="text-gray-600"
-													>
-														Lower Grade Threshold
-													</Label>
-													<ErrorMessage
-														name={`theoryExamination[${index}].lowerGradeThreshold`}
-														component={FormErrorMessage}
-													/>
-												</FormGroup>
+												<NumberField
+													name={`theoryExamination[${index}].lowerGradeThreshold`}
+													min="0"
+													max="10"
+													step="0.5"
+													label="Lower Grade Threshold"
+												/>
 											</Col>
 										</Row>
 									</div>
@@ -349,74 +310,41 @@ export default function TeachingGradingForm({
 										</Row>
 										<Row>
 											<Col md="6">
-												<FormGroup className="form-floating mb-3" floating>
-													<Field
-														as="select"
-														name={`labExamination[${index}].type`}
-														className="form-control"
-													>
-														<option default>Select exam type</option>
-														{Object.values(ExaminationType).map((type) => (
-															<option key={type} value={type}>
-																{type}
+												<SelectField
+													name={`labExamination[${index}].type`}
+													label="Examination Type"
+													options={
+														<>
+															<option className="text-gray-300" default>
+																Select exam type
 															</option>
-														))}
-													</Field>
-													<Label
-														for={`labExamination[${index}].type`}
-														className="text-gray-600"
-													>
-														Examination Type
-													</Label>
-													<ErrorMessage
-														name={`labExamination[${index}].type`}
-														component={FormErrorMessage}
-													/>
-												</FormGroup>
+															{Object.values(ExaminationType).map((type) => (
+																<option key={type} value={type}>
+																	{type}
+																</option>
+															))}
+														</>
+													}
+												/>
 											</Col>
 											<Col md="6">
-												<FormGroup className="form-floating mb-3" floating>
-													<Field
-														type="number"
-														name={`labExamination[${index}].weight`}
-														min="0"
-														max="100"
-														className="form-control"
-													/>
-													<Label
-														for={`labExamination[${index}].weight`}
-														className="text-gray-600"
-													>
-														Weight
-													</Label>
-													<ErrorMessage
-														name={`labExamination[${index}].weight`}
-														component={FormErrorMessage}
-													/>
-												</FormGroup>
+												<NumberField
+													name={`labExamination[${index}].weight`}
+													min="0"
+													max="100"
+													label="Weight"
+												/>
 											</Col>
 										</Row>
 										<Row>
 											<Col md="6">
-												<FormGroup className="form-floating mb-3" floating>
-													<Field
-														type="number"
-														name={`labExamination[${index}].lowerGradeThreshold`}
-														min="0"
-														max="10"
-														className="form-control"
-													/>
-													<Label
-														for={`labExamination[${index}].lowerGradeThreshold`}
-														className="text-gray-600"
-													>
-														Lower Grade Threshold
-													</Label>
-													<ErrorMessage
-														name={`labExamination[${index}].lowerGradeThreshold`}
-														component={FormErrorMessage}
-													/>
-												</FormGroup>
+												<NumberField
+													name={`labExamination[${index}].lowerGradeThreshold`}
+													min="0"
+													max="10"
+													step="0.5"
+													label="Lower Grade Threshold"
+												/>
 											</Col>
 										</Row>
 									</div>
@@ -424,17 +352,13 @@ export default function TeachingGradingForm({
 							</>
 						)}
 						<Row>
-							<Col sm="6" md="6" xs="12" className="text-sm-left text-center">
-								<Button
-									onClick={() => resetForm()}
-									disabled={!dirty || isSubmitting}
-								>
-									Clear
-								</Button>
-							</Col>
-							<Col className="text-sm-right text-center mt-sm-0 mt-3">
-								<Button type="submit" color="primary" disabled={isSubmitting}>
-									{isSubmitting ? (
+							<ClearButton
+								onClick={() => resetForm()}
+								disabled={!dirty || isSubmitting}
+							/>
+							<SubmitButton
+								body={
+									isSubmitting ? (
 										<>
 											Please wait <Spinner type="grow" size="sm" />
 										</>
@@ -444,9 +368,10 @@ export default function TeachingGradingForm({
 										'Update'
 									) : (
 										'Configure'
-									)}
-								</Button>
-							</Col>
+									)
+								}
+								disabled={isSubmitting}
+							/>
 						</Row>
 					</Form>
 				)}

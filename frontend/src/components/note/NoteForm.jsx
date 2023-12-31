@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { FormGroup, Label, Row, Col, Button, Input, Spinner } from 'reactstrap';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { FormGroup, Row, Col, Button, Spinner } from 'reactstrap';
+import { Formik, Form, ErrorMessage } from 'formik';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmarkCircle } from '@fortawesome/free-regular-svg-icons';
 import { faDroplet, faPlus } from '@fortawesome/free-solid-svg-icons';
@@ -15,6 +15,12 @@ import { deleteAlert } from '../../constants/sweetAlertNotification';
 import { ChromePicker } from 'react-color';
 import CreatableSelect from 'react-select/creatable';
 import FormErrorMessage from '../form/FormErrorMessage';
+import TextField from '../form/TextField';
+import TextAreaField from '../form/TextAreaField';
+import FileField from '../form/FileField';
+import SwitchField from '../form/SwitchField';
+import ClearButton from '../buttons/ClearButton';
+import SubmitButton from '../buttons/SubmitButton';
 
 export default function NoteForm({
 	note,
@@ -127,57 +133,23 @@ export default function NoteForm({
 				}}
 				validateOnMount
 			>
-				{({ isSubmitting, values, setFieldValue, dirty, handleReset }) => (
+				{({ isSubmitting, values, dirty, setFieldValue, handleReset }) => (
 					<Form>
 						<Row>
 							<Col xs="8" sm="8" md="8" lg="9" xl="9">
-								<FormGroup className="form-floating mb-3" floating>
-									<Field type="text" className="form-control" name="title" />
-									<Label for="title" className="text-gray-600">
-										Title
-									</Label>
-									<ErrorMessage name="title" component={FormErrorMessage} />
-								</FormGroup>
+								<TextField name="title" label="Title" />
 							</Col>
 							<Col className="text-right">
-								<FormGroup switch>
-									<Field name="importance">
-										{({ field }) => (
-											<Input
-												type="switch"
-												role="switch"
-												name="importance"
-												checked={field.value}
-												onChange={() =>
-													setFieldValue('importance', !values.importance)
-												}
-											/>
-										)}
-									</Field>
-									<Label for="importance" className="mx-1 text-gray-600">
-										Important
-									</Label>
-									<ErrorMessage
-										name="importance"
-										component={FormErrorMessage}
-									/>
-								</FormGroup>
+								<SwitchField
+									name="importance"
+									label="Important"
+									onChange={() =>
+										setFieldValue('importance', !values.importance)
+									}
+								/>
 							</Col>
 						</Row>
-
-						<FormGroup className="form-floating mb-3" floating>
-							<Field
-								as="textarea"
-								className="form-control"
-								style={{ height: '180px', text_align: 'justify' }}
-								name="text"
-							/>
-							<Label for="text" className="text-gray-600">
-								Text
-							</Label>
-							<ErrorMessage name="text" component={FormErrorMessage} />
-						</FormGroup>
-
+						<TextAreaField name="text" label="Text" />
 						<Row>
 							<Col md="12" lg="9" xl="9">
 								{values.file ? (
@@ -213,13 +185,7 @@ export default function NoteForm({
 										</Row>
 									</>
 								) : (
-									<FormGroup className="mb-3">
-										<Label for="file" className="text-gray-500">
-											File
-										</Label>
-										<Field name="file" type="file" className="form-control" />
-										<ErrorMessage name="file" component={FormErrorMessage} />
-									</FormGroup>
+									<FileField name="file" label="File" />
 								)}
 							</Col>
 							<Col className="text-right">
@@ -232,7 +198,6 @@ export default function NoteForm({
 								</Button>
 							</Col>
 						</Row>
-
 						{note && note.categories && note.categories.length > 0 ? (
 							<Row className="mt-3">
 								<Col>
@@ -291,7 +256,6 @@ export default function NoteForm({
 								</Col>
 							</Row>
 						) : null}
-
 						{category ? (
 							<>
 								<FormGroup className="form-floating mb-3 mt-2" floating>
@@ -347,24 +311,19 @@ export default function NoteForm({
 								</FormGroup>
 							</>
 						) : null}
-
-						<Row className="mt-4">
-							<Col className="mb-3">
-								<Button
-									onClick={() => {
-										setValue([]);
-										setInputValue('');
-										showCategory(false);
-										handleReset();
-									}}
-									disabled={!dirty || isSubmitting}
-								>
-									Clear
-								</Button>
-							</Col>
-							<Col className="text-right">
-								<Button color="primary" type="submit" disabled={isSubmitting}>
-									{isSubmitting ? (
+						<Row>
+							<ClearButton
+								onClick={() => {
+									setValue([]);
+									setInputValue('');
+									showCategory(false);
+									handleReset();
+								}}
+								disabled={!dirty || isSubmitting}
+							/>
+							<SubmitButton
+								body={
+									isSubmitting ? (
 										<>
 											Please wait <Spinner type="grow" size="sm" />
 										</>
@@ -372,9 +331,10 @@ export default function NoteForm({
 										'Update'
 									) : (
 										'Post'
-									)}
-								</Button>
-							</Col>
+									)
+								}
+								disabled={isSubmitting}
+							/>
 						</Row>
 					</Form>
 				)}

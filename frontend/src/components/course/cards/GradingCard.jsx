@@ -20,7 +20,7 @@ const GradingCard = ({ teaching }) => {
 			</Row>
 			{teaching.theoryExamination.length ? (
 				teaching.theoryExamination.map((examination, index) => (
-					<Row key={index}>
+					<Row className="mb-3" key={index}>
 						<label>
 							<b
 								style={{
@@ -32,7 +32,7 @@ const GradingCard = ({ teaching }) => {
 								Examination {index + 1}
 							</b>
 						</label>
-						<Row className="mb-3">
+						<Row>
 							<Col xs="12" md="12" xl="4">
 								<label>
 									<b>Type</b>
@@ -56,14 +56,12 @@ const GradingCard = ({ teaching }) => {
 								>
 									{examination.type}
 								</small>
-								<hr />
 							</Col>
 							<Col xs="12" md="6" xl="4">
 								<label>
 									<b>Weight</b>
 								</label>
 								<p style={{ textAlign: 'justify' }}>{examination.weight}</p>
-								<hr />
 							</Col>
 							<Col xs="12" md="6" xl="4">
 								<label>
@@ -72,7 +70,6 @@ const GradingCard = ({ teaching }) => {
 								<p style={{ textAlign: 'justify' }}>
 									{examination.lowerGradeThreshold}
 								</p>
-								<hr />
 							</Col>
 						</Row>
 					</Row>
@@ -97,7 +94,7 @@ const GradingCard = ({ teaching }) => {
 			</Row>
 			{teaching.labExamination.length ? (
 				teaching.labExamination.map((examination, index) => (
-					<Row key={index}>
+					<Row className="mb-3" key={index}>
 						<label>
 							<b
 								style={{
@@ -109,7 +106,7 @@ const GradingCard = ({ teaching }) => {
 								Examination {index + 1}
 							</b>
 						</label>
-						<Row className="mb-3">
+						<Row>
 							<Col xs="12" md="12" xl="4">
 								<label>
 									<b>Type</b>
@@ -133,14 +130,12 @@ const GradingCard = ({ teaching }) => {
 								>
 									{examination.type}
 								</small>
-								<hr />
 							</Col>
 							<Col xs="12" md="6" xl="4">
 								<label>
 									<b>Weight</b>
 								</label>
 								<p style={{ textAlign: 'justify' }}>{examination.weight}</p>
-								<hr />
 							</Col>
 							<Col xs="12" md="6" xl="4">
 								<label>
@@ -149,7 +144,6 @@ const GradingCard = ({ teaching }) => {
 								<p style={{ textAlign: 'justify' }}>
 									{examination.lowerGradeThreshold}
 								</p>
-								<hr />
 							</Col>
 						</Row>
 					</Row>
