@@ -1,5 +1,6 @@
-import { Request, Response } from 'express';
-import { startSession } from 'mongoose';
+import { Response } from 'express';
+import mongoose, { startSession } from 'mongoose';
+import { AuthenticatedRequest } from '../interfaces/AuthRequest';
 import {
 	createNote,
 	getNotes,
@@ -9,28 +10,28 @@ import {
 	deleteNote,
 	deleteNotes,
 } from '../models/note';
-import { UserProps } from '../models/users/user';
 import { tryCatch } from '../utils/tryCatch';
 import CustomError from '../utils/CustomError';
-
-interface AuthenticatedRequest extends Request {
-	user?: UserProps;
-}
 
 export const createUserNote = tryCatch(
 	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const { title, text, file, importance } = req.body;
 		let { categories } = req.body;
 
-		if (!title || !text) throw new CustomError('Please fill in all the required fields.', 400);
+		if (!title || !text)
+			throw new CustomError('Please fill in all the required fields.', 400);
 
-		if (categories && typeof categories === 'string') categories = categories.split(',');
+		if (categories && typeof categories === 'string')
+			categories = categories.split(',');
 
 		const userId = req.user.id;
 		const existingNote = await getNoteByTitle(title);
 
 		if (existingNote)
-			throw new CustomError('Seems like a note with this title already exists.', 400);
+			throw new CustomError(
+				'Seems like a note with this title already exists.',
+				400
+			);
 
 		const note = await createNote({
 			title,
@@ -38,8 +39,7 @@ export const createUserNote = tryCatch(
 			file,
 			categories,
 			importance,
-			owner: userId,
-			status: 'new',
+			owner: new mongoose.Types.ObjectId(userId),
 		});
 		console.log(note);
 
@@ -66,7 +66,8 @@ export const updateUserNote = tryCatch(
 	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const { title, text } = req.body;
 
-		if (!title || !text) throw new CustomError('Please fill in all the required fields.', 400);
+		if (!title || !text)
+			throw new CustomError('Please fill in all the required fields.', 400);
 
 		const { id } = req.params;
 		const updatedNote = await updateNoteById(id, {
@@ -113,7 +114,10 @@ export const getUserNotes = tryCatch(
 		const userNotes = await getNotes(userId);
 
 		if (!userNotes.length)
-			throw new CustomError(`Seems like you haven't posted any notes yet.`, 404);
+			throw new CustomError(
+				`Seems like you haven't posted any notes yet.`,
+				404
+			);
 
 		return res.status(200).json(userNotes);
 	}
@@ -130,7 +134,9 @@ export const deleteUserNote = tryCatch(
 				404
 			);
 
-		return res.status(200).json({ message: 'Note deleted.', note: noteToDelete._id });
+		return res
+			.status(200)
+			.json({ message: 'Note deleted.', note: noteToDelete._id });
 	}
 );
 

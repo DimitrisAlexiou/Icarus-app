@@ -5,7 +5,9 @@ import { getSemester } from '../features/admin/semesterSlice';
 const useCurrentSemester = () => {
 	const dispatch = useDispatch();
 
-	const { semester } = useSelector((state) => state.semesters);
+	const { semester, isLoading: isSemesterLoading } = useSelector(
+		(state) => state.semesters
+	);
 
 	useEffect(() => {
 		dispatch(getSemester());
@@ -13,6 +15,7 @@ const useCurrentSemester = () => {
 
 	return {
 		semester,
+		isSemesterLoading,
 	};
 };
 

@@ -1,4 +1,6 @@
-import { Request, Response } from 'express';
+import mongoose from 'mongoose';
+import { Response } from 'express';
+import { AuthenticatedRequest } from '../../interfaces/AuthRequest';
 import {
 	createReview,
 	updateReviewById,
@@ -12,7 +14,7 @@ import { tryCatch } from '../../utils/tryCatch';
 import CustomError from '../../utils/CustomError';
 
 export const defineReviewStatement = tryCatch(
-	async (req: Request, res: Response): Promise<Response> => {
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const { startDate, endDate, startAfter } = req.body;
 
 		if (!startDate || !endDate || !startAfter)
@@ -43,35 +45,38 @@ export const defineReviewStatement = tryCatch(
 			startDate,
 			endDate,
 			startAfter,
-			semester: semester,
-			status: 'new',
+			semester: new mongoose.Types.ObjectId(semesterId),
 		});
 
-		return res.status(201).json({ message: 'Review configuration defined!', review });
+		return res
+			.status(201)
+			.json({ message: 'Review configuration defined!', review });
 	}
 );
 
-export const getReviewStatement = tryCatch(async (_: Request, res: Response): Promise<Response> => {
-	const semester = await getCurrentSemester(new Date());
-	if (!semester)
-		throw new CustomError(
-			'Seems like there is no defined semester for current period. Define a semester first in order to define review statement configuration.',
-			404
-		);
+export const getReviewStatement = tryCatch(
+	async (_: AuthenticatedRequest, res: Response): Promise<Response> => {
+		const semester = await getCurrentSemester(new Date());
+		if (!semester)
+			throw new CustomError(
+				'Seems like there is no defined semester for current period. Define a semester first in order to define review statement configuration.',
+				404
+			);
 
-	const semesterId = semester._id.toString();
-	const review = await getReviewBySemester(semesterId);
-	if (!review)
-		throw new CustomError(
-			'Seems like there is no review statement configuration defined for this semester.',
-			404
-		);
+		const semesterId = semester._id.toString();
+		const review = await getReviewBySemester(semesterId);
+		if (!review)
+			throw new CustomError(
+				'Seems like there is no review statement configuration defined for this semester.',
+				404
+			);
 
-	return res.status(200).json(review);
-});
+		return res.status(200).json(review);
+	}
+);
 
 export const getReviewStatements = tryCatch(
-	async (_: Request, res: Response): Promise<Response> => {
+	async (_: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const reviews = await getReview();
 		if (!reviews.length)
 			throw new CustomError(
@@ -84,7 +89,7 @@ export const getReviewStatements = tryCatch(
 );
 
 export const updateReviewStatement = tryCatch(
-	async (req: Request, res: Response): Promise<Response> => {
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const { startDate, endDate, startAfter } = req.body;
 
 		if (!startDate || !endDate || !startAfter)
@@ -111,12 +116,14 @@ export const updateReviewStatement = tryCatch(
 				404
 			);
 
-		return res.status(200).json({ message: 'Review configuration updated!', updatedReview });
+		return res
+			.status(200)
+			.json({ message: 'Review configuration updated!', updatedReview });
 	}
 );
 
 export const deleteReviewStatement = tryCatch(
-	async (req: Request, res: Response): Promise<Response> => {
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const { id } = req.params;
 		const reviewStatementToDelete = await deleteReviewById(id);
 		if (!reviewStatementToDelete)
@@ -125,12 +132,14 @@ export const deleteReviewStatement = tryCatch(
 				404
 			);
 
-		return res.status(200).json({ message: 'Review statement configuration deleted.' });
+		return res
+			.status(200)
+			.json({ message: 'Review statement configuration deleted.' });
 	}
 );
 
 export const deleteSystemReviewStatements = tryCatch(
-	async (_: Request, res: Response): Promise<Response> => {
+	async (_: AuthenticatedRequest, res: Response): Promise<Response> => {
 		await deleteReview();
 		return res
 			.status(200)

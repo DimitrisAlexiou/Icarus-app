@@ -21,31 +21,37 @@ const updateInstructorReview = async (instructorReviewId, data) => {
 };
 
 const getInstructorReview = async (instructorReviewId) => {
-	const response = await axiosFetch.get(API_URL_REVIEW + '/instructor/' + instructorReviewId);
+	const response = await axiosFetch.get(
+		API_URL_REVIEW + '/instructor/' + instructorReviewId
+	);
 
 	return response.data;
 };
 
 const deleteInstructorReview = async (instructorReviewId) => {
-	const response = await axiosFetch.delete(API_URL_REVIEW + '/instructor/' + instructorReviewId);
+	const response = await axiosFetch.delete(
+		API_URL_REVIEW + '/instructor/' + instructorReviewId
+	);
 
 	return response.data;
 };
 
-// LOGGED IN USER
 const getUserInstructorReviews = async () => {
-	const response = await axiosFetch.get(API_URL_USER_ACTIVITY + '/reviews/instructor');
+	const response = await axiosFetch.get(
+		API_URL_USER_ACTIVITY + '/reviews/instructor'
+	);
 
 	return response.data;
 };
 
 const deleteUserInstructorReviews = async () => {
-	const response = await axiosFetch.delete(API_URL_USER_ACTIVITY + '/reviews/instructor');
+	const response = await axiosFetch.delete(
+		API_URL_USER_ACTIVITY + '/reviews/instructor'
+	);
 
 	return response.data;
 };
 
-// ADMIN
 const getInstructorReviews = async () => {
 	const response = await axiosFetch.get(API_URL_ADMIN_REVIEW_INSTRUCTOR);
 

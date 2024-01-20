@@ -42,19 +42,22 @@ const updateImportance = async (noteId) => {
 };
 
 const deleteCategory = async (noteId, data) => {
-	const response = await axiosFetch.patch(API_URL_NOTE + '/' + noteId + '/category', data);
+	const response = await axiosFetch.patch(
+		API_URL_NOTE + '/' + noteId + '/category',
+		data
+	);
 
 	return response.data;
 };
 
 const deleteUserNote = async (noteId) => {
-	const response = axiosFetch.delete(API_URL_NOTE + '/' + noteId);
+	const response = await axiosFetch.delete(API_URL_NOTE + '/' + noteId);
 
 	return response.data;
 };
 
 const deleteUserNotes = async () => {
-	const response = axiosFetch.delete(API_URL_NOTE);
+	const response = await axiosFetch.delete(API_URL_NOTE);
 
 	return response.data;
 };
@@ -66,7 +69,7 @@ const getNotes = async () => {
 };
 
 const deleteNotes = async () => {
-	const response = axiosFetch.delete(API_URL_ADMIN_NOTES);
+	const response = await axiosFetch.delete(API_URL_ADMIN_NOTES);
 
 	return response.data;
 };

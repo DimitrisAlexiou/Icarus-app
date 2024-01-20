@@ -1,4 +1,4 @@
-export default function Header({ title }) {
+export default function PillHeader({ title }) {
 	return (
 		<>
 			<h6

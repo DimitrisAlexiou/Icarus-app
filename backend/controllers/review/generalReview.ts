@@ -1,5 +1,6 @@
-import { startSession } from 'mongoose';
-import { Request, Response } from 'express';
+import mongoose, { startSession } from 'mongoose';
+import { Response } from 'express';
+import { AuthenticatedRequest } from '../../interfaces/AuthRequest';
 import {
 	getUserGeneralReviews,
 	getGeneralReviewById,
@@ -9,22 +10,21 @@ import {
 	getUserSubmittedGeneralReview,
 	deleteUserGeneralReviews,
 } from '../../models/review/generalReview';
-import { UserProps } from '../../models/users/user';
 import { getCurrentSemester } from '../../models/admin/semester';
 import { getReviewBySemester } from '../../models/admin/review';
 import { tryCatch } from '../../utils/tryCatch';
 import CustomError from '../../utils/CustomError';
 
-interface AuthenticatedRequest extends Request {
-	user?: UserProps;
-}
-
 export const createUserGeneralReview = tryCatch(
 	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
-		const { course_opinion, instructor_opinion, likes, dislikes, teaching } = req.body;
+		const { course_opinion, instructor_opinion, likes, dislikes, teaching } =
+			req.body;
 
 		if (!course_opinion || !instructor_opinion || !likes || !dislikes)
-			throw new CustomError('Please provide a rating for all required fields.', 400);
+			throw new CustomError(
+				'Please provide a rating for all required fields.',
+				400
+			);
 
 		const currentDate = new Date();
 		const semester = await getCurrentSemester(currentDate);
@@ -58,7 +58,10 @@ export const createUserGeneralReview = tryCatch(
 
 		const userId = req.user.id;
 		const { teachingReviewId } = req.params;
-		const existingGeneralReview = await getUserSubmittedGeneralReview(userId, teachingReviewId);
+		const existingGeneralReview = await getUserSubmittedGeneralReview(
+			userId,
+			teachingReviewId
+		);
 
 		if (existingGeneralReview)
 			throw new CustomError(
@@ -72,11 +75,12 @@ export const createUserGeneralReview = tryCatch(
 			likes,
 			dislikes,
 			teaching: teaching,
-			user: userId,
-			status: 'new',
+			user: new mongoose.Types.ObjectId(userId),
 		});
 
-		return res.status(201).json({ message: 'Genaral review submitted!', generalReview });
+		return res
+			.status(201)
+			.json({ message: 'Genaral review submitted!', generalReview });
 	}
 );
 
@@ -97,10 +101,14 @@ export const viewUserGeneralReview = tryCatch(
 
 export const updateUserGeneralReview = tryCatch(
 	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
-		const { course_opinion, instructor_opinion, likes, dislikes, teaching } = req.body;
+		const { course_opinion, instructor_opinion, likes, dislikes, teaching } =
+			req.body;
 
 		if (!course_opinion || !instructor_opinion || !likes || !dislikes)
-			throw new CustomError('Please provide a rating for all required fields.', 400);
+			throw new CustomError(
+				'Please provide a rating for all required fields.',
+				400
+			);
 
 		const currentDate = new Date();
 		const semester = await getCurrentSemester(currentDate);
@@ -127,9 +135,12 @@ export const updateUserGeneralReview = tryCatch(
 			);
 
 		const { generalReviewId } = req.params;
-		const updatedGeneralReview = await updateGeneralReviewById(generalReviewId, {
-			...req.body,
-		});
+		const updatedGeneralReview = await updateGeneralReviewById(
+			generalReviewId,
+			{
+				...req.body,
+			}
+		);
 
 		if (!updatedGeneralReview)
 			throw new CustomError(
@@ -137,7 +148,9 @@ export const updateUserGeneralReview = tryCatch(
 				404
 			);
 
-		return res.status(200).json({ message: 'General review updated!', updatedGeneralReview });
+		return res
+			.status(200)
+			.json({ message: 'General review updated!', updatedGeneralReview });
 	}
 );
 
@@ -165,7 +178,10 @@ export const getAllUserGeneralReviews = tryCatch(
 		const userGeneralReviews = await getUserGeneralReviews(userId);
 
 		if (!userGeneralReviews.length)
-			throw new CustomError(`Seems like you haven't submitted any general reviews yet.`, 404);
+			throw new CustomError(
+				`Seems like you haven't submitted any general reviews yet.`,
+				404
+			);
 
 		return res.status(200).json(userGeneralReviews);
 	}

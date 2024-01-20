@@ -12,37 +12,46 @@ const createGeneralReview = async (data) => {
 };
 
 const updateGeneralReview = async (generalReviewId, data) => {
-	const response = await axiosFetch.put(API_URL_REVIEW + '/general/' + generalReviewId, data);
+	const response = await axiosFetch.put(
+		API_URL_REVIEW + '/general/' + generalReviewId,
+		data
+	);
 
 	return response.data;
 };
 
 const getGeneralReview = async (generalReviewId) => {
-	const response = await axiosFetch.get(API_URL_REVIEW + '/general/' + generalReviewId);
+	const response = await axiosFetch.get(
+		API_URL_REVIEW + '/general/' + generalReviewId
+	);
 
 	return response.data;
 };
 
 const deleteGeneralReview = async (generalReviewId) => {
-	const response = await axiosFetch.delete(API_URL_REVIEW + '/general/' + generalReviewId);
+	const response = await axiosFetch.delete(
+		API_URL_REVIEW + '/general/' + generalReviewId
+	);
 
 	return response.data;
 };
 
-// LOGGED IN USER
 const getUserGeneralReviews = async () => {
-	const response = await axiosFetch.get(API_URL_USER_ACTIVITY + '/reviews/general');
+	const response = await axiosFetch.get(
+		API_URL_USER_ACTIVITY + '/reviews/general'
+	);
 
 	return response.data;
 };
 
 const deleteUserGeneralReviews = async () => {
-	const response = await axiosFetch.delete(API_URL_USER_ACTIVITY + '/reviews/general');
+	const response = await axiosFetch.delete(
+		API_URL_USER_ACTIVITY + '/reviews/general'
+	);
 
 	return response.data;
 };
 
-// ADMIN
 const getGeneralReviews = async () => {
 	const response = await axiosFetch.get(API_URL_ADMIN_REVIEW_GENERAL);
 

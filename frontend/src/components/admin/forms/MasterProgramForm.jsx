@@ -83,7 +83,6 @@ export default function MasterProgramForm({
 						duration: values.duration,
 						ects: values.ects,
 					};
-					console.log(master);
 					if (isEditingMaster) {
 						dispatch(
 							updateMaster({

@@ -7,7 +7,8 @@ import AssignInstructorFormDataTable from '../../../components/course/forms/Assi
 import DataTable from '../../../components/DataTable';
 import Spinner from '../../../components/boilerplate/spinners/Spinner';
 import SpinnerComponent from '../../../components/boilerplate/spinners/SpinnerMessage';
-import Header from '../../../components/boilerplate/Header';
+import PillHeader from '../../../components/boilerplate/headers/PillHeader';
+import Header from '../../../components/boilerplate/headers/Header';
 
 export default function Instructors() {
 	const { instructors, isLoading } = useInstructors();
@@ -88,7 +89,7 @@ export default function Instructors() {
 				<ModalBody>
 					<Row className="justify-content-between animated--grow-in">
 						<Col className="text-center">
-							<Header title="active teachings" />
+							<PillHeader title="active teachings" />
 						</Col>
 					</Row>
 					<AssignInstructorFormDataTable setModal={setModal} />
@@ -99,9 +100,7 @@ export default function Instructors() {
 
 	return (
 		<>
-			<h3 className="mb-4 text-gray-800 font-weight-bold animated--grow-in">
-				Instructors
-			</h3>
+			<Header title="Instructors" />
 
 			{isLoading ? (
 				<Spinner card />

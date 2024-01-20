@@ -1,10 +1,12 @@
 import { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+	deleteUserNote,
 	deleteUserNotes,
 	getNotes,
 	getUserNotes,
 	setEditNote,
+	updateImportance,
 } from '../../features/notes/noteSlice';
 import { deleteAlert } from '../../constants/sweetAlertNotification';
 
@@ -32,6 +34,17 @@ const useNotes = () => {
 		deleteAlert(() => dispatch(deleteUserNotes()));
 	};
 
+	const handleDeleteUserNote = (e, noteId, setSelectedCategory) => {
+		e.stopPropagation();
+		deleteAlert(() => dispatch(deleteUserNote(noteId)));
+		setSelectedCategory(null);
+	};
+
+	const handleUpdateImportance = (e, noteId) => {
+		e.stopPropagation();
+		dispatch(updateImportance(noteId));
+	};
+
 	return {
 		user,
 		notes,
@@ -41,6 +54,8 @@ const useNotes = () => {
 		setEditNote,
 		allCategories,
 		hasImportantNotes,
+		handleUpdateImportance,
+		handleDeleteUserNote,
 		handleDeleteUserNotes,
 		dispatch,
 	};

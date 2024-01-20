@@ -109,7 +109,8 @@ export default function AssignInstructorForm({
 																				key={theoryInstructor._id}
 																				value={theoryInstructor._id}
 																			>
-																				{theoryInstructor.user.surname}
+																				{theoryInstructor.user.surname}{' '}
+																				{theoryInstructor.user.name}
 																			</option>
 																		</>
 																	}
@@ -186,7 +187,8 @@ export default function AssignInstructorForm({
 																				key={instructor._id}
 																				value={instructor._id}
 																			>
-																				{instructor.user.surname}
+																				{instructor.user.surname}{' '}
+																				{instructor.user.name}
 																			</option>
 																		))}
 																	</>
@@ -258,7 +260,8 @@ export default function AssignInstructorForm({
 																			key={labInstructor._id}
 																			value={labInstructor._id}
 																		>
-																			{labInstructor.user.surname}
+																			{labInstructor.user.surname}{' '}
+																			{labInstructor.user.name}
 																		</option>
 																	</>
 																}
@@ -334,7 +337,8 @@ export default function AssignInstructorForm({
 																				key={instructor._id}
 																				value={instructor._id}
 																			>
-																				{instructor.user.surname}
+																				{instructor.user.surname}{' '}
+																				{instructor.user.name}
 																			</option>
 																		))}
 																	</>

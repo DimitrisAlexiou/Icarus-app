@@ -7,8 +7,9 @@ import GeneralReviewForm from '../../components/review/forms/GeneralReviewForm';
 import BreadcrumbNav from '../../components/boilerplate/Breadcrumb';
 import Spinner from '../../components/boilerplate/spinners/Spinner';
 import CarouselComponent from '../../components/Carousel';
-import CurrentSemester from '../../components/boilerplate/CurrentSemester';
-import Header from '../../components/boilerplate/Header';
+import PillHeader from '../../components/boilerplate/headers/PillHeader';
+import HeaderWithSemester from '../../components/boilerplate/headers/HeaderWithSemester';
+import FormHeader from '../../components/boilerplate/headers/FormHeader';
 
 export default function GeneralReview() {
 	const {
@@ -42,18 +43,11 @@ export default function GeneralReview() {
 				active={'General Review'}
 			/>
 
-			<Row className="mb-4 animated--grow-in">
-				<Col>
-					<h3 className="mb-5 text-gray-800 font-weight-bold animated--grow-in">
-						General Review
-					</h3>
-				</Col>
-				<CurrentSemester />
-			</Row>
+			<HeaderWithSemester title="General Review" />
 
 			<Row className="mt-3 mb-4 justify-content-between animated--grow-in">
 				<Col className="text-center">
-					<Header title="enrolled courses" />
+					<PillHeader title="enrolled courses" />
 				</Col>
 			</Row>
 
@@ -152,11 +146,7 @@ export default function GeneralReview() {
 				<Row className="justify-content-center animated--grow-in">
 					<Col sm="12" md="10" lg="8" xl="8">
 						<div className="card shadow mb-4">
-							<div className="card-header py-3">
-								<h6 className="m-0 font-weight-bold text-primary">
-									Leave your review
-								</h6>
-							</div>
+							<FormHeader title="Leave your review" />
 							<div className="card-body">
 								{isGeneralaReviewLoading ? (
 									<Spinner card />

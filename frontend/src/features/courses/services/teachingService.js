@@ -2,7 +2,10 @@ import axiosFetch from '../../../utils/axios';
 import { API_URL_COURSE, API_URL_TEACHING } from '../../../constants/apiConfig';
 
 const updateTeaching = async (teachingId, data) => {
-	const response = await axiosFetch.put(API_URL_TEACHING + '/' + teachingId, data);
+	const response = await axiosFetch.put(
+		API_URL_TEACHING + '/' + teachingId,
+		data
+	);
 
 	return response.data;
 };
@@ -14,7 +17,9 @@ const getTeaching = async (teachingId) => {
 };
 
 const getTeachingByCourseId = async (courseId) => {
-	const response = await axiosFetch.get(API_URL_COURSE + '/' + courseId + '/teaching');
+	const response = await axiosFetch.get(
+		API_URL_COURSE + '/' + courseId + '/teaching'
+	);
 
 	return response.data;
 };
@@ -25,8 +30,38 @@ const deleteTeaching = async (teachingId) => {
 	return response.data;
 };
 
+const downloadEnrolledStudentsPDF = async (teachingId) => {
+	const response = await axiosFetch.get(
+		API_URL_TEACHING + '/' + teachingId + '/download-pdf',
+		{ responseType: 'blob' }
+	);
+
+	// Create a blob URL for the PDF content
+	const blob = new Blob([response.data], { type: 'application/pdf' });
+	const url = window.URL.createObjectURL(blob);
+
+	// Create a link element and trigger a click to download the file
+	const link = document.createElement('a');
+	link.href = url;
+	link.download = `enrolled_students_${teachingId}.pdf`;
+	document.body.appendChild(link);
+	link.click();
+
+	// Clean up resources
+	window.URL.revokeObjectURL(url);
+	document.body.removeChild(link);
+
+	return response.data;
+};
+
 const getTeachings = async () => {
 	const response = await axiosFetch.get(API_URL_TEACHING);
+
+	return response.data;
+};
+
+const getInstructorTeachings = async () => {
+	const response = await axiosFetch.get(API_URL_TEACHING + '/instructor');
 
 	return response.data;
 };
@@ -57,15 +92,20 @@ const unassignTheoryInstructors = async (teachingId) => {
 };
 
 const assignLabInstructors = async (teachingId, data) => {
-	const response = await axiosFetch.patch(API_URL_TEACHING + '/' + teachingId + '/assign/lab', {
-		labInstructors: data,
-	});
+	const response = await axiosFetch.patch(
+		API_URL_TEACHING + '/' + teachingId + '/assign/lab',
+		{
+			labInstructors: data,
+		}
+	);
 
 	return response.data;
 };
 
 const unassignLabInstructors = async (teachingId) => {
-	const response = await axiosFetch.patch(API_URL_TEACHING + '/' + teachingId + '/unassign/lab');
+	const response = await axiosFetch.patch(
+		API_URL_TEACHING + '/' + teachingId + '/unassign/lab'
+	);
 
 	return response.data;
 };
@@ -114,6 +154,7 @@ const teachingService = {
 	getTeachingByCourseId,
 	deleteTeaching,
 	getTeachings,
+	getInstructorTeachings,
 	deleteTeachings,
 	assignTheoryInstructors,
 	assignLabInstructors,
@@ -123,6 +164,7 @@ const teachingService = {
 	assignLabGrading,
 	unassignTheoryGrading,
 	unassignLabGrading,
+	downloadEnrolledStudentsPDF,
 };
 
 export default teachingService;

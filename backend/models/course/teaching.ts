@@ -1,5 +1,6 @@
 import mongoose, { ClientSession, Schema, model } from 'mongoose';
 import { INSTRUCTOR } from '../../utils/constants';
+import { getInstructorByUserId } from '../../models/users/instructor';
 
 export enum ExaminationType {
 	Progress = 'Progress',
@@ -29,6 +30,7 @@ export interface TeachingProps {
 	theoryExamination?: Examination[];
 	labExamination?: Examination[];
 	directories: mongoose.Types.ObjectId[];
+	announcements?: mongoose.Types.ObjectId[];
 }
 
 const examinationSchema = new Schema<Examination>(
@@ -117,7 +119,12 @@ const teachingSchema = new Schema<TeachingProps>(
 			{
 				type: Schema.Types.ObjectId,
 				ref: 'Directory',
-				required: true,
+			},
+		],
+		announcements: [
+			{
+				type: Schema.Types.ObjectId,
+				ref: 'Announcement',
 			},
 		],
 	},
@@ -155,16 +162,55 @@ export const getTeachings = () =>
 			path: 'theoryInstructors',
 			populate: {
 				path: 'user',
-				select: 'surname',
+				select: 'surname name',
 			},
 		})
 		.populate({
 			path: 'labInstructors',
 			populate: {
 				path: 'user',
-				select: 'surname',
+				select: 'surname name',
 			},
 		});
+export const getInstructorTeachings = async (
+	userId: string,
+	semesterId: string
+) => {
+	const instructor = await getInstructorByUserId(userId);
+
+	return Teaching.find({
+		$and: [
+			{
+				$or: [
+					{ theoryInstructors: instructor._id },
+					{ labInstructors: instructor._id },
+				],
+			},
+			{ semester: semesterId },
+		],
+	})
+		.populate('semester')
+		.populate({
+			path: 'course',
+			populate: {
+				path: 'cycle',
+			},
+		})
+		.populate({
+			path: 'theoryInstructors',
+			populate: {
+				path: 'user',
+				select: 'surname name',
+			},
+		})
+		.populate({
+			path: 'labInstructors',
+			populate: {
+				path: 'user',
+				select: 'surname name',
+			},
+		});
+};
 export const getTeachingById = (id: string) =>
 	Teaching.findById(id)
 		.populate('semester')
@@ -178,14 +224,14 @@ export const getTeachingById = (id: string) =>
 			path: 'theoryInstructors',
 			populate: {
 				path: 'user',
-				select: 'surname',
+				select: 'surname name',
 			},
 		})
 		.populate({
 			path: 'labInstructors',
 			populate: {
 				path: 'user',
-				select: 'surname',
+				select: 'surname name',
 			},
 		});
 export const getTeachingByCourseId = (id: string) =>
@@ -201,14 +247,14 @@ export const getTeachingByCourseId = (id: string) =>
 			path: 'theoryInstructors',
 			populate: {
 				path: 'user',
-				select: 'surname',
+				select: 'surname name',
 			},
 		})
 		.populate({
 			path: 'labInstructors',
 			populate: {
 				path: 'user',
-				select: 'surname',
+				select: 'surname name',
 			},
 		});
 //TODO: make this work, it should return all teachings for a cycle
@@ -219,7 +265,7 @@ export const getTeachingsByCycleId = (id: string) =>
 export const getActiveTeachingsBySemesterId = (semesterId: string) =>
 	Teaching.find({ semester: semesterId });
 export const createTeaching = (
-	teaching: Record<string, any>,
+	teaching: TeachingProps,
 	options?: Record<string, any>
 ) => new Teaching(teaching).save().then((teaching) => teaching.toObject());
 export const updateTeachingById = (id: string, teaching: TeachingProps) =>
@@ -235,14 +281,14 @@ export const updateTeachingById = (id: string, teaching: TeachingProps) =>
 			path: 'theoryInstructors',
 			populate: {
 				path: 'user',
-				select: 'surname',
+				select: 'surname name',
 			},
 		})
 		.populate({
 			path: 'labInstructors',
 			populate: {
 				path: 'user',
-				select: 'surname',
+				select: 'surname name',
 			},
 		});
 export const deleteTeachingById = (id: string) =>

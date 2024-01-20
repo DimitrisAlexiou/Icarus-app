@@ -1,5 +1,8 @@
-import { Request, Response } from 'express';
+import bcrypt from 'bcryptjs';
+import { Response } from 'express';
+import { AuthenticatedRequest } from '../../interfaces/AuthRequest';
 import { startSession } from 'mongoose';
+import { INSTRUCTOR, STUDENT } from '../../utils/constants';
 import {
 	getUsers,
 	updateUserById,
@@ -25,12 +28,10 @@ import {
 import { deleteEvents } from '../../models/calendar';
 import { deleteNotes } from '../../models/note';
 import { tryCatch } from '../../utils/tryCatch';
-import bcrypt from 'bcryptjs';
 import CustomError from '../../utils/CustomError';
-import { INSTRUCTOR, STUDENT } from '../../utils/constants';
 
 export const addUser = async (
-	req: Request,
+	req: AuthenticatedRequest,
 	res: Response
 ): Promise<Response> => {
 	const {
@@ -149,7 +150,7 @@ export const addUser = async (
 };
 
 export const getSystemUsers = tryCatch(
-	async (_: Request, res: Response): Promise<Response> => {
+	async (_: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const users = await getUsers()
 			.populate({
 				path: 'student',
@@ -171,7 +172,7 @@ export const getSystemUsers = tryCatch(
 );
 
 export const deleteSystemUsers = async (
-	_: Request,
+	_: AuthenticatedRequest,
 	res: Response
 ): Promise<Response> => {
 	const session = await startSession();
@@ -198,7 +199,7 @@ export const deleteSystemUsers = async (
 };
 
 export const deleteUser = async (
-	req: Request,
+	req: AuthenticatedRequest,
 	res: Response
 ): Promise<Response> => {
 	const { id } = req.params;
@@ -239,7 +240,7 @@ export const deleteUser = async (
 };
 
 export const updateUser = async (
-	req: Request,
+	req: AuthenticatedRequest,
 	res: Response
 ): Promise<Response> => {
 	const {
@@ -353,7 +354,7 @@ export const updateUser = async (
 };
 
 export const activateUser = tryCatch(
-	async (req: Request, res: Response): Promise<Response> => {
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const { id } = req.params;
 
 		const activatedUser = await updateUserById(id, {
@@ -373,7 +374,7 @@ export const activateUser = tryCatch(
 );
 
 export const deActivateUser = tryCatch(
-	async (req: Request, res: Response): Promise<Response> => {
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const { id } = req.params;
 
 		const deactivatedUser = await updateUserById(id, {
@@ -393,7 +394,7 @@ export const deActivateUser = tryCatch(
 );
 
 export const getSystemStudents = tryCatch(
-	async (_: Request, res: Response): Promise<Response> => {
+	async (_: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const students = await getStudents();
 		if (!students.length)
 			throw new CustomError(
@@ -406,7 +407,7 @@ export const getSystemStudents = tryCatch(
 );
 
 export const getSystemInstructors = tryCatch(
-	async (_: Request, res: Response): Promise<Response> => {
+	async (_: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const instructors = await getInstructors();
 		if (!instructors.length)
 			throw new CustomError(

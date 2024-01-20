@@ -2,6 +2,7 @@ import { Link, NavLink } from 'react-router-dom';
 import { Card, CardText, CardTitle, Row, Col, Nav } from 'reactstrap';
 import { FaStudiovinari } from 'react-icons/fa';
 import FooterLanding from '../../components/boilerplate/FooterLanding';
+import Header from '../../components/boilerplate/headers/Header';
 
 export default function Studies({ user }) {
 	return (
@@ -30,13 +31,7 @@ export default function Studies({ user }) {
 						<Col xl="10" lg="12" md="10" sm="12" xs="12">
 							<div className="card o-hidden border-0 shadow-lg my-4 animated--grow-in">
 								<div className="card-body p-4">
-									<Row className="mb-5 animated--grow-in">
-										<Col>
-											<h3 className="text-gray-800 font-weight-bold">
-												Studies
-											</h3>
-										</Col>
-									</Row>
+									<Header title="Studies" />
 
 									<Row className="justify-content-center animated--grow-in">
 										<Col md="8" lg="7" xl="4" className="mb-4">

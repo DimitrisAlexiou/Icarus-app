@@ -3,16 +3,23 @@ import { Row, Col, NavItem, NavLink } from 'reactstrap';
 import { portfolioCategories } from '../../utils/NavigationLinks';
 import usePortfolio from '../../hooks/user/usePortfolio';
 import Documents from '../../components/portfolio/Documents';
+import TeachingAnnouncements from '../../components/portfolio/TeachingAnnouncements';
 import Calendar from '../../components/calendar/Calendar';
 import Exercises from '../../components/portfolio/Exercises';
 import Chat from '../../components/portfolio/Chat';
-import MessagesCard from '../../components/portfolio/MessagesCard';
-import AnnouncementsCard from '../../components/portfolio/AnnouncementsCard';
+import Messages from '../../components/portfolio/Messages';
 import BreadcrumbNav from '../../components/boilerplate/Breadcrumb';
 import Spinner from '../../components/boilerplate/spinners/Spinner';
+import Header from '../../components/boilerplate/headers/Header';
 
-export default function Portfolio() {
-	const { teaching, isLoading } = usePortfolio();
+export default function Portfolio({ user }) {
+	const {
+		teaching,
+		filteredAnnouncements,
+		isTeachingsLoading,
+		isAnnouncementsLoading,
+		handleDeleteTeachingAnnouncements,
+	} = usePortfolio();
 
 	const [selectedCategory, setSelectedCategory] = useState('Documents');
 
@@ -20,21 +27,29 @@ export default function Portfolio() {
 		<>
 			<BreadcrumbNav
 				className="animated--grow-in"
-				link={'/my-courses'}
-				header={'My Courses'}
+				link={
+					user.user.instructor || user.user.isAdmin
+						? '/teachings'
+						: '/my-courses'
+				}
+				header={
+					user.user.instructor
+						? 'My Teachings'
+						: user.user.isAdmin
+						? 'Teachings'
+						: 'My Courses'
+				}
 				active={teaching?.course?.title}
 			/>
 
-			<h3 className="mb-4 text-gray-800 font-weight-bold animated--grow-in">
-				Portfolio
-			</h3>
+			<Header title="Portfolio" />
 
 			<Row className="mb-3 animated--grow-in justify-content-center">
 				<Col
 					md="12"
 					lg="11"
 					xl="10"
-					className="nav nav-pills p-2 bg-white mb-3 rounded-pill align-items-center"
+					className="nav nav-pills p-2 bg-white rounded-pill align-items-center"
 				>
 					{portfolioCategories.map((portfolioCategory) => {
 						const { id, text, icon } = portfolioCategory;
@@ -61,39 +76,47 @@ export default function Portfolio() {
 					})}
 				</Col>
 			</Row>
+
 			<Row className="animated--grow-in">
 				{selectedCategory === 'Documents' ? (
-					isLoading ? (
+					isTeachingsLoading ? (
 						<Spinner card />
 					) : (
 						<Documents />
 					)
 				) : selectedCategory === 'Announcements' ? (
-					isLoading ? (
+					isAnnouncementsLoading ? (
 						<Spinner card />
 					) : (
-						<AnnouncementsCard />
+						<TeachingAnnouncements
+							user={user}
+							announcements={filteredAnnouncements}
+							isAnnouncementsLoading={isAnnouncementsLoading}
+							handleDeleteTeachingAnnouncements={
+								handleDeleteTeachingAnnouncements
+							}
+						/>
 					)
 				) : selectedCategory === 'Exercises' ? (
-					isLoading ? (
+					isTeachingsLoading ? (
 						<Spinner card />
 					) : (
 						<Exercises />
 					)
 				) : selectedCategory === 'Calendar' ? (
-					isLoading ? (
+					isTeachingsLoading ? (
 						<Spinner card />
 					) : (
 						<Calendar />
 					)
 				) : selectedCategory === 'Messages' ? (
-					isLoading ? (
+					isTeachingsLoading ? (
 						<Spinner card />
 					) : (
-						<MessagesCard />
+						<Messages />
 					)
 				) : selectedCategory === 'Chat' ? (
-					isLoading ? (
+					isTeachingsLoading ? (
 						<Spinner card />
 					) : (
 						<Chat />

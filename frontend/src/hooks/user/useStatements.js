@@ -1,7 +1,5 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getSemester } from '../../features/admin/semesterSlice';
-import { getAssessment } from '../../features/admin/assessmentSlice';
 import { getTeachings } from '../../features/courses/teachingSlice';
 import {
 	deleteStatement,
@@ -14,16 +12,12 @@ import {
 } from '../../features/courses/statementSlice';
 import { finalizeAlert } from '../../constants/sweetAlertNotification';
 import { PrerequisiteType, AssessmentType } from '../../constants/enums';
+import useCurrentSemester from '../useCurrentSemester';
 
 const useStatements = () => {
 	const dispatch = useDispatch();
 
-	const { semester, isLoading: isSemesterLoading } = useSelector(
-		(state) => state.semesters
-	);
-	const { assessment, isLoading: isAssessmentLoading } = useSelector(
-		(state) => state.assessment
-	);
+	const { semester, isSemesterLoading } = useCurrentSemester();
 	const {
 		statements,
 		isLoading: isStatementsLoading,
@@ -36,21 +30,6 @@ const useStatements = () => {
 	);
 	const { user } = useSelector((state) => state.auth);
 	const student = user.user.student;
-
-	const currentDate = new Date();
-	const assessmentStartDate = new Date(semester?.startDate);
-	const assessmentEndDate = new Date(
-		assessmentStartDate.getTime() + assessment?.period * 7 * 24 * 60 * 60 * 1000
-	);
-
-	const assessmentIsAvailable =
-		assessmentStartDate && currentDate <= new Date(assessmentEndDate);
-
-	const vaccineStartDate = new Date(assessment?.vaccineStartDate);
-	const vaccineEndDate = new Date(assessment?.vaccineEndDate);
-
-	const vaccineIsAvailable =
-		vaccineStartDate && currentDate <= new Date(vaccineEndDate);
 
 	const isVaccineStatement = (stmt) => stmt.type === AssessmentType.Vaccine;
 
@@ -133,8 +112,6 @@ const useStatements = () => {
 	);
 
 	useEffect(() => {
-		dispatch(getSemester());
-		dispatch(getAssessment());
 		dispatch(getTeachings());
 		dispatch(getStudentStatements());
 	}, [dispatch]);
@@ -157,11 +134,9 @@ const useStatements = () => {
 	return {
 		user,
 		semester,
-		assessment,
 		statements,
 		teachings,
 		isSemesterLoading,
-		isAssessmentLoading,
 		isStatementsLoading,
 		isTeachingsLoading,
 		isEditingStatement,
@@ -170,10 +145,6 @@ const useStatements = () => {
 		setEditStatement,
 		setEditVaccine,
 		deleteStatement,
-		assessmentIsAvailable,
-		vaccineIsAvailable,
-		assessmentEndDate,
-		vaccineEndDate,
 		isStatementSubmitted,
 		isVaccineSubmitted,
 		currentStatement,

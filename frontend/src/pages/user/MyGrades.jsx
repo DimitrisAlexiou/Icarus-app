@@ -16,12 +16,12 @@ import {
 	faCopy,
 	faFileLines,
 	faLightbulb,
-	faCircle,
 } from '@fortawesome/free-regular-svg-icons';
 import { academicSemesters } from '../../utils/academicSemesters';
 import { getOrdinalNumbers } from '../../utils/ordinalNumbers';
 import { myGradesCategories } from '../../utils/NavigationLinks';
 import DoughnutChart from '../../components/charts/Doughnut';
+import Header from '../../components/boilerplate/headers/Header';
 
 export default function MyGrades({ user }) {
 	const [selectedCategory, setSelectedCategory] = useState('Recent Grades');
@@ -30,9 +30,7 @@ export default function MyGrades({ user }) {
 
 	return (
 		<>
-			<Row className="mb-3 animated--grow-in">
-				<h3 className="text-gray-800 font-weight-bold">My Grades</h3>
-			</Row>
+			<Header title="My Grades" />
 
 			<Row className="mb-4 animated--grow-in justify-content-center">
 				<Col

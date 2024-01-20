@@ -14,13 +14,18 @@ const getReview = async () => {
 };
 
 const updateReview = async (reviewId, data) => {
-	const response = await axiosFetch.put(API_URL_ADMIN_REVIEW + '/' + reviewId, data);
+	const response = await axiosFetch.put(
+		API_URL_ADMIN_REVIEW + '/' + reviewId,
+		data
+	);
 
 	return response.data;
 };
 
 const deleteReview = async (reviewId) => {
-	const response = axiosFetch.delete(API_URL_ADMIN_REVIEW + '/' + reviewId);
+	const response = await axiosFetch.delete(
+		API_URL_ADMIN_REVIEW + '/' + reviewId
+	);
 
 	return response.data;
 };

@@ -6,13 +6,17 @@ import {
 	faClockRotateLeft,
 } from '@fortawesome/free-solid-svg-icons';
 import useStatements from '../../hooks/user/useStatements';
+import Spinner from '../../components/boilerplate/spinners/Spinner';
 
-export default function CurrentSetatement() {
-	const { isStatementSubmitted, currentStatement } = useStatements();
+export default function CurrentStatement() {
+	const { isStatementsLoading, isStatementSubmitted, currentStatement } =
+		useStatements();
 
 	return (
 		<>
-			{isStatementSubmitted ? (
+			{isStatementsLoading ? (
+				<Spinner card />
+			) : isStatementSubmitted ? (
 				<Col xl="2" lg="3" md="4" className="text-center mb-3">
 					<Card className="card-note">
 						<CardBody>

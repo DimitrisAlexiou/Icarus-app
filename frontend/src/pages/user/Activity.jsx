@@ -4,15 +4,14 @@ import { activityCategories } from '../../utils/NavigationLinks';
 import TeachingReviews from '../../components/review/TeachingReviews';
 import InstructorReviews from '../../components/review/InstructorReviews';
 import GeneralReviews from '../../components/review/GeneralReviews';
+import Header from '../../components/boilerplate/headers/Header';
 
 export default function Activity() {
 	const [selectedCategory, setSelectedCategory] = useState('Reviews');
 
 	return (
 		<>
-			<Row className="mb-3 animated--grow-in">
-				<h3 className="text-gray-800 font-weight-bold">Activity</h3>
-			</Row>
+			<Header title="Activity" />
 
 			<Row className="mb-4 animated--grow-in justify-content-center">
 				<Col

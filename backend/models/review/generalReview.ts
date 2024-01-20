@@ -43,16 +43,27 @@ const generalReviewSchema = new Schema<GeneralReviewProps>(
 	}
 );
 
-export const GeneralReview = model<GeneralReviewProps>('GeneralReview', generalReviewSchema);
+export const GeneralReview = model<GeneralReviewProps>(
+	'GeneralReview',
+	generalReviewSchema
+);
 
-export const createGeneralReview = (values: Record<string, any>) =>
-	new GeneralReview(values).save().then((generalReview) => generalReview.toObject());
-export const getGeneralReviewById = (id: string) => GeneralReview.findById(id).populate('teaching');
-export const getUserSubmittedGeneralReview = (userId: string, teachingId: string) =>
-	GeneralReview.findOne({ user: userId, teaching: teachingId });
-export const updateGeneralReviewById = (id: string, generalReview: Record<string, any>) =>
-	GeneralReview.findByIdAndUpdate(id, generalReview, { new: true });
-export const deleteGeneralReviewById = (id: string) => GeneralReview.findByIdAndDelete(id);
+export const createGeneralReview = (values: GeneralReviewProps) =>
+	new GeneralReview(values)
+		.save()
+		.then((generalReview) => generalReview.toObject());
+export const getGeneralReviewById = (id: string) =>
+	GeneralReview.findById(id).populate('teaching');
+export const getUserSubmittedGeneralReview = (
+	userId: string,
+	teachingId: string
+) => GeneralReview.findOne({ user: userId, teaching: teachingId });
+export const updateGeneralReviewById = (
+	id: string,
+	generalReview: GeneralReviewProps
+) => GeneralReview.findByIdAndUpdate(id, generalReview, { new: true });
+export const deleteGeneralReviewById = (id: string) =>
+	GeneralReview.findByIdAndDelete(id);
 export const getUserGeneralReviews = (userId: string) =>
 	GeneralReview.find({ user: userId })
 		.populate({
@@ -63,7 +74,9 @@ export const getUserGeneralReviews = (userId: string) =>
 			},
 		})
 		.populate('user');
-export const deleteUserGeneralReviews = (userId: string, session: ClientSession) =>
-	GeneralReview.deleteMany({ user: userId }).session(session);
+export const deleteUserGeneralReviews = (
+	userId: string,
+	session: ClientSession
+) => GeneralReview.deleteMany({ user: userId }).session(session);
 export const getGeneralReviews = () => GeneralReview.find();
 export const deleteGeneralReviews = () => GeneralReview.deleteMany();

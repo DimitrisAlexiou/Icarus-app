@@ -292,3 +292,13 @@ export const masterProgramSchema = Joi.object({
 	duration: Joi.number().min(1).required(),
 	ects: Joi.number().min(1).required(),
 });
+
+export const announcementSchema = Joi.object({
+	title: Joi.string().required(),
+	text: Joi.string().required(),
+	publishDate: Joi.date().required(),
+	updateDate: Joi.date().optional(),
+	visibility: Joi.number().greater(0).required(),
+	isVisible: Joi.boolean().default(false).required(),
+	teaching: Joi.string().required(),
+});

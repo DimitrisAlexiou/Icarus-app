@@ -2,6 +2,7 @@ import { Card, Col, Nav, NavLink, Row } from 'reactstrap';
 import { FaStudiovinari } from 'react-icons/fa';
 import BreadcrumbNav from '../../components/boilerplate/Breadcrumb';
 import BackButton from '../../components/buttons/BackButton';
+import Header from '../../components/boilerplate/headers/Header';
 
 export default function Phd({ user }) {
 	return (
@@ -9,9 +10,9 @@ export default function Phd({ user }) {
 			{user ? (
 				<>
 					<BreadcrumbNav link={'/course'} header={'Studies'} active={'Phd'} />
-					<h3 className="mb-4 text-gray-800 font-weight-bold animated--grow-in">
-						Phd Research
-					</h3>
+
+					<Header title="Phd Research" />
+
 					<Row className="justify-content-center">
 						<Col md="8" lg="7" xl="6">
 							<Card className="card-note card-body-note mb-4">

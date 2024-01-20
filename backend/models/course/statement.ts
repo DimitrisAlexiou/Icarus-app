@@ -11,7 +11,7 @@ export enum Type {
 }
 
 export interface StatementProps {
-	teaching: [mongoose.Types.ObjectId];
+	teaching: mongoose.Types.ObjectId[];
 	user: mongoose.Types.ObjectId;
 	semester: mongoose.Types.ObjectId;
 	condition: Status;
@@ -100,14 +100,31 @@ export const getStatementById = (id: string) =>
 		.populate('user semester');
 export const getStatementByTeachingId = (teachingId: string) =>
 	Statement.findOne({ teaching: teachingId });
+export const getStatementsByTeachingId = (teachingId: string) =>
+	Statement.find({ teaching: teachingId })
+		.populate({
+			path: 'teaching',
+			populate: {
+				path: 'course',
+				select: 'title',
+			},
+		})
+		.populate({
+			path: 'user',
+			select: 'name surname',
+			populate: {
+				path: 'student',
+				select: 'studentId',
+			},
+		});
 export const getUserSubmittedStatement = (
 	userId: string,
 	semesterId: string,
 	type: string
 ) => Statement.findOne({ user: userId, semester: semesterId, type: type });
-export const createStatement = (values: Record<string, any>) =>
+export const createStatement = (values: StatementProps) =>
 	new Statement(values).save().then((statement) => statement.toObject());
-export const updateStatementById = (id: string, values: Record<string, any>) =>
+export const updateStatementById = (id: string, values: StatementProps) =>
 	Statement.findByIdAndUpdate(id, values, { new: true })
 		.populate({
 			path: 'teaching',

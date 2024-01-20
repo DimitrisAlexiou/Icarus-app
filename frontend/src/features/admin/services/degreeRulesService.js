@@ -14,13 +14,18 @@ const getDegreeRules = async () => {
 };
 
 const updateDegreeRules = async (degreeRulesId, data) => {
-	const response = await axiosFetch.put(API_URL_ADMIN_DEGREE_RULES + '/' + degreeRulesId, data);
+	const response = await axiosFetch.put(
+		API_URL_ADMIN_DEGREE_RULES + '/' + degreeRulesId,
+		data
+	);
 
 	return response.data;
 };
 
 const deleteDegreeRules = async (degreeRulesId) => {
-	const response = axiosFetch.delete(API_URL_ADMIN_DEGREE_RULES + '/' + degreeRulesId);
+	const response = await axiosFetch.delete(
+		API_URL_ADMIN_DEGREE_RULES + '/' + degreeRulesId
+	);
 
 	return response.data;
 };

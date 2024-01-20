@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getSemester } from '../../features/admin/semesterSlice';
 import {
 	getTeachings,
 	unassignLabInstructors,
@@ -8,13 +7,13 @@ import {
 } from '../../features/courses/teachingSlice';
 import { getInstructors } from '../../features/admin/userSlice';
 import { deleteAlert } from '../../constants/sweetAlertNotification';
+import useCurrentSemester from '../useCurrentSemester';
 
 const useAssignTeachingInstructor = () => {
 	const dispatch = useDispatch();
 
-	const { semester, isLoading: isSemesterLoading } = useSelector(
-		(state) => state.semesters
-	);
+	const { semester, isLoading: isSemesterLoading } = useCurrentSemester();
+
 	const { teachings, isLoading: isTeachingsLoading } = useSelector(
 		(state) => state.teachings
 	);
@@ -27,7 +26,6 @@ const useAssignTeachingInstructor = () => {
 	);
 
 	useEffect(() => {
-		dispatch(getSemester());
 		dispatch(getTeachings());
 		dispatch(getInstructors());
 	}, [dispatch]);

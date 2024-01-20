@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { AuthenticatedRequest } from '../../interfaces/AuthRequest';
 import {
 	createCycle,
 	updateCycleById,
@@ -14,7 +15,7 @@ import { tryCatch } from '../../utils/tryCatch';
 import CustomError from '../../utils/CustomError';
 
 export const defineCycle = tryCatch(
-	async (req: Request, res: Response): Promise<Response> => {
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const { cycle } = req.body;
 
 		if (!cycle)
@@ -55,7 +56,7 @@ export const defineCycle = tryCatch(
 );
 
 export const viewCycles = tryCatch(
-	async (_: Request, res: Response): Promise<Response> => {
+	async (_: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const cycles = await getCycles();
 		if (!cycles.length)
 			throw new CustomError('Seems like there are no defined cycles.', 404);
@@ -80,7 +81,7 @@ export const viewCycle = tryCatch(
 );
 
 export const updateCycle = tryCatch(
-	async (req: Request, res: Response): Promise<Response> => {
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const { cycle } = req.body;
 
 		if (!cycle) throw new CustomError('Please provide the cycle name.', 400);
@@ -100,7 +101,7 @@ export const updateCycle = tryCatch(
 );
 
 export const deleteCycle = tryCatch(
-	async (req: Request, res: Response): Promise<Response> => {
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const { id } = req.params;
 
 		// const teachings = await getTeachingsByCycleId(id);
@@ -127,7 +128,7 @@ export const deleteCycle = tryCatch(
 );
 
 export const deleteSystemCycles = tryCatch(
-	async (_: Request, res: Response): Promise<Response> => {
+	async (_: AuthenticatedRequest, res: Response): Promise<Response> => {
 		await deleteCycles();
 		return res.status(200).json({ message: 'Defined cycles deleted.' });
 	}

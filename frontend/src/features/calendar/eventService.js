@@ -23,13 +23,13 @@ const updateEvent = async (eventId, data) => {
 };
 
 const deleteEvent = async (eventId) => {
-	const response = axiosFetch.delete(API_URL_CALENDAR + '/' + eventId);
+	const response = await axiosFetch.delete(API_URL_CALENDAR + '/' + eventId);
 
 	return response.data;
 };
 
 const deleteEvents = async () => {
-	const response = axiosFetch.delete(API_URL_CALENDAR + '/delete');
+	const response = await axiosFetch.delete(API_URL_CALENDAR + '/delete');
 
 	return response.data;
 };

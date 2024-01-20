@@ -80,6 +80,10 @@ import {
 	viewMasterProgram,
 	viewMasterPrograms,
 } from '../controllers/admin/master';
+import {
+	deleteSystemAnnouncements,
+	viewAnnouncements,
+} from '../controllers/admin/announcement';
 import { authorize, checkUserRole } from '../middleware/authMiddleware';
 import { UserType } from '../models/users/user';
 
@@ -350,4 +354,16 @@ export default (router: express.Router) => {
 			updateMasterProgram
 		)
 		.delete(authorize, checkUserRole([UserType.admin]), deleteMasterProgram);
+
+	// @desc    Get / Delete Announcements
+	// @route   GET/DELETE /api/admin/announcement
+	// @access  Private
+	router
+		.route('/admin/announcement')
+		.get(authorize, checkUserRole([UserType.admin]), viewAnnouncements)
+		.delete(
+			authorize,
+			checkUserRole([UserType.admin]),
+			deleteSystemAnnouncements
+		);
 };

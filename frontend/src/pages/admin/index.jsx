@@ -8,3 +8,4 @@ export { default as NewCourse } from './course/NewCourse';
 export { default as CreateStatement } from './statement/CreateStatement';
 export { default as CreateVaccine } from './statement/CreateVaccine';
 export { default as AdminStatements } from './statement/AdminStatements';
+export { default as AdminAnnouncements } from './AdminAnnouncements';

@@ -1,15 +1,14 @@
 import { useState } from 'react';
 import { Col, NavItem, NavLink, Row } from 'reactstrap';
 import { degreeCompletionCategories } from '../../utils/NavigationLinks';
+import Header from '../../components/boilerplate/headers/Header';
 
 export default function DegreeCompletion() {
 	const [selectedCategory, setSelectedCategory] = useState('Prerequisites');
 
 	return (
 		<>
-			<h3 className="mb-4 text-gray-800 font-weight-bold animated--grow-in">
-				Degree Completion
-			</h3>
+			<Header title="Degree Completion" />
 
 			<Row className="mb-4 animated--grow-in justify-content-center">
 				<Col

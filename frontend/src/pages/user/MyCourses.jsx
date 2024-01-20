@@ -5,8 +5,8 @@ import useMyCourses from '../../hooks/user/useMyCourses';
 import Spinner from '../../components/boilerplate/spinners/Spinner';
 import SpinnerComponent from '../../components/boilerplate/spinners/SpinnerMessage';
 import CarouselComponent from '../../components/Carousel';
-import CurrentSemester from '../../components/boilerplate/CurrentSemester';
-import Header from '../../components/boilerplate/Header';
+import PillHeader from '../../components/boilerplate/headers/PillHeader';
+import HeaderWithSemester from '../../components/boilerplate/headers/HeaderWithSemester';
 
 export default function MyCourses() {
 	const {
@@ -26,15 +26,11 @@ export default function MyCourses() {
 
 	return (
 		<>
-			<Row className="mb-4 animated--grow-in">
-				<Col>
-					<h3 className="text-gray-800 font-weight-bold">My Courses</h3>
-				</Col>
-				<CurrentSemester />
-			</Row>
+			<HeaderWithSemester title="My Courses" />
+
 			<Row className="mb-4 justify-content-between animated--grow-in">
 				<Col className="text-center">
-					<Header title="active courses in the current semester" />
+					<PillHeader title="active courses in the current semester" />
 					<h6
 						className="text-muted pill-label"
 						style={{
@@ -129,7 +125,7 @@ export default function MyCourses() {
 
 			<Row className="mt-3 mb-4 justify-content-between animated--grow-in">
 				<Col className="text-center">
-					<Header title="enrolled courses" />
+					<PillHeader title="enrolled courses" />
 					<h6
 						className="text-muted pill-label"
 						style={{

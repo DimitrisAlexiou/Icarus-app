@@ -1,21 +1,27 @@
-import multer, { StorageEngine } from 'multer';
 import path from 'path';
 import fs from 'fs';
-import CustomError from '../../utils/CustomError';
-import { Request } from 'express';
+import multer, { StorageEngine } from 'multer';
+import { AuthenticatedRequest } from '../../interfaces/AuthRequest';
 import {
 	allowedFileTypes,
 	noteFileUploadDestinationPath,
 	teachingFileUploadDestination,
 } from '../../utils/constants';
+import CustomError from '../../utils/CustomError';
 
 interface FileUploadOptions {
 	destinationPath: string;
 }
 
-const generateFileUploadStorage = ({ destinationPath }: FileUploadOptions): StorageEngine => {
+const generateFileUploadStorage = ({
+	destinationPath,
+}: FileUploadOptions): StorageEngine => {
 	return multer.diskStorage({
-		destination: (req: Request, file: Express.Multer.File, cb: any) => {
+		destination: (
+			_: AuthenticatedRequest,
+			file: Express.Multer.File,
+			cb: any
+		) => {
 			// Create the necessary directories if they don't exist
 			fs.mkdirSync(destinationPath, { recursive: true });
 			// Generate a unique filename here or keep the original filename
@@ -25,14 +31,18 @@ const generateFileUploadStorage = ({ destinationPath }: FileUploadOptions): Stor
 
 			cb(null, filePath);
 		},
-		filename: (req: Request, file: Express.Multer.File, cb: any) => {
+		filename: (_: AuthenticatedRequest, file: Express.Multer.File, cb: any) => {
 			// Generate a unique filename here or keep the original filename
 			cb(null, Date.now() + '-' + file.originalname);
 		},
 	});
 };
 
-const fileFilter = (req: Request, file: Express.Multer.File, cb: any) => {
+const fileFilter = (
+	_: AuthenticatedRequest,
+	file: Express.Multer.File,
+	cb: any
+) => {
 	// Check if the file type is allowed
 	if (allowedFileTypes.includes(file.mimetype))
 		// Pass null as the first argument to accept the file
@@ -43,7 +53,9 @@ const fileFilter = (req: Request, file: Express.Multer.File, cb: any) => {
 };
 
 export const teachingFileUpload = multer({
-	storage: generateFileUploadStorage({ destinationPath: teachingFileUploadDestination }),
+	storage: generateFileUploadStorage({
+		destinationPath: teachingFileUploadDestination,
+	}),
 	limits: {
 		fileSize: 8 * 1024 * 1024, // Set the file size limit here (8 MB)
 	},
@@ -51,7 +63,9 @@ export const teachingFileUpload = multer({
 });
 
 export const noteFileUpload = multer({
-	storage: generateFileUploadStorage({ destinationPath: noteFileUploadDestinationPath }),
+	storage: generateFileUploadStorage({
+		destinationPath: noteFileUploadDestinationPath,
+	}),
 	limits: {
 		fileSize: 8 * 1024 * 1024, // Set the file size limit here (8 MB)
 	},

@@ -19,6 +19,8 @@ import {
 	ASSIGN_LAB_GRADING,
 	UNASSIGN_THEORY_GRADING,
 	UNASSIGN_LAB_GRADING,
+	GET_INSTRUCTOR_TEACHINGS,
+	DOWNLOAD_ENROLLED_STUDENTS_PDF,
 } from '../actions';
 import teachingService from './services/teachingService';
 
@@ -78,6 +80,17 @@ export const deleteTeaching = createAsyncThunk(
 	}
 );
 
+export const downloadEnrolledStudentsPDF = createAsyncThunk(
+	DOWNLOAD_ENROLLED_STUDENTS_PDF,
+	async (teachingId, thunkAPI) => {
+		try {
+			return await teachingService.downloadEnrolledStudentsPDF(teachingId);
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
+	}
+);
+
 export const getTeachings = createAsyncThunk(
 	GET_TEACHINGS,
 	async (_, thunkAPI) => {
@@ -87,6 +100,17 @@ export const getTeachings = createAsyncThunk(
 			let url = `?page=${page}`;
 			// let url = `/jobs?status=${searchStatus}&jobType=${searchType}&sort=${sort}&page=${page}`;
 			return await teachingService.getTeachings(url);
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
+	}
+);
+
+export const getInstructorTeachings = createAsyncThunk(
+	GET_INSTRUCTOR_TEACHINGS,
+	async (_, thunkAPI) => {
+		try {
+			return await teachingService.getInstructorTeachings();
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -283,6 +307,17 @@ export const teachingSlice = createSlice({
 				state.isLoading = false;
 				displayErrorNotification(payload);
 			})
+			.addCase(downloadEnrolledStudentsPDF.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(downloadEnrolledStudentsPDF.fulfilled, (state) => {
+				state.isLoading = false;
+				displaySuccessNotification('Enrolled students PDF downloaded.');
+			})
+			.addCase(downloadEnrolledStudentsPDF.rejected, (state, { payload }) => {
+				state.isLoading = false;
+				displayErrorNotification(payload);
+			})
 			.addCase(getTeachings.pending, (state) => {
 				state.isLoading = true;
 			})
@@ -297,6 +332,23 @@ export const teachingSlice = createSlice({
 				if (
 					payload !==
 					'Seems like there are no active course teachings registered in the system.'
+				)
+					displayErrorNotification(payload);
+			})
+			.addCase(getInstructorTeachings.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(getInstructorTeachings.fulfilled, (state, { payload }) => {
+				state.isLoading = false;
+				state.teachings = payload;
+				state.numOfPages = payload.numOfPages;
+				state.totalTeachings = payload.totalTeachings;
+			})
+			.addCase(getInstructorTeachings.rejected, (state, { payload }) => {
+				state.isLoading = false;
+				if (
+					payload !==
+					'Seems like there are no active course teachings assigned to you.'
 				)
 					displayErrorNotification(payload);
 			})
@@ -455,4 +507,5 @@ export const {
 	updateTeachingsAfterActivation,
 	updateTeachingsAfterDeactivation,
 } = teachingSlice.actions;
+
 export default teachingSlice.reducer;

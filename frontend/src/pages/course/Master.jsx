@@ -1,14 +1,5 @@
 import { NavLink, useParams } from 'react-router-dom';
-import {
-	Card,
-	CardText,
-	CardTitle,
-	Col,
-	Input,
-	Nav,
-	NavItem,
-	Row,
-} from 'reactstrap';
+import { Card, CardText, CardTitle, Col, Input, Nav, Row } from 'reactstrap';
 import { faBook } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { FaStudiovinari } from 'react-icons/fa';

@@ -1,12 +1,15 @@
 import { Card, CardBody, CardTitle, Col } from 'reactstrap';
 import useCurrentSemester from '../../hooks/useCurrentSemester';
+import Spinner from '../../components/boilerplate/spinners/Spinner';
 
 export default function CurrentSemester() {
-	const { semester } = useCurrentSemester();
+	const { semester, isSemesterLoading } = useCurrentSemester();
 
 	return (
 		<>
-			{semester ? (
+			{isSemesterLoading ? (
+				<Spinner card />
+			) : semester ? (
 				<Col xl="3" lg="4" md="4" className="text-right">
 					<Card className="card-note">
 						<CardBody>

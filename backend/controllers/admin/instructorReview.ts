@@ -1,4 +1,5 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
+import { AuthenticatedRequest } from '../../interfaces/AuthRequest';
 import {
 	getInstructorReviews,
 	deleteInstructorReviews,
@@ -7,7 +8,7 @@ import { tryCatch } from '../../utils/tryCatch';
 import CustomError from '../../utils/CustomError';
 
 export const getSystemInstructorReviews = tryCatch(
-	async (_: Request, res: Response): Promise<Response> => {
+	async (_: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const instructorReviews = await getInstructorReviews();
 		if (!instructorReviews.length)
 			throw new CustomError(
@@ -20,7 +21,7 @@ export const getSystemInstructorReviews = tryCatch(
 );
 
 export const deleteSystemInstructorReviews = tryCatch(
-	async (_: Request, res: Response): Promise<Response> => {
+	async (_: AuthenticatedRequest, res: Response): Promise<Response> => {
 		await deleteInstructorReviews();
 		return res
 			.status(200)

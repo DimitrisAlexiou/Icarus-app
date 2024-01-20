@@ -1,5 +1,5 @@
 import { Row, Col } from 'reactstrap';
-import SpinnerComponent from '../boilerplate/spinners/SpinnerMessage';
+import SpinnerComponent from '../../boilerplate/spinners/SpinnerMessage';
 
 const MessagesCard = ({ user }) => {
 	const messages = [];

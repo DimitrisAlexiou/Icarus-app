@@ -3,9 +3,9 @@ import { INSTRUCTOR, STUDENT } from '../../constants/strings';
 import Calendar from '../../components/calendar/Calendar';
 import MyCoursesCard from '../../components/course/cards/MyCoursesCard';
 import MyTeachingsCard from '../../components/course/cards/MyTeachingsCard';
-import MyGradesCard from '../../components/portfolio/MyGradesCard';
-import MessagesCard from '../../components/portfolio/MessagesCard';
-import AnnouncementsCard from '../../components/portfolio/AnnouncementsCard';
+import MyGradesCard from '../../components/portfolio/cards/MyGradesCard';
+import MessagesCard from '../../components/portfolio/cards/MessagesCard';
+import AnnouncementsCard from '../../components/portfolio/cards/AnnouncementsCard';
 
 export default function UserDashboard({ user }) {
 	return (

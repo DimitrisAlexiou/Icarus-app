@@ -60,7 +60,7 @@ export const getInstructorByUserId = (userId: string) =>
 	Instructor.findOne({ user: userId });
 export const updateInstructorById = (
 	id: string,
-	instructor: Record<string, any>,
+	instructor: Partial<InstructorProps>,
 	options?: Record<string, any>
 ) => Instructor.findByIdAndUpdate(id, instructor, { new: true });
 export const deleteInstructorByUserId = (id: string, session: ClientSession) =>

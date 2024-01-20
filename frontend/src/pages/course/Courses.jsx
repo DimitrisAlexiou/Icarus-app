@@ -1,14 +1,11 @@
 import { Link } from 'react-router-dom';
 import { Card, CardText, CardTitle, Row, Col } from 'reactstrap';
+import Header from '../../components/boilerplate/headers/Header';
 
 export default function Courses() {
 	return (
 		<>
-			<Row className="mb-4 animated--grow-in">
-				<Col>
-					<h3 className="text-gray-800 font-weight-bold">Studies</h3>
-				</Col>
-			</Row>
+			<Header title="Studies" />
 
 			<Row className="justify-content-center animated--grow-in">
 				<Col md="8" lg="7" xl="4" className="mb-4">

@@ -8,6 +8,7 @@ import {
 	ModalBody,
 	ModalHeader,
 } from 'reactstrap';
+import useAssessmentIsAvailable from '../../../hooks/user/useAssessmentIsAvailable';
 import useAdminStatements from '../../../hooks/admin/useAdminStatements';
 import useModal from '../../../hooks/generic/useModal';
 import StatementCard from '../../../components/course/cards/StatementCard';
@@ -15,20 +16,22 @@ import CurrentSemester from '../../../components/boilerplate/CurrentSemester';
 import Spinner from '../../../components/boilerplate/spinners/Spinner';
 import PreviousStatements from '../../../components/statement/PreviousStatements';
 
-export default function Statements() {
+export default function AdminStatements() {
 	const {
 		user,
 		semester,
 		statements,
 		isSemesterLoading,
-		isAssessmentLoading,
 		isStatementsLoading,
-		assessmentIsAvailable,
-		vaccineIsAvailable,
-		assessmentEndDate,
-		vaccineEndDate,
 		previousStatements,
 	} = useAdminStatements();
+	const {
+		assessmentIsAvailable,
+		assessmentEndDate,
+		isAssessmentLoading,
+		vaccineIsAvailable,
+		vaccineEndDate,
+	} = useAssessmentIsAvailable();
 
 	const { modal, selectedItem, openModal, closeModal } = useModal();
 

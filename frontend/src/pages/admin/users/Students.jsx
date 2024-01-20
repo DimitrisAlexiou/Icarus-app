@@ -6,6 +6,7 @@ import DataTable from '../../../components/DataTable';
 import UserCard from '../../../components/admin/cards/UserCard';
 import Spinner from '../../../components/boilerplate/spinners/Spinner';
 import SpinnerComponent from '../../../components/boilerplate/spinners/SpinnerMessage';
+import Header from '../../../components/boilerplate/headers/Header';
 
 export default function Students() {
 	const { modal, selectedItem, openModal, closeModal } = useModal();
@@ -24,9 +25,7 @@ export default function Students() {
 
 	return (
 		<>
-			<h3 className="mb-4 text-gray-800 font-weight-bold animated--grow-in">
-				Students
-			</h3>
+			<Header title="Students" />
 
 			{isLoading ? (
 				<Spinner card />

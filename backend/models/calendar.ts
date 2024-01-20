@@ -1,6 +1,7 @@
 import mongoose, { ClientSession, Schema, model } from 'mongoose';
 
 export interface CalendarProps {
+	eventId: string;
 	title: string;
 	startDate?: Date;
 	endDate?: Date;
@@ -43,9 +44,9 @@ const calendarSchema = new Schema<CalendarProps>(
 
 export const Calendar = model<CalendarProps>('Calendar', calendarSchema);
 
-export const createEvent = (values: Record<string, any>) =>
+export const createEvent = (values: CalendarProps) =>
 	new Calendar(values).save().then((event) => event.toObject());
-export const updateEventById = (id: string, event: Record<string, any>) =>
+export const updateEventById = (id: string, event: CalendarProps) =>
 	Calendar.findByIdAndUpdate(id, event, { new: true });
 export const getEventByEventId = (eventId: string) =>
 	Calendar.findOne({ eventId });

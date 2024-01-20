@@ -20,7 +20,7 @@ import useNotes from '../../hooks/note/useNotes';
 import NoteForm from '../../components/note/NoteForm';
 import NoteItem from '../../components/note/NoteItem';
 import Spinner from '../../components/boilerplate/spinners/Spinner';
-import Header from '../../components/boilerplate/Header';
+import PillHeader from '../../components/boilerplate/headers/PillHeader';
 import UserNotes from '../../components/admin/UserNotes';
 
 export default function Notes() {
@@ -33,6 +33,8 @@ export default function Notes() {
 		setEditNote,
 		allCategories,
 		hasImportantNotes,
+		handleUpdateImportance,
+		handleDeleteUserNote,
 		handleDeleteUserNotes,
 		dispatch,
 	} = useNotes();
@@ -129,6 +131,15 @@ export default function Notes() {
 								}}
 							>
 								Notes
+								<span
+									className="text-muted pill-label mx-2"
+									style={{
+										fontWeight: '900',
+										fontSize: '0.6rem',
+									}}
+								>
+									{notes.length}
+								</span>
 							</NavLink>
 						</NavItem>
 						<span className="topbar-divider"></span>
@@ -196,7 +207,7 @@ export default function Notes() {
 			{user.user.isAdmin ? (
 				<Row className="mb-4 justify-content-between animated--grow-in">
 					<Col className="text-center">
-						<Header title="User Notes" />
+						<PillHeader title="User Notes" />
 						<h6
 							className="text-muted pill-label"
 							style={{
@@ -220,6 +231,8 @@ export default function Notes() {
 						setEditNote={setEditNote}
 						setSelectedCategory={setSelectedCategory}
 						setSelectedNote={setSelectedNote}
+						handleUpdateImportance={handleUpdateImportance}
+						handleDeleteUserNote={handleDeleteUserNote}
 						setModal={setModal}
 						dispatch={dispatch}
 					/>
@@ -243,18 +256,12 @@ export default function Notes() {
 									<NoteItem
 										note={note}
 										setSelectedCategory={setSelectedCategory}
-										dispatch={dispatch}
+										handleUpdateImportance={handleUpdateImportance}
+										handleDeleteUserNote={handleDeleteUserNote}
 									/>
 								</Col>
 							))}
 						</Row>
-						<Col className="d-flex justify-content-end">
-							<h6 className="mb-3 text-gray-400 font-weight-bold animated--grow-in">
-								{notes.length} note
-								{notes.length > 1 && 's'}
-							</h6>
-						</Col>
-						{/* {numOfPages > 1 ? <PageButton /> : null} */}
 					</>
 				)
 			) : (

@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose';
+import CustomError from '../../utils/CustomError';
 
 export enum SemesterType {
 	Winter = 'Winter',
@@ -54,31 +55,29 @@ export const Semester = model<SemesterProps>('Semester', semesterSchema);
 export const getSemesters = () => Semester.find();
 export const getSemesterById = (id: string) => Semester.findById(id);
 export const getSemesterByType = (type: string) => Semester.findOne({ type });
-export const getSemesterByTypeAndAcademicYear = (type: string, academicYear: string) =>
-	Semester.findOne({ type, academicYear });
+export const getSemesterByTypeAndAcademicYear = (
+	type: string,
+	academicYear: string
+) => Semester.findOne({ type, academicYear });
 export const getCurrentSemester = async (currentDate: Date) => {
-	const currentMonth = currentDate.getMonth() + 1;
-	const currentYear = currentDate.getFullYear();
+	const semesters = await Semester.find();
 
-	let academicYear: string;
-	let semesterType: SemesterType;
+	for (const semester of semesters) {
+		const startDate = new Date(semester.startDate);
+		const endDate = new Date(semester.endDate);
 
-	if (currentMonth >= 10 || currentMonth <= 1) {
-		academicYear = `${currentYear}-${currentYear + 1}`;
-		semesterType = SemesterType.Winter;
-	} else {
-		academicYear = `${currentYear - 1}-${currentYear}`;
-		semesterType = SemesterType.Spring;
+		if (currentDate >= startDate && currentDate <= endDate) return semester;
 	}
 
-	return Semester.findOne({ academicYear, type: semesterType });
+	throw new CustomError(
+		'No active semester defined for the current period.',
+		404
+	);
 };
-
-// export const getCurrentSemester = (currentDate: Date) =>
-// 	Semester.findOne({ startDate: { $lte: currentDate }, endDate: { $gte: currentDate } });
-export const createSemester = (values: Record<string, any>) =>
+export const createSemester = (values: SemesterProps) =>
 	new Semester(values).save().then((semester) => semester.toObject());
-export const updateSemesterById = (id: string, semester: Record<string, any>) =>
+export const updateSemesterById = (id: string, semester: SemesterProps) =>
 	Semester.findByIdAndUpdate(id, semester, { new: true });
-export const deleteSemesterById = (id: string) => Semester.findByIdAndDelete(id);
+export const deleteSemesterById = (id: string) =>
+	Semester.findByIdAndDelete(id);
 export const deleteSemesters = () => Semester.deleteMany();

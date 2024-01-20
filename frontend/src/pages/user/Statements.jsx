@@ -9,6 +9,7 @@ import {
 	ModalHeader,
 } from 'reactstrap';
 import { deleteAlert } from '../../constants/sweetAlertNotification';
+import useAssessmentIsAvailable from '../../hooks/user/useAssessmentIsAvailable';
 import useStatements from '../../hooks/user/useStatements';
 import useModal from '../../hooks/generic/useModal';
 import StatementCard from '../../components/course/cards/StatementCard';
@@ -22,7 +23,6 @@ export default function Statements() {
 	const {
 		user,
 		semester,
-		assessment,
 		statements,
 		isSemesterLoading,
 		isAssessmentLoading,
@@ -34,10 +34,6 @@ export default function Statements() {
 		setEditStatement,
 		setEditVaccine,
 		deleteStatement,
-		assessmentIsAvailable,
-		vaccineIsAvailable,
-		assessmentEndDate,
-		vaccineEndDate,
 		canSubmitAvailableTeachings,
 		canSubmitAvailableVaccineTeachings,
 		isStatementSubmitted,
@@ -48,6 +44,13 @@ export default function Statements() {
 		handleFinalizeStatement,
 		dispatch,
 	} = useStatements();
+	const {
+		assessment,
+		assessmentIsAvailable,
+		assessmentEndDate,
+		vaccineIsAvailable,
+		vaccineEndDate,
+	} = useAssessmentIsAvailable();
 
 	const { modal, selectedItem, openModal, closeModal } = useModal();
 

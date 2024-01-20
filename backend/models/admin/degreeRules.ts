@@ -32,11 +32,16 @@ const degreeRulesSchema = new Schema<DegreeRulesProps>(
 	}
 );
 
-export const DegreeRules = model<DegreeRulesProps>('DegreeRules', degreeRulesSchema);
+export const DegreeRules = model<DegreeRulesProps>(
+	'DegreeRules',
+	degreeRulesSchema
+);
 
 export const getDegreeRules = () => DegreeRules.findOne();
-export const createDegreeRules = (values: Record<string, any>) =>
+export const createDegreeRules = (values: DegreeRulesProps) =>
 	new DegreeRules(values).save().then((degreeRules) => degreeRules.toObject());
-export const updateDegreeRulesById = (id: string, degreeRules: Record<string, any>) =>
-	DegreeRules.findByIdAndUpdate(id, degreeRules, { new: true });
+export const updateDegreeRulesById = (
+	id: string,
+	degreeRules: DegreeRulesProps
+) => DegreeRules.findByIdAndUpdate(id, degreeRules, { new: true });
 export const deleteDegreeRules = () => DegreeRules.deleteOne();

@@ -5,7 +5,7 @@ import { faEdit, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import { AssessmentStatus, AssessmentType } from '../../constants/enums';
 import StatementForm from '../user/forms/StatementForm';
 import StatementCard from '../course/cards/StatementCard';
-import Header from '../boilerplate/Header';
+import PillHeader from '../boilerplate/headers/PillHeader';
 import Spinner from '../boilerplate/spinners/Spinner';
 
 export default function VaccineStatement({
@@ -31,7 +31,7 @@ export default function VaccineStatement({
 		<>
 			<Row className="mt-3 mb-3 justify-content-between animated--grow-in">
 				<Col className="text-center">
-					<Header title="Vaccine Statement" />
+					<PillHeader title="Vaccine Statement" />
 				</Col>
 			</Row>
 

@@ -3,11 +3,11 @@ import { Row, Col, FormGroup, Form } from 'reactstrap';
 import { ErrorMessage, FieldArray, Formik } from 'formik';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleXmark } from '@fortawesome/free-regular-svg-icons';
-import { StatementSchema } from '../../../schemas/user/Statement';
+import { CreateStatementSchema } from '../../../schemas/user/Statement';
 import { createStatement } from '../../../features/courses/statementSlice';
 import Spinner from '../../../components/boilerplate/spinners/Spinner';
 import FormErrorMessage from '../../../components/form/FormErrorMessage';
-import Header from '../../boilerplate/Header';
+import PillHeader from '../../boilerplate/headers/PillHeader';
 import SelectField from '../../form/SelectField';
 import ClearButton from '../../buttons/ClearButton';
 import SubmitButton from '../../buttons/SubmitButton';
@@ -50,7 +50,7 @@ export default function CreateStatementForm({
 					teaching: [],
 				}}
 				enableReinitialize={true}
-				validationSchema={StatementSchema}
+				validationSchema={CreateStatementSchema}
 				onSubmit={(values, { setSubmitting }) => {
 					const statement = {
 						teachings: selectedTeachings,
@@ -58,7 +58,6 @@ export default function CreateStatementForm({
 						semester: semester._id,
 						user: values.student,
 					};
-					console.log('Creating statement: ', statement);
 					dispatch(createStatement(statement));
 					setSubmitting(false);
 				}}
@@ -87,7 +86,7 @@ export default function CreateStatementForm({
 							</Col>
 						</Row>
 						<Col className="text-center mb-3">
-							<Header title="available teachings" />
+							<PillHeader title="available teachings" />
 						</Col>
 						<Row>
 							<FormGroup className="text-center">

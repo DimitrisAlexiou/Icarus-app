@@ -3,6 +3,7 @@ import useNewCourse from '../../../hooks/course/useNewCourse';
 import CourseForm from '../../../components/course/forms/CourseForm';
 import BackButton from '../../../components/buttons/BackButton';
 import Spinner from '../../../components/boilerplate/spinners/Spinner';
+import FormHeader from '../../../components/boilerplate/headers/FormHeader';
 
 export default function NewCourse() {
 	const {
@@ -56,11 +57,8 @@ export default function NewCourse() {
 					}}
 				>
 					<div className="card shadow mb-4">
-						<div className="card-header py-3">
-							<h6 className="m-0 font-weight-bold text-primary">
-								Fill the form below to create a new course
-							</h6>
-						</div>
+						<FormHeader title="Fill the form below to create a new course" />
+
 						<div className="card-body">
 							{coursesIsLoading || cyclesIsLoading || semestersIsLoading ? (
 								<Spinner card />

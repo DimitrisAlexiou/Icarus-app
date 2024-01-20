@@ -1,4 +1,6 @@
-import { Request, Response } from 'express';
+import mongoose from 'mongoose';
+import { Response } from 'express';
+import { AuthenticatedRequest } from '../../interfaces/AuthRequest';
 import {
 	createStatement,
 	getStatementById,
@@ -11,15 +13,10 @@ import {
 	Status,
 	Type,
 } from '../../models/course/statement';
-import { UserProps } from '../../models/users/user';
 import { getCurrentSemester } from '../../models/admin/semester';
 import { getAssessmentBySemester } from '../../models/admin/assessment';
 import { tryCatch } from '../../utils/tryCatch';
 import CustomError from '../../utils/CustomError';
-
-interface AuthenticatedRequest extends Request {
-	user?: UserProps;
-}
 
 export const createStudentStatement = tryCatch(
 	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
@@ -85,11 +82,10 @@ export const createStudentStatement = tryCatch(
 
 		const createdStatement = await createStatement({
 			teaching: teachings,
-			semester: semester,
-			user: userId,
+			semester: new mongoose.Types.ObjectId(semesterId),
+			user: new mongoose.Types.ObjectId(userId),
 			condition: Status.Pending,
 			type: type,
-			status: 'new',
 		});
 
 		const statement = await getStatementById(createdStatement._id.toString());
@@ -102,7 +98,16 @@ export const finalizeStatement = tryCatch(
 	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const { statementId } = req.params;
 
+		const existingStatement = await getStatementById(statementId);
+
+		if (!existingStatement)
+			throw new CustomError(
+				'The statement you are trying to finalize does not exist.',
+				404
+			);
+
 		const finalizedStatement = await updateStatementById(statementId, {
+			...existingStatement,
 			condition: Status.Finalized,
 		});
 
@@ -195,8 +200,8 @@ export const updateStatement = tryCatch(
 
 		const updatedStatement = await updateStatementById(id, {
 			teaching: updatedTeachings,
-			semester: semester,
-			user: userId,
+			semester: new mongoose.Types.ObjectId(semesterId),
+			user: new mongoose.Types.ObjectId(userId),
 			condition: Status.Pending,
 			type: type,
 		});
@@ -247,7 +252,7 @@ export const viewStudentStatements = tryCatch(
 );
 
 export const viewStatements = tryCatch(
-	async (_: Request, res: Response): Promise<Response> => {
+	async (_: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const statements = await getStatements();
 		if (!statements.length)
 			throw new CustomError(
@@ -260,7 +265,7 @@ export const viewStatements = tryCatch(
 );
 
 export const deleteSystemStatements = tryCatch(
-	async (_: Request, res: Response): Promise<Response> => {
+	async (_: AuthenticatedRequest, res: Response): Promise<Response> => {
 		await deleteStatements();
 		return res
 			.status(200)
@@ -308,7 +313,18 @@ export const finalizePendingStatements = async (): Promise<void> => {
 				currentDate > assessmentStatementEndDate &&
 				statement.condition === Status.Pending
 			) {
+				const existingStatement = await getStatementById(
+					statement._id.toString()
+				);
+
+				if (!existingStatement)
+					throw new CustomError(
+						'The statement you are trying to finalize does not exist.',
+						404
+					);
+
 				await updateStatementById(statement._id.toString(), {
+					...existingStatement,
 					condition: Status.Finalized,
 				});
 				console.log(

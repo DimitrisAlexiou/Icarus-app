@@ -12,37 +12,46 @@ const createTeachingReview = async (data) => {
 };
 
 const updateTeachingReview = async (teachingReviewId, data) => {
-	const response = await axiosFetch.put(API_URL_REVIEW + '/teaching/' + teachingReviewId, data);
+	const response = await axiosFetch.put(
+		API_URL_REVIEW + '/teaching/' + teachingReviewId,
+		data
+	);
 
 	return response.data;
 };
 
 const getTeachingReview = async (teachingReviewId) => {
-	const response = await axiosFetch.get(API_URL_REVIEW + '/teaching/' + teachingReviewId);
+	const response = await axiosFetch.get(
+		API_URL_REVIEW + '/teaching/' + teachingReviewId
+	);
 
 	return response.data;
 };
 
 const deleteTeachingReview = async (teachingReviewId) => {
-	const response = await axiosFetch.delete(API_URL_REVIEW + '/teaching/' + teachingReviewId);
+	const response = await axiosFetch.delete(
+		API_URL_REVIEW + '/teaching/' + teachingReviewId
+	);
 
 	return response.data;
 };
 
-// LOGGED IN USER
 const getUserTeachingReviews = async () => {
-	const response = await axiosFetch.get(API_URL_USER_ACTIVITY + '/reviews/teaching');
+	const response = await axiosFetch.get(
+		API_URL_USER_ACTIVITY + '/reviews/teaching'
+	);
 
 	return response.data;
 };
 
 const deleteUserTeachingReviews = async () => {
-	const response = await axiosFetch.delete(API_URL_USER_ACTIVITY + '/reviews/teaching');
+	const response = await axiosFetch.delete(
+		API_URL_USER_ACTIVITY + '/reviews/teaching'
+	);
 
 	return response.data;
 };
 
-// ADMIN
 const getTeachingReviews = async () => {
 	const response = await axiosFetch.get(API_URL_ADMIN_REVIEW_TEACHING);
 

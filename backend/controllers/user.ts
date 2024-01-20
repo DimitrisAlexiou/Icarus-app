@@ -1,14 +1,11 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { startSession } from 'mongoose';
-import { updateUserById, getUserById, UserProps, UserType } from '../models/users/user';
+import { AuthenticatedRequest } from '../interfaces/AuthRequest';
+import { updateUserById, getUserById, UserType } from '../models/users/user';
 import { Student } from '../models/users/student';
 import { Instructor, updateInstructorById } from '../models/users/instructor';
 import { tryCatch } from '../utils/tryCatch';
 import CustomError from '../utils/CustomError';
-
-interface AuthenticatedRequest extends Request {
-	user?: UserProps;
-}
 
 export const viewProfile = tryCatch(
 	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
@@ -52,7 +49,10 @@ export const updateProfile = async (
 			if (type === UserType.instructor && !degree)
 				throw new CustomError('Please provide the instructor degree.', 400);
 
-			throw new CustomError('Please fill in all the user required fields.', 400);
+			throw new CustomError(
+				'Please fill in all the user required fields.',
+				400
+			);
 		}
 
 		const { id } = req.params;
@@ -78,7 +78,8 @@ export const updateProfile = async (
 				{ session }
 			);
 
-			if (!instructor) throw new CustomError('Instructor profile not found.', 404);
+			if (!instructor)
+				throw new CustomError('Instructor profile not found.', 404);
 
 			await updatedUser.populate('instructor');
 		}
@@ -86,7 +87,9 @@ export const updateProfile = async (
 		await session.commitTransaction();
 		session.endSession();
 
-		return res.status(200).json({ message: 'User profile updated.', updatedUser });
+		return res
+			.status(200)
+			.json({ message: 'User profile updated.', updatedUser });
 	} catch (error) {
 		await session.abortTransaction();
 		session.endSession();

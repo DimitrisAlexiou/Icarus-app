@@ -69,7 +69,7 @@ export const getStudentByUserId = (userId: string) =>
 	Student.findOne({ user: userId });
 export const updateStudentById = (
 	id: string,
-	student: Record<string, any>,
+	student: Partial<StudentProps>,
 	options?: Record<string, any>
 ) => Student.findByIdAndUpdate(id, student, { new: true });
 export const deleteStudentByUserId = (id: string, session: ClientSession) =>

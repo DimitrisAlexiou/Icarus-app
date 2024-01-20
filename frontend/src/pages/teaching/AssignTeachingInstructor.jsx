@@ -17,10 +17,10 @@ import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import useAssignTeachingInstructor from '../../hooks/teaching/useAssignTeachingInstructor';
 import AssignInstructorForm from '../../components/course/forms/AssignInstructorForm';
 import CarouselComponent from '../../components/Carousel';
-import CurrentSemester from '../../components/boilerplate/CurrentSemester';
 import Spinner from '../../components/boilerplate/spinners/Spinner';
 import SpinnerComponent from '../../components/boilerplate/spinners/SpinnerMessage';
-import Header from '../../components/boilerplate/Header';
+import PillHeader from '../../components/boilerplate/headers/PillHeader';
+import HeaderWithSemester from '../../components/boilerplate/headers/HeaderWithSemester';
 
 export default function AssignTeachingInstructor() {
 	const {
@@ -86,16 +86,11 @@ export default function AssignTeachingInstructor() {
 
 	return (
 		<>
-			<Row className="mb-4 animated--grow-in">
-				<Col>
-					<h3 className="text-gray-800 font-weight-bold">Assign Instructor</h3>
-				</Col>
-				<CurrentSemester />
-			</Row>
+			<HeaderWithSemester title="Assign Instructor" />
 
 			<Row className="mt-3 mb-4 justify-content-between animated--grow-in">
 				<Col className="text-center">
-					<Header title="active teachings" />
+					<PillHeader title="active teachings" />
 				</Col>
 			</Row>
 

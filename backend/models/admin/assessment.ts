@@ -34,14 +34,18 @@ const assessmentSchema = new Schema<AssessmentProps>(
 	}
 );
 
-export const Assessment = model<AssessmentProps>('Assessment', assessmentSchema);
+export const Assessment = model<AssessmentProps>(
+	'Assessment',
+	assessmentSchema
+);
 
 export const getAssessments = () => Assessment.find();
 export const getAssessmentBySemester = (semesterId: string) =>
 	Assessment.findOne({ semester: semesterId }).populate('semester');
-export const createAssessment = (values: Record<string, any>) =>
+export const createAssessment = (values: AssessmentProps) =>
 	new Assessment(values).save().then((assessment) => assessment.toObject());
-export const updateAssessmentById = (id: string, assessment: Record<string, any>) =>
+export const updateAssessmentById = (id: string, assessment: AssessmentProps) =>
 	Assessment.findByIdAndUpdate(id, assessment, { new: true });
-export const deleteAssessmentById = (id: string) => Assessment.findByIdAndDelete(id);
+export const deleteAssessmentById = (id: string) =>
+	Assessment.findByIdAndDelete(id);
 export const deleteAssessments = () => Assessment.deleteMany();

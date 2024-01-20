@@ -13,7 +13,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 import listPlugin from '@fullcalendar/list';
 import Spinner from '../boilerplate/spinners/Spinner';
 import SpinnerComponent from '../boilerplate/spinners/SpinnerMessage';
-import Header from '../boilerplate/Header';
+import PillHeader from '../boilerplate/headers/PillHeader';
 import EventForm from '../calendar/EventForm';
 import UserEvents from './UserEvents';
 
@@ -112,7 +112,7 @@ export default function AdminCalendar() {
 		<>
 			<Row className="mb-4 animated--grow-in">
 				<Col>
-					<Header title="User Calendar Events" />
+					<PillHeader title="User Calendar Events" />
 					<h6
 						className="text-muted pill-label"
 						style={{

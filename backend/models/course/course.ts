@@ -137,11 +137,11 @@ export const getCourseById = (id: string) =>
 		.populate('master');
 export const getCourseByCourseId = (courseId: string) =>
 	Course.findOne({ courseId });
-export const createCourse = (values: Record<string, any>) =>
+export const createCourse = (values: CourseProps) =>
 	new Course(values).save().then((course) => course.toObject());
 export const updateCourseById = (
 	id: string,
-	course: Record<string, any>,
+	course: Partial<CourseProps>,
 	options?: Record<string, any>
 ) => Course.findByIdAndUpdate(id, course, { new: true });
 export const deleteCourseById = (id: string) => Course.findByIdAndDelete(id);

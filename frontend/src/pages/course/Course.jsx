@@ -6,6 +6,7 @@ import useCourse from '../../hooks/course/useCourse';
 import CourseCard from '../../components/course/cards/CourseCard';
 import BackButton from '../../components/buttons/BackButton';
 import Spinner from '../../components/boilerplate/spinners/Spinner';
+import Header from '../../components/boilerplate/headers/Header';
 
 export default function Course() {
 	const {
@@ -18,13 +19,7 @@ export default function Course() {
 
 	return (
 		<>
-			<Row className="mb-4 animated--grow-in">
-				<Col>
-					<h3 className="text-gray-800 font-weight-bold animated--grow-in">
-						{course.title}
-					</h3>
-				</Col>
-			</Row>
+			<Header title={course.title} />
 
 			<Row className="justify-content-center animated--grow-in">
 				<Col xs="12" sm="12" md="12" lg="10" xl="10">

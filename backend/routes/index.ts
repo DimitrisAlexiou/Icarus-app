@@ -1,5 +1,4 @@
 import express from 'express';
-
 import authentication from './auth/authentication';
 import user from './user';
 import admin from './admin';
@@ -7,6 +6,7 @@ import course from './course/course';
 import teaching from './course/teaching';
 import statement from './course/statement';
 import calendar from './calendar';
+import announcement from './announcement';
 import note from './note';
 import generalReview from './review/generalReview';
 import instructorReview from './review/instructorReview';
@@ -23,6 +23,7 @@ export default (): express.Router => {
 	teaching(router);
 	statement(router);
 	note(router);
+	announcement(router);
 	generalReview(router);
 	instructorReview(router);
 	teachingReview(router);

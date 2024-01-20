@@ -24,9 +24,12 @@ export const Directory = model<DirectoryProps>('Directory', directorySchema);
 export const createdirectory = (values: Record<string, any>) =>
 	new Directory(values).save().then((directory) => directory.toObject());
 export const getDirectoryById = (id: string) => Directory.findById(id);
-export const updateDirectoryById = (id: string, directory: Record<string, any>) =>
-	Directory.findByIdAndUpdate(id, directory, { new: true });
-export const deleteDirectoryById = (id: string) => Directory.findByIdAndDelete(id);
+export const updateDirectoryById = (
+	id: string,
+	directory: Record<string, any>
+) => Directory.findByIdAndUpdate(id, directory, { new: true });
+export const deleteDirectoryById = (id: string) =>
+	Directory.findByIdAndDelete(id);
 export const getDirectoriesByTeachingId = (teachingId: string) =>
 	Directory.find({ teaching: teachingId });
 export const deleteDirectoriesByTeachingId = (teachingId: string) =>

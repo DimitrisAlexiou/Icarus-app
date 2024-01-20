@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import { AuthenticatedRequest } from '../interfaces/AuthRequest';
 import {
 	userSchema,
 	profileSchema,
@@ -18,13 +19,9 @@ import {
 	courseActivationSchema,
 	instructorsAssignmentSchema,
 	masterProgramSchema,
+	announcementSchema,
 } from '../utils/schemas';
-import { UserProps } from '../models/users/user';
 import CustomError from '../utils/CustomError';
-
-interface AuthenticatedRequest extends Request {
-	user?: UserProps;
-}
 
 export const validateUser = (req: Request, _: Response, next: NextFunction) => {
 	const { error } = userSchema.validate(req.body);
@@ -54,7 +51,7 @@ export const validateProfile = (
 };
 
 export const validateCourse = (
-	req: Request,
+	req: AuthenticatedRequest,
 	_: Response,
 	next: NextFunction
 ) => {
@@ -68,7 +65,7 @@ export const validateCourse = (
 };
 
 export const validateCourseActivation = (
-	req: Request,
+	req: AuthenticatedRequest,
 	_: Response,
 	next: NextFunction
 ) => {
@@ -85,7 +82,7 @@ export const validateCourseActivation = (
 };
 
 export const validateTeaching = (
-	req: Request,
+	req: AuthenticatedRequest,
 	_: Response,
 	next: NextFunction
 ) => {
@@ -99,7 +96,7 @@ export const validateTeaching = (
 };
 
 export const validateInstructorsAssignment = (
-	req: Request,
+	req: AuthenticatedRequest,
 	_: Response,
 	next: NextFunction
 ) => {
@@ -116,7 +113,7 @@ export const validateInstructorsAssignment = (
 };
 
 export const validateStatement = (
-	req: Request,
+	req: AuthenticatedRequest,
 	_: Response,
 	next: NextFunction
 ) => {
@@ -130,7 +127,7 @@ export const validateStatement = (
 };
 
 export const validateTeachingReview = (
-	req: Request,
+	req: AuthenticatedRequest,
 	_: Response,
 	next: NextFunction
 ) => {
@@ -144,7 +141,7 @@ export const validateTeachingReview = (
 };
 
 export const validateInstructorReview = (
-	req: Request,
+	req: AuthenticatedRequest,
 	_: Response,
 	next: NextFunction
 ) => {
@@ -161,7 +158,7 @@ export const validateInstructorReview = (
 };
 
 export const validateGeneralReview = (
-	req: Request,
+	req: AuthenticatedRequest,
 	_: Response,
 	next: NextFunction
 ) => {
@@ -175,7 +172,7 @@ export const validateGeneralReview = (
 };
 
 export const validateSemester = (
-	req: Request,
+	req: AuthenticatedRequest,
 	_: Response,
 	next: NextFunction
 ) => {
@@ -192,7 +189,7 @@ export const validateSemester = (
 };
 
 export const validateAssessment = (
-	req: Request,
+	req: AuthenticatedRequest,
 	_: Response,
 	next: NextFunction
 ) => {
@@ -209,7 +206,7 @@ export const validateAssessment = (
 };
 
 export const validateReview = (
-	req: Request,
+	req: AuthenticatedRequest,
 	_: Response,
 	next: NextFunction
 ) => {
@@ -226,7 +223,7 @@ export const validateReview = (
 };
 
 export const validateDegreeRules = (
-	req: Request,
+	req: AuthenticatedRequest,
 	_: Response,
 	next: NextFunction
 ) => {
@@ -239,7 +236,11 @@ export const validateDegreeRules = (
 	next();
 };
 
-export const validateNote = (req: Request, _: Response, next: NextFunction) => {
+export const validateNote = (
+	req: AuthenticatedRequest,
+	_: Response,
+	next: NextFunction
+) => {
 	const { error } = noteSchema.validate(req.body);
 	if (error) {
 		console.error('❌ Note schema validation: '.yellow.bold, error);
@@ -250,7 +251,7 @@ export const validateNote = (req: Request, _: Response, next: NextFunction) => {
 };
 
 export const validateCalendar = (
-	req: Request,
+	req: AuthenticatedRequest,
 	_: Response,
 	next: NextFunction
 ) => {
@@ -264,7 +265,7 @@ export const validateCalendar = (
 };
 
 export const validateMasterProgram = (
-	req: Request,
+	req: AuthenticatedRequest,
 	_: Response,
 	next: NextFunction
 ) => {
@@ -274,6 +275,20 @@ export const validateMasterProgram = (
 			'❌ Master program configuration schema validation: '.yellow.bold,
 			error
 		);
+		throw new CustomError(error.message, 400);
+	}
+
+	next();
+};
+
+export const validateAnnouncement = (
+	req: AuthenticatedRequest,
+	_: Response,
+	next: NextFunction
+) => {
+	const { error } = announcementSchema.validate(req.body);
+	if (error) {
+		console.error('❌ Announcement schema validation: '.yellow.bold, error);
 		throw new CustomError(error.message, 400);
 	}
 

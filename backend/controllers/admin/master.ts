@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { AuthenticatedRequest } from '../../interfaces/AuthRequest';
 import { tryCatch } from '../../utils/tryCatch';
 import {
 	createMasterProgram,
@@ -12,7 +13,7 @@ import {
 import CustomError from '../../utils/CustomError';
 
 export const defineMasterProgram = tryCatch(
-	async (req: Request, res: Response): Promise<Response> => {
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const { title, startDate, duration, ects } = req.body;
 
 		if (!title || !startDate || !duration || !ects)
@@ -66,7 +67,7 @@ export const viewMasterProgram = tryCatch(
 );
 
 export const updateMasterProgram = tryCatch(
-	async (req: Request, res: Response): Promise<Response> => {
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const { title, startDate, duration, ects } = req.body;
 
 		if (!title || !startDate || !duration || !ects)
@@ -90,7 +91,7 @@ export const updateMasterProgram = tryCatch(
 );
 
 export const deleteMasterProgram = tryCatch(
-	async (req: Request, res: Response): Promise<Response> => {
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const { id } = req.params;
 
 		const masterToDelete = await deleteMasterProgramById(id);
@@ -108,7 +109,7 @@ export const deleteMasterProgram = tryCatch(
 );
 
 export const deleteSystemMasterPrograms = tryCatch(
-	async (_: Request, res: Response): Promise<Response> => {
+	async (_: AuthenticatedRequest, res: Response): Promise<Response> => {
 		await deleteMasterPrograms();
 		return res
 			.status(200)

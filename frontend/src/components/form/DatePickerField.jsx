@@ -1,25 +1,25 @@
-import { forwardRef, useState, useRef } from 'react';
+import { useState } from 'react';
 import { Field, ErrorMessage } from 'formik';
-import { Label, FormGroup, Button, Col } from 'reactstrap';
+import { Label, FormGroup, Col } from 'reactstrap';
 import DatePicker from 'react-datepicker';
+import DateInputField from './DateInputField';
 import FormErrorMessage from './FormErrorMessage';
 import 'react-datepicker/dist/react-datepicker.css';
 
-const DateInput = forwardRef(({ value, onClick }, ref) => (
-	<Button type="button" color="null" onClick={onClick} ref={ref}>
-		{value}
-	</Button>
-));
-
 export default function DatePickerField() {
-	const dateInputRef = useRef(null);
-
 	const [startDate, setStartDate] = useState(new Date());
 	const [endDate, setEndDate] = useState(startDate);
 
 	return (
 		<>
-			<Col xl="6" lg="6" md="6" sm="12" xs="12" className="text-sm-left text-center">
+			<Col
+				xl="6"
+				lg="6"
+				md="6"
+				sm="12"
+				xs="12"
+				className="text-sm-left text-center"
+			>
 				<Field name="startDate">
 					{({ field, form }) => (
 						<>
@@ -40,7 +40,7 @@ export default function DatePickerField() {
 									startDate={startDate}
 									highlightDates={startDate}
 									dateFormat="dd/MM/yyyy"
-									customInput={<DateInput ref={dateInputRef} />}
+									customInput={<DateInputField />}
 								/>
 
 								<ErrorMessage name="startDate" component={FormErrorMessage} />
@@ -75,7 +75,7 @@ export default function DatePickerField() {
 									showMonthDropdown
 									startDate={endDate}
 									dateFormat="dd/MM/yyyy"
-									customInput={<DateInput ref={dateInputRef} />}
+									customInput={<DateInputField />}
 								/>
 								<ErrorMessage name="endDate" component={FormErrorMessage} />
 							</FormGroup>

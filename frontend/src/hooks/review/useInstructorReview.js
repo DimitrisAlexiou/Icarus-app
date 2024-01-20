@@ -1,17 +1,16 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getSemester } from '../../features/admin/semesterSlice';
 import { getTeachings } from '../../features/courses/teachingSlice';
+import useCurrentSemester from '../useCurrentSemester';
 
 const useInstructorReview = () => {
 	const dispatch = useDispatch();
 
+	const { isLoading: isSemesterLoading } = useCurrentSemester();
+
 	const { user } = useSelector((state) => state.auth);
 	const { teachings, isLoading: isTeachingsLoading } = useSelector(
 		(state) => state.teachings
-	);
-	const { isLoading: isSemesterLoading } = useSelector(
-		(state) => state.semesters
 	);
 	const { isLoading: isInstructorReviewLoading } = useSelector(
 		(state) => state.instructorReviews
@@ -21,7 +20,6 @@ const useInstructorReview = () => {
 	);
 
 	useEffect(() => {
-		dispatch(getSemester());
 		dispatch(getTeachings());
 	}, [dispatch]);
 

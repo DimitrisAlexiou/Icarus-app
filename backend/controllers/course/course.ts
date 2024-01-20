@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
-import { startSession } from 'mongoose';
+import { AuthenticatedRequest } from '../../interfaces/AuthRequest';
+import mongoose, { startSession } from 'mongoose';
 import {
 	getCourses,
 	getCourseById,
@@ -16,19 +17,14 @@ import {
 	getTeachingByCourseId,
 	getTeachingById,
 } from '../../models/course/teaching';
-import { UserProps } from '../../models/users/user';
 import { getStudentByUserId } from '../../models/users/student';
 import {
 	getCurrentSemester,
 	getSemesterByTypeAndAcademicYear,
 } from '../../models/admin/semester';
-import { getCurrentAcademicYear } from '../../controllers/admin/semester';
 import { tryCatch } from '../../utils/tryCatch';
+import { getCurrentAcademicYear } from '../../utils/academicYears';
 import CustomError from '../../utils/CustomError';
-
-interface AuthenticatedRequest extends Request {
-	user?: UserProps;
-}
 
 export const viewCourses = tryCatch(
 	async (_: Request, res: Response): Promise<Response> => {
@@ -60,7 +56,7 @@ export const viewCourse = tryCatch(
 );
 
 export const newCourse = tryCatch(
-	async (req: Request, res: Response): Promise<Response> => {
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const {
 			courseId,
 			title,
@@ -103,7 +99,6 @@ export const newCourse = tryCatch(
 			master,
 			prerequisites,
 			isActive,
-			status: 'new',
 		});
 
 		return res.status(201).json({ message: 'Course created!', course });
@@ -205,7 +200,7 @@ export const viewEnrolledCourses = tryCatch(
 );
 
 export const activateCourse = async (
-	req: Request,
+	req: AuthenticatedRequest,
 	res: Response
 ): Promise<Response> => {
 	const { id } = req.params;
@@ -259,8 +254,9 @@ export const activateCourse = async (
 					labGradeRetentionYears,
 					theoryGradeThreshold,
 					labGradeThreshold,
-					course: activatedCourse._id,
-					semester: semester,
+					course: new mongoose.Types.ObjectId(activatedCourse._id),
+					semester: new mongoose.Types.ObjectId(semester._id),
+					directories: [],
 				},
 				{ session }
 			);
@@ -281,7 +277,7 @@ export const activateCourse = async (
 };
 
 export const deActivateCourse = async (
-	req: Request,
+	req: AuthenticatedRequest,
 	res: Response
 ): Promise<Response> => {
 	const { id } = req.params;
@@ -322,7 +318,7 @@ export const deActivateCourse = async (
 };
 
 export const updateCourse = tryCatch(
-	async (req: Request, res: Response): Promise<Response> => {
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		// const {
 		// 	courseId,
 		// 	title,
@@ -368,7 +364,7 @@ export const updateCourse = tryCatch(
 );
 
 export const deleteCourse = tryCatch(
-	async (req: Request, res: Response): Promise<Response> => {
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const { id } = req.params;
 
 		const teaching = await getTeachingByCourseId(id);
@@ -424,7 +420,7 @@ export const deleteCourse = tryCatch(
 );
 
 export const deleteSystemCourses = async (
-	_: Request,
+	_: AuthenticatedRequest,
 	res: Response
 ): Promise<Response> => {
 	const session = await startSession();

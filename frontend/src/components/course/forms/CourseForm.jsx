@@ -313,14 +313,20 @@ export default function CourseForm({
 											label="Cycle"
 											options={
 												<>
-													<option className="text-gray-300" default>
-														Select course cycle
-													</option>
-													{cycles.map((cycle) => (
-														<option key={cycle._id} value={cycle._id}>
-															{cycle.cycle}
-														</option>
-													))}
+													{course ? (
+														<option>{course.cycle.cycle}</option>
+													) : (
+														<>
+															<option className="text-gray-300" default>
+																Select course cycle
+															</option>
+															{cycles.map((cycle) => (
+																<option key={cycle._id} value={cycle._id}>
+																	{cycle.cycle}
+																</option>
+															))}
+														</>
+													)}
 												</>
 											}
 										/>

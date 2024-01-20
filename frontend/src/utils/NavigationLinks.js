@@ -98,18 +98,24 @@ export const sidebarAdminUtilityLinks = [
 	},
 	{
 		id: 11,
+		text: 'Announcements',
+		path: '/admin/announcements',
+		icon: <FontAwesomeIcon icon={faInbox} />,
+	},
+	{
+		id: 12,
 		text: 'Notes',
 		path: '/note',
 		icon: <FontAwesomeIcon icon={faNoteSticky} />,
 	},
 	{
-		id: 12,
+		id: 13,
 		text: 'Statistics & Reports',
 		path: '/statistics-reports',
 		icon: <FontAwesomeIcon icon={faChartBar} />,
 	},
 	{
-		id: 13,
+		id: 14,
 		text: 'Calendar',
 		path: '/admin/calendar',
 		icon: <FontAwesomeIcon icon={faCalendarDays} />,
@@ -237,24 +243,30 @@ export const sidebarInstructorCourseLinks = [
 export const sidebarInstructorUtilityLinks = [
 	{
 		id: 4,
+		text: 'Announcements',
+		path: '/announcement',
+		icon: <FontAwesomeIcon icon={faInbox} />,
+	},
+	{
+		id: 5,
 		text: 'Messages',
 		path: '/messages',
 		icon: <FontAwesomeIcon icon={faMessage} />,
 	},
 	{
-		id: 5,
+		id: 6,
 		text: 'Notes',
 		path: '/note',
 		icon: <FontAwesomeIcon icon={faNoteSticky} />,
 	},
 	{
-		id: 6,
+		id: 7,
 		text: 'Statistics & Reports',
 		path: '/statistics-reports',
 		icon: <FontAwesomeIcon icon={faChartBar} />,
 	},
 	{
-		id: 7,
+		id: 8,
 		text: 'Calendar',
 		path: '/calendar',
 		icon: <FontAwesomeIcon icon={faCalendarDays} />,

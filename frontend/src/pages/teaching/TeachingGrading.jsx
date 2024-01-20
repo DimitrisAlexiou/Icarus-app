@@ -7,32 +7,21 @@ import {
 import useTeachingGrading from '../../hooks/teaching/useTeachingGrading';
 import CarouselComponent from '../../components/Carousel';
 import Spinner from '../../components/boilerplate/spinners/Spinner';
-import CurrentSemester from '../../components/boilerplate/CurrentSemester';
 import SpinnerComponent from '../../components/boilerplate/spinners/SpinnerMessage';
-import Header from '../../components/boilerplate/Header';
+import PillHeader from '../../components/boilerplate/headers/PillHeader';
+import HeaderWithSemester from '../../components/boilerplate/headers/HeaderWithSemester';
 
 export default function TeachingGrading() {
-	const {
-		semester,
-		teachings,
-		isSemesterLoading,
-		isTeachingsLoading,
-		filteredTeachings,
-		handleTeachingClick,
-	} = useTeachingGrading();
+	const { teachings, isTeachingsLoading, handleTeachingClick } =
+		useTeachingGrading();
 
 	return (
 		<>
-			<Row className="mb-4 animated--grow-in">
-				<Col>
-					<h3 className="text-gray-800 font-weight-bold">Teaching Grading</h3>
-				</Col>
-				<CurrentSemester />
-			</Row>
+			<HeaderWithSemester title="Teaching Grading" />
 
 			<Row className="mt-3 mb-4 justify-content-between animated--grow-in">
 				<Col className="text-center">
-					<Header title="active teachings" />
+					<PillHeader title="active teachings" />
 					<h6
 						className="text-muted pill-label"
 						style={{
@@ -40,22 +29,20 @@ export default function TeachingGrading() {
 							fontSize: 15,
 						}}
 					>
-						{filteredTeachings.length}
+						{teachings.length}
 					</h6>
 				</Col>
 			</Row>
 
-			{isSemesterLoading || isTeachingsLoading ? (
+			{isTeachingsLoading ? (
 				<Spinner card />
 			) : !teachings.length > 0 ? (
 				<div className="mb-5">
 					<SpinnerComponent message="There are no teachings available right now." />
 				</div>
-			) : filteredTeachings.length > 0 ? (
+			) : teachings.length > 0 ? (
 				<CarouselComponent
-					objects={filteredTeachings.filter(
-						(teaching) => teaching.semester._id === semester._id
-					)}
+					objects={teachings}
 					renderItem={(teaching) => (
 						<>
 							<Row className="mb-2">

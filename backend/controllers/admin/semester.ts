@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { AuthenticatedRequest } from '../../interfaces/AuthRequest';
 import {
 	getCurrentSemester,
 	getSemesters,
@@ -15,7 +16,7 @@ import { tryCatch } from '../../utils/tryCatch';
 import CustomError from '../../utils/CustomError';
 
 export const defineSemester = tryCatch(
-	async (req: Request, res: Response): Promise<Response> => {
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const { type, academicYear, grading } = req.body;
 
 		if (!type || !academicYear)
@@ -61,7 +62,6 @@ export const defineSemester = tryCatch(
 			grading: type === SemesterType.Any ? null : grading,
 			startDate: startDate,
 			endDate: endDate,
-			status: 'new',
 		});
 
 		return res.status(201).json({ message: 'Semester defined!', semester });
@@ -82,7 +82,7 @@ export const viewSemester = tryCatch(
 );
 
 export const viewSemesters = tryCatch(
-	async (_: Request, res: Response): Promise<Response> => {
+	async (_: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const semesters = await getSemesters();
 		if (!semesters.length)
 			throw new CustomError('Seems like there are no defined semesters.', 404);
@@ -92,7 +92,7 @@ export const viewSemesters = tryCatch(
 );
 
 export const updateSemester = tryCatch(
-	async (req: Request, res: Response): Promise<Response> => {
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const { grading, academicYear } = req.body;
 
 		if (!grading || !academicYear)
@@ -115,7 +115,7 @@ export const updateSemester = tryCatch(
 );
 
 export const deleteSemester = tryCatch(
-	async (req: Request, res: Response): Promise<Response> => {
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const { id } = req.params;
 
 		const semester = await getSemesterById(id);
@@ -148,21 +148,8 @@ export const deleteSemester = tryCatch(
 );
 
 export const deleteSystemSemesters = tryCatch(
-	async (_: Request, res: Response): Promise<Response> => {
+	async (_: AuthenticatedRequest, res: Response): Promise<Response> => {
 		await deleteSemesters();
 		return res.status(200).json({ message: 'Defined semesters deleted.' });
 	}
 );
-
-export const getCurrentAcademicYear = (currentDate: Date): string => {
-	const currentMonth = currentDate.getMonth() + 1;
-	const currentYear = currentDate.getFullYear();
-
-	let academicYear: string;
-
-	if (currentMonth >= 10 || currentMonth <= 1)
-		academicYear = `${currentYear}-${currentYear + 1}`;
-	else academicYear = `${currentYear - 1}-${currentYear}`;
-
-	return academicYear;
-};

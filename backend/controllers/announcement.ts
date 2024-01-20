@@ -1,33 +1,125 @@
-import { Request, Response } from 'express';
-import { Announcement } from '../models/announcement';
-import { UserProps } from '../models/users/user';
+import mongoose from 'mongoose';
+import { startSession } from 'mongoose';
+import { Response } from 'express';
+import { AuthenticatedRequest } from '../interfaces/AuthRequest';
+import {
+	createAnnouncement,
+	deleteAnnouncement,
+	deleteInstructorAnnouncements,
+	deleteTeachingAnnouncements,
+	getAnnouncementById,
+	getAnnouncementByTitle,
+	getInstructorAnnouncements,
+	getTeachingAnnouncements,
+	updateAnnouncementById,
+} from '../models/announcement';
 import { tryCatch } from '../utils/tryCatch';
 import CustomError from '../utils/CustomError';
 
-interface AuthenticatedRequest extends Request {
-	user?: UserProps;
-}
+export const viewAnnouncement = tryCatch(
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
+		const { id } = req.params;
+		const anouncement = await getAnnouncementById(id);
 
-//TODO FIX THE REQ.USER.ID FOR FINDING USER WITH USER ID
-export const getAnnouncements = tryCatch(
-	async (_: AuthenticatedRequest, res: Response): Promise<Response> => {
-		const announcements = await Announcement.find();
-		if (!announcements.length)
-			throw new CustomError('Seems like there are no announcements.', 404);
+		if (!anouncement)
+			throw new CustomError(
+				'Seems like the announcement that you are trying to view does not exist.',
+				404
+			);
 
-		return res.status(200).json(announcements);
+		return res.status(200).json(anouncement);
 	}
 );
 
-export const getInstructorAnnouncements = tryCatch(
+export const createTeachingAnnouncement = tryCatch(
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
+		const { title, text, publishDate, visibility, isVisible, teaching } =
+			req.body;
+
+		if (!title || !text || !visibility || !teaching)
+			throw new CustomError('Please fill in all the required fields.', 400);
+
+		const userId = req.user.id;
+
+		const existingAnnouncement = await getAnnouncementByTitle(title);
+		if (existingAnnouncement)
+			throw new CustomError(
+				'Seems like an announcement with this title already exists.',
+				400
+			);
+
+		const createdAnnouncement = await createAnnouncement({
+			title,
+			text,
+			publishDate,
+			visibility,
+			isVisible,
+			teaching,
+			owner: new mongoose.Types.ObjectId(userId),
+		});
+
+		const announcement = await getAnnouncementById(
+			createdAnnouncement._id.toString()
+		);
+
+		return res
+			.status(201)
+			.json({ message: 'Announcement created!', announcement });
+	}
+);
+
+export const updateAnnouncement = tryCatch(
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
+		const { title, text, visibility, teaching } = req.body;
+
+		if (!title || !text || !visibility || !teaching)
+			throw new CustomError('Please fill in all the required fields.', 400);
+
+		const { id } = req.params;
+		const updatedAnnouncement = await updateAnnouncementById(id, {
+			...req.body,
+			updateDate: new Date(),
+		});
+
+		if (!updatedAnnouncement)
+			throw new CustomError(
+				'Seems like the announcement that you are trying to update does not exist.',
+				404
+			);
+
+		return res
+			.status(200)
+			.json({ message: 'Announcement updated!', updatedAnnouncement });
+	}
+);
+
+export const deleteTeachingAnnouncement = tryCatch(
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
+		const { id } = req.params;
+		const announcementToDelete = await deleteAnnouncement(id);
+
+		if (!announcementToDelete)
+			throw new CustomError(
+				'Seems like the announcement that you are trying to delete does not exist.',
+				404
+			);
+
+		return res.status(200).json({
+			message: 'Announcement deleted.',
+			announcement: announcementToDelete._id,
+		});
+	}
+);
+
+export const viewInstructorAnnouncements = tryCatch(
 	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const userId = req.user.id;
-		const instructorAnnouncements = await Announcement.find({
-			user: userId,
-		});
+
+		const instructorAnnouncements = await getInstructorAnnouncements(userId);
+
 		if (!instructorAnnouncements.length)
 			throw new CustomError(
-				`Seems like there are no announcements from instructor: ${req.user.username}.`,
+				'Seems like you do not have any announcements.',
 				404
 			);
 
@@ -35,69 +127,68 @@ export const getInstructorAnnouncements = tryCatch(
 	}
 );
 
-export const viewAnnouncement = tryCatch(
+export const deleteAllInstructorAnnouncements = tryCatch(
 	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
-		const { id } = req.params;
-		const anouncement = await Announcement.findById(id);
-		if (!anouncement)
-			throw new CustomError('Seems like there is no anouncement with this ID.', 404);
+		const userId = req.user.id;
+		const session = await startSession();
 
-		return res.status(200).json(anouncement);
+		try {
+			session.startTransaction();
+
+			await deleteInstructorAnnouncements(userId, session);
+
+			await session.commitTransaction();
+		} catch (error) {
+			await session.abortTransaction();
+			console.error('❌ ', error);
+			throw new CustomError(
+				'Your teaching announcements did not deleted.',
+				500
+			);
+		} finally {
+			session.endSession();
+		}
+
+		return res
+			.status(200)
+			.json({ message: 'Your teaching announcements deleted.' });
 	}
 );
 
-export const createAnnouncement = tryCatch(
+export const viewTeachingAnnouncements = tryCatch(
 	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
-		const { title, text } = req.body;
+		const { teachingId } = req.params;
+		const teachingAnnouncements = await getTeachingAnnouncements(teachingId);
 
-		if (!title || !text) throw new CustomError('Please fill in all the required fields.', 400);
-
-		const userId = req.user.id;
-		const existingAnnouncement = await Announcement.findOne({ title: title, user: userId });
-		if (existingAnnouncement)
+		if (!teachingAnnouncements.length)
 			throw new CustomError(
-				'Seems like an announcement with this title already exists.',
-				400
+				'Seems like this teaching does not have any announcements.',
+				404
 			);
 
-		const announcement = await Announcement.create({
-			title,
-			text,
-			user: userId,
-			status: 'new',
-		});
-
-		return res.status(201).json(announcement);
+		return res.status(200).json(teachingAnnouncements);
 	}
 );
 
-export const updateAnnouncement = tryCatch(
+export const deleteAllTeachingAnnouncements = tryCatch(
 	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
-		const { title, text } = req.body;
+		const { teachingId } = req.params;
+		const session = await startSession();
 
-		if (!title || !text) throw new CustomError('Please fill in all the required fields.', 400);
+		try {
+			session.startTransaction();
 
-		const { id } = req.params;
+			await deleteTeachingAnnouncements(teachingId, session);
 
-		const updatedAnnouncement = await Announcement.findByIdAndUpdate(id, { ...req.body });
-		if (!updatedAnnouncement)
-			throw new CustomError('Seems like there is no announcement with this ID.', 404);
+			await session.commitTransaction();
+		} catch (error) {
+			await session.abortTransaction();
+			console.error('❌ ', error);
+			throw new CustomError('Teaching announcements did not deleted.', 500);
+		} finally {
+			session.endSession();
+		}
 
-		return res.status(200).json(updatedAnnouncement);
-	}
-);
-
-export const deleteAnnouncement = tryCatch(
-	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
-		const { id } = req.params;
-		await Announcement.findByIdAndDelete(id);
-		return res.status(200).json({ message: 'Note deleted.' });
-	}
-);
-
-export const deleteAnnouncements = tryCatch(
-	async (_: AuthenticatedRequest, res: Response): Promise<Response> => {
-		await Announcement.deleteMany();
-		return res.status(200).json({ message: 'All announcements deleted.' });
+		return res.status(200).json({ message: 'Teaching announcements deleted.' });
 	}
 );

@@ -1,6 +1,6 @@
 import { Schema, model } from 'mongoose';
 
-enum DocumentIType {
+enum DocumentType {
 	File = 'file',
 	Directory = 'directory',
 }
@@ -64,7 +64,8 @@ export const createDocument = (values: Record<string, any>) =>
 export const getDocumentById = (id: string) => Document.findById(id);
 export const updateDocumentById = (id: string, document: Record<string, any>) =>
 	Document.findByIdAndUpdate(id, document, { new: true });
-export const deleteDocumentById = (id: string) => Document.findByIdAndDelete(id);
+export const deleteDocumentById = (id: string) =>
+	Document.findByIdAndDelete(id);
 export const getDocumentsByDirectoryId = (directoryId: string) =>
 	Document.find({ directory: directoryId });
 export const deleteDocumentsByDirectoryId = (directoryId: string) =>

@@ -58,6 +58,20 @@ export const deleteAlert = (callback) => {
 	});
 };
 
+export const downloadAlert = (callback) => {
+	Swal.fire({
+		title: 'Download PDF?',
+		text: 'The requested PDF file will be downloaded if accept!',
+		icon: INFO,
+		showCancelButton: true,
+		confirmButtonColor: '#3085d6',
+		cancelButtonColor: '#d33',
+		confirmButtonText: 'Download',
+	}).then((result) => {
+		if (result.isConfirmed) callback();
+	});
+};
+
 export const displayNotification = (title, text, icon) => {
 	Toast.fire({
 		title,

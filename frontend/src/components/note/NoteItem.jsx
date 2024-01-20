@@ -1,14 +1,15 @@
+import moment from 'moment';
 import { Row, Col, Card } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faExclamation } from '@fortawesome/free-solid-svg-icons';
 import { faCircle, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
-import {
-	deleteUserNote,
-	updateImportance,
-} from '../../features/notes/noteSlice';
-import moment from 'moment';
 
-export default function NoteItem({ note, setSelectedCategory, dispatch }) {
+export default function NoteItem({
+	note,
+	setSelectedCategory,
+	handleUpdateImportance,
+	handleDeleteUserNote,
+}) {
 	return (
 		<>
 			<div className="note-has-grid mb-4">
@@ -37,8 +38,7 @@ export default function NoteItem({ note, setSelectedCategory, dispatch }) {
 									}
 									icon={faExclamation}
 									onClick={(e) => {
-										e.stopPropagation();
-										dispatch(updateImportance(note._id));
+										handleUpdateImportance(e, note._id);
 									}}
 									bounce={note.importance}
 								/>
@@ -47,11 +47,9 @@ export default function NoteItem({ note, setSelectedCategory, dispatch }) {
 								<FontAwesomeIcon
 									className="mr-3 clickable"
 									icon={faTrashAlt}
-									onClick={(e) => {
-										e.stopPropagation();
-										dispatch(deleteUserNote(note._id));
-										setSelectedCategory(null);
-									}}
+									onClick={(e) =>
+										handleDeleteUserNote(e, note._id, setSelectedCategory)
+									}
 								/>
 							</Col>
 							{note.categories.filter(Boolean).length > 0 ? (

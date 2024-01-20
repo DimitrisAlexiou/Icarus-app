@@ -1,9 +1,14 @@
 import { useRef, useState, forwardRef } from 'react';
 import { Row, Col, Button, Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
+import {
+	faEdit,
+	faFilePdf,
+	faTrashAlt,
+} from '@fortawesome/free-regular-svg-icons';
 import { faArrowUp91 } from '@fortawesome/free-solid-svg-icons';
 import useTeachings from '../../hooks/admin/useTeachings';
+import useAssessmentIsAvailable from '../../hooks/user/useAssessmentIsAvailable';
 import TeachingGradingForm from '../../components/course/forms/TeachingGradingForm';
 import TeachingForm from '../../components/course/forms/TeachingForm';
 import CustomSpinner from '../../components/boilerplate/spinners/Spinner';
@@ -18,14 +23,15 @@ export default function Teachings() {
 		isEditingTeaching,
 		isEditingTeachingGrading,
 		editTeachingId,
-		instructorTeachings,
 		setEditTeaching,
 		setEditTeachingGrading,
 		handleTeachingRowClick,
 		handleDeleteTeachings,
 		handleDeleteTeaching,
+		handleGenerateEnrolledStudentsPDF,
 		dispatch,
 	} = useTeachings();
+	const { assessmentIsAvailable } = useAssessmentIsAvailable();
 
 	const modalRef = useRef(null);
 	const modalGradingRef = useRef(null);
@@ -178,17 +184,39 @@ export default function Teachings() {
 							<FontAwesomeIcon icon={faArrowUp91} />
 						</Button>
 					</Col>
-					<Col xs="4" sm="4">
+					<Col
+						xs="4"
+						sm="4"
+						className="mb-2"
+						style={{
+							width: '150px',
+							pointerEvents: assessmentIsAvailable ? 'none' : 'auto',
+							opacity: assessmentIsAvailable ? 0.6 : 1,
+						}}
+					>
 						<Button
 							className="btn btn-light"
 							onClick={(e) => {
 								e.stopPropagation();
-								handleDeleteTeaching(teaching);
+								handleGenerateEnrolledStudentsPDF(teaching);
 							}}
 						>
-							<FontAwesomeIcon icon={faTrashAlt} />
+							<FontAwesomeIcon icon={faFilePdf} />
 						</Button>
 					</Col>
+					{user.user.isAdmin ? (
+						<Col xs="4" sm="4">
+							<Button
+								className="btn btn-light"
+								onClick={(e) => {
+									e.stopPropagation();
+									handleDeleteTeaching(teaching);
+								}}
+							>
+								<FontAwesomeIcon icon={faTrashAlt} />
+							</Button>
+						</Col>
+					) : null}
 				</Row>
 			),
 		},
@@ -224,7 +252,7 @@ export default function Teachings() {
 
 			{isLoading ? (
 				<CustomSpinner card />
-			) : instructorTeachings.length > 0 ? (
+			) : teachings.length > 0 ? (
 				<Row className="justify-content-center animated--grow-in">
 					<Col
 						className="card card-body mb-3"
@@ -235,7 +263,7 @@ export default function Teachings() {
 						xl="12"
 					>
 						<DataTable
-							data={instructorTeachings}
+							data={teachings}
 							config={dataTableConfig}
 							sortColumns={['course', 'courseId', 'semester']}
 							searchMessage={'by Course or Course ID'}
@@ -243,12 +271,22 @@ export default function Teachings() {
 						/>
 					</Col>
 				</Row>
-			) : (
+			) : user.user.isAdmin ? (
 				<Row className="justify-content-center animated--grow-in mb-3">
 					<Col>
 						<div className="profile_card">
 							<div className="card-body">
 								<SpinnerComponent message="There are no active teachings in the system." />
+							</div>
+						</div>
+					</Col>
+				</Row>
+			) : (
+				<Row className="justify-content-center animated--grow-in mb-3">
+					<Col>
+						<div className="profile_card">
+							<div className="card-body">
+								<SpinnerComponent message="You don't have any active teachings." />
 							</div>
 						</div>
 					</Col>

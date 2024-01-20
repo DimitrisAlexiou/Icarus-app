@@ -14,6 +14,7 @@ export enum UserType {
 }
 
 export interface UserProps extends Document {
+	id?: string;
 	name: string;
 	surname: string;
 	email: string;
@@ -133,7 +134,7 @@ export const getUserByUsername = (username: string) =>
 	User.findOne({ username });
 export const updateUserById = (
 	id: string,
-	user: Record<string, any>,
+	user: Partial<UserProps>,
 	options?: Record<string, any>
 ) => User.findByIdAndUpdate(id, user, { new: true });
 export const deleteUserById = (id: string, session: ClientSession) =>

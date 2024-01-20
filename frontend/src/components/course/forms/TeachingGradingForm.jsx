@@ -26,8 +26,6 @@ export default function TeachingGradingForm({
 	user,
 	dispatch,
 }) {
-	const [selectedPart, setSelectedPart] = useState('theory');
-
 	const canEditTheory =
 		teaching.theoryInstructors.some(
 			(instructor) => instructor.user._id === user.user._id
@@ -37,6 +35,14 @@ export default function TeachingGradingForm({
 		teaching.labInstructors.some(
 			(instructor) => instructor.user._id === user.user._id
 		) || user.user.isAdmin;
+
+	const defaultSelectedPart = canEditTheory
+		? 'theory'
+		: canEditLab
+		? 'lab'
+		: 'theory';
+
+	const [selectedPart, setSelectedPart] = useState(defaultSelectedPart);
 
 	return (
 		<>
@@ -53,7 +59,7 @@ export default function TeachingGradingForm({
 								disabled={!canEditTheory}
 							/>
 						</Col>
-						{teaching.theoryExamination.length ? (
+						{canEditTheory && teaching.theoryExamination.length ? (
 							<Col className="text-right">
 								<FontAwesomeIcon
 									className="text-danger clickable"
@@ -87,7 +93,7 @@ export default function TeachingGradingForm({
 									disabled={!canEditLab}
 								/>
 							</Col>
-							{teaching.labExamination.length ? (
+							{canEditLab && teaching.labExamination.length ? (
 								<Col className="text-right">
 									<FontAwesomeIcon
 										className="text-danger clickable"

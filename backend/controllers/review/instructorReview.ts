@@ -1,5 +1,6 @@
-import { startSession } from 'mongoose';
-import { Request, Response } from 'express';
+import mongoose, { startSession } from 'mongoose';
+import { Response } from 'express';
+import { AuthenticatedRequest } from '../../interfaces/AuthRequest';
 import {
 	getUserInstructorReviews,
 	getInstructorReviewById,
@@ -11,13 +12,8 @@ import {
 } from '../../models/review/instructorReview';
 import { getCurrentSemester } from '../../models/admin/semester';
 import { getReviewBySemester } from '../../models/admin/review';
-import { UserProps } from '../../models/users/user';
 import { tryCatch } from '../../utils/tryCatch';
 import CustomError from '../../utils/CustomError';
-
-interface AuthenticatedRequest extends Request {
-	user?: UserProps;
-}
 
 export const createUserInstructorReview = tryCatch(
 	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
@@ -37,7 +33,10 @@ export const createUserInstructorReview = tryCatch(
 			!course_consistency ||
 			!instructor_approachable
 		)
-			throw new CustomError('Please provide a rating for all required fields.', 400);
+			throw new CustomError(
+				'Please provide a rating for all required fields.',
+				400
+			);
 
 		const currentDate = new Date();
 		const semester = await getCurrentSemester(currentDate);
@@ -89,11 +88,12 @@ export const createUserInstructorReview = tryCatch(
 			course_consistency,
 			instructor_approachable,
 			teaching: teaching,
-			user: userId,
-			status: 'new',
+			user: new mongoose.Types.ObjectId(userId),
 		});
 
-		return res.status(201).json({ message: 'Instructor review submitted!', instructorReview });
+		return res
+			.status(201)
+			.json({ message: 'Instructor review submitted!', instructorReview });
 	}
 );
 
@@ -130,7 +130,10 @@ export const updateUserInstructorReview = tryCatch(
 			!course_consistency ||
 			!instructor_approachable
 		)
-			throw new CustomError('Please provide a rating for all required fields.', 400);
+			throw new CustomError(
+				'Please provide a rating for all required fields.',
+				400
+			);
 
 		const currentDate = new Date();
 		const semester = await getCurrentSemester(currentDate);
@@ -157,9 +160,12 @@ export const updateUserInstructorReview = tryCatch(
 			);
 
 		const { instructorReviewId } = req.params;
-		const updatedInstructorReview = await updateInstructorReviewById(instructorReviewId, {
-			...req.body,
-		});
+		const updatedInstructorReview = await updateInstructorReviewById(
+			instructorReviewId,
+			{
+				...req.body,
+			}
+		);
 
 		if (!updatedInstructorReview)
 			throw new CustomError(

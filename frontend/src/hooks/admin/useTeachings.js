@@ -1,10 +1,15 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteAlert } from '../../constants/sweetAlertNotification';
+import {
+	deleteAlert,
+	downloadAlert,
+} from '../../constants/sweetAlertNotification';
 import {
 	deleteTeaching,
 	deleteTeachings,
+	downloadEnrolledStudentsPDF,
+	getInstructorTeachings,
 	getTeachings,
 	setEditTeaching,
 	setEditTeachingGrading,
@@ -24,20 +29,8 @@ const useTeachings = () => {
 	const { user } = useSelector((state) => state.auth);
 
 	useEffect(() => {
-		dispatch(getTeachings());
-	}, [dispatch]);
-
-	const instructorTeachings = user.user.isAdmin
-		? teachings
-		: teachings.filter(
-				(teaching) =>
-					teaching.theoryInstructors.some((instructor) => {
-						return instructor.user._id === user.user._id;
-					}) ||
-					teaching.labInstructors.some((instructor) => {
-						return instructor.user._id === user.user._id;
-					})
-		  );
+		dispatch(user.user.isAdmin ? getTeachings() : getInstructorTeachings());
+	}, [dispatch, user.user.isAdmin]);
 
 	const handleTeachingRowClick = (teaching) => {
 		navigate(`/teaching/${teaching._id}`);
@@ -49,6 +42,10 @@ const useTeachings = () => {
 
 	const handleDeleteTeaching = (teaching) => {
 		deleteAlert(() => dispatch(deleteTeaching(teaching._id)));
+	};
+
+	const handleGenerateEnrolledStudentsPDF = (teaching) => {
+		downloadAlert(() => dispatch(downloadEnrolledStudentsPDF(teaching._id)));
 	};
 
 	const getInstructorLabel = (teaching) => {
@@ -75,12 +72,12 @@ const useTeachings = () => {
 		isEditingTeaching,
 		isEditingTeachingGrading,
 		editTeachingId,
-		instructorTeachings,
 		setEditTeaching,
 		setEditTeachingGrading,
 		handleTeachingRowClick,
 		handleDeleteTeachings,
 		handleDeleteTeaching,
+		handleGenerateEnrolledStudentsPDF,
 		getInstructorLabel,
 		dispatch,
 	};

@@ -32,25 +32,29 @@ const updateUser = async (userId, data) => {
 };
 
 const activateUser = async (userId) => {
-	const response = await axiosFetch.patch(API_URL_USERS + '/' + userId + '/activate');
+	const response = await axiosFetch.patch(
+		API_URL_USERS + '/' + userId + '/activate'
+	);
 
 	return response.data;
 };
 
 const deactivateUser = async (userId) => {
-	const response = await axiosFetch.patch(API_URL_USERS + '/' + userId + '/deactivate');
+	const response = await axiosFetch.patch(
+		API_URL_USERS + '/' + userId + '/deactivate'
+	);
 
 	return response.data;
 };
 
 const deleteUser = async (userId) => {
-	const response = axiosFetch.delete(API_URL_USERS + '/' + userId);
+	const response = await axiosFetch.delete(API_URL_USERS + '/' + userId);
 
 	return response.data;
 };
 
 const deleteUsers = async () => {
-	const response = axiosFetch.delete(API_URL_USERS + '/delete_all');
+	const response = await axiosFetch.delete(API_URL_USERS + '/delete_all');
 
 	return response.data;
 };

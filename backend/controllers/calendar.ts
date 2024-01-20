@@ -1,5 +1,6 @@
-import { Request, Response } from 'express';
-import { startSession } from 'mongoose';
+import mongoose, { startSession } from 'mongoose';
+import { Response } from 'express';
+import { AuthenticatedRequest } from '../interfaces/AuthRequest';
 import {
 	createEvent,
 	getEventByEventId,
@@ -8,13 +9,8 @@ import {
 	deleteEvents,
 	updateEventById,
 } from '../models/calendar';
-import { UserProps } from '../models/users/user';
 import { tryCatch } from '../utils/tryCatch';
 import CustomError from '../utils/CustomError';
-
-interface AuthenticatedRequest extends Request {
-	user?: UserProps;
-}
 
 export const addEvent = tryCatch(
 	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
@@ -38,8 +34,7 @@ export const addEvent = tryCatch(
 			startDate,
 			endDate,
 			allDay,
-			owner: userId,
-			status: 'new',
+			owner: new mongoose.Types.ObjectId(userId),
 		});
 		console.log(event);
 

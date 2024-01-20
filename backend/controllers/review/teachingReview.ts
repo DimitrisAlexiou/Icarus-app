@@ -1,5 +1,6 @@
-import { startSession } from 'mongoose';
-import { Request, Response } from 'express';
+import mongoose, { startSession } from 'mongoose';
+import { Response } from 'express';
+import { AuthenticatedRequest } from '../../interfaces/AuthRequest';
 import {
 	createTeachingReview,
 	getTeachingReviewById,
@@ -9,15 +10,10 @@ import {
 	getUserTeachingReviews,
 	deleteUserTeachingReviews,
 } from '../../models/review/teachingReview';
-import { UserProps } from '../../models/users/user';
 import { getCurrentSemester } from '../../models/admin/semester';
 import { getReviewBySemester } from '../../models/admin/review';
 import { tryCatch } from '../../utils/tryCatch';
 import CustomError from '../../utils/CustomError';
-
-interface AuthenticatedRequest extends Request {
-	user?: UserProps;
-}
 
 export const createUserTeachingReview = tryCatch(
 	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
@@ -39,7 +35,10 @@ export const createUserTeachingReview = tryCatch(
 			!course_difficulty ||
 			!course_activities
 		)
-			throw new CustomError('Please provide a rating for all required fields.', 400);
+			throw new CustomError(
+				'Please provide a rating for all required fields.',
+				400
+			);
 
 		const currentDate = new Date();
 		const semester = await getCurrentSemester(currentDate);
@@ -73,7 +72,10 @@ export const createUserTeachingReview = tryCatch(
 
 		const userId = req.user.id;
 		const { teachingId } = req.params;
-		const existingTeachingReview = await getUserSubmittedTeachingReview(userId, teachingId);
+		const existingTeachingReview = await getUserSubmittedTeachingReview(
+			userId,
+			teachingId
+		);
 
 		if (existingTeachingReview)
 			throw new CustomError(
@@ -89,11 +91,12 @@ export const createUserTeachingReview = tryCatch(
 			course_difficulty,
 			course_activities,
 			teaching: teaching,
-			user: userId,
-			status: 'new',
+			user: new mongoose.Types.ObjectId(userId),
 		});
 
-		return res.status(201).json({ message: 'Teaching review submitted!', teachingReview });
+		return res
+			.status(201)
+			.json({ message: 'Teaching review submitted!', teachingReview });
 	}
 );
 
@@ -132,7 +135,10 @@ export const updateUserTeachingReview = tryCatch(
 			!course_difficulty ||
 			!course_activities
 		)
-			throw new CustomError('Please provide a rating for all required fields.', 400);
+			throw new CustomError(
+				'Please provide a rating for all required fields.',
+				400
+			);
 
 		const currentDate = new Date();
 		const semester = await getCurrentSemester(currentDate);
@@ -159,9 +165,12 @@ export const updateUserTeachingReview = tryCatch(
 			);
 
 		const { teachingReviewId } = req.params;
-		const updatedTeachingReview = await updateTeachingReviewById(teachingReviewId, {
-			...req.body,
-		});
+		const updatedTeachingReview = await updateTeachingReviewById(
+			teachingReviewId,
+			{
+				...req.body,
+			}
+		);
 
 		if (!updatedTeachingReview)
 			throw new CustomError(
@@ -169,7 +178,9 @@ export const updateUserTeachingReview = tryCatch(
 				404
 			);
 
-		return res.status(200).json({ message: 'Teaching review updated!', updatedTeachingReview });
+		return res
+			.status(200)
+			.json({ message: 'Teaching review updated!', updatedTeachingReview });
 	}
 );
 

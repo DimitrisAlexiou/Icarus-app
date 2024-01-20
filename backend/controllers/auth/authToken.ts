@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
-import { Request, Response } from 'express';
-import { generateToken } from 'middleware/authMiddleware';
+import { Response } from 'express';
+import { AuthenticatedRequest } from '../../interfaces/AuthRequest';
+import { generateToken } from '../../middleware/authMiddleware';
 import { revokedTokens } from '../../middleware/authMiddleware';
 
 // export const refreshToken = async (req: Request, res: Response) => {
@@ -25,7 +26,7 @@ import { revokedTokens } from '../../middleware/authMiddleware';
 // 	}
 // };
 
-export const revokeToken = async (req: Request, res: Response) => {
+export const revokeToken = async (req: AuthenticatedRequest, res: Response) => {
 	// Assuming the token is stored in a cookie
 	const token = req.cookies.token;
 

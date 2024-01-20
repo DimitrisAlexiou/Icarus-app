@@ -3,6 +3,9 @@ import { createAction } from '@reduxjs/toolkit';
 export const RESET = createAction('app/reset');
 
 export const GET_TEACHINGS = createAction('teaching/get_teachings');
+export const GET_INSTRUCTOR_TEACHINGS = createAction(
+	'teaching/get_instructor_teachings'
+);
 export const GET_TEACHING = createAction('teaching/get_teaching');
 export const GET_TEACHING_BY_COURSE_ID = createAction(
 	'teaching/get_teaching_by_courseId'
@@ -216,4 +219,34 @@ export const GET_MASTERS = createAction('admin/configuration/get_masters');
 export const DELETE_MASTER = createAction('admin/configuration/delete_master');
 export const DELETE_MASTERS = createAction(
 	'admin/configuration/delete_masters'
+);
+
+export const GET_ANNOUNCEMENT = createAction('announcement/get_announcement');
+export const CREATE_ANNOUNCEMENT = createAction(
+	'announcement/create_announcement'
+);
+export const UPDATE_ANNOUNCEMENT = createAction(
+	'announcement/update_announcement'
+);
+export const DELETE_TEACHING_ANNOUNCEMENT = createAction(
+	'announcement/delete_teaching_announcement'
+);
+export const GET_INSTRUCTOR_ANNOUNCEMENTS = createAction(
+	'announcement/get_instructor_announcements'
+);
+export const DELETE_INSTRUCTOR_ANNOUNCEMENTS = createAction(
+	'announcement/delete_instructor_announcements'
+);
+export const GET_TEACHING_ANNOUNCEMENTS = createAction(
+	'announcement/get_teaching_announcements'
+);
+export const DELETE_TEACHING_ANNOUNCEMENTS = createAction(
+	'announcement/delete_teaching_announcements'
+);
+export const DELETE_ANNOUNCEMENTS = createAction(
+	'announcement/delete_announcements'
+);
+export const GET_ANNOUNCEMENTS = createAction('announcement/get_announcements');
+export const DOWNLOAD_ENROLLED_STUDENTS_PDF = createAction(
+	'teaching/download_enrolled_students_pdf'
 );

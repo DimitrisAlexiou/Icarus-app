@@ -46,7 +46,7 @@ const StatementCard = ({ statement }) => {
 				<Col className="text-right">
 					<small
 						className={
-							statement.condition === AssessmentStatus.Finalized
+							statement?.condition === AssessmentStatus.Finalized
 								? 'text-success pill-label'
 								: 'text-warning pill-label'
 						}
@@ -56,7 +56,7 @@ const StatementCard = ({ statement }) => {
 							fontSize: 12,
 						}}
 					>
-						{statement.condition}
+						{statement?.condition}
 					</small>
 				</Col>
 			</Row>
@@ -71,7 +71,7 @@ const StatementCard = ({ statement }) => {
 					Courses
 				</label>
 			</Row>
-			{statement.teaching.map((teaching, index) => (
+			{statement?.teaching.map((teaching, index) => (
 				<div key={index}>
 					<Row className="mb-1 text-left">
 						<h6
@@ -138,7 +138,7 @@ const StatementCard = ({ statement }) => {
 											{teaching?.theoryInstructors?.map((instructor, index) => (
 												<span key={instructor._id}>
 													{index > 0 && ', '}
-													{`${instructor.user.name.toUpperCase()} ${instructor.user.surname.toUpperCase()}`}
+													{`${instructor?.user?.name.toUpperCase()} ${instructor?.user?.surname.toUpperCase()}`}
 												</span>
 											))}
 										</small>
@@ -156,7 +156,7 @@ const StatementCard = ({ statement }) => {
 												className="mr-2 text-gray-600"
 												icon={faClock}
 											/>
-											{statement.semester.type === SemesterType.Spring
+											{statement?.semester?.type === SemesterType.Spring
 												? 'JUN '
 												: 'FEB '}
 											{academicYearEnd}

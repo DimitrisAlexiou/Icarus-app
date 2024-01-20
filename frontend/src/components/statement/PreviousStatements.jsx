@@ -1,6 +1,6 @@
 import { Row, Col, CardText, CardTitle } from 'reactstrap';
 import { AssessmentType } from '../../constants/enums';
-import Header from '../boilerplate/Header';
+import PillHeader from '../boilerplate/headers/PillHeader';
 import Spinner from '../boilerplate/spinners/Spinner';
 import SpinnerComponent from '../boilerplate/spinners/SpinnerMessage';
 import CarouselComponent from '../Carousel';
@@ -19,7 +19,7 @@ export default function PreviousStatements({
 		<>
 			<Row className="mt-4 mb-3 justify-content-between animated--grow-in">
 				<Col className="text-center">
-					<Header
+					<PillHeader
 						title={
 							user.user.isAdmin ? 'User Statements' : 'Previous Statements'
 						}

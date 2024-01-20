@@ -150,7 +150,7 @@ export default function NoteForm({
 							</Col>
 						</Row>
 						<TextAreaField name="text" label="Text" />
-						<Row>
+						<Row className="align-items-center">
 							<Col md="12" lg="9" xl="9">
 								{values.file ? (
 									<>

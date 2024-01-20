@@ -23,7 +23,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 import listPlugin from '@fullcalendar/list';
 import Spinner from '../boilerplate/spinners/Spinner';
 import CarouselComponent from '../Carousel';
-import Header from '../boilerplate/Header';
+import PillHeader from '../boilerplate/headers/PillHeader';
 import EventForm from './EventForm';
 import SpinnerComponent from '../boilerplate/spinners/SpinnerMessage';
 
@@ -124,7 +124,7 @@ export default function Calendar() {
 				<>
 					<Row className="mb-4 animated--grow-in">
 						<Col>
-							<Header title="Events" />
+							<PillHeader title="Events" />
 							<h6
 								className="text-muted pill-label"
 								style={{

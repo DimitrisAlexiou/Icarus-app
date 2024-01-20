@@ -5,6 +5,8 @@ import NoteItem from '../note/NoteItem';
 export default function UserNotes({
 	notes,
 	filteredNotesByCategory,
+	handleUpdateImportance,
+	handleDeleteUserNote,
 	setSelectedCategory,
 	setSelectedNote,
 	setEditNote,
@@ -58,7 +60,8 @@ export default function UserNotes({
 								<NoteItem
 									note={note}
 									setSelectedCategory={setSelectedCategory}
-									dispatch={dispatch}
+									handleUpdateImportance={handleUpdateImportance}
+									handleDeleteUserNote={handleDeleteUserNote}
 								/>
 							</Col>
 						))}

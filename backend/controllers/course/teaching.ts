@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
-import { Request, Response } from 'express';
+import { Response } from 'express';
+import { AuthenticatedRequest } from '../../interfaces/AuthRequest';
 import {
 	getTeachings,
 	getTeachingById,
@@ -15,27 +16,35 @@ import {
 	assignLabGrading,
 	unassignTheoryGrading,
 	unassignLabGrading,
+	getInstructorTeachings,
 } from '../../models/course/teaching';
 import { getCourseById } from '../../models/course/course';
-import { getStatementByTeachingId } from '../../models/course/statement';
+import {
+	getStatementByTeachingId,
+	getStatementsByTeachingId,
+} from '../../models/course/statement';
+import { getCurrentSemester } from '../../models/admin/semester';
 import { tryCatch } from '../../utils/tryCatch';
+import PDFDocument from 'pdfkit';
 import CustomError from '../../utils/CustomError';
 
-export const viewTeaching = tryCatch(async (req: Request, res: Response): Promise<Response> => {
-	const { id } = req.params;
-	const teaching = await getTeachingById(id);
+export const viewTeaching = tryCatch(
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
+		const { id } = req.params;
+		const teaching = await getTeachingById(id);
 
-	if (!teaching)
-		throw new CustomError(
-			'Seems like the course teaching that you are trying to view does not exist.',
-			404
-		);
+		if (!teaching)
+			throw new CustomError(
+				'Seems like the course teaching that you are trying to view does not exist.',
+				404
+			);
 
-	return res.status(200).json(teaching);
-});
+		return res.status(200).json(teaching);
+	}
+);
 
 export const viewTeachingByCourseId = tryCatch(
-	async (req: Request, res: Response): Promise<Response> => {
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const { id } = req.params;
 		const teaching = await getTeachingByCourseId(id);
 
@@ -49,109 +58,146 @@ export const viewTeachingByCourseId = tryCatch(
 	}
 );
 
-export const updateTeaching = tryCatch(async (req: Request, res: Response): Promise<Response> => {
-	const {
-		labWeight,
-		theoryWeight,
-		theoryGradeRetentionYears,
-		labGradeRetentionYears,
-		theoryGradeThreshold,
-		labGradeThreshold,
-		books,
-		course,
-	} = req.body;
+export const updateTeaching = tryCatch(
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
+		const {
+			labWeight,
+			theoryWeight,
+			theoryGradeRetentionYears,
+			labGradeRetentionYears,
+			theoryGradeThreshold,
+			labGradeThreshold,
+			books,
+			course,
+		} = req.body;
 
-	if (
-		!theoryGradeRetentionYears ||
-		!labGradeRetentionYears ||
-		!theoryGradeThreshold ||
-		!labGradeThreshold ||
-		!books
-	)
-		throw new CustomError('Please fill in all the required fields.', 400);
+		if (
+			!theoryGradeRetentionYears ||
+			!labGradeRetentionYears ||
+			!theoryGradeThreshold ||
+			!labGradeThreshold ||
+			!books
+		)
+			throw new CustomError('Please fill in all the required fields.', 400);
 
-	if (theoryWeight + labWeight !== 100)
-		throw new CustomError(
-			'The sum of theory weight and lab weight should be equal to 100.',
-			400
-		);
+		if (theoryWeight + labWeight !== 100)
+			throw new CustomError(
+				'The sum of theory weight and lab weight should be equal to 100.',
+				400
+			);
 
-	let updatedTeaching;
-	const { id } = req.params;
+		let updatedTeaching;
+		const { id } = req.params;
 
-	const existingCourse = await getCourseById(course);
-	if (!existingCourse)
-		throw new CustomError(
-			'Seems like the course that you are trying to retrieve for teaching update does not exist.',
-			404
-		);
+		const existingCourse = await getCourseById(course);
+		if (!existingCourse)
+			throw new CustomError(
+				'Seems like the course that you are trying to retrieve for teaching update does not exist.',
+				404
+			);
 
-	if (existingCourse.hasLab) {
-		if (!labWeight || !theoryWeight)
-			throw new CustomError('Please provide the required weight fields.', 400);
+		if (existingCourse.hasLab) {
+			if (!labWeight || !theoryWeight)
+				throw new CustomError(
+					'Please provide the required weight fields.',
+					400
+				);
 
-		updatedTeaching = await updateTeachingById(id, { ...req.body });
+			updatedTeaching = await updateTeachingById(id, { ...req.body });
+			if (!updatedTeaching)
+				throw new CustomError(
+					'Seems like the course teaching that you are trying to update does not exist.',
+					404
+				);
+			return res
+				.status(200)
+				.json({ message: 'Teaching updated!', updatedTeaching });
+		}
+
+		updatedTeaching = await updateTeachingById(id, {
+			...req.body,
+			labWeight: 0,
+			theoryWeight: 100,
+		});
+
 		if (!updatedTeaching)
 			throw new CustomError(
 				'Seems like the course teaching that you are trying to update does not exist.',
 				404
 			);
-		return res.status(200).json({ message: 'Teaching updated!', updatedTeaching });
+
+		return res
+			.status(200)
+			.json({ message: 'Teaching updated!', updatedTeaching });
 	}
+);
 
-	updatedTeaching = await updateTeachingById(id, {
-		...req.body,
-		labWeight: 0,
-		theoryWeight: 100,
-	});
+export const deleteTeaching = tryCatch(
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
+		const { id } = req.params;
 
-	if (!updatedTeaching)
-		throw new CustomError(
-			'Seems like the course teaching that you are trying to update does not exist.',
-			404
-		);
+		const statementWithTeaching = await getStatementByTeachingId(id);
 
-	return res.status(200).json({ message: 'Teaching updated!', updatedTeaching });
-});
+		if (statementWithTeaching)
+			throw new CustomError(
+				'This course teaching is in progress in at least one student statement and cannot be deleted.',
+				400
+			);
 
-export const deleteTeaching = tryCatch(async (req: Request, res: Response): Promise<Response> => {
-	const { id } = req.params;
+		const teachingToDelete = await deleteTeachingById(id);
 
-	const statementWithTeaching = await getStatementByTeachingId(id);
+		if (!teachingToDelete)
+			throw new CustomError(
+				'Seems like the course teaching that you are trying to delete does not exist.',
+				404
+			);
 
-	if (statementWithTeaching)
-		throw new CustomError(
-			'This course teaching is in progress in at least one student statement and cannot be deleted.',
-			400
-		);
+		return res.status(200).json({
+			message: 'Course teaching deleted.',
+			teaching: teachingToDelete._id,
+		});
+	}
+);
 
-	const teachingToDelete = await deleteTeachingById(id);
+export const viewTeachings = tryCatch(
+	async (_: AuthenticatedRequest, res: Response): Promise<Response> => {
+		const teachings = await getTeachings();
 
-	if (!teachingToDelete)
-		throw new CustomError(
-			'Seems like the course teaching that you are trying to delete does not exist.',
-			404
-		);
+		if (!teachings.length)
+			throw new CustomError(
+				'Seems like there are no active course teachings registered in the system.',
+				404
+			);
 
-	return res
-		.status(200)
-		.json({ message: 'Course teaching deleted.', teaching: teachingToDelete._id });
-});
+		return res.status(200).json(teachings);
+	}
+);
 
-export const viewTeachings = tryCatch(async (_: Request, res: Response): Promise<Response> => {
-	const teachings = await getTeachings();
+export const viewInstructorTeachings = tryCatch(
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
+		const semester = await getCurrentSemester(new Date());
+		if (!semester)
+			throw new CustomError(
+				'No current semester found. Unable to retrieve instructor teachings.',
+				404
+			);
+		const semesterId = semester._id.toString();
+		const userId = req.user.id;
 
-	if (!teachings.length)
-		throw new CustomError(
-			'Seems like there are no active course teachings registered in the system.',
-			404
-		);
+		const teachings = await getInstructorTeachings(userId, semesterId);
 
-	return res.status(200).json(teachings);
-});
+		if (!teachings.length)
+			throw new CustomError(
+				'Seems like there are no active course teachings assigned to you.',
+				404
+			);
+
+		return res.status(200).json(teachings);
+	}
+);
 
 export const deleteSystemTeachings = tryCatch(
-	async (_: Request, res: Response): Promise<Response> => {
+	async (_: AuthenticatedRequest, res: Response): Promise<Response> => {
 		await deleteTeachings();
 
 		return res
@@ -161,7 +207,7 @@ export const deleteSystemTeachings = tryCatch(
 );
 
 export const assignTheoryInstructorsToTeaching = tryCatch(
-	async (req: Request, res: Response): Promise<Response> => {
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const { theoryInstructors } = req.body;
 
 		if (!theoryInstructors)
@@ -173,7 +219,9 @@ export const assignTheoryInstructorsToTeaching = tryCatch(
 		const { id } = req.params;
 		const assignedTheoryInstructors = await assignTheoryInstructors(
 			id,
-			theoryInstructors.map((instructor: string) => new mongoose.Types.ObjectId(instructor))
+			theoryInstructors.map(
+				(instructor: string) => new mongoose.Types.ObjectId(instructor)
+			)
 		);
 
 		if (!assignedTheoryInstructors)
@@ -190,7 +238,7 @@ export const assignTheoryInstructorsToTeaching = tryCatch(
 );
 
 export const assignLabInstructorsToTeaching = tryCatch(
-	async (req: Request, res: Response): Promise<Response> => {
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const { labInstructors } = req.body;
 
 		if (!labInstructors)
@@ -202,7 +250,9 @@ export const assignLabInstructorsToTeaching = tryCatch(
 		const { id } = req.params;
 		const assignedLabInstructors = await assignLabInstructors(
 			id,
-			labInstructors.map((instructor: string) => new mongoose.Types.ObjectId(instructor))
+			labInstructors.map(
+				(instructor: string) => new mongoose.Types.ObjectId(instructor)
+			)
 		);
 
 		if (!assignedLabInstructors)
@@ -219,7 +269,7 @@ export const assignLabInstructorsToTeaching = tryCatch(
 );
 
 export const unassignTheoryInstructorsFromTeaching = tryCatch(
-	async (req: Request, res: Response): Promise<Response> => {
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const { id } = req.params;
 		const unassignedTheoryInstructors = await unassignTheoryInstructors(id);
 
@@ -238,7 +288,7 @@ export const unassignTheoryInstructorsFromTeaching = tryCatch(
 );
 
 export const unassignLabInstructorsFromTeaching = tryCatch(
-	async (req: Request, res: Response): Promise<Response> => {
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const { id } = req.params;
 		const unassignedLabInstructors = await unassignLabInstructors(id);
 
@@ -257,7 +307,7 @@ export const unassignLabInstructorsFromTeaching = tryCatch(
 );
 
 export const updateTheoryInstructorsForTeaching = tryCatch(
-	async (req: Request, res: Response): Promise<Response> => {
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const { theoryInstructors } = req.body;
 
 		if (!theoryInstructors)
@@ -269,7 +319,9 @@ export const updateTheoryInstructorsForTeaching = tryCatch(
 		const { id } = req.params;
 		const updatedTheoryInstructors = await assignTheoryInstructors(
 			id,
-			theoryInstructors.map((instructor: string) => new mongoose.Types.ObjectId(instructor))
+			theoryInstructors.map(
+				(instructor: string) => new mongoose.Types.ObjectId(instructor)
+			)
 		);
 
 		if (!updatedTheoryInstructors)
@@ -286,7 +338,7 @@ export const updateTheoryInstructorsForTeaching = tryCatch(
 );
 
 export const assignTheoryGradingToTeaching = tryCatch(
-	async (req: Request, res: Response): Promise<Response> => {
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const { theoryExamination } = req.body;
 
 		if (!theoryExamination)
@@ -296,7 +348,10 @@ export const assignTheoryGradingToTeaching = tryCatch(
 			);
 
 		const { id } = req.params;
-		const assignedTheoryGrading = await assignTheoryGrading(id, theoryExamination);
+		const assignedTheoryGrading = await assignTheoryGrading(
+			id,
+			theoryExamination
+		);
 
 		if (!assignedTheoryGrading)
 			throw new CustomError(
@@ -312,7 +367,7 @@ export const assignTheoryGradingToTeaching = tryCatch(
 );
 
 export const assignLabGradingToTeaching = tryCatch(
-	async (req: Request, res: Response): Promise<Response> => {
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const { labExamination } = req.body;
 
 		if (!labExamination)
@@ -338,7 +393,7 @@ export const assignLabGradingToTeaching = tryCatch(
 );
 
 export const unassignTheoryGradingFromTeaching = tryCatch(
-	async (req: Request, res: Response): Promise<Response> => {
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const { id } = req.params;
 		const unassignedTheoryGrading = await unassignTheoryGrading(id);
 
@@ -357,7 +412,7 @@ export const unassignTheoryGradingFromTeaching = tryCatch(
 );
 
 export const unassignLabGradingFromTeaching = tryCatch(
-	async (req: Request, res: Response): Promise<Response> => {
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const { id } = req.params;
 		const unassignedLabGrading = await unassignLabGrading(id);
 
@@ -372,5 +427,76 @@ export const unassignLabGradingFromTeaching = tryCatch(
 			message: 'Lab grading unassigned successfully.',
 			unassignedLabGrading,
 		});
+	}
+);
+
+export const downloadEnrolledStudents = tryCatch(
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
+		const { id } = req.params;
+
+		const teaching = await getTeachingById(id);
+
+		if (!teaching)
+			throw new CustomError(
+				'Seems like the course teaching that you are trying to retrieve does not exist.',
+				404
+			);
+
+		// Set response headers
+		res.setHeader('Content-Type', 'application/pdf');
+		res.setHeader(
+			'Content-Disposition',
+			`attachment; filename=enrolled_students_${id}.pdf`
+		);
+
+		const doc = new PDFDocument();
+		// Pipe the PDF content to the response
+		doc.pipe(res);
+
+		// Add content to the PDF
+		doc
+			.fontSize(20)
+			.font('Helvetica-Bold')
+			.text(`Enrolled Students for ${teaching.get('course.title')}`, {
+				align: 'center',
+			});
+		doc.moveDown();
+
+		doc
+			.fontSize(16)
+			.font('Helvetica-Bold')
+			.text(
+				`${teaching.get('semester.type')} ${teaching.get(
+					'semester.academicYear'
+				)}`,
+				{ align: 'center' }
+			);
+		doc.moveDown();
+
+		const enrolledStudents = await getStatementsByTeachingId(id);
+
+		if (!enrolledStudents.length)
+			doc
+				.fontSize(12)
+				.font('Helvetica')
+				.text('No enrolled students for this course teaching.', {
+					align: 'center',
+				});
+		else
+			enrolledStudents.forEach((student) => {
+				const user = student.get('user');
+				const studentId = user.get('student.studentId');
+				doc
+					.fontSize(12)
+					.font('Helvetica')
+					.text(`${studentId} - ${user.name} ${user.surname}`, {
+						align: 'justify',
+					});
+			});
+
+		// Finalize the PDF
+		doc.end();
+
+		return res.status(200);
 	}
 );

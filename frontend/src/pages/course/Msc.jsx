@@ -9,6 +9,7 @@ import BackButton from '../../components/buttons/BackButton';
 import Notification from '../../components/boilerplate/Notification';
 import Spinner from '../../components/boilerplate/spinners/Spinner';
 import MscItem from '../../components/course/MscItem';
+import Header from '../../components/boilerplate/headers/Header';
 
 export default function Msc({ user }) {
 	const { masters, isLoading } = useMasters();
@@ -23,13 +24,7 @@ export default function Msc({ user }) {
 						active={'Master of Science'}
 					/>
 
-					<Row className="mb-3 animated--grow-in">
-						<Col sm="12" xs="12" md="12" lg="9">
-							<h3 className="mb-3 text-gray-800 font-weight-bold animated--grow-in">
-								Master of Science
-							</h3>
-						</Col>
-					</Row>
+					<Header title="Master of Science" />
 
 					{isLoading ? (
 						<Spinner card />
