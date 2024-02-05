@@ -22,6 +22,7 @@ const initialState = {
 	isLoading: false,
 	isEditingGeneralReview: false,
 	editGeneralReviewId: '',
+	totalGeneralReviews: 0,
 };
 
 export const createGeneralReview = createAsyncThunk(
@@ -216,7 +217,8 @@ export const generalReviewSlice = createSlice({
 			})
 			.addCase(getGeneralReviews.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				state.generalReviews = payload;
+				state.generalReviews = payload.generalReviews;
+				state.totalGeneralReviews = payload.totalGeneralReviews;
 			})
 			.addCase(getGeneralReviews.rejected, (state, { payload }) => {
 				state.isLoading = false;

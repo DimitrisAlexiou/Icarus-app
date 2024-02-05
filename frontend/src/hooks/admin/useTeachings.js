@@ -10,7 +10,7 @@ import {
 	deleteTeachings,
 	downloadEnrolledStudentsPDF,
 	getInstructorTeachings,
-	getTeachings,
+	getSystemTeachings,
 	setEditTeaching,
 	setEditTeachingGrading,
 } from '../../features/courses/teachingSlice';
@@ -29,7 +29,9 @@ const useTeachings = () => {
 	const { user } = useSelector((state) => state.auth);
 
 	useEffect(() => {
-		dispatch(user.user.isAdmin ? getTeachings() : getInstructorTeachings());
+		dispatch(
+			user.user.isAdmin ? getSystemTeachings() : getInstructorTeachings()
+		);
 	}, [dispatch, user.user.isAdmin]);
 
 	const handleTeachingRowClick = (teaching) => {

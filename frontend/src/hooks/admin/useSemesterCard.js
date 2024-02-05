@@ -2,18 +2,19 @@ import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
 	deleteSemester,
-	getSemester,
 	getSemesters,
 	setEditSemester,
 } from '../../features/admin/semesterSlice';
+import { useSemester } from '../../context/SemesterProvider';
 import { academicYearEnd, academicYearStart } from '../../utils/academicYears';
 import { SemesterType } from '../../constants/enums';
 import { deleteAlert } from '../../constants/sweetAlertNotification';
 
 const useSemesterCard = () => {
 	const dispatch = useDispatch();
+	const { semester } = useSemester();
 
-	const { semester, semesters } = useSelector((state) => state.semesters);
+	const { semesters } = useSelector((state) => state.semesters);
 
 	const isWinterDefined = semesters.some((semester) => {
 		const startDate = new Date(semester.startDate);
@@ -65,7 +66,6 @@ const useSemesterCard = () => {
 	if (!isAnySemesterDefined) missingSemesters.push(SemesterType.Any);
 
 	useEffect(() => {
-		dispatch(getSemester());
 		dispatch(getSemesters());
 	}, [dispatch]);
 

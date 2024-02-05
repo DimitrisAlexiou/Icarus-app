@@ -17,6 +17,8 @@ import {
 	unassignTheoryGrading,
 	unassignLabGrading,
 	getInstructorTeachings,
+	getSystemTeachings,
+	getTotalTeachings,
 } from '../../models/course/teaching';
 import { getCourseById } from '../../models/course/course';
 import {
@@ -169,7 +171,9 @@ export const viewTeachings = tryCatch(
 				404
 			);
 
-		return res.status(200).json(teachings);
+		const totalTeachings = await getTotalTeachings();
+
+		return res.status(200).json({ teachings, totalTeachings });
 	}
 );
 
@@ -192,7 +196,25 @@ export const viewInstructorTeachings = tryCatch(
 				404
 			);
 
-		return res.status(200).json(teachings);
+		const totalTeachings = await getTotalTeachings();
+
+		return res.status(200).json({ teachings, totalTeachings });
+	}
+);
+
+export const viewSystemTeachings = tryCatch(
+	async (_: AuthenticatedRequest, res: Response): Promise<Response> => {
+		const teachings = await getSystemTeachings();
+
+		if (!teachings.length)
+			throw new CustomError(
+				'Seems like there are no active course teachings registered in the system.',
+				404
+			);
+
+		const totalTeachings = await getTotalTeachings();
+
+		return res.status(200).json({ teachings, totalTeachings });
 	}
 );
 
@@ -500,3 +522,21 @@ export const downloadEnrolledStudents = tryCatch(
 		return res.status(200);
 	}
 );
+
+// // Check if the theory grade is valid for the new teaching
+// if (!teaching.isTheoryGradeValid()) {
+//   throw new CustomError(
+//     `Theory grade retention years exceeded for the new teaching.
+//     Maximum retention years: ${theoryGradeRetentionYears}`,
+//     400
+//   );
+// }
+
+// // Check if the lab grade is valid for the new teaching
+// if (!teaching.isLabGradeValid()) {
+//   throw new CustomError(
+//     `Lab grade retention years exceeded for the new teaching.
+//     Maximum retention years: ${labGradeRetentionYears}`,
+//     400
+//   );
+// }

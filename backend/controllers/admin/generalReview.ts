@@ -3,6 +3,7 @@ import { AuthenticatedRequest } from '../../interfaces/AuthRequest';
 import {
 	getGeneralReviews,
 	deleteGeneralReviews,
+	getTotalGeneralReviews,
 } from '../../models/review/generalReview';
 import { tryCatch } from '../../utils/tryCatch';
 import CustomError from '../../utils/CustomError';
@@ -16,7 +17,9 @@ export const getSystemGeneralReviews = tryCatch(
 				404
 			);
 
-		return res.status(200).json(generalReviews);
+		const totalGeneralReviews = await getTotalGeneralReviews();
+
+		return res.status(200).json({ generalReviews, totalGeneralReviews });
 	}
 );
 

@@ -163,7 +163,6 @@ export default function TeachingForm({
 														<TextField
 															name={`books.${index}`}
 															label={`Book ${index + 1}`}
-															disabled={!values.type}
 														/>
 													</Col>
 													<Col

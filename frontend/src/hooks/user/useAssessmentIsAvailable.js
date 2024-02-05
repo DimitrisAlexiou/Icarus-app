@@ -1,15 +1,13 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getSemester } from '../../features/admin/semesterSlice';
 import { getAssessment } from '../../features/admin/assessmentSlice';
-import useCurrentSemester from '../useCurrentSemester';
+import { useSemester } from '../../context/SemesterProvider';
 
 const useAssessmentIsAvailable = () => {
 	const dispatch = useDispatch();
 
-	const { semester } = useCurrentSemester();
-
-	const { assessment, isLoading: isAssessmentLoading } = useSelector(
+	const { semester } = useSemester();
+	const { assessment, isLoading: assessmentIsLoading } = useSelector(
 		(state) => state.assessment
 	);
 
@@ -30,12 +28,11 @@ const useAssessmentIsAvailable = () => {
 
 	useEffect(() => {
 		dispatch(getAssessment());
-		dispatch(getSemester());
 	}, [dispatch]);
 
 	return {
 		assessment,
-		isAssessmentLoading,
+		assessmentIsLoading,
 		assessmentIsAvailable,
 		assessmentEndDate,
 		vaccineIsAvailable,

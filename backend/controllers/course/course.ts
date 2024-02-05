@@ -9,6 +9,9 @@ import {
 	updateCourseById,
 	deleteCourseById,
 	deleteCourses,
+	getTotalCourses,
+	CourseType,
+	getSystemCourses,
 } from '../../models/course/course';
 import {
 	createTeaching,
@@ -16,6 +19,7 @@ import {
 	deleteTeachings,
 	getTeachingByCourseId,
 	getTeachingById,
+	updateTeachingById,
 } from '../../models/course/teaching';
 import { getStudentByUserId } from '../../models/users/student';
 import {
@@ -27,8 +31,21 @@ import { getCurrentAcademicYear } from '../../utils/academicYears';
 import CustomError from '../../utils/CustomError';
 
 export const viewCourses = tryCatch(
-	async (_: Request, res: Response): Promise<Response> => {
-		const courses = await getCourses();
+	async (req: Request, res: Response): Promise<Response> => {
+		const { page, isObligatory, search, masterId } = req.query;
+
+		const coursesPerPage = 10;
+		let courseType = CourseType.Undergraduate;
+		if (masterId) courseType = CourseType.Master;
+
+		const courses = await getCourses(
+			Number(page),
+			coursesPerPage,
+			courseType,
+			String(isObligatory),
+			String(search),
+			String(masterId)
+		);
 
 		if (!courses.length)
 			throw new CustomError(
@@ -36,7 +53,32 @@ export const viewCourses = tryCatch(
 				404
 			);
 
-		return res.status(200).json(courses);
+		const totalCourses = await getTotalCourses(
+			courseType,
+			courseType === CourseType.Master ? 'true' : String(isObligatory)
+		);
+
+		const numOfPages = Math.ceil(totalCourses / coursesPerPage);
+
+		return res.status(200).json({ courses, totalCourses, numOfPages });
+	}
+);
+
+export const viewSystemCourses = tryCatch(
+	async (req: Request, res: Response): Promise<Response> => {
+		const { coursesPerPage } = req.query;
+
+		const courses = await getSystemCourses(Number(coursesPerPage));
+
+		if (!courses.length)
+			throw new CustomError(
+				'Seems like there are no courses registered in the system.',
+				404
+			);
+
+		const totalCourses = await getTotalCourses();
+
+		return res.status(200).json({ courses, totalCourses });
 	}
 );
 
@@ -239,7 +281,14 @@ export const activateCourse = async (
 			labGradeRetentionYears = 4;
 		}
 
-		if (activatedCourse.isActive) {
+		teaching = await getTeachingByCourseId(id);
+
+		if (teaching) {
+			teaching = await updateTeachingById(teaching._id.toString(), {
+				...teaching.toObject(),
+				isDeleted: false,
+			});
+		} else {
 			const academicYear = getCurrentAcademicYear(new Date());
 			const semester = await getSemesterByTypeAndAcademicYear(
 				activatedCourse.semester,
@@ -257,6 +306,7 @@ export const activateCourse = async (
 					course: new mongoose.Types.ObjectId(activatedCourse._id),
 					semester: new mongoose.Types.ObjectId(semester._id),
 					directories: [],
+					isDeleted: false,
 				},
 				{ session }
 			);

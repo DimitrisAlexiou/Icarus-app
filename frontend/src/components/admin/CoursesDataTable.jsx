@@ -22,6 +22,7 @@ export default function CoursesDataTable({
 	coursesIsLoading,
 	isEditingCourse,
 	editCourseId,
+	// page,
 	dispatch,
 }) {
 	const modalRef = useRef(null);
@@ -62,6 +63,10 @@ export default function CoursesDataTable({
 	const handleCourseRowClick = (course) => {
 		navigate(`/course/${course._id}`);
 	};
+
+	// const fetchData = ({ itemsPerPage, currentPage }) => {
+	// 	dispatch(getSystemCourses({ coursesPerPage: itemsPerPage, page }));
+	// };
 
 	const ModalComponent = forwardRef((props, ref) => {
 		return (
@@ -190,6 +195,7 @@ export default function CoursesDataTable({
 							sortColumns={['courseId', 'title']}
 							searchMessage={'by Title or ID'}
 							onRowClick={(course) => handleCourseRowClick(course)}
+							// fetchData={fetchData}
 						/>
 						{isEditingCourse ? <ModalComponent ref={modalRef} /> : null}
 					</>

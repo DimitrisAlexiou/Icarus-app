@@ -51,3 +51,5 @@ export const updateMasterProgramById = (
 export const deleteMasterProgramById = (id: string) =>
 	MasterProgram.findByIdAndDelete(id);
 export const deleteMasterPrograms = () => MasterProgram.deleteMany({});
+export const getTotalMasterPrograms = () =>
+	MasterProgram.find().countDocuments();

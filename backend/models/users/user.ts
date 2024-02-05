@@ -140,3 +140,4 @@ export const updateUserById = (
 export const deleteUserById = (id: string, session: ClientSession) =>
 	User.findByIdAndDelete(id).session(session);
 export const deleteUsers = () => User.deleteMany();
+export const getTotalUsers = () => User.find().countDocuments();

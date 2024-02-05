@@ -20,6 +20,7 @@ const initialState = {
 	isLoading: false,
 	isEditingMaster: false,
 	editMasterId: '',
+	totalMasterPrograms: 0,
 };
 
 export const defineMaster = createAsyncThunk(
@@ -130,7 +131,8 @@ export const masterProgramSlice = createSlice({
 			})
 			.addCase(getMasters.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				state.masters = payload;
+				state.masters = payload.masterPrograms;
+				state.totalMasterPrograms = payload.totalMasterPrograms;
 			})
 			.addCase(getMasters.rejected, (state, { payload }) => {
 				state.isLoading = false;

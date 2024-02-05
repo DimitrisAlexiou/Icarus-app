@@ -10,32 +10,25 @@ import AnnouncementsCard from '../../components/portfolio/cards/AnnouncementsCar
 export default function UserDashboard({ user }) {
 	return (
 		<>
-			{user.user.type === STUDENT ? (
-				<Row className="mb-3 animated--grow-in">
-					<Col>
+			<Row className="mb-3 animated--grow-in">
+				<Col>
+					{user.user.type === STUDENT ? (
 						<MyCoursesCard />
-					</Col>
-					<Col md="12" xl="7">
-						<MessagesCard user={user} />
-					</Col>
-				</Row>
-			) : user.user.type === INSTRUCTOR ? (
-				<Row className="mb-3 animated--grow-in">
-					<Col>
+					) : user.user.type === INSTRUCTOR ? (
 						<MyTeachingsCard />
-					</Col>
-					<Col md="12" xl="7">
-						<MessagesCard user={user} />
-					</Col>
-				</Row>
-			) : null}
+					) : null}
+				</Col>
+				<Col md="12" xl="7">
+					<AnnouncementsCard user={user} />
+				</Col>
+			</Row>
 
 			<Row className="mb-3 animated--grow-in">
 				<Col>
 					<MyGradesCard user={user} />
 				</Col>
 				<Col md="12" xl="7">
-					<AnnouncementsCard user={user} />
+					<MessagesCard user={user} />
 				</Col>
 			</Row>
 			<Row className="animated--grow-in d-flex justify-content-center">

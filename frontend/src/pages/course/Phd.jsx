@@ -1,10 +1,13 @@
+import { useSelector } from 'react-redux';
 import { Card, Col, Nav, NavLink, Row } from 'reactstrap';
 import { FaStudiovinari } from 'react-icons/fa';
 import BreadcrumbNav from '../../components/boilerplate/Breadcrumb';
 import BackButton from '../../components/buttons/BackButton';
 import Header from '../../components/boilerplate/headers/Header';
 
-export default function Phd({ user }) {
+export default function Phd() {
+	const { user } = useSelector((state) => state.auth);
+
 	return (
 		<>
 			{user ? (

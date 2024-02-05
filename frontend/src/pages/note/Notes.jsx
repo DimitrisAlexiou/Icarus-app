@@ -13,6 +13,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
 	faCircleExclamation,
+	faPlus,
 	faTrashAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import { faNoteSticky } from '@fortawesome/free-regular-svg-icons';
@@ -104,7 +105,7 @@ export default function Notes() {
 						color="null"
 						className="btn btn-light-cornflower-blue align-self-center"
 					>
-						new note
+						<FontAwesomeIcon icon={faPlus} />
 					</Button>
 				</Col>
 			</Row>

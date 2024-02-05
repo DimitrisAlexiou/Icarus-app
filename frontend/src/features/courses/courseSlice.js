@@ -16,6 +16,7 @@ import {
 	GET_COURSE,
 	GET_COURSES,
 	GET_ENROLLED_COURSES,
+	GET_SYSTEM_COURSES,
 	UNENROLL_COURSE,
 	UPDATE_COURSE,
 } from '../actions';
@@ -28,11 +29,11 @@ import { WARNING } from '../../constants/strings';
 
 const initialFiltersState = {
 	search: '',
+	searchCycle: '',
 	searchSemester: 'all',
-	searchCycle: 'all',
 	searchHasLab: 'all',
-	sort: 'latest',
-	sortOptions: ['latest', 'oldest', 'a-z', 'z-a'],
+	sort: 'a-z',
+	sortOptions: ['a-z', 'z-a'],
 };
 
 const initialState = {
@@ -117,19 +118,38 @@ export const deActivateCourse = createAsyncThunk(
 	}
 );
 
-export const getCourses = createAsyncThunk(GET_COURSES, async (_, thunkAPI) => {
-	try {
-		const { page, search, searchSemester, searchCycle, searchHasLab, sort } =
-			thunkAPI.getState().courses;
-		let url = `?page=${page}`;
-		// let url = `/course/undergraduate?semester=${searchSemester}&cycle=${searchCycle}&lab=${searchHasLab}&sort=${sort}&page=${page}`;
-		// if (search) url = url + `&search=${search}`;
+export const getQueryParams = (filters) => {
+	return Object.keys(filters)
+		.filter((key) => filters[key] !== undefined)
+		.map((key) => `${key}=${filters[key]}`)
+		.join('&');
+};
 
-		return await courseService.getCourses(url);
-	} catch (error) {
-		return thunkAPI.rejectWithValue(extractErrorMessage(error));
+export const getCourses = createAsyncThunk(
+	GET_COURSES,
+	async ({ page, isObligatory, ...filters }, thunkAPI) => {
+		try {
+			const url = `?page=${page}&isObligatory=${isObligatory}&${getQueryParams(
+				filters
+			)}`;
+			return await courseService.getCourses(url);
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
 	}
-});
+);
+
+export const getSystemCourses = createAsyncThunk(
+	GET_SYSTEM_COURSES,
+	async (coursesPerPage, thunkAPI) => {
+		try {
+			const url = `?coursesPerPage=${coursesPerPage}`;
+			return await courseService.getSystemCourses(url);
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
+	}
+);
 
 export const deleteCourses = createAsyncThunk(
 	DELETE_COURSES,
@@ -298,11 +318,28 @@ export const courseSlice = createSlice({
 			})
 			.addCase(getCourses.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				state.courses = payload;
+				state.courses = payload.courses;
 				state.numOfPages = payload.numOfPages;
 				state.totalCourses = payload.totalCourses;
 			})
 			.addCase(getCourses.rejected, (state, { payload }) => {
+				state.isLoading = false;
+				state.courses = [];
+				if (
+					payload !==
+					'Seems like there are no courses registered in the system.'
+				)
+					displayErrorNotification(payload);
+			})
+			.addCase(getSystemCourses.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(getSystemCourses.fulfilled, (state, { payload }) => {
+				state.isLoading = false;
+				state.courses = payload.courses;
+				state.totalCourses = payload.totalCourses;
+			})
+			.addCase(getSystemCourses.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				if (
 					payload !==
@@ -361,8 +398,9 @@ export const courseSlice = createSlice({
 export const {
 	resetCourses,
 	changePage,
-	clearFilters,
 	handleChange,
+	setCoursesPerPage,
+	clearFilters,
 	setEditCourse,
 } = courseSlice.actions;
 export default courseSlice.reducer;

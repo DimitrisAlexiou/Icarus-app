@@ -17,7 +17,7 @@ export default function Configuration() {
 		cycles,
 		masters,
 		isSemesterLoading,
-		isAssessmentLoading,
+		assessmentIsLoading,
 		isReviewLoading,
 		isDegreeRulesLoading,
 		isCyclesLoading,
@@ -75,7 +75,7 @@ export default function Configuration() {
 				<AssessementCard
 					assessment={assessment}
 					semester={semester}
-					isAssessmentLoading={isAssessmentLoading}
+					assessmentIsLoading={assessmentIsLoading}
 					isEditingAssessment={isEditingAssessment}
 					editAssessmentId={editAssessmentId}
 					dispatch={dispatch}

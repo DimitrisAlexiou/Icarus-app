@@ -20,6 +20,7 @@ const initialState = {
 	isLoading: false,
 	isEditingCycle: false,
 	editCycleId: '',
+	totalCycles: 0,
 };
 
 export const defineCycle = createAsyncThunk(
@@ -144,7 +145,8 @@ export const cyclesSlice = createSlice({
 			})
 			.addCase(getCycles.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				state.cycles = payload;
+				state.cycles = payload.cycles;
+				state.totalCycles = payload.totalCycles;
 			})
 			.addCase(getCycles.rejected, (state, { payload }) => {
 				state.isLoading = false;

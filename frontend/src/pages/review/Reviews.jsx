@@ -23,46 +23,38 @@ export default function Reviews() {
 							{isLoading ? (
 								<Spinner card />
 							) : review ? (
-								reviewHasStarted ? (
-									<small
-										className="text-muted"
-										style={{
-											textAlign: 'justify',
-											fontWeight: '800',
-											fontSize: 15,
-										}}
-									>
-										Reviews are available to submit
-									</small>
-								) : (
-									<>
-										<small
-											className="text-muted pill-label"
-											style={{
-												textAlign: 'justify',
-												fontWeight: '800',
-												fontSize: 15,
-											}}
-										>
-											Reviews start on
-										</small>
-										<small
-											style={{
-												textAlign: 'justify',
-												fontWeight: '700',
-												fontSize: 14,
-											}}
-										>
-											{new Date(reviewStartDate).toDateString()}
-										</small>
-									</>
-								)
-							) : (
 								<small
-									className="text-muted"
+									className="text-muted text-gray-500"
 									style={{
 										textAlign: 'justify',
-										fontWeight: '800',
+										fontWeight: '700',
+										fontSize: 15,
+									}}
+								>
+									{reviewHasStarted ? (
+										'Reviews are available to submit'
+									) : (
+										<>
+											Reviews start on{' '}
+											<small
+												className="pill-label"
+												style={{
+													textAlign: 'justify',
+													fontWeight: '700',
+													fontSize: 15,
+												}}
+											>
+												{new Date(reviewStartDate).toDateString()}
+											</small>
+										</>
+									)}
+								</small>
+							) : (
+								<small
+									className="text-muted text-gray-500"
+									style={{
+										textAlign: 'justify',
+										fontWeight: '700',
 										fontSize: 15,
 									}}
 								>

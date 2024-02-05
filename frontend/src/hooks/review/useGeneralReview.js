@@ -1,13 +1,12 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getTeachings } from '../../features/courses/teachingSlice';
-import useCurrentSemester from '../useCurrentSemester';
+import { useSemester } from '../../context/SemesterProvider';
 
 const useGeneralreview = () => {
 	const dispatch = useDispatch();
 
-	const { isLoading: isSemesterLoading } = useCurrentSemester();
-
+	const { isSemesterLoading } = useSemester();
 	const { user } = useSelector((state) => state.auth);
 	const { teachings, isLoading: isTeachingsLoading } = useSelector(
 		(state) => state.teachings

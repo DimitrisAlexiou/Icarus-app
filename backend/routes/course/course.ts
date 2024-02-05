@@ -13,7 +13,10 @@ import {
 	viewEnrolledCourses,
 } from '../../controllers/course/course';
 import { viewTeachingByCourseId } from '../../controllers/course/teaching';
-import { validateCourse, validateCourseActivation } from '../../middleware/validations';
+import {
+	validateCourse,
+	validateCourseActivation,
+} from '../../middleware/validations';
 import { authorize, checkUserRole } from '../../middleware/authMiddleware';
 import { UserType } from '../../models/users/user';
 
@@ -31,14 +34,23 @@ export default (router: express.Router) => {
 	// @access  Private
 	router
 		.route('/course/new')
-		.post(authorize, checkUserRole([UserType.admin]), validateCourse, newCourse);
+		.post(
+			authorize,
+			checkUserRole([UserType.admin]),
+			validateCourse,
+			newCourse
+		);
 
 	// @desc    Get Enrolled Courses
 	// @route   GET /api/course/my-courses
 	// @access  Private
 	router
 		.route('/course/my-courses')
-		.get(authorize, checkUserRole([UserType.admin, UserType.student]), viewEnrolledCourses);
+		.get(
+			authorize,
+			checkUserRole([UserType.admin, UserType.student]),
+			viewEnrolledCourses
+		);
 
 	// @desc    Get / Delete / Update Course
 	// @route   GET/DELETE/PUT /api/course/:id
@@ -47,21 +59,34 @@ export default (router: express.Router) => {
 		.route('/course/:id')
 		.get(authorize, viewCourse)
 		.delete(authorize, checkUserRole([UserType.admin]), deleteCourse)
-		.put(authorize, checkUserRole([UserType.admin]), validateCourse, updateCourse);
+		.put(
+			authorize,
+			checkUserRole([UserType.admin]),
+			validateCourse,
+			updateCourse
+		);
 
 	// @desc    Enroll Course
 	// @route   PUT /api/course/my-courses/:id/enroll
 	// @access  Private
 	router
 		.route('/course/my-courses/:id/enroll')
-		.put(authorize, checkUserRole([UserType.admin, UserType.student]), enrollCourse);
+		.put(
+			authorize,
+			checkUserRole([UserType.admin, UserType.student]),
+			enrollCourse
+		);
 
 	// @desc    Unenroll Course
 	// @route   PUT /api/course/my-courses/:id/unenroll
 	// @access  Private
 	router
 		.route('/course/my-courses/:id/unenroll')
-		.put(authorize, checkUserRole([UserType.admin, UserType.student]), disenrollCourse);
+		.put(
+			authorize,
+			checkUserRole([UserType.admin, UserType.student]),
+			disenrollCourse
+		);
 
 	// @desc    Activate Course
 	// @route   PUT /api/course/:id/activate

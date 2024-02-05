@@ -1,7 +1,14 @@
 import { useState } from 'react';
 import { Table, Input, Button, Row, Col } from 'reactstrap';
 
-export default function DataTable({ data, config, searchMessage, sortColumns, onRowClick }) {
+export default function DataTable({
+	data,
+	config,
+	searchMessage,
+	sortColumns,
+	onRowClick,
+	// fetchData,
+}) {
 	const [searchQuery, setSearchQuery] = useState('');
 	const [sortColumn, setSortColumn] = useState('');
 	const [sortOrder, setSortOrder] = useState('asc');
@@ -14,11 +21,16 @@ export default function DataTable({ data, config, searchMessage, sortColumns, on
 
 	const handlePageClick = (event) => {
 		setCurrentPage(Number(event.target.id));
+		// fetchData({ itemsPerPage, currentPage: Number(event.target.id) });
 	};
 
 	const handleItemsPerPageChange = (event) => {
 		setItemsPerPage(Number(event.target.value));
 		setCurrentPage(0);
+		// const newItemsPerPage = Number(event.target.value);
+		// setItemsPerPage(newItemsPerPage);
+		// setCurrentPage(0);
+		// fetchData({ itemsPerPage: newItemsPerPage, currentPage: 1 });
 	};
 
 	const handleSearchQueryChange = (e) => {
@@ -112,7 +124,14 @@ export default function DataTable({ data, config, searchMessage, sortColumns, on
 						onChange={handleSearchQueryChange}
 					/>
 				</Col>
-				<Col xs="3" sm="2" md="2" lg="2" xl="1" className="d-flex justify-content-end">
+				<Col
+					xs="3"
+					sm="2"
+					md="2"
+					lg="2"
+					xl="1"
+					className="d-flex justify-content-end"
+				>
 					<select
 						value={itemsPerPage}
 						onChange={handleItemsPerPageChange}
@@ -139,8 +158,8 @@ export default function DataTable({ data, config, searchMessage, sortColumns, on
 				<Col sm="6" xs="6" md="6">
 					<span className="text-gray-500">
 						Showing {indexOfFirstItem + 1} to{' '}
-						{Math.min(indexOfLastItem, filteredData.length)} of {filteredData.length}{' '}
-						entries
+						{Math.min(indexOfLastItem, filteredData.length)} of{' '}
+						{filteredData.length} entries
 					</span>
 				</Col>
 				<Col className="d-flex justify-content-end">

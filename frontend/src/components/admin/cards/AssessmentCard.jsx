@@ -14,7 +14,7 @@ import Spinner from '../../boilerplate/spinners/Spinner';
 const AssessementCard = ({
 	assessment,
 	semester,
-	isAssessmentLoading,
+	assessmentIsLoading,
 	isEditingAssessment,
 	editAssessmentId,
 	dispatch,
@@ -39,7 +39,7 @@ const AssessementCard = ({
 										Semester must be defined first, in order to make the
 										Assessment statement configuration for this period!
 									</Col>
-								) : isAssessmentLoading ? (
+								) : assessmentIsLoading ? (
 									<Spinner card />
 								) : !assessment || isEditingAssessment ? (
 									<>

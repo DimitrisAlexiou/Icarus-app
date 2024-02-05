@@ -1,5 +1,6 @@
 import axiosFetch from '../../../utils/axios';
 import {
+	API_URL_ADMIN_COURSES,
 	API_URL_COURSE,
 	API_URL_MYCOURSES,
 } from '../../../constants/apiConfig';
@@ -45,7 +46,13 @@ const deActivateCourse = async (courseId) => {
 };
 
 const getCourses = async (url) => {
-	const response = await axiosFetch.get(API_URL_COURSE + '/' + url);
+	const response = await axiosFetch.get(API_URL_COURSE + url);
+
+	return response.data;
+};
+
+const getSystemCourses = async (url) => {
+	const response = await axiosFetch.get(API_URL_ADMIN_COURSES + url);
 
 	return response.data;
 };
@@ -90,6 +97,7 @@ const courseService = {
 	enrollCourse,
 	disenrollCourse,
 	getEnrolledCourses,
+	getSystemCourses,
 };
 
 export default courseService;

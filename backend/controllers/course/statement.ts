@@ -12,6 +12,7 @@ import {
 	deleteStatements,
 	Status,
 	Type,
+	getTotalStatements,
 } from '../../models/course/statement';
 import { getCurrentSemester } from '../../models/admin/semester';
 import { getAssessmentBySemester } from '../../models/admin/assessment';
@@ -260,7 +261,9 @@ export const viewStatements = tryCatch(
 				404
 			);
 
-		return res.status(200).json(statements);
+		const totalStatements = await getTotalStatements();
+
+		return res.status(200).json({ statements, totalStatements });
 	}
 );
 

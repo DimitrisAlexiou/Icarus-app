@@ -1,23 +1,16 @@
 import { forwardRef } from 'react';
-import {
-	Row,
-	Col,
-	Card,
-	CardBody,
-	Modal,
-	ModalBody,
-	ModalHeader,
-} from 'reactstrap';
+import { Row, Col, Modal, ModalBody, ModalHeader } from 'reactstrap';
 import { deleteAlert } from '../../constants/sweetAlertNotification';
 import useAssessmentIsAvailable from '../../hooks/user/useAssessmentIsAvailable';
 import useStatements from '../../hooks/user/useStatements';
 import useModal from '../../hooks/generic/useModal';
 import StatementCard from '../../components/course/cards/StatementCard';
 import CurrentSemester from '../../components/boilerplate/CurrentSemester';
-import Spinner from '../../components/boilerplate/spinners/Spinner';
 import VaccineStatement from '../../components/statement/VaccineStatement';
 import AssessmentStatement from '../../components/statement/AssessmentStatement';
 import PreviousStatements from '../../components/statement/PreviousStatements';
+import CurrentAssessment from '../../components/boilerplate/CurrentAssessment';
+import CurrentVaccine from '../../components/boilerplate/CurrentVaccine';
 
 export default function Statements() {
 	const {
@@ -25,8 +18,8 @@ export default function Statements() {
 		semester,
 		statements,
 		isSemesterLoading,
-		isAssessmentLoading,
-		isStatementsLoading,
+		assessmentIsLoading,
+		statementsIsLoading,
 		isTeachingsLoading,
 		isEditingStatement,
 		isEditingVaccine,
@@ -76,55 +69,17 @@ export default function Statements() {
 					<h3 className="text-gray-800 font-weight-bold">Statements</h3>
 				</Col>
 				<Col xl="3" lg="5" md="4" className="text-center mb-3">
-					<Card className="card-note">
-						<CardBody>
-							{isAssessmentLoading ? (
-								<Spinner card />
-							) : (
-								<small
-									className={`text-${
-										assessmentIsAvailable ? 'success' : 'muted text-gray-500'
-									}`}
-									style={{
-										textAlign: 'justify',
-										fontWeight: '700',
-										fontSize: 15,
-									}}
-								>
-									{assessmentIsAvailable
-										? `Statements available to submit until ${assessmentEndDate.toDateString()}`
-										: `Statement submission expired at ${assessmentEndDate.toDateString()}`}
-								</small>
-							)}
-						</CardBody>
-					</Card>
+					<CurrentAssessment
+						assessment={assessment}
+						assessmentIsLoading={assessmentIsLoading}
+						assessmentIsAvailable={assessmentIsAvailable}
+						assessmentEndDate={assessmentEndDate}
+					/>
 				</Col>
 				<CurrentSemester />
 			</Row>
 			{vaccineIsAvailable ? (
-				<Row className="d-flex justify-content-end">
-					<Col xs="auto" className="text-center">
-						<Card className="card-note">
-							<CardBody>
-								{isAssessmentLoading ? (
-									<Spinner card />
-								) : (
-									<small
-										className="text-info"
-										style={{
-											textAlign: 'justify',
-											fontWeight: '700',
-											fontSize: 15,
-										}}
-									>
-										Vaccine statements available until{' '}
-										{vaccineEndDate.toDateString()}
-									</small>
-								)}
-							</CardBody>
-						</Card>
-					</Col>
-				</Row>
+				<CurrentVaccine vaccineEndDate={vaccineEndDate} />
 			) : null}
 
 			<PreviousStatements
@@ -133,7 +88,7 @@ export default function Statements() {
 				statements={statements}
 				previousStatements={previousStatements}
 				isSemesterLoading={isSemesterLoading}
-				isStatementsLoading={isStatementsLoading}
+				statementsIsLoading={statementsIsLoading}
 				handleStatementClick={handleStatementClick}
 			/>
 
@@ -144,7 +99,7 @@ export default function Statements() {
 				semester={semester}
 				assessment={assessment}
 				isSemesterLoading={isSemesterLoading}
-				isStatementsLoading={isStatementsLoading}
+				statementsIsLoading={statementsIsLoading}
 				isTeachingsLoading={isTeachingsLoading}
 				canSubmitAvailableTeachings={canSubmitAvailableTeachings}
 				assessmentIsAvailable={assessmentIsAvailable}
@@ -165,7 +120,7 @@ export default function Statements() {
 					semester={semester}
 					assessment={assessment}
 					isSemesterLoading={isSemesterLoading}
-					isStatementsLoading={isStatementsLoading}
+					statementsIsLoading={statementsIsLoading}
 					isTeachingsLoading={isTeachingsLoading}
 					canSubmitAvailableVaccineTeachings={
 						canSubmitAvailableVaccineTeachings

@@ -18,6 +18,7 @@ import {
 	faArrowUp91,
 	faMagnifyingGlass,
 	faNetworkWired,
+	faArrowUp19,
 } from '@fortawesome/free-solid-svg-icons';
 import {
 	faUser,
@@ -207,15 +208,15 @@ export const sidebarStudentUtilityLinks = [
 	},
 	{
 		id: 9,
-		text: 'Statistics & Reports',
-		path: '/statistics-reports',
-		icon: <FontAwesomeIcon icon={faChartBar} />,
-	},
-	{
-		id: 10,
 		text: 'Calendar',
 		path: '/calendar',
 		icon: <FontAwesomeIcon icon={faCalendarDays} />,
+	},
+	{
+		id: 10,
+		text: 'Statistics & Reports',
+		path: '/statistics-reports',
+		icon: <FontAwesomeIcon icon={faChartBar} />,
 	},
 ];
 
@@ -243,30 +244,36 @@ export const sidebarInstructorCourseLinks = [
 export const sidebarInstructorUtilityLinks = [
 	{
 		id: 4,
+		text: 'Grades',
+		path: '/grades',
+		icon: <FontAwesomeIcon icon={faArrowUp19} />,
+	},
+	{
+		id: 5,
 		text: 'Announcements',
 		path: '/announcement',
 		icon: <FontAwesomeIcon icon={faInbox} />,
 	},
 	{
-		id: 5,
+		id: 6,
 		text: 'Messages',
 		path: '/messages',
 		icon: <FontAwesomeIcon icon={faMessage} />,
 	},
 	{
-		id: 6,
+		id: 7,
 		text: 'Notes',
 		path: '/note',
 		icon: <FontAwesomeIcon icon={faNoteSticky} />,
 	},
 	{
-		id: 7,
+		id: 8,
 		text: 'Statistics & Reports',
 		path: '/statistics-reports',
 		icon: <FontAwesomeIcon icon={faChartBar} />,
 	},
 	{
-		id: 8,
+		id: 9,
 		text: 'Calendar',
 		path: '/calendar',
 		icon: <FontAwesomeIcon icon={faCalendarDays} />,

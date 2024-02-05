@@ -1,9 +1,9 @@
+import { useSelector } from 'react-redux';
 import { NavLink, useParams } from 'react-router-dom';
 import { Card, CardText, CardTitle, Col, Input, Nav, Row } from 'reactstrap';
 import { faBook } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { FaStudiovinari } from 'react-icons/fa';
-import { CourseType } from '../../constants/enums';
 import useCourses from '../../hooks/course/useCourses';
 import useMasters from '../../hooks/course/useMasters';
 import Skeleton from '../../components/boilerplate/Skeleton';
@@ -16,12 +16,10 @@ import BackButton from '../../components/buttons/BackButton';
 import CarouselComponent from '../../components/Carousel';
 import Search from '../../components/form/Search';
 
-export default function Master({ user }) {
+export default function Master() {
+	const { user } = useSelector((state) => state.auth);
 	const { masterId } = useParams();
-	const { numOfPages, isLoading, filteredCourses } = useCourses(
-		CourseType.Master,
-		masterId
-	);
+	const { numOfPages, totalCourses, isLoading, courses } = useCourses();
 	const { master } = useMasters(masterId);
 
 	return (
@@ -54,29 +52,26 @@ export default function Master({ user }) {
 								{master.title}
 							</h3>
 						</Col>
-						{filteredCourses.length ? (
-							<>
-								<Col
-									xl="3"
-									lg="2"
-									md="2"
-									sm="12"
-									className="mt-sm-0 mt-md-3 mt-lg-0 d-flex justify-content-end"
-								>
-									<h6 className="text-gray-400 font-weight-bold">
-										{filteredCourses.length} course
-										{filteredCourses.length > 1 && 's'}
-									</h6>
-								</Col>
-								{numOfPages > 1 ? <PageButton /> : null}
-							</>
+						{courses.length ? (
+							<Col
+								xl="3"
+								lg="2"
+								md="2"
+								sm="12"
+								className="mt-sm-0 mt-md-3 mt-lg-0 d-flex justify-content-end"
+							>
+								<h6 className="text-gray-400 font-weight-bold">
+									{totalCourses} course
+									{totalCourses > 1 && 's'}
+								</h6>
+							</Col>
 						) : null}
 					</Row>
 
-					{filteredCourses.length ? (
+					{courses.length ? (
 						<>
 							<Row className="justify-content-center animated--grow-in">
-								{filteredCourses.map((course) => (
+								{courses.map((course) => (
 									<Col
 										key={course._id}
 										xs="12"
@@ -94,6 +89,7 @@ export default function Master({ user }) {
 									</Col>
 								))}
 							</Row>
+							{numOfPages > 1 ? <PageButton /> : null}
 						</>
 					) : (
 						<Notification
@@ -138,12 +134,12 @@ export default function Master({ user }) {
 
 										{isLoading ? (
 											<Spinner card />
-										) : filteredCourses.length ? (
+										) : courses.length ? (
 											<>
 												<Row className="justify-content-center animated--grow-in">
 													<Card body color="success">
 														<CarouselComponent
-															objects={filteredCourses}
+															objects={courses}
 															renderItem={(course) => (
 																<>
 																	<CardTitle
@@ -241,8 +237,8 @@ export default function Master({ user }) {
 													</Col>
 													<Col className="d-flex justify-content-end">
 														<h6 className="text-gray-400 font-weight-bold">
-															{filteredCourses.length} course
-															{filteredCourses.length > 1 && 's'}
+															{totalCourses.length} course
+															{totalCourses.length > 1 && 's'}
 														</h6>
 													</Col>
 													{numOfPages > 1 ? <PageButton /> : null}

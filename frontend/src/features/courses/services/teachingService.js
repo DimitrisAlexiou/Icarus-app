@@ -1,5 +1,9 @@
 import axiosFetch from '../../../utils/axios';
-import { API_URL_COURSE, API_URL_TEACHING } from '../../../constants/apiConfig';
+import {
+	API_URL_ADMIN_TEACHINGS,
+	API_URL_COURSE,
+	API_URL_TEACHING,
+} from '../../../constants/apiConfig';
 
 const updateTeaching = async (teachingId, data) => {
 	const response = await axiosFetch.put(
@@ -56,6 +60,12 @@ const downloadEnrolledStudentsPDF = async (teachingId) => {
 
 const getTeachings = async () => {
 	const response = await axiosFetch.get(API_URL_TEACHING);
+
+	return response.data;
+};
+
+const getSystemTeachings = async () => {
+	const response = await axiosFetch.get(API_URL_ADMIN_TEACHINGS);
 
 	return response.data;
 };
@@ -154,6 +164,7 @@ const teachingService = {
 	getTeachingByCourseId,
 	deleteTeaching,
 	getTeachings,
+	getSystemTeachings,
 	getInstructorTeachings,
 	deleteTeachings,
 	assignTheoryInstructors,

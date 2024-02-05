@@ -66,3 +66,4 @@ export const updateInstructorById = (
 export const deleteInstructorByUserId = (id: string, session: ClientSession) =>
 	Instructor.findOneAndDelete({ user: id }).session(session);
 export const deleteInstructors = () => Instructor.deleteMany();
+export const getTotalInstructors = () => Instructor.find().countDocuments();

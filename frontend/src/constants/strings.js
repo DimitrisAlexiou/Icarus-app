@@ -10,3 +10,5 @@ export const warning = 'warning';
 export const success = 'success';
 export const info = 'info';
 export const danger = 'danger';
+export const MAX_FILE_SIZE = 8 * 1024 * 1024; // 8 MB
+export const MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE * 1024 * 1024;

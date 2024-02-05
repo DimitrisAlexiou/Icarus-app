@@ -4,18 +4,17 @@ import {
 	faChevronLeft,
 	faChevronRight,
 } from '@fortawesome/free-solid-svg-icons';
-import { handleChange } from '../../features/courses/courseSlice';
 import usePageButton from '../../hooks/generic/usePageButton';
 
 const PageButton = () => {
-	const { page, pages, nextPage, prevPage } = usePageButton();
+	const { page, pages, nextPage, prevPage, handleChangePage } = usePageButton();
 
 	return (
 		<>
 			<Row className="mb-4">
 				<Col className="px-3 d-flex justify-content-end">
 					<Button
-						className="btn btn-light nav-item rounded-circle border-0 align-self-center text-gray-600"
+						className="mx-2 btn btn-light rounded-circle align-self-center text-gray-500"
 						onClick={prevPage}
 					>
 						<FontAwesomeIcon icon={faChevronLeft} />
@@ -27,10 +26,10 @@ const PageButton = () => {
 									key={pageNumber}
 									className={
 										pageNumber === page
-											? 'btn btn-light nav-item rounded-circle border-0 align-self-center text-gray-600 active'
-											: 'btn btn-light nav-item rounded-circle border-0 align-self-center text-gray-600'
+											? 'mx-2 btn btn-light nav-item rounded-circle border-0 align-self-center text-gray-500 active'
+											: 'mx-2 btn btn-light nav-item rounded-circle border-0 align-self-center text-gray-500'
 									}
-									onClick={() => handleChange(pageNumber)}
+									onClick={() => handleChangePage(pageNumber)}
 								>
 									{pageNumber}
 								</Button>
@@ -38,7 +37,7 @@ const PageButton = () => {
 						})}
 					</span>
 					<Button
-						className="btn btn-light nav-item rounded-circle border-0 align-self-center text-gray-600"
+						className="mx-2 btn btn-light rounded-circle align-self-center text-gray-500"
 						onClick={nextPage}
 					>
 						<FontAwesomeIcon icon={faChevronRight} />

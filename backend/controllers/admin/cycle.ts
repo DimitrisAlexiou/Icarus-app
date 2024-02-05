@@ -8,6 +8,7 @@ import {
 	getCycleById,
 	deleteCycleById,
 	deleteCycles,
+	getTotalCycles,
 } from '../../models/admin/cycle';
 import { getTeachingsByCycleId } from '../../models/course/teaching';
 import { cycleSchema } from '../../utils/schemas';
@@ -61,7 +62,9 @@ export const viewCycles = tryCatch(
 		if (!cycles.length)
 			throw new CustomError('Seems like there are no defined cycles.', 404);
 
-		return res.status(200).json(cycles);
+		const totalCycles = await getTotalCycles();
+
+		return res.status(200).json({ cycles, totalCycles });
 	}
 );
 

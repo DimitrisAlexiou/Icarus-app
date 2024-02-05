@@ -7,13 +7,12 @@ import {
 } from '../../features/courses/teachingSlice';
 import { getInstructors } from '../../features/admin/userSlice';
 import { deleteAlert } from '../../constants/sweetAlertNotification';
-import useCurrentSemester from '../useCurrentSemester';
+import { useSemester } from '../../context/SemesterProvider';
 
 const useAssignTeachingInstructor = () => {
 	const dispatch = useDispatch();
 
-	const { semester, isLoading: isSemesterLoading } = useCurrentSemester();
-
+	const { semester, isSemesterLoading } = useSemester();
 	const { teachings, isLoading: isTeachingsLoading } = useSelector(
 		(state) => state.teachings
 	);

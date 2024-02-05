@@ -1,9 +1,9 @@
-import mongoose, { Schema, model } from 'mongoose';
+import { Schema, model } from 'mongoose';
+import { DocumentProps, documentSchema } from './document';
 
 export interface DirectoryProps {
 	name: string;
-	items: mongoose.Types.ObjectId[];
-	teaching: Schema.Types.ObjectId;
+	items: DocumentProps[];
 }
 
 const directorySchema = new Schema<DirectoryProps>({
@@ -11,23 +11,17 @@ const directorySchema = new Schema<DirectoryProps>({
 		type: String,
 		required: true,
 	},
-	items: [{ type: Schema.Types.ObjectId, ref: 'Document', required: true }],
-	teaching: {
-		type: Schema.Types.ObjectId,
-		ref: 'Teaching',
-		required: true,
-	},
+	items: [documentSchema],
 });
 
 export const Directory = model<DirectoryProps>('Directory', directorySchema);
 
-export const createdirectory = (values: Record<string, any>) =>
+export const createDirectory = (values: DirectoryProps) =>
 	new Directory(values).save().then((directory) => directory.toObject());
 export const getDirectoryById = (id: string) => Directory.findById(id);
-export const updateDirectoryById = (
-	id: string,
-	directory: Record<string, any>
-) => Directory.findByIdAndUpdate(id, directory, { new: true });
+export const getDirectoryByName = (name: string) => Directory.findOne({ name });
+export const updateDirectoryById = (id: string, directory: DirectoryProps) =>
+	Directory.findByIdAndUpdate(id, directory, { new: true });
 export const deleteDirectoryById = (id: string) =>
 	Directory.findByIdAndDelete(id);
 export const getDirectoriesByTeachingId = (teachingId: string) =>

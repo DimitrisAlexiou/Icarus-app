@@ -1,5 +1,8 @@
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import {
+	Button,
 	Card,
 	CardText,
 	CardTitle,
@@ -9,7 +12,11 @@ import {
 	NavItem,
 	Row,
 } from 'reactstrap';
-import { faBook } from '@fortawesome/free-solid-svg-icons';
+import {
+	faAnglesDown,
+	faAnglesRight,
+	faBook,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { FaStudiovinari } from 'react-icons/fa';
 import useCourses from '../../hooks/course/useCourses';
@@ -21,46 +28,78 @@ import Notification from '../../components/boilerplate/Notification';
 import PageButton from '../../components/buttons/PageButton';
 import BackButton from '../../components/buttons/BackButton';
 import CarouselComponent from '../../components/Carousel';
+import Search from '../../components/form/Search';
 
-export default function Undergraduate({ user }) {
+export default function Undergraduate() {
+	const { user } = useSelector((state) => state.auth);
 	const {
+		search,
 		numOfPages,
+		totalCourses,
 		isLoading,
-		filteredCourses,
+		courses,
 		Obligatory,
 		handleNavigationClick,
+		handleSearch,
 	} = useCourses();
+
+	const [detailedSearch, showDetailedSearch] = useState(false);
+
+	const moreSearch = () => {
+		showDetailedSearch(!detailedSearch);
+	};
 
 	return (
 		<>
 			{user ? (
 				<>
 					<Row>
-						<Col sm="12" xs="12" md="12" lg="9">
+						<Col xl="9">
 							<BreadcrumbNav
 								link={'/course'}
 								header={'Studies'}
 								active={'Undergraduate'}
 							/>
 						</Col>
-						<Col className="d-flex justify-content-end animated--grow-in">
+						<Col
+							xl="2"
+							className="d-flex justify-content-end animated--grow-in mb-3"
+						>
 							<Input
 								type="text"
-								placeholder={`Search . . .`}
-								// value={searchQuery}
-								// onChange={handleSearchQueryChange}
+								name="search"
+								placeholder="Search . . ."
+								value={search}
+								onChange={(e) => handleSearch(e)}
 							/>
 						</Col>
+						<Col xl="1" className="text-right">
+							<Button
+								className="btn btn-light"
+								color="null"
+								onClick={moreSearch}
+							>
+								{detailedSearch ? (
+									<FontAwesomeIcon
+										className="text-gray-500"
+										icon={faAnglesDown}
+									/>
+								) : (
+									<FontAwesomeIcon
+										className="text-gray-500"
+										icon={faAnglesRight}
+									/>
+								)}
+							</Button>
+						</Col>
 					</Row>
-
-					{/* <Search /> */}
 
 					<Row className="animated--grow-in">
 						<Col
 							xs="12"
 							sm="12"
 							md="9"
-							className="mt-sm-0 mt-md-3 mt-lg-0 mt-3 text-sm-left text-center"
+							className="mt-sm-0 mt-md-3 mt-3 text-sm-left text-center"
 						>
 							<h3 className="text-gray-800 font-weight-bold">Undergraduate</h3>
 						</Col>
@@ -68,7 +107,7 @@ export default function Undergraduate({ user }) {
 							xs="12"
 							sm="12"
 							md="3"
-							className="mt-sm-0 mt-md-3 mt-lg-0 mt-3 d-flex justify-content-end align-items-center"
+							className="mt-sm-0 mt-md-3 mt-3 d-flex justify-content-end align-items-center"
 						>
 							<Nav className="justify-content-between navbar navbar-expand navbar-light bg-white topbar mb-3 static-top shadow sticky-top">
 								<div className="navbar-nav">
@@ -101,19 +140,20 @@ export default function Undergraduate({ user }) {
 						</Col>
 					</Row>
 
-					{filteredCourses.length ? (
+					{detailedSearch ? <Search /> : null}
+
+					{courses.length ? (
 						<>
 							<Row className="mb-2">
 								<Col className="d-flex justify-content-end">
 									<h6 className="text-gray-400 font-weight-bold">
-										{filteredCourses.length} course
-										{filteredCourses.length > 1 && 's'}
+										{totalCourses} course
+										{totalCourses > 1 && 's'}
 									</h6>
 								</Col>
-								{numOfPages > 1 ? <PageButton /> : null}
 							</Row>
 							<Row className="justify-content-center animated--grow-in">
-								{filteredCourses.map((course) => (
+								{courses.map((course) => (
 									<Col
 										key={course._id}
 										xs="12"
@@ -131,6 +171,7 @@ export default function Undergraduate({ user }) {
 									</Col>
 								))}
 							</Row>
+							{numOfPages > 1 ? <PageButton /> : null}
 						</>
 					) : (
 						<Notification
@@ -214,12 +255,12 @@ export default function Undergraduate({ user }) {
 										</Row>
 										{isLoading ? (
 											<Spinner card />
-										) : filteredCourses.length ? (
+										) : courses.length ? (
 											<>
 												<Row className="justify-content-center animated--grow-in">
 													<Card body color="success">
 														<CarouselComponent
-															objects={filteredCourses}
+															objects={courses}
 															renderItem={(course) => (
 																<>
 																	<CardTitle
@@ -317,8 +358,8 @@ export default function Undergraduate({ user }) {
 													</Col>
 													<Col className="d-flex justify-content-end">
 														<h6 className="text-gray-400 font-weight-bold">
-															{filteredCourses.length} course
-															{filteredCourses.length > 1 && 's'}
+															{totalCourses} course
+															{totalCourses > 1 && 's'}
 														</h6>
 													</Col>
 													{numOfPages > 1 ? <PageButton /> : null}

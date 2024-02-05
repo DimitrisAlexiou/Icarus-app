@@ -119,14 +119,57 @@ const courseSchema = new Schema<CourseProps>(
 
 export const Course = model<CourseProps>('Course', courseSchema);
 
-export const getCourses = () =>
+export const getSystemCourses = (coursesPerPage: number) =>
 	Course.find()
+		.limit(coursesPerPage)
 		.populate({
 			path: 'prerequisites.prerequisite',
 			select: 'title',
 		})
 		.populate('cycle')
 		.populate('master');
+export const getCourses = (
+	page: number,
+	coursesPerPage: number,
+	courseType: CourseType,
+	obligatory: string,
+	search: string,
+	masterId: string
+) => {
+	const baseQuery = Course.find({ type: courseType, isObligatory: obligatory });
+
+	if (courseType === CourseType.Master && masterId)
+		baseQuery.where({ master: masterId });
+
+	const query = search
+		? baseQuery.find({ title: { $regex: search, $options: 'i' } })
+		: baseQuery;
+
+	const courses = query
+		.skip((page - 1) * coursesPerPage)
+		.limit(coursesPerPage)
+		.populate({
+			path: 'prerequisites.prerequisite',
+			select: 'title',
+		})
+		.populate('cycle')
+		.populate('master');
+
+	return courses;
+};
+export const getTotalCourses = (
+	courseType?: CourseType,
+	obligatory?: string
+) => {
+	let query = Course.find();
+
+	if (courseType) query = query.find({ type: courseType });
+
+	if (courseType === CourseType.Undergraduate && obligatory)
+		query = query.find({ isObligatory: obligatory });
+
+	return query.countDocuments();
+};
 export const getCourseById = (id: string) =>
 	Course.findById(id)
 		.populate({

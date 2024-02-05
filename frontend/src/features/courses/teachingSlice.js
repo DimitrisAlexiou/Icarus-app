@@ -21,6 +21,7 @@ import {
 	UNASSIGN_LAB_GRADING,
 	GET_INSTRUCTOR_TEACHINGS,
 	DOWNLOAD_ENROLLED_STUDENTS_PDF,
+	GET_SYSTEM_TEACHINGS,
 } from '../actions';
 import teachingService from './services/teachingService';
 
@@ -91,14 +92,25 @@ export const downloadEnrolledStudentsPDF = createAsyncThunk(
 	}
 );
 
+export const getSystemTeachings = createAsyncThunk(
+	GET_SYSTEM_TEACHINGS,
+	async (_, thunkAPI) => {
+		try {
+			const { page } = thunkAPI.getState().teachings;
+			let url = `?page=${page}`;
+			return await teachingService.getSystemTeachings(url);
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
+	}
+);
+
 export const getTeachings = createAsyncThunk(
 	GET_TEACHINGS,
 	async (_, thunkAPI) => {
 		try {
-			const { page, search, searchStatus, searchType, sort } =
-				thunkAPI.getState().teachings;
+			const { page } = thunkAPI.getState().teachings;
 			let url = `?page=${page}`;
-			// let url = `/jobs?status=${searchStatus}&jobType=${searchType}&sort=${sort}&page=${page}`;
 			return await teachingService.getTeachings(url);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
@@ -318,12 +330,29 @@ export const teachingSlice = createSlice({
 				state.isLoading = false;
 				displayErrorNotification(payload);
 			})
+			.addCase(getSystemTeachings.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(getSystemTeachings.fulfilled, (state, { payload }) => {
+				state.isLoading = false;
+				state.teachings = payload.teachings;
+				state.numOfPages = payload.numOfPages;
+				state.totalTeachings = payload.totalTeachings;
+			})
+			.addCase(getSystemTeachings.rejected, (state, { payload }) => {
+				state.isLoading = false;
+				if (
+					payload !==
+					'Seems like there are no active course teachings registered in the system.'
+				)
+					displayErrorNotification(payload);
+			})
 			.addCase(getTeachings.pending, (state) => {
 				state.isLoading = true;
 			})
 			.addCase(getTeachings.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				state.teachings = payload;
+				state.teachings = payload.teachings;
 				state.numOfPages = payload.numOfPages;
 				state.totalTeachings = payload.totalTeachings;
 			})
@@ -340,7 +369,7 @@ export const teachingSlice = createSlice({
 			})
 			.addCase(getInstructorTeachings.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				state.teachings = payload;
+				state.teachings = payload.teachings;
 				state.numOfPages = payload.numOfPages;
 				state.totalTeachings = payload.totalTeachings;
 			})

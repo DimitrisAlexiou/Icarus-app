@@ -25,6 +25,7 @@ const initialState = {
 	isEditingStatement: false,
 	isEditingVaccine: false,
 	editStatementId: '',
+	totalStatements: 0,
 };
 
 export const getStudentStatements = createAsyncThunk(
@@ -238,7 +239,8 @@ export const statementSlice = createSlice({
 			})
 			.addCase(getStatements.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				state.statements = payload;
+				state.statements = payload.statements;
+				state.totalStatements = payload.totalStatements;
 			})
 			.addCase(getStatements.rejected, (state, { payload }) => {
 				state.isLoading = false;

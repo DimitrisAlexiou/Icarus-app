@@ -29,55 +29,24 @@ const usePortfolio = () => {
 		deleteAlert(() => dispatch(deleteTeachingAnnouncements(teachingId)));
 	};
 
-	// const filteredAnnouncements =
-	// 	announcements &&
-	// 	announcements.filter((announcement) => {
-	// 		const publishDate = moment.utc(announcement.publishDate);
-	// 		const endDate = moment
-	// 			.utc(publishDate)
-	// 			.add(announcement.visibility, 'days');
-	// 		const currentDate = moment.utc();
+	const filteredAnnouncements = announcements.filter((announcement) => {
+		const publishDate = moment.utc(announcement.publishDate);
+		const currentDate = moment.utc();
 
-	// 		return (
-	// 			currentDate.isBetween(publishDate, endDate, null, '[]') &&
-	// 			announcement.isVisible
-	// 		);
-	// 	});
+		let isShown = false;
 
-	const filteredAnnouncements =
-		announcements &&
-		announcements.filter((announcement) => {
-			const publishDate = moment.utc(announcement.publishDate);
-			const currentDate = moment.utc();
+		if (announcement.isVisible) {
+			const visibilityEnd = publishDate
+				.clone()
+				.add(announcement.visibility, 'days');
 
-			let isShown = false;
+			isShown =
+				moment.utc(currentDate).isSameOrAfter(publishDate) &&
+				moment.utc(currentDate).isSameOrBefore(visibilityEnd);
+		}
 
-			if (announcement.isVisible) {
-				const visibilityEnd = publishDate
-					.clone()
-					.add(announcement.visibility, 'days');
-
-				isShown =
-					moment.utc(currentDate).isSameOrAfter(publishDate) &&
-					moment.utc(currentDate).isSameOrBefore(visibilityEnd);
-			}
-
-			return isShown;
-
-			// const isAfterPublishDate = currentDate.isSameOrAfter(
-			// 	publishDate,
-			// 	'minute'
-			// );
-			// console.log('Is After Publish Date:', isAfterPublishDate);
-
-			// const isVisible = announcement.isVisible;
-			// console.log('Is Visible:', isVisible);
-
-			// return isAfterPublishDate && isVisible;
-			// return (
-			// 	publishDate.isSameOrBefore(currentDate, 'day') && announcement.isVisible
-			// );
-		});
+		return isShown;
+	});
 
 	return {
 		teaching,
@@ -85,6 +54,7 @@ const usePortfolio = () => {
 		isTeachingsLoading,
 		isAnnouncementsLoading,
 		handleDeleteTeachingAnnouncements,
+		dispatch,
 	};
 };
 

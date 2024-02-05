@@ -12,8 +12,8 @@ export default function Course() {
 	const {
 		course,
 		teaching,
-		isCourseLoading,
-		isTeachingLoading,
+		courseIsLoading,
+		teachingsIsLoading,
 		handleNavigateToTeaching,
 	} = useCourse();
 
@@ -67,7 +67,7 @@ export default function Course() {
 								</Col>
 							</Row>
 						</div>
-						{isCourseLoading || isTeachingLoading ? (
+						{courseIsLoading || teachingsIsLoading ? (
 							<Spinner card />
 						) : (
 							<div className="card-body">

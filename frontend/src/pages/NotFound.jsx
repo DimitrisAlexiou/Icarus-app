@@ -17,14 +17,18 @@ export default function NotFound() {
 					The page you're looking to doesn't exist !
 				</p>
 				<Row className="justify-content-center mb-4">
-					<img className="error-page-img mt-3 mb-5 notfound" src={img} alt="not found" />
+					<img
+						className="error-page-img mt-3 mb-5 notfound"
+						src={img}
+						alt="not found"
+					/>
 					<Col lg="12">
 						<p className="text-gray-500 mb-4">
 							Seems like you are trying to access . . . clouds
 						</p>
 					</Col>
 				</Row>
-				<Link to={getLastPageFromLocalStorage()} style={{ textDecoration: 'none' }}>
+				<Link to={linkTo} style={{ textDecoration: 'none' }}>
 					Back to Reality
 				</Link>
 			</div>

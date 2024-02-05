@@ -1,3 +1,4 @@
+import { useSelector } from 'react-redux';
 import { Col, Row, Nav } from 'reactstrap';
 import { NavLink } from 'react-router-dom';
 import { FaStudiovinari } from 'react-icons/fa';
@@ -11,7 +12,8 @@ import Spinner from '../../components/boilerplate/spinners/Spinner';
 import MscItem from '../../components/course/MscItem';
 import Header from '../../components/boilerplate/headers/Header';
 
-export default function Msc({ user }) {
+export default function Msc() {
+	const { user } = useSelector((state) => state.auth);
 	const { masters, isLoading } = useMasters();
 
 	return (

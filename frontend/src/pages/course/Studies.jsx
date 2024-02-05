@@ -1,10 +1,13 @@
+import { useSelector } from 'react-redux';
 import { Link, NavLink } from 'react-router-dom';
 import { Card, CardText, CardTitle, Row, Col, Nav } from 'reactstrap';
 import { FaStudiovinari } from 'react-icons/fa';
 import FooterLanding from '../../components/boilerplate/FooterLanding';
 import Header from '../../components/boilerplate/headers/Header';
 
-export default function Studies({ user }) {
+export default function Studies() {
+	const { user } = useSelector((state) => state.auth);
+
 	return (
 		<>
 			<div className="bg-gradient-primary">

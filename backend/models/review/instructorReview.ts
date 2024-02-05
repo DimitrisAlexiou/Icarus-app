@@ -85,3 +85,5 @@ export const deleteUserInstructorReviews = (
 ) => InstructorReview.deleteMany({ user: userId }).session(session);
 export const getInstructorReviews = () => InstructorReview.find();
 export const deleteInstructorReviews = () => InstructorReview.deleteMany();
+export const getTotalInstructorReviews = () =>
+	InstructorReview.find().countDocuments();

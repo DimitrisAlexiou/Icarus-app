@@ -1,6 +1,6 @@
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
-import { ERROR, INFO, SUCCESS, WARNING } from './strings';
+import { ERROR, INFO, MAX_FILE_SIZE, SUCCESS, WARNING } from './strings';
 
 const MySwal = withReactContent(Swal);
 
@@ -15,6 +15,12 @@ export const Toast = MySwal.mixin({
 	timer: 4500,
 	timerProgressBar: true,
 });
+
+export const fileSizeAlert = (fileName) => {
+	Swal.fire(
+		`File '${fileName}' exceeds the maximum size limit (${MAX_FILE_SIZE}MB). Please choose a smaller file!`
+	);
+};
 
 export const enrollAlert = (callback) => {
 	Swal.fire({

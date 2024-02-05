@@ -1,19 +1,23 @@
 import { Schema, model } from 'mongoose';
 
-enum DocumentType {
-	File = 'file',
-	Directory = 'directory',
-}
-
-enum DocumentSize {
-	FourMB = 4 * 1024 * 1024,
-	EightMB = 8 * 1024 * 1024,
+export enum DocumentType {
+	PDF = 'application/pdf',
+	PPTX = 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+	DOCX = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+	XLSX = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+	ZIP = 'application/zip',
+	GZ = 'application/gzip',
+	TXT = 'text/plain',
+	JPG = 'image/jpeg',
+	JPEG = 'image/jpeg',
+	PNG = 'image/png',
 }
 
 export enum FileExtensions {
 	PDF = 'pdf',
 	PPTX = 'pptx',
 	DOCX = 'docx',
+	EXCEL = 'xlsx',
 	ZIP = 'zip',
 	GZ = 'gz',
 	TXT = 'txt',
@@ -24,49 +28,37 @@ export enum FileExtensions {
 
 export interface DocumentProps {
 	name: string;
+	size: number;
 	type: DocumentType;
-	size: DocumentSize;
-	extension: FileExtensions;
-	directory: Schema.Types.ObjectId;
+	lastModifiedDate: Date;
 }
 
-const documentSchema = new Schema<DocumentProps>({
-	name: {
-		type: String,
-		required: true,
+export const documentSchema = new Schema<DocumentProps>(
+	{
+		name: {
+			type: String,
+		},
+		size: {
+			type: Number,
+			max: 8 * 1024 * 1024,
+		},
+		type: {
+			type: String,
+			enum: Object.values(DocumentType),
+		},
+		lastModifiedDate: {
+			type: Date,
+		},
 	},
-	type: {
-		type: String,
-		enum: Object.values(DocumentType),
-		required: true,
-	},
-	size: {
-		type: Number,
-		enum: Object.values(DocumentSize),
-		required: true,
-	},
-	extension: {
-		type: String,
-		required: true,
-		enum: Object.values(FileExtensions),
-	},
-	directory: {
-		type: Schema.Types.ObjectId,
-		ref: 'Directory',
-		required: true,
-	},
-});
+	{ _id: false }
+);
 
 export const Document = model<DocumentProps>('Document', documentSchema);
 
-export const createDocument = (values: Record<string, any>) =>
-	new Document(values).save().then((document) => document.toObject());
-export const getDocumentById = (id: string) => Document.findById(id);
-export const updateDocumentById = (id: string, document: Record<string, any>) =>
-	Document.findByIdAndUpdate(id, document, { new: true });
-export const deleteDocumentById = (id: string) =>
-	Document.findByIdAndDelete(id);
-export const getDocumentsByDirectoryId = (directoryId: string) =>
-	Document.find({ directory: directoryId });
-export const deleteDocumentsByDirectoryId = (directoryId: string) =>
-	Document.deleteMany({ directory: directoryId });
+// export const getDocumentById = (id: string) => Document.findById(id);
+// export const deleteDocumentById = (id: string) =>
+// 	Document.findByIdAndDelete(id);
+// export const getDocumentsByDirectoryId = (directoryId: string) =>
+// 	Document.find({ directory: directoryId });
+// export const deleteDocumentsByDirectoryId = (directoryId: string) =>
+// 	Document.deleteMany({ directory: directoryId });

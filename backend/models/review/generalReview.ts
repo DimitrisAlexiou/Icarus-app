@@ -80,3 +80,5 @@ export const deleteUserGeneralReviews = (
 ) => GeneralReview.deleteMany({ user: userId }).session(session);
 export const getGeneralReviews = () => GeneralReview.find();
 export const deleteGeneralReviews = () => GeneralReview.deleteMany();
+export const getTotalGeneralReviews = () =>
+	GeneralReview.find().countDocuments();

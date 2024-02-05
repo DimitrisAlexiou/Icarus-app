@@ -4,6 +4,7 @@ import user from './user';
 import admin from './admin';
 import course from './course/course';
 import teaching from './course/teaching';
+import directory from './course/documents/directory';
 import statement from './course/statement';
 import calendar from './calendar';
 import announcement from './announcement';
@@ -21,6 +22,7 @@ export default (): express.Router => {
 	calendar(router);
 	course(router);
 	teaching(router);
+	directory(router);
 	statement(router);
 	note(router);
 	announcement(router);

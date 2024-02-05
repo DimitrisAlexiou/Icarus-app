@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { Row, Col, NavItem, Nav } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -11,7 +12,8 @@ import BreadcrumbNav from '../../components/boilerplate/Breadcrumb';
 import Spinner from '../../components/boilerplate/spinners/Spinner';
 import BackButton from '../../components/buttons/BackButton';
 
-export default function Teaching({ user }) {
+export default function Teaching() {
+	const { user } = useSelector((state) => state.auth);
 	const { teaching, isLoading, handleTeachingPortfolio } = useTeaching();
 	const [gradingForm, setGradingForm] = useState(false);
 

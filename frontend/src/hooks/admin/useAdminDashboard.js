@@ -1,7 +1,10 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteCourses, getCourses } from '../../features/courses/courseSlice';
-import { getTeachings } from '../../features/courses/teachingSlice';
+import {
+	deleteCourses,
+	getSystemCourses,
+} from '../../features/courses/courseSlice';
+import { getSystemTeachings } from '../../features/courses/teachingSlice';
 import { getStatements } from '../../features/courses/statementSlice';
 import { getSemesters } from '../../features/admin/semesterSlice';
 import { getCycles } from '../../features/admin/cyclesSlice';
@@ -21,46 +24,56 @@ const useAdminDashboard = () => {
 
 	const {
 		courses,
+		totalCourses,
 		isLoading: coursesIsLoading,
 		isEditingCourse,
 		editCourseId,
+		page,
 	} = useSelector((state) => state.courses);
-	const { teachings, isLoading: teachingsIsLoading } = useSelector(
-		(state) => state.teachings
-	);
-	const { statements, isLoading: isStatementsLoading } = useSelector(
+	const {
+		teachings,
+		totalTeachings,
+		isLoading: teachingsIsLoading,
+	} = useSelector((state) => state.teachings);
+	const { isLoading: statementsIsLoading, totalStatements } = useSelector(
 		(state) => state.statements
 	);
 	const {
-		users,
-		students,
-		instructors,
 		isLoading: usersIsLoading,
+		totalStudents,
+		totalInstructors,
+		totalUsers,
 	} = useSelector((state) => state.users);
-	const { cycles, isLoading: cyclesIsLoading } = useSelector(
-		(state) => state.cycles
-	);
-	const { masters, isLoading: mastersIsLoading } = useSelector(
-		(state) => state.masters
-	);
+	const {
+		cycles,
+		isLoading: cyclesIsLoading,
+		totalCycles,
+	} = useSelector((state) => state.cycles);
+	const {
+		masters,
+		isLoading: mastersIsLoading,
+		totalMasterPrograms,
+	} = useSelector((state) => state.masters);
 	const {
 		semesters,
 		isLoading: semestersIsLoading,
 		isEditingSemester,
 		editSemesterId,
+		totalSemesters,
 	} = useSelector((state) => state.semesters);
-	const { teachingReviews, isLoading: teachingReviewsIsLoading } = useSelector(
-		(state) => state.teachingReviews
-	);
-	const { instructorReviews, isLoading: instructorReviewsIsLoading } =
+	const { isLoading: teachingReviewsIsLoading, totalTeachingReviews } =
+		useSelector((state) => state.teachingReviews);
+	const { isLoading: instructorReviewsIsLoading, totalInstructorReviews } =
 		useSelector((state) => state.instructorReviews);
-	const { generalReviews, isLoading: generalReviewsIsLoading } = useSelector(
-		(state) => state.generalReviews
-	);
+	const { isLoading: generalReviewsIsLoading, totalGeneralReviews } =
+		useSelector((state) => state.generalReviews);
+
+	const activeTeachings = teachings.filter((teaching) => !teaching.isDeleted);
 
 	useEffect(() => {
-		dispatch(getCourses());
-		dispatch(getTeachings());
+		// dispatch(getSystemCourses({ coursesPerPage: 10, page: 1 }));
+		dispatch(getSystemCourses());
+		dispatch(getSystemTeachings());
 		dispatch(getStatements());
 		dispatch(getSemesters());
 		dispatch(getCycles());
@@ -79,20 +92,14 @@ const useAdminDashboard = () => {
 
 	return {
 		courses,
-		teachings,
-		statements,
-		users,
-		students,
-		instructors,
+		page,
+		activeTeachings,
 		cycles,
 		semesters,
 		masters,
-		teachingReviews,
-		instructorReviews,
-		generalReviews,
 		coursesIsLoading,
 		teachingsIsLoading,
-		isStatementsLoading,
+		statementsIsLoading,
 		usersIsLoading,
 		cyclesIsLoading,
 		mastersIsLoading,
@@ -104,6 +111,18 @@ const useAdminDashboard = () => {
 		editSemesterId,
 		isEditingCourse,
 		editCourseId,
+		totalCourses,
+		totalTeachings,
+		totalStatements,
+		totalStudents,
+		totalInstructors,
+		totalUsers,
+		totalTeachingReviews,
+		totalInstructorReviews,
+		totalGeneralReviews,
+		totalSemesters,
+		totalCycles,
+		totalMasterPrograms,
 		deleteSystemCourses,
 		dispatch,
 	};

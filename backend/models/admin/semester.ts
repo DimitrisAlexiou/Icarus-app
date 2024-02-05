@@ -81,3 +81,4 @@ export const updateSemesterById = (id: string, semester: SemesterProps) =>
 export const deleteSemesterById = (id: string) =>
 	Semester.findByIdAndDelete(id);
 export const deleteSemesters = () => Semester.deleteMany();
+export const getTotalSemesters = () => Semester.find().countDocuments();

@@ -1,75 +1,70 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getCourses } from '../../features/courses/courseSlice';
-import { CourseType } from '../../constants/enums';
+import { debounce } from 'lodash';
+import { getCourses, handleChange } from '../../features/courses/courseSlice';
+import { useParams } from 'react-router-dom';
 
-const useCourses = (courseType = CourseType.Undergraduate, masterId) => {
+const useCourses = () => {
 	const dispatch = useDispatch();
+	const { masterId } = useParams();
 
 	const {
 		courses,
+		isLoading,
+		totalCourses,
 		page,
 		numOfPages,
 		search,
-		searchSemester,
 		searchCycle,
 		searchHasLab,
+		searchSemester,
 		sort,
-		isLoading,
+		sortOptions,
 	} = useSelector((state) => state.courses);
 
 	const [Obligatory, setObligatory] = useState(true);
-	const [filteredCourses, setFilteredCourses] = useState([]);
-
-	// useEffect(() => {
-	// 	const handleScroll = () => {
-	// 		if (!hasMore || isFetching) return;
-
-	// 		const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
-	// 		if (scrollTop + clientHeight >= scrollHeight - 20) {
-	// 			dispatch(getCourses());
-	// 			dispatch(getCycles());
-	// 		}
-	// 	};
-
-	// 	window.addEventListener('scroll', handleScroll);
-	// 	return () => {
-	// 		window.removeEventListener('scroll', handleScroll);
-	// 	};
-	// }, [dispatch, hasMore, isFetching]);
 
 	useEffect(() => {
-		dispatch(getCourses());
-	}, [dispatch]);
+		dispatch(getCourses({ page, isObligatory: Obligatory, search, masterId }));
+	}, [Obligatory, page, search, masterId, dispatch]);
 
-	useEffect(() => {
-		let filtered = courses.filter(
-			(course) =>
-				course.type === courseType && course.isObligatory === Obligatory
-		);
+	const debouncedSearch = useRef(
+		debounce((value) => {
+			dispatch(
+				getCourses({ page, isObligatory: Obligatory, search: value, masterId })
+			);
+		}, 100)
+	).current;
 
-		if (masterId)
-			filtered = filtered.filter((course) => course.master?._id === masterId);
-
-		setFilteredCourses(filtered);
-	}, [courses, Obligatory, courseType, masterId]);
+	const handleSearch = (e) => {
+		dispatch(handleChange({ name: e.target.name, value: e.target.value }));
+		debouncedSearch(e.target.value);
+	};
 
 	const handleNavigationClick = (isObligatory) => {
 		setObligatory(isObligatory);
 	};
 
+	useEffect(() => {
+		return () => {
+			debouncedSearch.cancel();
+		};
+	}, [debouncedSearch]);
+
 	return {
 		courses,
 		page,
 		numOfPages,
+		totalCourses,
 		search,
 		searchSemester,
 		searchCycle,
 		searchHasLab,
 		sort,
+		sortOptions,
 		isLoading,
-		filteredCourses,
 		Obligatory,
+		handleSearch,
 		handleNavigationClick,
 	};
 };

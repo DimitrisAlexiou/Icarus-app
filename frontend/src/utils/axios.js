@@ -34,6 +34,9 @@ export const checkTokenExpiration = (error) => {
 	throw error;
 };
 
-axiosFetch.interceptors.response.use((response) => response, checkTokenExpiration);
+axiosFetch.interceptors.response.use(
+	(response) => response,
+	checkTokenExpiration
+);
 
 export default axiosFetch;

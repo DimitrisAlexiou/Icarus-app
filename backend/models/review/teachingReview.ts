@@ -90,3 +90,5 @@ export const deleteUserTeachingReviews = (
 ) => TeachingReview.deleteMany({ user: userId }).session(session);
 export const getTeachingReviews = () => TeachingReview.find();
 export const deleteTeachingReviews = () => TeachingReview.deleteMany();
+export const getTotalTeachingReviews = () =>
+	TeachingReview.find().countDocuments();

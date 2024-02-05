@@ -25,6 +25,9 @@ const initialState = {
 	isLoading: false,
 	isEditingUser: false,
 	editUserId: '',
+	totalInstructors: 0,
+	totalStudents: 0,
+	totalUsers: 0,
 };
 
 export const getUsers = createAsyncThunk(GET_USERS, async (_, thunkAPI) => {
@@ -136,7 +139,8 @@ export const userSlice = createSlice({
 			})
 			.addCase(getUsers.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				state.users = payload;
+				state.users = payload.users;
+				state.totalUsers = payload.totalUsers;
 			})
 			.addCase(getUsers.rejected, (state, { payload }) => {
 				state.isLoading = false;
@@ -150,7 +154,8 @@ export const userSlice = createSlice({
 			})
 			.addCase(getStudents.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				state.students = payload;
+				state.students = payload.students;
+				state.totalStudents = payload.totalStudents;
 			})
 			.addCase(getStudents.rejected, (state, { payload }) => {
 				state.isLoading = false;
@@ -165,7 +170,8 @@ export const userSlice = createSlice({
 			})
 			.addCase(getInstructors.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				state.instructors = payload;
+				state.instructors = payload.instructors;
+				state.totalInstructors = payload.totalInstructors;
 			})
 			.addCase(getInstructors.rejected, (state, { payload }) => {
 				state.isLoading = false;

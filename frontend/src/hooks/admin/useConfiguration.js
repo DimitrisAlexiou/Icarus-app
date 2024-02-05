@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getSemester, getSemesters } from '../../features/admin/semesterSlice';
+import { useSemester } from '../../context/SemesterProvider';
+import { getSemesters } from '../../features/admin/semesterSlice';
 import { getAssessment } from '../../features/admin/assessmentSlice';
 import { getReview } from '../../features/admin/reviewSlice';
 import { getDegreeRules } from '../../features/admin/degreeRulesSlice';
@@ -10,9 +11,9 @@ import { academicYearEnd, academicYearStart } from '../../utils/academicYears';
 
 const useConfiguration = () => {
 	const dispatch = useDispatch();
+	const { semester } = useSemester();
 
 	const {
-		semester,
 		semesters,
 		isLoading: isSemesterLoading,
 		isEditingSemester,
@@ -20,7 +21,7 @@ const useConfiguration = () => {
 	} = useSelector((state) => state.semesters);
 	const {
 		assessment,
-		isLoading: isAssessmentLoading,
+		isLoading: assessmentIsLoading,
 		isEditingAssessment,
 		editAssessmentId,
 	} = useSelector((state) => state.assessment);
@@ -50,7 +51,6 @@ const useConfiguration = () => {
 	} = useSelector((state) => state.masters);
 
 	useEffect(() => {
-		dispatch(getSemester());
 		dispatch(getSemesters());
 		dispatch(getAssessment());
 		dispatch(getReview());
@@ -68,7 +68,7 @@ const useConfiguration = () => {
 		cycles,
 		masters,
 		isSemesterLoading,
-		isAssessmentLoading,
+		assessmentIsLoading,
 		isReviewLoading,
 		isDegreeRulesLoading,
 		isCyclesLoading,

@@ -20,6 +20,7 @@ import {
 	instructorsAssignmentSchema,
 	masterProgramSchema,
 	announcementSchema,
+	directorySchema,
 } from '../utils/schemas';
 import CustomError from '../utils/CustomError';
 
@@ -289,6 +290,20 @@ export const validateAnnouncement = (
 	const { error } = announcementSchema.validate(req.body);
 	if (error) {
 		console.error('❌ Announcement schema validation: '.yellow.bold, error);
+		throw new CustomError(error.message, 400);
+	}
+
+	next();
+};
+
+export const validateDirectory = (
+	req: AuthenticatedRequest,
+	_: Response,
+	next: NextFunction
+) => {
+	const { error } = directorySchema.validate(req.body);
+	if (error) {
+		console.error('❌ Directory schema validation: '.yellow.bold, error);
 		throw new CustomError(error.message, 400);
 	}
 

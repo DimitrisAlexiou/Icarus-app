@@ -1,10 +1,13 @@
+import { useSelector } from 'react-redux';
 import { Col, Row } from 'reactstrap';
 import AdminDashboard from '../admin/AdminDashboard';
 import CurrentSemester from '../../components/boilerplate/CurrentSemester';
 import CurrentStatement from '../../components/boilerplate/CurrentStatement';
 import UserDashboard from './UserDashboard';
 
-export default function Dashboard({ user }) {
+export default function Dashboard() {
+	const { user } = useSelector((state) => state.auth);
+
 	return (
 		<>
 			{user ? (

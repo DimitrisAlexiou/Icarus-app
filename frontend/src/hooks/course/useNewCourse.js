@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getCourses } from '../../features/courses/courseSlice';
+import { getSystemCourses } from '../../features/courses/courseSlice';
 import { getCycles } from '../../features/admin/cyclesSlice';
 import { getSemesters } from '../../features/admin/semesterSlice';
 import { getMasters } from '../../features/admin/masterProgramSlice';
@@ -22,7 +22,7 @@ const useNewCourse = () => {
 	);
 
 	useEffect(() => {
-		dispatch(getCourses());
+		dispatch(getSystemCourses());
 		dispatch(getCycles());
 		dispatch(getSemesters());
 		dispatch(getMasters());

@@ -10,6 +10,7 @@ import {
 	SemesterType,
 	getSemesterByTypeAndAcademicYear,
 	getSemesterById,
+	getTotalSemesters,
 } from '../../models/admin/semester';
 import { getActiveTeachingsBySemesterId } from '../../models/course/teaching';
 import { tryCatch } from '../../utils/tryCatch';
@@ -87,7 +88,9 @@ export const viewSemesters = tryCatch(
 		if (!semesters.length)
 			throw new CustomError('Seems like there are no defined semesters.', 404);
 
-		return res.status(200).json(semesters);
+		const totalSemesters = await getTotalSemesters();
+
+		return res.status(200).json({ semesters, totalSemesters });
 	}
 );
 

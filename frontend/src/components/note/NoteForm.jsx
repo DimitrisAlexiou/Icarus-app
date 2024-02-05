@@ -3,7 +3,12 @@ import { FormGroup, Row, Col, Button, Spinner } from 'reactstrap';
 import { Formik, Form, ErrorMessage } from 'formik';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmarkCircle } from '@fortawesome/free-regular-svg-icons';
-import { faDroplet, faPlus } from '@fortawesome/free-solid-svg-icons';
+import {
+	faDroplet,
+	faLayerGroup,
+	faMinus,
+	faPlus,
+} from '@fortawesome/free-solid-svg-icons';
 import { NoteSchema } from '../../schemas/Note';
 import {
 	createUserNote,
@@ -194,7 +199,11 @@ export default function NoteForm({
 									color="null"
 									onClick={addCategory}
 								>
-									Category <FontAwesomeIcon icon={faPlus} />
+									{category ? (
+										<FontAwesomeIcon icon={faMinus} />
+									) : (
+										<FontAwesomeIcon icon={faLayerGroup} />
+									)}
 								</Button>
 							</Col>
 						</Row>

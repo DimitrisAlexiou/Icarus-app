@@ -5,6 +5,7 @@ import {
 	getTeachings,
 	getInstructorTeachings,
 } from '../../features/courses/teachingSlice';
+import { useSemester } from '../../context/SemesterProvider';
 
 const useTeachingGrading = () => {
 	const dispatch = useDispatch();
@@ -13,6 +14,11 @@ const useTeachingGrading = () => {
 	const { user } = useSelector((state) => state.auth);
 	const { teachings, isLoading: isTeachingsLoading } = useSelector(
 		(state) => state.teachings
+	);
+	const { semester, isSemesterLoading } = useSemester();
+
+	const availableTeachings = teachings.filter(
+		(teaching) => teaching.semester._id === semester._id
 	);
 
 	useEffect(() => {
@@ -24,8 +30,11 @@ const useTeachingGrading = () => {
 	};
 
 	return {
+		semester,
 		teachings,
+		availableTeachings,
 		isTeachingsLoading,
+		isSemesterLoading,
 		handleTeachingClick,
 	};
 };

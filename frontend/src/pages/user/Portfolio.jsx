@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { Row, Col, NavItem, NavLink } from 'reactstrap';
 import { portfolioCategories } from '../../utils/NavigationLinks';
 import usePortfolio from '../../hooks/user/usePortfolio';
@@ -12,7 +14,8 @@ import BreadcrumbNav from '../../components/boilerplate/Breadcrumb';
 import Spinner from '../../components/boilerplate/spinners/Spinner';
 import Header from '../../components/boilerplate/headers/Header';
 
-export default function Portfolio({ user }) {
+export default function Portfolio() {
+	const { user } = useSelector((state) => state.auth);
 	const {
 		teaching,
 		filteredAnnouncements,
@@ -22,6 +25,12 @@ export default function Portfolio({ user }) {
 	} = usePortfolio();
 
 	const [selectedCategory, setSelectedCategory] = useState('Documents');
+
+	const navigate = useNavigate();
+
+	const navigateToTeachingDirectories = (teaching) => {
+		navigate(`/teaching/${teaching._id}/portfolio/directory`);
+	};
 
 	return (
 		<>
@@ -42,7 +51,26 @@ export default function Portfolio({ user }) {
 				active={teaching?.course?.title}
 			/>
 
-			<Header title="Portfolio" />
+			<Row>
+				<Col>
+					<Header title="Portfolio" />
+				</Col>
+				{user.user.student ? null : (
+					<Col className="animated--grow-in text-right">
+						<small
+							className="text-muted px-2 pill-label clickable"
+							style={{
+								textAlign: 'justify',
+								fontWeight: '700',
+								fontSize: 12,
+							}}
+							onClick={() => navigateToTeachingDirectories(teaching)}
+						>
+							Directories
+						</small>
+					</Col>
+				)}
+			</Row>
 
 			<Row className="mb-3 animated--grow-in justify-content-center">
 				<Col

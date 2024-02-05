@@ -30,7 +30,7 @@ export interface TeachingProps {
 	theoryExamination?: Examination[];
 	labExamination?: Examination[];
 	directories: mongoose.Types.ObjectId[];
-	announcements?: mongoose.Types.ObjectId[];
+	isDeleted: boolean;
 }
 
 const examinationSchema = new Schema<Examination>(
@@ -121,12 +121,11 @@ const teachingSchema = new Schema<TeachingProps>(
 				ref: 'Directory',
 			},
 		],
-		announcements: [
-			{
-				type: Schema.Types.ObjectId,
-				ref: 'Announcement',
-			},
-		],
+		isDeleted: {
+			type: Boolean,
+			required: true,
+			default: false,
+		},
 	},
 	{
 		timestamps: true,
@@ -149,8 +148,31 @@ teachingSchema.methods.isLabGradeValid = function () {
 
 export const Teaching = model<TeachingProps>('Teaching', teachingSchema);
 
-export const getTeachings = () =>
+export const getSystemTeachings = () =>
 	Teaching.find()
+		.populate('semester')
+		.populate({
+			path: 'course',
+			populate: {
+				path: 'cycle',
+			},
+		})
+		.populate({
+			path: 'theoryInstructors',
+			populate: {
+				path: 'user',
+				select: 'surname name',
+			},
+		})
+		.populate({
+			path: 'labInstructors',
+			populate: {
+				path: 'user',
+				select: 'surname name',
+			},
+		});
+export const getTeachings = () =>
+	Teaching.find({ isDeleted: false })
 		.populate('semester')
 		.populate({
 			path: 'course',
@@ -187,6 +209,7 @@ export const getInstructorTeachings = async (
 				],
 			},
 			{ semester: semesterId },
+			{ isDeleted: false },
 		],
 	})
 		.populate('semester')
@@ -211,6 +234,7 @@ export const getInstructorTeachings = async (
 			},
 		});
 };
+export const getTotalTeachings = () => Teaching.find().countDocuments();
 export const getTeachingById = (id: string) =>
 	Teaching.findById(id)
 		.populate('semester')
@@ -292,11 +316,16 @@ export const updateTeachingById = (id: string, teaching: TeachingProps) =>
 			},
 		});
 export const deleteTeachingById = (id: string) =>
-	Teaching.findByIdAndDelete(id);
+	Teaching.findByIdAndUpdate(id, { isDeleted: true }, { new: true });
 export const deleteTeachingByCourseId = (
 	courseId: string,
 	session: ClientSession
-) => Teaching.findOneAndDelete({ course: courseId }).session(session);
+) =>
+	Teaching.findOneAndUpdate(
+		{ course: courseId },
+		{ $set: { isDeleted: true } },
+		{ new: true, session: session }
+	);
 export const deleteTeachings = () => Teaching.deleteMany();
 export const assignTheoryInstructors = (
 	id: string,
@@ -349,3 +378,16 @@ export const unassignTheoryGrading = (id: string) =>
 	Teaching.findByIdAndUpdate(id, { theoryExamination: [] }, { new: true });
 export const unassignLabGrading = (id: string) =>
 	Teaching.findByIdAndUpdate(id, { labExamination: [] }, { new: true });
+// export const validTheoryTeachings = () =>
+// 	Teaching.find({
+// 	$and: [
+// 		{ isDeleted: false },
+// 		{
+// 			createdAt: {
+// 				$gte: new Date().setFullYear(
+// 					new Date().getFullYear() - this.theoryGradeExpirationYears
+// 				),
+// 			},
+// 		},
+// 	],
+// });

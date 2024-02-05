@@ -36,3 +36,4 @@ export const getCycleByName = (cycle: string) => Cycle.findOne({ cycle });
 export const getCycles = () => Cycle.find();
 export const deleteCycleById = (id: string) => Cycle.findByIdAndDelete(id);
 export const deleteCycles = () => Cycle.deleteMany({});
+export const getTotalCycles = () => Cycle.find().countDocuments();

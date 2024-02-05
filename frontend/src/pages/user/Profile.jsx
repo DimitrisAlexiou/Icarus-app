@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Row, Col, Nav, NavItem } from 'reactstrap';
 import { NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -10,7 +11,8 @@ import ProfileProgressCard from '../../components/user/cards/ProfileProgressCard
 import ChangePassword from '../../components/user/ChangePassword';
 import moment from 'moment';
 
-export default function Profile({ user }) {
+export default function Profile() {
+	const { user } = useSelector((state) => state.auth);
 	const [selectedNavItem, setSelectedNavItem] = useState('overview');
 
 	return (

@@ -1,3 +1,4 @@
+import { useSelector } from 'react-redux';
 import { forwardRef } from 'react';
 import {
 	Row,
@@ -22,7 +23,9 @@ import SpinnerComponent from '../../components/boilerplate/spinners/SpinnerMessa
 import PillHeader from '../../components/boilerplate/headers/PillHeader';
 import AnnouncementCard from '../../components/user/cards/AnnouncementCard';
 
-export default function AdminAnnouncements({ user }) {
+export default function AdminAnnouncements() {
+	const { user } = useSelector((state) => state.auth);
+
 	const { handleDeleteAnnouncement } = useAnnouncements();
 	const { announcements, isAnnouncementsLoading, handleDeleteAnnouncements } =
 		useAdminAnnouncements();

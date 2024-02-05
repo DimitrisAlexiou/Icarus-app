@@ -12,7 +12,7 @@ export default function PreviousStatements({
 	statements,
 	previousStatements,
 	isSemesterLoading,
-	isStatementsLoading,
+	statementsIsLoading,
 	handleStatementClick,
 }) {
 	return (
@@ -38,7 +38,7 @@ export default function PreviousStatements({
 				</Col>
 			</Row>
 
-			{isSemesterLoading || isStatementsLoading ? (
+			{isSemesterLoading || statementsIsLoading ? (
 				<Spinner card />
 			) : statements.length > 0 && semester ? (
 				user.user.isAdmin ? (

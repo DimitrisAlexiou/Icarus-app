@@ -12,15 +12,15 @@ import {
 } from '../../features/courses/statementSlice';
 import { finalizeAlert } from '../../constants/sweetAlertNotification';
 import { PrerequisiteType, AssessmentType } from '../../constants/enums';
-import useCurrentSemester from '../useCurrentSemester';
+import { useSemester } from '../../context/SemesterProvider';
 
 const useStatements = () => {
 	const dispatch = useDispatch();
 
-	const { semester, isSemesterLoading } = useCurrentSemester();
+	const { semester, isSemesterLoading } = useSemester();
 	const {
 		statements,
-		isLoading: isStatementsLoading,
+		isLoading: statementsIsLoading,
 		isEditingStatement,
 		isEditingVaccine,
 		editStatementId,
@@ -34,33 +34,33 @@ const useStatements = () => {
 	const isVaccineStatement = (stmt) => stmt.type === AssessmentType.Vaccine;
 
 	const isStatementSubmitted = statements.some(
-		(stmt) => stmt.semester._id === semester._id && !isVaccineStatement(stmt)
+		(stmt) => stmt?.semester?._id === semester?._id && !isVaccineStatement(stmt)
 	);
 
 	const isVaccineSubmitted = statements.some(
-		(stmt) => stmt.semester._id === semester._id && isVaccineStatement(stmt)
+		(stmt) => stmt?.semester?._id === semester?._id && isVaccineStatement(stmt)
 	);
 
 	const currentStatement = statements.find(
-		(stmt) => stmt.semester._id === semester._id && !isVaccineStatement(stmt)
+		(stmt) => stmt?.semester?._id === semester?._id && !isVaccineStatement(stmt)
 	);
 
 	const currentVaccine = statements.find(
-		(stmt) => stmt.semester._id === semester._id && isVaccineStatement(stmt)
+		(stmt) => stmt?.semester?._id === semester?._id && isVaccineStatement(stmt)
 	);
 
 	const getPreviousStatements = () => {
 		const previousAssessments = statements.filter(
-			(stmt) => stmt._id === currentStatement?._id && !isVaccineStatement(stmt)
+			(stmt) => stmt._id !== currentStatement?._id && !isVaccineStatement(stmt)
 		);
 		const previousVaccines = statements.filter(
-			(stmt) => stmt._id === currentVaccine?._id && isVaccineStatement(stmt)
+			(stmt) => stmt._id !== currentVaccine?._id && isVaccineStatement(stmt)
 		);
 		return [...previousAssessments, ...previousVaccines];
 	};
 
 	const availableTeachings = teachings.filter(
-		(teaching) => teaching.semester._id === semester._id
+		(teaching) => teaching?.semester?._id === semester?._id
 	);
 
 	const studentPassedTeachings = student ? student.passedTeachings : [];
@@ -137,7 +137,7 @@ const useStatements = () => {
 		statements,
 		teachings,
 		isSemesterLoading,
-		isStatementsLoading,
+		statementsIsLoading,
 		isTeachingsLoading,
 		isEditingStatement,
 		isEditingVaccine,

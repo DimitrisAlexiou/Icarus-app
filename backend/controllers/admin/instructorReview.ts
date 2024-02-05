@@ -3,6 +3,7 @@ import { AuthenticatedRequest } from '../../interfaces/AuthRequest';
 import {
 	getInstructorReviews,
 	deleteInstructorReviews,
+	getTotalInstructorReviews,
 } from '../../models/review/instructorReview';
 import { tryCatch } from '../../utils/tryCatch';
 import CustomError from '../../utils/CustomError';
@@ -16,7 +17,9 @@ export const getSystemInstructorReviews = tryCatch(
 				404
 			);
 
-		return res.status(200).json(instructorReviews);
+		const totalInstructorReviews = await getTotalInstructorReviews();
+
+		return res.status(200).json({ instructorReviews, totalInstructorReviews });
 	}
 );
 

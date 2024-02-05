@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Row, Col, NavItem, NavLink } from 'reactstrap';
 import {
 	faBarcode,
@@ -23,7 +24,8 @@ import { myGradesCategories } from '../../utils/NavigationLinks';
 import DoughnutChart from '../../components/charts/Doughnut';
 import Header from '../../components/boilerplate/headers/Header';
 
-export default function MyGrades({ user }) {
+export default function MyGrades() {
+	const { user } = useSelector((state) => state.auth);
 	const [selectedCategory, setSelectedCategory] = useState('Recent Grades');
 
 	const passedTeachings = ['Mobile and Wireless Networks Security'];

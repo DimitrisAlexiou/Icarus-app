@@ -8,6 +8,7 @@ import {
 	getMasterProgramById,
 	getMasterProgramByTitle,
 	getMasterPrograms,
+	getTotalMasterPrograms,
 	updateMasterProgramById,
 } from '../../models/admin/master';
 import CustomError from '../../utils/CustomError';
@@ -47,7 +48,9 @@ export const viewMasterPrograms = tryCatch(
 				404
 			);
 
-		return res.status(200).json(masterPrograms);
+		const totalMasterPrograms = await getTotalMasterPrograms();
+
+		return res.status(200).json({ masterPrograms, totalMasterPrograms });
 	}
 );
 

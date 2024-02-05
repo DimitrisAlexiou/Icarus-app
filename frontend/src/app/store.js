@@ -13,6 +13,7 @@ import { statementSlice } from '../features/courses/statementSlice';
 import { noteSlice } from '../features/notes/noteSlice';
 import { eventSlice } from '../features/calendar/eventSlice';
 import { announcementSlice } from '../features/announcements/announcementSlice';
+import { directorySlice } from '../features/courses/directorySlice';
 import { teachingReviewSlice } from '../features/reviews/teachingReviewSlice';
 import { instructorReviewSlice } from '../features/reviews/instructorReviewSlice';
 import { generalReviewSlice } from '../features/reviews/generalReviewSlice';
@@ -27,6 +28,7 @@ export const store = configureStore({
 		notes: noteSlice.reducer,
 		events: eventSlice.reducer,
 		announcements: announcementSlice.reducer,
+		directories: directorySlice.reducer,
 		cycles: cyclesSlice.reducer,
 		masters: masterProgramSlice.reducer,
 		teachingReviews: teachingReviewSlice.reducer,

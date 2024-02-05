@@ -13,7 +13,7 @@ export default function VaccineStatement({
 	semester,
 	assessment,
 	isSemesterLoading,
-	isStatementsLoading,
+	statementsIsLoading,
 	isTeachingsLoading,
 	canSubmitAvailableVaccineTeachings,
 	vaccineIsAvailable,
@@ -35,7 +35,7 @@ export default function VaccineStatement({
 				</Col>
 			</Row>
 
-			{isSemesterLoading || isStatementsLoading ? (
+			{isSemesterLoading || statementsIsLoading ? (
 				<Spinner card />
 			) : !isVaccineSubmitted || isEditingVaccine ? (
 				<Row className="justify-content-center animated--grow-in">

@@ -3,6 +3,9 @@ import { createAction } from '@reduxjs/toolkit';
 export const RESET = createAction('app/reset');
 
 export const GET_TEACHINGS = createAction('teaching/get_teachings');
+export const GET_SYSTEM_TEACHINGS = createAction(
+	'teaching/get_system_teachings'
+);
 export const GET_INSTRUCTOR_TEACHINGS = createAction(
 	'teaching/get_instructor_teachings'
 );
@@ -37,6 +40,7 @@ export const UNASSIGN_LAB_GRADING = createAction(
 );
 
 export const GET_COURSES = createAction('course/get_courses');
+export const GET_SYSTEM_COURSES = createAction('course/get_system_courses');
 export const GET_COURSE = createAction('course/get_course');
 export const UPDATE_COURSE = createAction('course/update_course');
 export const DELETE_COURSE = createAction('course/delete_course');
@@ -250,3 +254,9 @@ export const GET_ANNOUNCEMENTS = createAction('announcement/get_announcements');
 export const DOWNLOAD_ENROLLED_STUDENTS_PDF = createAction(
 	'teaching/download_enrolled_students_pdf'
 );
+export const GET_DIRECTORY = createAction('directory/get_directory');
+export const CREATE_DIRECTORY = createAction('directory/create_directory');
+export const UPDATE_DIRECTORY = createAction('directory/update_directory');
+export const DELETE_DIRECTORY = createAction('directory/delete_directory');
+export const DELETE_DIRECTORIES = createAction('directory/delete_directories');
+export const GET_DIRECTORIES = createAction('directory/get_directories');

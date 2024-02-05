@@ -10,12 +10,14 @@ import {
 	deleteUsers,
 	UserType,
 	User,
+	getTotalUsers,
 } from '../../models/users/user';
 import {
 	Student,
 	deleteStudentByUserId,
 	deleteStudents,
 	getStudents,
+	getTotalStudents,
 	updateStudentById,
 } from '../../models/users/student';
 import {
@@ -23,6 +25,7 @@ import {
 	deleteInstructorByUserId,
 	deleteInstructors,
 	getInstructors,
+	getTotalInstructors,
 	updateInstructorById,
 } from '../../models/users/instructor';
 import { deleteEvents } from '../../models/calendar';
@@ -167,7 +170,9 @@ export const getSystemUsers = tryCatch(
 				404
 			);
 
-		return res.status(200).json(users);
+		const totalUsers = await getTotalUsers();
+
+		return res.status(200).json({ users, totalUsers });
 	}
 );
 
@@ -402,7 +407,9 @@ export const getSystemStudents = tryCatch(
 				404
 			);
 
-		return res.status(200).json(students);
+		const totalStudents = await getTotalStudents();
+
+		return res.status(200).json({ students, totalStudents });
 	}
 );
 
@@ -415,6 +422,8 @@ export const getSystemInstructors = tryCatch(
 				404
 			);
 
-		return res.status(200).json(instructors);
+		const totalInstructors = await getTotalInstructors();
+
+		return res.status(200).json({ instructors, totalInstructors });
 	}
 );

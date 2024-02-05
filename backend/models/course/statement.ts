@@ -170,3 +170,4 @@ export const getStatements = () =>
 		.populate('user')
 		.populate('semester');
 export const deleteStatements = () => Statement.deleteMany();
+export const getTotalStatements = () => Statement.find().countDocuments();

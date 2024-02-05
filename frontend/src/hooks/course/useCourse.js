@@ -10,11 +10,11 @@ const useCourse = () => {
 
 	const {
 		course,
-		isLoading: isCourseLoading,
+		isLoading: courseIsLoading,
 		isEditingCourse,
 		editCourseId,
 	} = useSelector((state) => state.courses);
-	const { teaching, isLoading: isTeachingLoading } = useSelector(
+	const { teaching, isLoading: teachingsIsLoading } = useSelector(
 		(state) => state.teachings
 	);
 
@@ -32,8 +32,8 @@ const useCourse = () => {
 	return {
 		course,
 		teaching,
-		isCourseLoading,
-		isTeachingLoading,
+		courseIsLoading,
+		teachingsIsLoading,
 		isEditingCourse,
 		editCourseId,
 		handleNavigateToTeaching,

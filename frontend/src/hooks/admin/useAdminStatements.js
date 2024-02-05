@@ -11,23 +11,20 @@ import {
 } from '../../features/courses/statementSlice';
 import { finalizeAlert } from '../../constants/sweetAlertNotification';
 import { PrerequisiteType, AssessmentType } from '../../constants/enums';
-import useCurrentSemester from '../useCurrentSemester';
+import { useSemester } from '../../context/SemesterProvider';
 
 const useAdminStatements = () => {
 	const dispatch = useDispatch();
 
-	const { semester, isLoading: isSemesterLoading } = useCurrentSemester();
-
+	const { semester, isSemesterLoading } = useSemester();
 	const {
 		statements,
-		isLoading: isStatementsLoading,
+		isLoading: statementsIsLoading,
 		isEditingStatement,
 		isEditingVaccine,
 		editStatementId,
 	} = useSelector((state) => state.statements);
-	const { teachings, isLoading: isTeachingsLoading } = useSelector(
-		(state) => state.teachings
-	);
+	const { teachings } = useSelector((state) => state.teachings);
 	const { user } = useSelector((state) => state.auth);
 	const { students } = useSelector((state) => state.users);
 	const student = user.user.student;
@@ -128,7 +125,7 @@ const useAdminStatements = () => {
 		semester,
 		statements,
 		isSemesterLoading,
-		isStatementsLoading,
+		statementsIsLoading,
 		isEditingStatement,
 		isEditingVaccine,
 		editStatementId,

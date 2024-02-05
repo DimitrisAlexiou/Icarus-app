@@ -302,3 +302,17 @@ export const announcementSchema = Joi.object({
 	isVisible: Joi.boolean().default(false).required(),
 	teaching: Joi.string().required(),
 });
+
+export const directorySchema = Joi.object({
+	name: Joi.string().required(),
+	items: Joi.array()
+		.items(
+			Joi.object({
+				name: Joi.string(),
+				size: Joi.number(),
+				type: Joi.string(),
+				lastModifiedDate: Joi.string(),
+			})
+		)
+		.optional(),
+});

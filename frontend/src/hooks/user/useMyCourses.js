@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { useSemester } from '../../context/SemesterProvider';
 import { getTeachings } from '../../features/courses/teachingSlice';
 import {
 	disenrollCourse,
@@ -11,14 +12,12 @@ import {
 	deleteAlert,
 	enrollAlert,
 } from '../../constants/sweetAlertNotification';
-import useCurrentSemester from '../useCurrentSemester';
 
 const useMyCourses = () => {
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
-	const { semester, isLoading: isSemesterLoading } = useCurrentSemester();
-
+	const { semester, isLoading: isSemesterLoading } = useSemester();
 	const { teachings, isLoading: isTeachingsLoading } = useSelector(
 		(state) => state.teachings
 	);

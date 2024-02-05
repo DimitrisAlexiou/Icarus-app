@@ -9,6 +9,7 @@ import UserForm from '../../../components/admin/forms/UserForm';
 import RegisterForm from '../../../components/auth/RegisterForm';
 import CustomSpinner from '../../../components/boilerplate/spinners/Spinner';
 import SpinnerComponent from '../../../components/boilerplate/spinners/SpinnerMessage';
+import { faUserPlus, faUserXmark } from '@fortawesome/free-solid-svg-icons';
 
 export default function Users() {
 	const {
@@ -165,45 +166,35 @@ export default function Users() {
 	return (
 		<>
 			<Row className="mb-4 animated--grow-in">
-				<Col xs="12" sm="12" md="5" lg="7" xl="8">
+				<Col xs="7" sm="7" md="9" lg="9" xl="10">
 					<h3 className="text-gray-800 font-weight-bold">Users</h3>
 				</Col>
-				<Col
-					xs="6"
-					sm="6"
-					md="3"
-					lg="2"
-					xl="2"
-					className="text-sm-left text-center"
-				>
-					<Button
-						onClick={() => {
-							setNewUser(true);
-						}}
-						color="null"
-						className="btn btn-orange align-self-center"
-					>
-						Add User
-					</Button>
+				<Col xs="auto" className="text-right">
+					<Row>
+						<Col>
+							<Button
+								onClick={() => {
+									setNewUser(true);
+								}}
+								color="null"
+								className="btn btn-success align-self-center"
+							>
+								<FontAwesomeIcon icon={faUserPlus} />
+							</Button>
+						</Col>
+						{users ? (
+							<Col>
+								<Button
+									className="btn btn-red align-self-center"
+									color="null"
+									onClick={() => handleDeleteUsers()}
+								>
+									<FontAwesomeIcon icon={faUserXmark} />
+								</Button>
+							</Col>
+						) : null}
+					</Row>
 				</Col>
-				{users ? (
-					<Col
-						xs="6"
-						sm="6"
-						md="4"
-						lg="3"
-						xl="2"
-						className="text-sm-right text-center"
-					>
-						<Button
-							className="btn btn-red align-self-center"
-							color="null"
-							onClick={() => handleDeleteUsers()}
-						>
-							<FontAwesomeIcon icon={faTrashAlt} /> Delete Users
-						</Button>
-					</Col>
-				) : null}
 			</Row>
 
 			{isLoading ? (

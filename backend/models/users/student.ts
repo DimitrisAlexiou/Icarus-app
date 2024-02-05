@@ -75,3 +75,4 @@ export const updateStudentById = (
 export const deleteStudentByUserId = (id: string, session: ClientSession) =>
 	Student.findOneAndDelete({ user: id }).session(session);
 export const deleteStudents = () => Student.deleteMany();
+export const getTotalStudents = () => Student.find().countDocuments();

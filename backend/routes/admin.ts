@@ -84,6 +84,8 @@ import {
 	deleteSystemAnnouncements,
 	viewAnnouncements,
 } from '../controllers/admin/announcement';
+import { viewSystemCourses } from '../controllers/course/course';
+import { viewSystemTeachings } from '../controllers/course/teaching';
 import { authorize, checkUserRole } from '../middleware/authMiddleware';
 import { UserType } from '../models/users/user';
 
@@ -99,7 +101,7 @@ export default (router: express.Router) => {
 			validateSemester,
 			defineSemester
 		)
-		.get(authorize, viewSemester);
+		.get(viewSemester);
 
 	// @desc    Update / Delete Semester
 	// @route   PUT/DELETE /api/admin/configuration/semester/:id
@@ -366,4 +368,18 @@ export default (router: express.Router) => {
 			checkUserRole([UserType.admin]),
 			deleteSystemAnnouncements
 		);
+
+	// @desc    Get System Courses
+	// @route   GET /api/admin/course
+	// @access  Private
+	router
+		.route('/admin/course')
+		.get(authorize, checkUserRole([UserType.admin]), viewSystemCourses);
+
+	// @desc    Get System Teachings
+	// @route   GET /api/admin/teaching
+	// @access  Private
+	router
+		.route('/admin/teaching')
+		.get(authorize, checkUserRole([UserType.admin]), viewSystemTeachings);
 };
