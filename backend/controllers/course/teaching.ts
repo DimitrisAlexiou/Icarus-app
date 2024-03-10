@@ -186,9 +186,9 @@ export const viewInstructorTeachings = tryCatch(
 				404
 			);
 		const semesterId = semester._id.toString();
-		const userId = req.user.id;
+		const instructorId = req.user.instructor._id;
 
-		const teachings = await getInstructorTeachings(userId, semesterId);
+		const teachings = await getInstructorTeachings(instructorId, semesterId);
 
 		if (!teachings.length)
 			throw new CustomError(

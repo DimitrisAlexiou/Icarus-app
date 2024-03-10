@@ -12,7 +12,7 @@ export default function PreviousStatements({
 	statements,
 	previousStatements,
 	isSemesterLoading,
-	statementsIsLoading,
+	isStatementsLoading,
 	handleStatementClick,
 }) {
 	return (
@@ -24,7 +24,7 @@ export default function PreviousStatements({
 							user.user.isAdmin ? 'User Statements' : 'Previous Statements'
 						}
 					/>
-					{previousStatements.length ? (
+					{!isStatementsLoading ? (
 						<h6
 							className="text-muted pill-label"
 							style={{
@@ -38,7 +38,7 @@ export default function PreviousStatements({
 				</Col>
 			</Row>
 
-			{isSemesterLoading || statementsIsLoading ? (
+			{isSemesterLoading || isStatementsLoading ? (
 				<Spinner card />
 			) : statements.length > 0 && semester ? (
 				user.user.isAdmin ? (

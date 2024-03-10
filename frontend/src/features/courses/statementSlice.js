@@ -14,6 +14,7 @@ import {
 	DELETE_STATEMENTS,
 	GET_STUDENT_STATEMENTS,
 	FINALIZE_STATEMENT,
+	GET_STATEMENTS_IN_GRADING_WINDOW,
 } from '../actions';
 import { AssessmentType } from '../../constants/enums';
 
@@ -88,6 +89,17 @@ export const deleteStatement = createAsyncThunk(
 	async (statementId, thunkAPI) => {
 		try {
 			return await statementService.deleteStatement(statementId);
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
+	}
+);
+
+export const getStatementsInGradingWindow = createAsyncThunk(
+	GET_STATEMENTS_IN_GRADING_WINDOW,
+	async (_, thunkAPI) => {
+		try {
+			return await statementService.getStatementsInGradingWindow();
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -247,6 +259,21 @@ export const statementSlice = createSlice({
 				if (
 					payload !==
 					'Seems like there are no course statements registered in the system.'
+				)
+					displayErrorNotification(payload);
+			})
+			.addCase(getStatementsInGradingWindow.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(getStatementsInGradingWindow.fulfilled, (state, { payload }) => {
+				state.isLoading = false;
+				state.statements = payload;
+			})
+			.addCase(getStatementsInGradingWindow.rejected, (state, { payload }) => {
+				state.isLoading = false;
+				if (
+					payload !==
+					'Seems like there are no available course statements that can be graded at the moment.'
 				)
 					displayErrorNotification(payload);
 			})

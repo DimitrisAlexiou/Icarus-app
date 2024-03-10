@@ -113,15 +113,17 @@ export default function AdminCalendar() {
 			<Row className="mb-4 animated--grow-in">
 				<Col>
 					<PillHeader title="User Calendar Events" />
-					<h6
-						className="text-muted pill-label"
-						style={{
-							fontWeight: '700',
-							fontSize: 15,
-						}}
-					>
-						{events.length}
-					</h6>
+					{!isLoading ? (
+						<h6
+							className="text-muted pill-label"
+							style={{
+								fontWeight: '700',
+								fontSize: 15,
+							}}
+						>
+							{events.length}
+						</h6>
+					) : null}
 				</Col>
 				{events.length ? (
 					<Col className="d-flex justify-content-end">

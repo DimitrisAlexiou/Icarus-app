@@ -58,17 +58,29 @@ export const createUserTeachingReview = tryCatch(
 				404
 			);
 
-		if (reviewDuration.startDate > currentDate)
+		const reviewStart = new Date(
+			semester.startDate.getDate() + reviewDuration.startAfter * 7
+		);
+
+		console.log(reviewStart);
+
+		if (reviewStart > currentDate)
 			throw new CustomError(
 				'The review duration period has not started yet. Please wait until the review period starts.',
 				406
 			);
 
-		if (reviewDuration.endDate < currentDate)
+		const reviewEnd = new Date(
+			reviewStart.getDate() + reviewDuration.period * 7
+		);
+
+		if (reviewEnd < currentDate)
 			throw new CustomError(
 				'The review duration period has ended. No more teaching reviews can be submitted.',
 				406
 			);
+
+		console.log(reviewEnd);
 
 		const userId = req.user.id;
 		const { teachingId } = req.params;
@@ -158,7 +170,21 @@ export const updateUserTeachingReview = tryCatch(
 				404
 			);
 
-		if (reviewDuration.endDate < currentDate)
+		const reviewStart = new Date(
+			semester.startDate.getDate() + reviewDuration.startAfter * 7
+		);
+
+		if (reviewStart > currentDate)
+			throw new CustomError(
+				'The review duration period has not started yet. Please wait until the review period starts.',
+				406
+			);
+
+		const reviewEnd = new Date(
+			reviewStart.getDate() + reviewDuration.period * 7
+		);
+
+		if (reviewEnd < currentDate)
 			throw new CustomError(
 				'The review duration period has ended. No more teaching reviews can be submitted.',
 				406

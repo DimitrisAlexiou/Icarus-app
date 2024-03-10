@@ -61,7 +61,19 @@ export const GET_STATEMENT = createAction('course/get_statement');
 export const UPDATE_STATEMENT = createAction('course/update_statement');
 export const DELETE_STATEMENT = createAction('course/delete_statement');
 export const GET_STATEMENTS = createAction('course/get_statements');
+export const GET_STATEMENTS_IN_GRADING_WINDOW = createAction(
+	'course/get_statements_in_grading_window'
+);
 export const DELETE_STATEMENTS = createAction('course/delete_statements');
+export const ADD_GRADE = createAction('grade/add_grade');
+export const FINALIZE_GRADE = createAction('grade/finalize_grade');
+export const FINALIZE_GRADES = createAction('grade/finalize_grades');
+export const GET_GRADE = createAction('grade/get_grade');
+export const UPDATE_GRADE = createAction('grade/update_grade');
+export const DELETE_GRADE = createAction('grade/delete_grade');
+export const GET_GRADES = createAction('grade/get_grades');
+export const GET_STATEMENT_GRADES = createAction('grade/get_statement_grades');
+export const DELETE_GRADES = createAction('grade/delete_grades');
 
 export const GET_NOTES = createAction('note/get_notes');
 export const GET_USER_NOTES = createAction('note/get_user_notes');
@@ -211,6 +223,9 @@ export const UPDATE_SEMESTER = createAction(
 	'admin/configuration/update_semester'
 );
 export const GET_SEMESTER = createAction('admin/configuration/get_semester');
+export const GET_PREVIOUS_SEMESTER = createAction(
+	'admin/configuration/get_previous_semester'
+);
 export const DELETE_SEMESTER = createAction(
 	'admin/configuration/delete_semester'
 );

@@ -19,7 +19,7 @@ export default function Statements() {
 		statements,
 		isSemesterLoading,
 		assessmentIsLoading,
-		statementsIsLoading,
+		isStatementsLoading,
 		isTeachingsLoading,
 		isEditingStatement,
 		isEditingVaccine,
@@ -88,7 +88,7 @@ export default function Statements() {
 				statements={statements}
 				previousStatements={previousStatements}
 				isSemesterLoading={isSemesterLoading}
-				statementsIsLoading={statementsIsLoading}
+				isStatementsLoading={isStatementsLoading}
 				handleStatementClick={handleStatementClick}
 			/>
 
@@ -99,7 +99,7 @@ export default function Statements() {
 				semester={semester}
 				assessment={assessment}
 				isSemesterLoading={isSemesterLoading}
-				statementsIsLoading={statementsIsLoading}
+				isStatementsLoading={isStatementsLoading}
 				isTeachingsLoading={isTeachingsLoading}
 				canSubmitAvailableTeachings={canSubmitAvailableTeachings}
 				assessmentIsAvailable={assessmentIsAvailable}
@@ -120,7 +120,7 @@ export default function Statements() {
 					semester={semester}
 					assessment={assessment}
 					isSemesterLoading={isSemesterLoading}
-					statementsIsLoading={statementsIsLoading}
+					isStatementsLoading={isStatementsLoading}
 					isTeachingsLoading={isTeachingsLoading}
 					canSubmitAvailableVaccineTeachings={
 						canSubmitAvailableVaccineTeachings

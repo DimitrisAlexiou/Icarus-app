@@ -169,10 +169,14 @@ export const enrollCourse = tryCatch(
 				400
 			);
 
-		if (student.enrolledCourses.includes(teaching._id))
+		if (
+			student.enrolledCourses.includes(
+				new mongoose.Types.ObjectId(teaching._id)
+			)
+		)
 			throw new CustomError('Student is already enrolled in this course.', 400);
 
-		student.enrolledCourses.push(teaching._id);
+		student.enrolledCourses.push(new mongoose.Types.ObjectId(teaching._id));
 
 		(await student.save()).populate({
 			path: 'enrolledCourses',

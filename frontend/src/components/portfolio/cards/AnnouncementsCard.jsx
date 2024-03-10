@@ -1,5 +1,6 @@
 import { Row, Col } from 'reactstrap';
 import SpinnerComponent from '../../boilerplate/spinners/SpinnerMessage';
+import PillHeader from '../../boilerplate/headers/PillHeader';
 
 const AnnouncementsCard = ({ user }) => {
 	const announcements = [];
@@ -7,23 +8,11 @@ const AnnouncementsCard = ({ user }) => {
 	return (
 		<>
 			<Row className="justify-content-center animated--grow-in mb-3">
-				<Col xs="12" sm="12" md="12" lg="10" xl="10">
-					<h6
-						style={{ textAlign: 'center' }}
-						className="text-gray-500 font-weight-bold"
-					>
-						<small
-							className="text-muted pill-label"
-							style={{
-								fontWeight: '700',
-								fontSize: 15,
-							}}
-						>
-							Announcements
-						</small>
-					</h6>
+				<Col className="text-center">
+					<PillHeader title="Announcements" />
 				</Col>
 			</Row>
+
 			<div className="profile_card">
 				<div className="card-body">
 					<div className="align-items-center text-center">

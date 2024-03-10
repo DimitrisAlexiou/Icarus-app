@@ -56,8 +56,6 @@ export const getInstructors = () =>
 	});
 export const getInstructorById = (id: mongoose.Types.ObjectId) =>
 	Instructor.findById(id).populate('user');
-export const getInstructorByUserId = (userId: string) =>
-	Instructor.findOne({ user: userId });
 export const updateInstructorById = (
 	id: string,
 	instructor: Partial<InstructorProps>,

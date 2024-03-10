@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { AuthenticatedRequest } from '../../interfaces/AuthRequest';
+import { AuthenticatedRequest } from '../../../interfaces/AuthRequest';
 import {
 	getCurrentSemester,
 	getSemesters,
@@ -11,10 +11,11 @@ import {
 	getSemesterByTypeAndAcademicYear,
 	getSemesterById,
 	getTotalSemesters,
-} from '../../models/admin/semester';
-import { getActiveTeachingsBySemesterId } from '../../models/course/teaching';
-import { tryCatch } from '../../utils/tryCatch';
-import CustomError from '../../utils/CustomError';
+	getPreviousSemester,
+} from '../../../models/admin/semester';
+import { getActiveTeachingsBySemesterId } from '../../../models/course/teaching';
+import { tryCatch } from '../../../utils/tryCatch';
+import CustomError from '../../../utils/CustomError';
 
 export const defineSemester = tryCatch(
 	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
@@ -79,6 +80,20 @@ export const viewSemester = tryCatch(
 			);
 
 		return res.status(200).json(semester);
+	}
+);
+
+export const viewPreviousSemester = tryCatch(
+	async (_: Request, res: Response): Promise<Response> => {
+		const previousSemester = await getPreviousSemester(new Date());
+
+		if (!previousSemester)
+			throw new CustomError(
+				'Seems like there is no defined previous semester found.',
+				404
+			);
+
+		return res.status(200).json(previousSemester);
 	}
 );
 
@@ -156,3 +171,11 @@ export const deleteSystemSemesters = tryCatch(
 		return res.status(200).json({ message: 'Defined semesters deleted.' });
 	}
 );
+
+export const calculateGradingWindow = (endDate: Date, grading: number) => {
+	const gradingEndDate = new Date(
+		endDate.getTime() + grading * 7 * 24 * 60 * 60 * 1000
+	);
+
+	return { gradingEndDate };
+};

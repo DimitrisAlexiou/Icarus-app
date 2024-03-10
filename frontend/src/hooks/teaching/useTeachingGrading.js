@@ -18,7 +18,7 @@ const useTeachingGrading = () => {
 	const { semester, isSemesterLoading } = useSemester();
 
 	const availableTeachings = teachings.filter(
-		(teaching) => teaching.semester._id === semester._id
+		(teaching) => teaching?.semester?._id === semester?._id
 	);
 
 	useEffect(() => {
@@ -26,7 +26,7 @@ const useTeachingGrading = () => {
 	}, [dispatch, user.user.isAdmin]);
 
 	const handleTeachingClick = (teaching) => {
-		navigate(`/teaching/${teaching._id}`);
+		navigate(`/teaching/${teaching?._id}`);
 	};
 
 	return {

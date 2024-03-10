@@ -1,12 +1,12 @@
 import { Response } from 'express';
-import { AuthenticatedRequest } from '../../interfaces/AuthRequest';
+import { AuthenticatedRequest } from '../../../interfaces/AuthRequest';
 import {
 	getGeneralReviews,
 	deleteGeneralReviews,
 	getTotalGeneralReviews,
-} from '../../models/review/generalReview';
-import { tryCatch } from '../../utils/tryCatch';
-import CustomError from '../../utils/CustomError';
+} from '../../../models/review/generalReview';
+import { tryCatch } from '../../../utils/tryCatch';
+import CustomError from '../../../utils/CustomError';
 
 export const getSystemGeneralReviews = tryCatch(
 	async (_: AuthenticatedRequest, res: Response): Promise<Response> => {

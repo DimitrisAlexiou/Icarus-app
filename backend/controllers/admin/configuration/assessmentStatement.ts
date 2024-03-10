@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { Response } from 'express';
-import { AuthenticatedRequest } from '../../interfaces/AuthRequest';
+import { AuthenticatedRequest } from '../../../interfaces/AuthRequest';
 import {
 	createAssessment,
 	updateAssessmentById,
@@ -8,10 +8,10 @@ import {
 	getAssessmentBySemester,
 	deleteAssessmentById,
 	deleteAssessments,
-} from '../../models/admin/assessment';
-import { getCurrentSemester } from '../../models/admin/semester';
-import { tryCatch } from '../../utils/tryCatch';
-import CustomError from '../../utils/CustomError';
+} from '../../../models/admin/assessment';
+import { getCurrentSemester } from '../../../models/admin/semester';
+import { tryCatch } from '../../../utils/tryCatch';
+import CustomError from '../../../utils/CustomError';
 
 export const defineAssessment = tryCatch(
 	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {

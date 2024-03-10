@@ -31,15 +31,17 @@ export default function MyCourses() {
 			<Row className="mb-4 justify-content-between animated--grow-in">
 				<Col className="text-center">
 					<PillHeader title="active courses in the current semester" />
-					<h6
-						className="text-muted pill-label"
-						style={{
-							fontWeight: '700',
-							fontSize: 15,
-						}}
-					>
-						{filteredAvailableTeachings.length}
-					</h6>
+					{!isTeachingsLoading ? (
+						<h6
+							className="text-muted pill-label"
+							style={{
+								fontWeight: '700',
+								fontSize: 15,
+							}}
+						>
+							{filteredAvailableTeachings.length}
+						</h6>
+					) : null}
 				</Col>
 			</Row>
 

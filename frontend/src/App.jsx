@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material';
 import { ColorModeContext, useMode } from './theme';
+import { SemesterProvider } from './context/SemesterProvider';
 import { LandingPage } from './pages/index';
 import {
 	adminRoutes,
@@ -14,7 +15,6 @@ import {
 import SharedLayout from './components/boilerplate/SharedLayout';
 import ProtectedRoute from './components/boilerplate/ProtectedRoute';
 import Spinner from './components/boilerplate/spinners/Spinner';
-import { SemesterProvider } from './context/SemesterProvider';
 
 const Dashboard = lazy(() => import('./pages/dashboard/Dashboard'));
 

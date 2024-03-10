@@ -27,14 +27,14 @@ export default function TeachingGradingForm({
 	dispatch,
 }) {
 	const canEditTheory =
-		teaching.theoryInstructors.some(
-			(instructor) => instructor.user._id === user.user._id
-		) || user.user.isAdmin;
+		teaching?.theoryInstructors?.some(
+			(instructor) => instructor?.user?._id === user?.user?._id
+		) || user?.user?.isAdmin;
 
 	const canEditLab =
-		teaching.labInstructors.some(
-			(instructor) => instructor.user._id === user.user._id
-		) || user.user.isAdmin;
+		teaching?.labInstructors?.some(
+			(instructor) => instructor?.user?._id === user?.user?._id
+		) || user?.user?.isAdmin;
 
 	const defaultSelectedPart = canEditTheory
 		? 'theory'
@@ -46,7 +46,9 @@ export default function TeachingGradingForm({
 
 	return (
 		<>
-			<Row className={teaching.course.hasLab ? 'justify-content-center' : null}>
+			<Row
+				className={teaching?.course?.hasLab ? 'justify-content-center' : null}
+			>
 				<Col md="6">
 					<Row className="align-items-center mb-3">
 						<Col>
@@ -59,7 +61,7 @@ export default function TeachingGradingForm({
 								disabled={!canEditTheory}
 							/>
 						</Col>
-						{canEditTheory && teaching.theoryExamination.length ? (
+						{canEditTheory && teaching?.theoryExamination?.length ? (
 							<Col className="text-right">
 								<FontAwesomeIcon
 									className="text-danger clickable"
@@ -71,7 +73,7 @@ export default function TeachingGradingForm({
 									icon={faXmarkCircle}
 									onClick={() => {
 										deleteAlert(() =>
-											dispatch(unassignTheoryGrading(teaching._id))
+											dispatch(unassignTheoryGrading(teaching?._id))
 										);
 										setModalGrading(false);
 									}}
@@ -80,7 +82,7 @@ export default function TeachingGradingForm({
 						) : null}
 					</Row>
 				</Col>
-				{teaching.course.hasLab ? (
+				{teaching?.course?.hasLab ? (
 					<Col md="6">
 						<Row className="align-items-center mb-3">
 							<Col>
@@ -93,7 +95,7 @@ export default function TeachingGradingForm({
 									disabled={!canEditLab}
 								/>
 							</Col>
-							{canEditLab && teaching.labExamination.length ? (
+							{canEditLab && teaching?.labExamination?.length ? (
 								<Col className="text-right">
 									<FontAwesomeIcon
 										className="text-danger clickable"
@@ -105,7 +107,7 @@ export default function TeachingGradingForm({
 										icon={faXmarkCircle}
 										onClick={() => {
 											deleteAlert(() =>
-												dispatch(unassignLabGrading(teaching._id))
+												dispatch(unassignLabGrading(teaching?._id))
 											);
 											setModalGrading(false);
 										}}
@@ -369,8 +371,8 @@ export default function TeachingGradingForm({
 											Please wait <Spinner type="grow" size="sm" />
 										</>
 									) : isEditingTeachingGrading &&
-									  (teaching.theoryExamination.length ||
-											teaching.labExamination.length) ? (
+									  (teaching?.theoryExamination?.length ||
+											teaching?.labExamination?.length) ? (
 										'Update'
 									) : (
 										'Configure'

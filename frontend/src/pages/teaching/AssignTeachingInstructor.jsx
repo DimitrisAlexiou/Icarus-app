@@ -91,15 +91,17 @@ export default function AssignTeachingInstructor() {
 			<Row className="mt-3 mb-4 justify-content-between animated--grow-in">
 				<Col className="text-center">
 					<PillHeader title="active teachings" />
-					<h6
-						className="text-muted pill-label"
-						style={{
-							fontWeight: '700',
-							fontSize: 15,
-						}}
-					>
-						{availableTeachings.length}
-					</h6>
+					{!isTeachingsLoading ? (
+						<h6
+							className="text-muted pill-label"
+							style={{
+								fontWeight: '700',
+								fontSize: 15,
+							}}
+						>
+							{availableTeachings.length}
+						</h6>
+					) : null}
 				</Col>
 			</Row>
 

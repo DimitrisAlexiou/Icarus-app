@@ -1,311 +1,96 @@
 import { Request, Response, NextFunction } from 'express';
 import { AuthenticatedRequest } from '../interfaces/AuthRequest';
 import {
-	userSchema,
-	profileSchema,
-	courseSchema,
-	teachingSchema,
-	statementSchema,
-	teachingReviewSchema,
-	instructorReviewSchema,
 	generalReviewSchema,
-	semesterSchema,
+	instructorReviewSchema,
+	teachingReviewSchema,
+} from '../validations/review';
+import {
 	assessmentSchema,
-	reviewSchema,
-	cycleSchema,
 	degreeRulesSchema,
-	noteSchema,
-	calendarSchema,
-	courseActivationSchema,
-	instructorsAssignmentSchema,
 	masterProgramSchema,
-	announcementSchema,
+	reviewSchema,
+	semesterSchema,
+	cycleSchema,
+} from '../validations/configuration';
+import {
+	courseActivationSchema,
+	courseSchema,
 	directorySchema,
-} from '../utils/schemas';
+	gradeSchema,
+	instructorsAssignmentSchema,
+	statementSchema,
+	teachingSchema,
+} from '../validations/course';
+import { profileSchema, userSchema } from '../validations/user';
+import {
+	announcementSchema,
+	calendarSchema,
+	noteSchema,
+} from '../validations/utilities';
 import CustomError from '../utils/CustomError';
 
-export const validateUser = (req: Request, _: Response, next: NextFunction) => {
-	const { error } = userSchema.validate(req.body);
-	if (error) {
-		console.error('❌ User schema validation: '.yellow.bold, error);
-		throw new CustomError(error.message, 400);
-	}
+const validateSchema = (schema: any, schemaName: string) => {
+	return (
+		req: Request | AuthenticatedRequest,
+		_: Response,
+		next: NextFunction
+	) => {
+		const { error } = schema.validate(req.body);
+		if (error) {
+			console.error(`❌ ${schemaName} schema validation: `.yellow.bold, error);
+			throw new CustomError(error.message, 400);
+		}
 
-	next();
+		next();
+	};
 };
 
-export const validateProfile = (
-	req: AuthenticatedRequest,
-	_: Response,
-	next: NextFunction
-) => {
-	const isAdmin = req.user.isAdmin;
-	if (isAdmin) return next();
-
-	const { error } = profileSchema.validate(req.body);
-	if (error) {
-		console.error('❌ Profile schema validation: '.yellow.bold, error);
-		throw new CustomError(error.message, 400);
-	}
-
-	next();
-};
-
-export const validateCourse = (
-	req: AuthenticatedRequest,
-	_: Response,
-	next: NextFunction
-) => {
-	const { error } = courseSchema.validate(req.body);
-	if (error) {
-		console.error('❌ Course schema validation: '.yellow.bold, error);
-		throw new CustomError(error.message, 400);
-	}
-
-	next();
-};
-
-export const validateCourseActivation = (
-	req: AuthenticatedRequest,
-	_: Response,
-	next: NextFunction
-) => {
-	const { error } = courseActivationSchema.validate(req.body);
-	if (error) {
-		console.error(
-			'❌ Course activation schema validation: '.yellow.bold,
-			error
-		);
-		throw new CustomError(error.message, 400);
-	}
-
-	next();
-};
-
-export const validateTeaching = (
-	req: AuthenticatedRequest,
-	_: Response,
-	next: NextFunction
-) => {
-	const { error } = teachingSchema.validate(req.body);
-	if (error) {
-		console.error('❌ Teaching schema validation: '.yellow.bold, error);
-		throw new CustomError(error.message, 400);
-	}
-
-	next();
-};
-
-export const validateInstructorsAssignment = (
-	req: AuthenticatedRequest,
-	_: Response,
-	next: NextFunction
-) => {
-	const { error } = instructorsAssignmentSchema.validate(req.body);
-	if (error) {
-		console.error(
-			'❌ Instructors assignment schema validation: '.yellow.bold,
-			error
-		);
-		throw new CustomError(error.message, 400);
-	}
-
-	next();
-};
-
-export const validateStatement = (
-	req: AuthenticatedRequest,
-	_: Response,
-	next: NextFunction
-) => {
-	const { error } = statementSchema.validate(req.body);
-	if (error) {
-		console.error('❌ Statement schema validation: '.yellow.bold, error);
-		throw new CustomError(error.message, 400);
-	}
-
-	next();
-};
-
-export const validateTeachingReview = (
-	req: AuthenticatedRequest,
-	_: Response,
-	next: NextFunction
-) => {
-	const { error } = teachingReviewSchema.validate(req.body);
-	if (error) {
-		console.error('❌ Teaching review schema validation: '.yellow.bold, error);
-		throw new CustomError(error.message, 400);
-	}
-
-	next();
-};
-
-export const validateInstructorReview = (
-	req: AuthenticatedRequest,
-	_: Response,
-	next: NextFunction
-) => {
-	const { error } = instructorReviewSchema.validate(req.body);
-	if (error) {
-		console.error(
-			'❌ Instructor review schema validation: '.yellow.bold,
-			error
-		);
-		throw new CustomError(error.message, 400);
-	}
-
-	next();
-};
-
-export const validateGeneralReview = (
-	req: AuthenticatedRequest,
-	_: Response,
-	next: NextFunction
-) => {
-	const { error } = generalReviewSchema.validate(req.body);
-	if (error) {
-		console.error('❌ General review schema validation: '.yellow.bold, error);
-		throw new CustomError(error.message, 400);
-	}
-
-	next();
-};
-
-export const validateSemester = (
-	req: AuthenticatedRequest,
-	_: Response,
-	next: NextFunction
-) => {
-	const { error } = semesterSchema.validate(req.body);
-	if (error) {
-		console.error(
-			'❌ Semester configuration schema validation: '.yellow.bold,
-			error
-		);
-		throw new CustomError(error.message, 400);
-	}
-
-	next();
-};
-
-export const validateAssessment = (
-	req: AuthenticatedRequest,
-	_: Response,
-	next: NextFunction
-) => {
-	const { error } = assessmentSchema.validate(req.body);
-	if (error) {
-		console.error(
-			'❌ Assessment statement configuration schema validation: '.yellow.bold,
-			error
-		);
-		throw new CustomError(error.message, 400);
-	}
-
-	next();
-};
-
-export const validateReview = (
-	req: AuthenticatedRequest,
-	_: Response,
-	next: NextFunction
-) => {
-	const { error } = reviewSchema.validate(req.body);
-	if (error) {
-		console.error(
-			'❌ Review configuration schema validation: '.yellow.bold,
-			error
-		);
-		throw new CustomError(error.message, 400);
-	}
-
-	next();
-};
-
-export const validateDegreeRules = (
-	req: AuthenticatedRequest,
-	_: Response,
-	next: NextFunction
-) => {
-	const { error } = degreeRulesSchema.validate(req.body);
-	if (error) {
-		console.error('❌ Degree rules schema validation: '.yellow.bold, error);
-		throw new CustomError(error.message, 400);
-	}
-
-	next();
-};
-
-export const validateNote = (
-	req: AuthenticatedRequest,
-	_: Response,
-	next: NextFunction
-) => {
-	const { error } = noteSchema.validate(req.body);
-	if (error) {
-		console.error('❌ Note schema validation: '.yellow.bold, error);
-		throw new CustomError(error.message, 400);
-	}
-
-	next();
-};
-
-export const validateCalendar = (
-	req: AuthenticatedRequest,
-	_: Response,
-	next: NextFunction
-) => {
-	const { error } = calendarSchema.validate(req.body);
-	if (error) {
-		console.error('❌ Calendar schema validation: '.yellow.bold, error);
-		throw new CustomError(error.message, 400);
-	}
-
-	next();
-};
-
-export const validateMasterProgram = (
-	req: AuthenticatedRequest,
-	_: Response,
-	next: NextFunction
-) => {
-	const { error } = masterProgramSchema.validate(req.body);
-	if (error) {
-		console.error(
-			'❌ Master program configuration schema validation: '.yellow.bold,
-			error
-		);
-		throw new CustomError(error.message, 400);
-	}
-
-	next();
-};
-
-export const validateAnnouncement = (
-	req: AuthenticatedRequest,
-	_: Response,
-	next: NextFunction
-) => {
-	const { error } = announcementSchema.validate(req.body);
-	if (error) {
-		console.error('❌ Announcement schema validation: '.yellow.bold, error);
-		throw new CustomError(error.message, 400);
-	}
-
-	next();
-};
-
-export const validateDirectory = (
-	req: AuthenticatedRequest,
-	_: Response,
-	next: NextFunction
-) => {
-	const { error } = directorySchema.validate(req.body);
-	if (error) {
-		console.error('❌ Directory schema validation: '.yellow.bold, error);
-		throw new CustomError(error.message, 400);
-	}
-
-	next();
-};
+export const validateUser = validateSchema(userSchema, 'User');
+export const validateProfile = validateSchema(profileSchema, 'Profile');
+export const validateCourse = validateSchema(courseSchema, 'Course');
+export const validateCourseActivation = validateSchema(
+	courseActivationSchema,
+	'Course activation'
+);
+export const validateTeaching = validateSchema(teachingSchema, 'Teaching');
+export const validateInstructorsAssignment = validateSchema(
+	instructorsAssignmentSchema,
+	'Instructors assignment'
+);
+export const validateStatement = validateSchema(statementSchema, 'Statement');
+export const validateDirectory = validateSchema(directorySchema, 'Directory');
+export const validateGrade = validateSchema(gradeSchema, 'Grade');
+export const validateTeachingReview = validateSchema(
+	teachingReviewSchema,
+	'Teaching review'
+);
+export const validateInstructorReview = validateSchema(
+	instructorReviewSchema,
+	'Instructor review'
+);
+export const validateGeneralReview = validateSchema(
+	generalReviewSchema,
+	'General review'
+);
+export const validateSemester = validateSchema(semesterSchema, 'Semester');
+export const validateAssessment = validateSchema(
+	assessmentSchema,
+	'Assessment'
+);
+export const validateReview = validateSchema(reviewSchema, 'Review');
+export const validateDegreeRules = validateSchema(
+	degreeRulesSchema,
+	'Degree rules'
+);
+export const validateCycle = validateSchema(cycleSchema, 'Cycle');
+export const validateMasterProgram = validateSchema(
+	masterProgramSchema,
+	'Master program'
+);
+export const validateNote = validateSchema(noteSchema, 'Note');
+export const validateCalendar = validateSchema(calendarSchema, 'Calendar');
+export const validateAnnouncement = validateSchema(
+	announcementSchema,
+	'Announcement'
+);

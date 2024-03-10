@@ -1,12 +1,12 @@
 import { Response } from 'express';
-import { AuthenticatedRequest } from '../../interfaces/AuthRequest';
+import { AuthenticatedRequest } from '../../../interfaces/AuthRequest';
 import {
 	getInstructorReviews,
 	deleteInstructorReviews,
 	getTotalInstructorReviews,
-} from '../../models/review/instructorReview';
-import { tryCatch } from '../../utils/tryCatch';
-import CustomError from '../../utils/CustomError';
+} from '../../../models/review/instructorReview';
+import { tryCatch } from '../../../utils/tryCatch';
+import CustomError from '../../../utils/CustomError';
 
 export const getSystemInstructorReviews = tryCatch(
 	async (_: AuthenticatedRequest, res: Response): Promise<Response> => {

@@ -125,15 +125,17 @@ export default function Calendar() {
 					<Row className="mb-4 animated--grow-in">
 						<Col>
 							<PillHeader title="Events" />
-							<h6
-								className="text-muted pill-label"
-								style={{
-									fontWeight: '700',
-									fontSize: 15,
-								}}
-							>
-								{events.length}
-							</h6>
+							{!isLoading ? (
+								<h6
+									className="text-muted pill-label"
+									style={{
+										fontWeight: '700',
+										fontSize: 15,
+									}}
+								>
+									{events.length}
+								</h6>
+							) : null}
 						</Col>
 						<Col className="d-flex justify-content-end">
 							<Button

@@ -13,15 +13,17 @@ export default function MyTeachingsCard() {
 			<Row className="justify-content-center animated--grow-in mb-3">
 				<Col className="text-center">
 					<PillHeader title="My Teachings" />
-					<h6
-						className="text-muted pill-label"
-						style={{
-							fontWeight: '700',
-							fontSize: 15,
-						}}
-					>
-						{teachings.length}
-					</h6>
+					{!isLoading ? (
+						<h6
+							className="text-muted pill-label"
+							style={{
+								fontWeight: '700',
+								fontSize: 15,
+							}}
+						>
+							{teachings.length}
+						</h6>
+					) : null}
 				</Col>
 			</Row>
 			<div className="profile_card">
@@ -70,7 +72,7 @@ export default function MyTeachingsCard() {
 														</small>
 													))}
 												</p>
-												<hr />
+												{index !== teachings.length - 1 && <hr />}
 											</Col>
 										</Row>
 									);

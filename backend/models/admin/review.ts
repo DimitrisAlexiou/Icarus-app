@@ -1,22 +1,15 @@
 import mongoose, { Schema, model } from 'mongoose';
 
 export interface ReviewProps {
-	startDate: Date;
-	endDate: Date;
+	period: number;
 	startAfter: number;
 	semester: mongoose.Types.ObjectId;
 }
 
 const reviewSchema = new Schema<ReviewProps>(
 	{
-		startDate: {
-			type: Date,
-			default: Date.now,
-			required: true,
-		},
-		endDate: {
-			type: Date,
-			default: Date.now,
+		period: {
+			type: Number,
 			required: true,
 		},
 		startAfter: {
@@ -29,9 +22,7 @@ const reviewSchema = new Schema<ReviewProps>(
 			ref: 'Semester',
 		},
 	},
-	{
-		timestamps: true,
-	}
+	{ timestamps: true }
 );
 
 export const Review = model<ReviewProps>('Review', reviewSchema);

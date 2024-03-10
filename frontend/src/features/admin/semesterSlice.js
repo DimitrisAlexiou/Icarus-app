@@ -10,12 +10,14 @@ import {
 	GET_SEMESTER,
 	DELETE_SEMESTER,
 	GET_SEMESTERS,
+	GET_PREVIOUS_SEMESTER,
 } from '../actions';
 import semesterService from './services/semesterService';
 
 const initialState = {
 	semesters: [],
 	semester: null,
+	previousSemester: null,
 	isLoading: false,
 	isEditingSemester: false,
 	editSemesterId: '',
@@ -60,6 +62,17 @@ export const getSemester = createAsyncThunk(
 	async (_, thunkAPI) => {
 		try {
 			return await semesterService.getSemester();
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
+	}
+);
+
+export const getPreviousSemester = createAsyncThunk(
+	GET_PREVIOUS_SEMESTER,
+	async (_, thunkAPI) => {
+		try {
+			return await semesterService.getPreviousSemester();
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -133,6 +146,20 @@ export const semesterSlice = createSlice({
 				state.isLoading = false;
 				if (
 					payload !== 'Seems like there is no defined semester for this period.'
+				)
+					displayErrorNotification(payload);
+			})
+			.addCase(getPreviousSemester.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(getPreviousSemester.fulfilled, (state, { payload }) => {
+				state.isLoading = false;
+				state.previousSemester = payload;
+			})
+			.addCase(getPreviousSemester.rejected, (state, { payload }) => {
+				state.isLoading = false;
+				if (
+					payload !== 'Seems like there is no defined previous semester found.'
 				)
 					displayErrorNotification(payload);
 			})

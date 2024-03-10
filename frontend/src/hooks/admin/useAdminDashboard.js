@@ -35,7 +35,7 @@ const useAdminDashboard = () => {
 		totalTeachings,
 		isLoading: teachingsIsLoading,
 	} = useSelector((state) => state.teachings);
-	const { isLoading: statementsIsLoading, totalStatements } = useSelector(
+	const { isLoading: isStatementsLoading, totalStatements } = useSelector(
 		(state) => state.statements
 	);
 	const {
@@ -99,7 +99,7 @@ const useAdminDashboard = () => {
 		masters,
 		coursesIsLoading,
 		teachingsIsLoading,
-		statementsIsLoading,
+		isStatementsLoading,
 		usersIsLoading,
 		cyclesIsLoading,
 		mastersIsLoading,

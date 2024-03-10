@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { AuthenticatedRequest } from '../../interfaces/AuthRequest';
-import { tryCatch } from '../../utils/tryCatch';
+import { AuthenticatedRequest } from '../../../interfaces/AuthRequest';
+import { tryCatch } from '../../../utils/tryCatch';
 import {
 	createMasterProgram,
 	deleteMasterProgramById,
@@ -10,8 +10,8 @@ import {
 	getMasterPrograms,
 	getTotalMasterPrograms,
 	updateMasterProgramById,
-} from '../../models/admin/master';
-import CustomError from '../../utils/CustomError';
+} from '../../../models/admin/master';
+import CustomError from '../../../utils/CustomError';
 
 export const defineMasterProgram = tryCatch(
 	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {

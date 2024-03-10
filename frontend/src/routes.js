@@ -56,6 +56,7 @@ const Notes = lazy(() => import('./pages/note/Notes'));
 const Calendar = lazy(() => import('./components/calendar/Calendar'));
 const StatisticsReports = lazy(() => import('./pages/user/StatisticsReports'));
 const Grades = lazy(() => import('./pages/user/Grades'));
+const Grade = lazy(() => import('./pages/user/Grade'));
 
 export const publicRoutes = [
 	{
@@ -194,6 +195,11 @@ export const instructorRoutes = [
 	{
 		path: '/grades',
 		element: <Grades />,
+		allowedRoles: [UserType.admin, UserType.instructor],
+	},
+	{
+		path: '/grades/:statementId',
+		element: <Grade />,
 		allowedRoles: [UserType.admin, UserType.instructor],
 	},
 	{

@@ -36,6 +36,8 @@ export default function Configuration() {
 		editMasterId,
 		academicYearEnd,
 		academicYearStart,
+		reviewStart,
+		reviewEnd,
 		dispatch,
 	} = useConfiguration();
 
@@ -89,6 +91,8 @@ export default function Configuration() {
 					isReviewLoading={isReviewLoading}
 					isEditingReview={isEditingReview}
 					editReviewId={editReviewId}
+					reviewStart={reviewStart}
+					reviewEnd={reviewEnd}
 					dispatch={dispatch}
 				/>
 				<DegreeRulesCard

@@ -1,5 +1,4 @@
 import { Schema, model } from 'mongoose';
-import CustomError from '../../utils/CustomError';
 
 export enum SemesterType {
 	Winter = 'Winter',
@@ -45,9 +44,7 @@ const semesterSchema = new Schema<SemesterProps>(
 			},
 		},
 	},
-	{
-		timestamps: true,
-	}
+	{ timestamps: true }
 );
 
 export const Semester = model<SemesterProps>('Semester', semesterSchema);
@@ -59,21 +56,15 @@ export const getSemesterByTypeAndAcademicYear = (
 	type: string,
 	academicYear: string
 ) => Semester.findOne({ type, academicYear });
-export const getCurrentSemester = async (currentDate: Date) => {
-	const semesters = await Semester.find();
-
-	for (const semester of semesters) {
-		const startDate = new Date(semester.startDate);
-		const endDate = new Date(semester.endDate);
-
-		if (currentDate >= startDate && currentDate <= endDate) return semester;
-	}
-
-	throw new CustomError(
-		'No active semester defined for the current period.',
-		404
-	);
-};
+export const getCurrentSemester = (currentDate: Date) =>
+	Semester.findOne({
+		startDate: { $lte: currentDate },
+		endDate: { $gte: currentDate },
+	});
+export const getPreviousSemester = (currentDate: Date) =>
+	Semester.findOne({
+		endDate: { $lt: currentDate },
+	}).sort({ endDate: -1 });
 export const createSemester = (values: SemesterProps) =>
 	new Semester(values).save().then((semester) => semester.toObject());
 export const updateSemesterById = (id: string, semester: SemesterProps) =>

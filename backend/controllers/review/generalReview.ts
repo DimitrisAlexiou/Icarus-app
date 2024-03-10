@@ -44,15 +44,23 @@ export const createUserGeneralReview = tryCatch(
 				404
 			);
 
-		if (reviewDuration.startDate > currentDate)
+		const reviewStart = new Date(
+			semester.startDate.getDate() + reviewDuration.startAfter * 7
+		);
+
+		if (reviewStart > currentDate)
 			throw new CustomError(
 				'The review duration period has not started yet. Please wait until the review period starts.',
 				406
 			);
 
-		if (reviewDuration.endDate < currentDate)
+		const reviewEnd = new Date(
+			reviewStart.getDate() + reviewDuration.period * 7
+		);
+
+		if (reviewEnd < currentDate)
 			throw new CustomError(
-				'The review duration period has ended. No more general reviews can be submitted.',
+				'The review duration period has ended. No more teaching reviews can be submitted.',
 				406
 			);
 
@@ -128,9 +136,23 @@ export const updateUserGeneralReview = tryCatch(
 				404
 			);
 
-		if (reviewDuration.endDate < currentDate)
+		const reviewStart = new Date(
+			semester.startDate.getDate() + reviewDuration.startAfter * 7
+		);
+
+		if (reviewStart > currentDate)
 			throw new CustomError(
-				'The review duration period has ended. No more general reviews can be submitted.',
+				'The review duration period has not started yet. Please wait until the review period starts.',
+				406
+			);
+
+		const reviewEnd = new Date(
+			reviewStart.getDate() + reviewDuration.period * 7
+		);
+
+		if (reviewEnd < currentDate)
+			throw new CustomError(
+				'The review duration period has ended. No more teaching reviews can be submitted.',
 				406
 			);
 

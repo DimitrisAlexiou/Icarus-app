@@ -13,9 +13,11 @@ import {
 	Status,
 	Type,
 	getTotalStatements,
+	getInstructorStatements,
 } from '../../models/course/statement';
 import { getCurrentSemester } from '../../models/admin/semester';
 import { getAssessmentBySemester } from '../../models/admin/assessment';
+import { calculateGradingWindow } from '../admin/configuration/semester';
 import { tryCatch } from '../../utils/tryCatch';
 import CustomError from '../../utils/CustomError';
 
@@ -56,10 +58,11 @@ export const createStudentStatement = tryCatch(
 					404
 				);
 		} else {
-			const assessmentStatementEndDate = new Date(semester.startDate);
-			assessmentStatementEndDate.setDate(
-				assessmentStatementEndDate.getDate() + assessment.period * 7
-			);
+			const { assessmentStatementEndDate } =
+				calculateAssessmentStatementEndDate(
+					semester.startDate,
+					assessment.period
+				);
 
 			if (currentDate > assessmentStatementEndDate)
 				throw new CustomError(
@@ -87,6 +90,7 @@ export const createStudentStatement = tryCatch(
 			user: new mongoose.Types.ObjectId(userId),
 			condition: Status.Pending,
 			type: type,
+			isGraded: false,
 		});
 
 		const statement = await getStatementById(createdStatement._id.toString());
@@ -175,10 +179,11 @@ export const updateStatement = tryCatch(
 					404
 				);
 		} else {
-			const assessmentStatementEndDate = new Date(semester.startDate);
-			assessmentStatementEndDate.setDate(
-				assessmentStatementEndDate.getDate() + assessment.period * 7
-			);
+			const { assessmentStatementEndDate } =
+				calculateAssessmentStatementEndDate(
+					semester.startDate,
+					assessment.period
+				);
 
 			if (currentDate > assessmentStatementEndDate)
 				throw new CustomError(
@@ -205,6 +210,7 @@ export const updateStatement = tryCatch(
 			user: new mongoose.Types.ObjectId(userId),
 			condition: Status.Pending,
 			type: type,
+			isGraded: false,
 		});
 
 		if (!updatedStatement)
@@ -252,7 +258,7 @@ export const viewStudentStatements = tryCatch(
 	}
 );
 
-export const viewStatements = tryCatch(
+export const viewSystemStatements = tryCatch(
 	async (_: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const statements = await getStatements();
 		if (!statements.length)
@@ -264,6 +270,37 @@ export const viewStatements = tryCatch(
 		const totalStatements = await getTotalStatements();
 
 		return res.status(200).json({ statements, totalStatements });
+	}
+);
+
+export const viewStatementsInGradingWindow = tryCatch(
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
+		const instructorId = req.user.instructor._id;
+		const statements = await getInstructorStatements(instructorId);
+
+		if (!statements.length)
+			throw new CustomError(
+				'Seems like there are no course statements registered in the system.',
+				404
+			);
+
+		const currentDate = new Date();
+		const canBeGradedStatements = statements.filter((statement) => {
+			const semester: any = statement.semester;
+			const endDate = new Date(semester.endDate);
+			const gradingWeeks = semester.grading;
+			const { gradingEndDate } = calculateGradingWindow(endDate, gradingWeeks);
+
+			return currentDate <= gradingEndDate;
+		});
+
+		if (!canBeGradedStatements.length)
+			throw new CustomError(
+				'Seems like there are no available course statements that can be graded at the moment.',
+				404
+			);
+
+		return res.status(200).json(canBeGradedStatements);
 	}
 );
 
@@ -304,9 +341,9 @@ export const finalizePendingStatements = async (): Promise<void> => {
 		const semesterId = semester._id.toString();
 		const assessment = await getAssessmentBySemester(semesterId);
 
-		const assessmentStatementEndDate = new Date(semester.startDate);
-		assessmentStatementEndDate.setDate(
-			assessmentStatementEndDate.getDate() + assessment.period * 7
+		const { assessmentStatementEndDate } = calculateAssessmentStatementEndDate(
+			semester.startDate,
+			assessment.period
 		);
 
 		// Iterate through each statement and finalize if the assessment period has ended
@@ -338,4 +375,15 @@ export const finalizePendingStatements = async (): Promise<void> => {
 	} catch (error) {
 		throw new Error(`Error finalizing pending statements: ${error.message}`);
 	}
+};
+
+export const calculateAssessmentStatementEndDate = (
+	startDate: Date,
+	period: number
+) => {
+	const assessmentStatementEndDate = new Date(
+		startDate.getTime() + period * 7 * 24 * 60 * 60 * 1000
+	);
+
+	return { assessmentStatementEndDate };
 };

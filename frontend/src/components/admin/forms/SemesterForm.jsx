@@ -31,7 +31,7 @@ export default function SemesterForm({
 			<Formik
 				initialValues={{
 					type: semester ? semester.type : '',
-					grading: semester ? semester.grading : 0,
+					grading: semester ? semester.grading : 1,
 					academicYear: semester ? semester.academicYear : '',
 				}}
 				validationSchema={SemesterSchema}

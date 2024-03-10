@@ -7,7 +7,6 @@ import {
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt, faEdit } from '@fortawesome/free-regular-svg-icons';
 import { deleteAlert } from '../../../constants/sweetAlertNotification';
-import moment from 'moment';
 import ReviewForm from '../forms/ReviewForm';
 import Spinner from '../../boilerplate/spinners/Spinner';
 
@@ -17,6 +16,8 @@ const ReviewCard = ({
 	isReviewLoading,
 	isEditingReview,
 	editReviewId,
+	reviewStart,
+	reviewEnd,
 	dispatch,
 }) => {
 	return (
@@ -86,7 +87,7 @@ const ReviewCard = ({
 										<Row className="mb-3">
 											<Col>
 												<label>
-													<b>Review Period</b>
+													<b>Review Start</b>
 												</label>
 												{review.startAfter ? (
 													<p style={{ textAlign: 'justify' }}>
@@ -106,6 +107,28 @@ const ReviewCard = ({
 												)}
 												<hr />
 											</Col>
+											<Col>
+												<label>
+													<b>Review Period</b>
+												</label>
+												{review.period ? (
+													<p style={{ textAlign: 'justify' }}>
+														{review.period}
+														<span
+															style={{
+																fontWeight: '400',
+																fontSize: 12,
+															}}
+														>
+															{' '}
+															weeks after the review start
+														</span>
+													</p>
+												) : (
+													<p style={{ textAlign: 'justify' }}>0</p>
+												)}
+												<hr />
+											</Col>
 										</Row>
 										<Row className="mb-3">
 											<Col md="6">
@@ -113,7 +136,7 @@ const ReviewCard = ({
 													<b>Start Date</b>
 												</label>
 												<p style={{ textAlign: 'justify' }}>
-													{moment(review.startDate).format('DD/MM/YYYY')}
+													{reviewStart.format('DD/MM/YYYY')}
 												</p>
 												<hr />
 											</Col>
@@ -122,7 +145,7 @@ const ReviewCard = ({
 													<b>End Date</b>
 												</label>
 												<p style={{ textAlign: 'justify' }}>
-													{moment(review.endDate).format('DD/MM/YYYY')}
+													{reviewEnd.format('DD/MM/YYYY')}
 												</p>
 												<hr />
 											</Col>

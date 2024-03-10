@@ -15,7 +15,7 @@ export default function AdminStatements() {
 		semester,
 		statements,
 		isSemesterLoading,
-		statementsIsLoading,
+		isStatementsLoading,
 		previousStatements,
 	} = useAdminStatements();
 	const {
@@ -70,7 +70,7 @@ export default function AdminStatements() {
 				statements={statements}
 				previousStatements={previousStatements}
 				isSemesterLoading={isSemesterLoading}
-				statementsIsLoading={statementsIsLoading}
+				isStatementsLoading={isStatementsLoading}
 				handleStatementClick={handleStatementClick}
 			/>
 

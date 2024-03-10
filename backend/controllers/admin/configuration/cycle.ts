@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { AuthenticatedRequest } from '../../interfaces/AuthRequest';
+import { AuthenticatedRequest } from '../../../interfaces/AuthRequest';
 import {
 	createCycle,
 	updateCycleById,
@@ -9,11 +9,11 @@ import {
 	deleteCycleById,
 	deleteCycles,
 	getTotalCycles,
-} from '../../models/admin/cycle';
-import { getTeachingsByCycleId } from '../../models/course/teaching';
-import { cycleSchema } from '../../utils/schemas';
-import { tryCatch } from '../../utils/tryCatch';
-import CustomError from '../../utils/CustomError';
+} from '../../../models/admin/cycle';
+import { getTeachingsByCycleId } from '../../../models/course/teaching';
+import { tryCatch } from '../../../utils/tryCatch';
+import { cycleSchema } from '../../../validations/configuration';
+import CustomError from '../../../utils/CustomError';
 
 export const defineCycle = tryCatch(
 	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {

@@ -9,7 +9,7 @@ import useStatements from '../../hooks/user/useStatements';
 import Spinner from '../../components/boilerplate/spinners/Spinner';
 
 export default function CurrentStatement() {
-	const { statementsIsLoading, isStatementSubmitted, currentStatement } =
+	const { isStatementsLoading, isStatementSubmitted, currentStatement } =
 		useStatements();
 
 	return (
@@ -18,7 +18,7 @@ export default function CurrentStatement() {
 				<Col xl="2" lg="3" md="4" className="text-center mb-3">
 					<Card className="card-note">
 						<CardBody>
-							{statementsIsLoading ? (
+							{isStatementsLoading ? (
 								<Spinner card />
 							) : (
 								<small

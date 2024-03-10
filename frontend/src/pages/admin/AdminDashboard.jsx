@@ -34,7 +34,7 @@ export default function AdminDashboard() {
 		semesters,
 		coursesIsLoading,
 		teachingsIsLoading,
-		statementsIsLoading,
+		isStatementsLoading,
 		usersIsLoading,
 		cyclesIsLoading,
 		mastersIsLoading,
@@ -64,7 +64,7 @@ export default function AdminDashboard() {
 
 	return (
 		<>
-			{coursesIsLoading || teachingsIsLoading || statementsIsLoading ? (
+			{coursesIsLoading || teachingsIsLoading || isStatementsLoading ? (
 				<Spinner card />
 			) : (
 				<>

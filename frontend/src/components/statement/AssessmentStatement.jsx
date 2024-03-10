@@ -14,7 +14,7 @@ export default function AssessmentStatement({
 	semester,
 	assessment,
 	isSemesterLoading,
-	statementsIsLoading,
+	isStatementsLoading,
 	isTeachingsLoading,
 	canSubmitAvailableTeachings,
 	assessmentIsAvailable,
@@ -36,7 +36,7 @@ export default function AssessmentStatement({
 				</Col>
 			</Row>
 
-			{isSemesterLoading || statementsIsLoading ? (
+			{isSemesterLoading || isStatementsLoading ? (
 				<Spinner card />
 			) : !isStatementSubmitted || isEditingStatement ? (
 				<Row className="justify-content-center animated--grow-in">

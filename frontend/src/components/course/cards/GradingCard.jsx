@@ -11,7 +11,7 @@ const GradingCard = ({ teaching }) => {
 						style={{
 							textAlign: 'justify',
 							fontWeight: '700',
-							fontSize: 12,
+							fontSize: 18,
 						}}
 					>
 						Theory
@@ -85,7 +85,7 @@ const GradingCard = ({ teaching }) => {
 						style={{
 							textAlign: 'justify',
 							fontWeight: '700',
-							fontSize: 12,
+							fontSize: 18,
 						}}
 					>
 						Lab

@@ -48,8 +48,18 @@ export const ExaminationType = {
 	Project: 'Project',
 };
 
+export const Examination = {
+	Theory: 'Theory',
+	Lab: 'Lab',
+};
+
 export const AssessmentStatus = {
 	Finalized: 'Finalized',
+	Pending: 'Pending',
+};
+
+export const GradingStatus = {
+	Graded: 'Graded',
 	Pending: 'Pending',
 };
 

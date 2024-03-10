@@ -1,21 +1,9 @@
 import mongoose, { ClientSession, Schema, model } from 'mongoose';
 import { INSTRUCTOR } from '../../utils/constants';
-import { getInstructorByUserId } from '../../models/users/instructor';
-
-export enum ExaminationType {
-	Progress = 'Progress',
-	Final = 'Final',
-	Exercise = 'Exercise',
-	Project = 'Project',
-}
-
-interface Examination {
-	type: ExaminationType;
-	weight: number;
-	lowerGradeThreshold: number;
-}
+import { ExaminationProps, examinationSchema } from './examination';
 
 export interface TeachingProps {
+	_id?: string;
 	labWeight: number;
 	theoryWeight: number;
 	theoryGradeRetentionYears: number;
@@ -27,32 +15,11 @@ export interface TeachingProps {
 	semester: mongoose.Types.ObjectId;
 	theoryInstructors?: mongoose.Types.ObjectId[];
 	labInstructors?: mongoose.Types.ObjectId[];
-	theoryExamination?: Examination[];
-	labExamination?: Examination[];
+	theoryExamination?: ExaminationProps[];
+	labExamination?: ExaminationProps[];
 	directories: mongoose.Types.ObjectId[];
 	isDeleted: boolean;
 }
-
-const examinationSchema = new Schema<Examination>(
-	{
-		type: {
-			type: String,
-			enum: Object.values(ExaminationType),
-			required: true,
-		},
-		weight: {
-			type: Number,
-			required: true,
-			default: 100,
-		},
-		lowerGradeThreshold: {
-			type: Number,
-			required: true,
-			default: 5,
-		},
-	},
-	{ _id: false }
-);
 
 const teachingSchema = new Schema<TeachingProps>(
 	{
@@ -127,9 +94,7 @@ const teachingSchema = new Schema<TeachingProps>(
 			default: false,
 		},
 	},
-	{
-		timestamps: true,
-	}
+	{ timestamps: true }
 );
 
 teachingSchema.methods.isTheoryGradeValid = function () {
@@ -195,17 +160,15 @@ export const getTeachings = () =>
 			},
 		});
 export const getInstructorTeachings = async (
-	userId: string,
+	instructorId: mongoose.Types.ObjectId,
 	semesterId: string
 ) => {
-	const instructor = await getInstructorByUserId(userId);
-
 	return Teaching.find({
 		$and: [
 			{
 				$or: [
-					{ theoryInstructors: instructor._id },
-					{ labInstructors: instructor._id },
+					{ theoryInstructors: instructorId },
+					{ labInstructors: instructorId },
 				],
 			},
 			{ semester: semesterId },
@@ -362,13 +325,19 @@ export const unassignTheoryInstructors = (id: string) =>
 	Teaching.findByIdAndUpdate(id, { theoryInstructors: [] }, { new: true });
 export const unassignLabInstructors = (id: string) =>
 	Teaching.findByIdAndUpdate(id, { labInstructors: [] }, { new: true });
-export const assignTheoryGrading = (id: string, examinations: Examination[]) =>
+export const assignTheoryGrading = (
+	id: string,
+	examinations: ExaminationProps[]
+) =>
 	Teaching.findByIdAndUpdate(
 		id,
 		{ theoryExamination: examinations },
 		{ new: true }
 	);
-export const assignLabGrading = (id: string, examinations: Examination[]) =>
+export const assignLabGrading = (
+	id: string,
+	examinations: ExaminationProps[]
+) =>
 	Teaching.findByIdAndUpdate(
 		id,
 		{ labExamination: examinations },

@@ -91,15 +91,17 @@ export default function Announcements() {
 			<Row className="mb-4 justify-content-between animated--grow-in">
 				<Col className="text-center">
 					<PillHeader title="announcements" />
-					<h6
-						className="text-muted pill-label"
-						style={{
-							fontWeight: '700',
-							fontSize: 15,
-						}}
-					>
-						{announcements.length}
-					</h6>
+					{!isAnnouncementsLoading ? (
+						<h6
+							className="text-muted pill-label"
+							style={{
+								fontWeight: '700',
+								fontSize: 15,
+							}}
+						>
+							{announcements.length}
+						</h6>
+					) : null}
 					{announcements.length ? (
 						<span
 							className="text-danger"

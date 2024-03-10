@@ -6,8 +6,10 @@ import {
 	deleteStatement,
 	viewStudentStatements,
 	deleteSystemStatements,
-	viewStatements,
+	viewSystemStatements,
 	finalizeStatement,
+	viewStatementsInGradingWindow,
+	finalizePendingStatements,
 } from '../../controllers/course/statement';
 import { validateStatement } from '../../middleware/validations';
 import {
@@ -23,8 +25,19 @@ export default (router: express.Router) => {
 	// @access  Private
 	router
 		.route('/statements')
-		.get(authorize, checkUserRole([UserType.admin]), viewStatements)
+		.get(authorize, checkUserRole([UserType.admin]), viewSystemStatements)
 		.delete(authorize, checkUserRole([UserType.admin]), deleteSystemStatements);
+
+	// @desc    Get Statements In Grading Window
+	// @route   GET /api/statements/grading
+	// @access  Private
+	router
+		.route('/statements/grading')
+		.get(
+			authorize,
+			checkUserRole([UserType.admin, UserType.instructor]),
+			viewStatementsInGradingWindow
+		);
 
 	// @desc    Get / Create Statements
 	// @route   GET/POST /api/statement
@@ -52,7 +65,7 @@ export default (router: express.Router) => {
 		.get(
 			authorize,
 			isOwner,
-			checkUserRole([UserType.admin, UserType.student]),
+			checkUserRole([UserType.admin, UserType.student, UserType.instructor]),
 			viewStatement
 		)
 		.delete(

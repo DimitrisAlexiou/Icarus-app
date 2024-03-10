@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { Response } from 'express';
-import { AuthenticatedRequest } from '../../interfaces/AuthRequest';
+import { AuthenticatedRequest } from '../../../interfaces/AuthRequest';
 import {
 	createReview,
 	updateReviewById,
@@ -8,16 +8,16 @@ import {
 	getReviewBySemester,
 	deleteReviewById,
 	deleteReview,
-} from '../../models/admin/review';
-import { getCurrentSemester } from '../../models/admin/semester';
-import { tryCatch } from '../../utils/tryCatch';
-import CustomError from '../../utils/CustomError';
+} from '../../../models/admin/review';
+import { getCurrentSemester } from '../../../models/admin/semester';
+import { tryCatch } from '../../../utils/tryCatch';
+import CustomError from '../../../utils/CustomError';
 
 export const defineReviewStatement = tryCatch(
 	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
-		const { startDate, endDate, startAfter } = req.body;
+		const { period, startAfter } = req.body;
 
-		if (!startDate || !endDate || !startAfter)
+		if (!period || !startAfter)
 			throw new CustomError('Please fill in all the required fields.', 400);
 
 		const semester = await getCurrentSemester(new Date());
@@ -35,15 +35,8 @@ export const defineReviewStatement = tryCatch(
 				400
 			);
 
-		if (startDate < semester.startDate)
-			throw new CustomError(
-				'Review starting date should be greater than the starting date of the current semester.',
-				400
-			);
-
 		const review = await createReview({
-			startDate,
-			endDate,
+			period,
 			startAfter,
 			semester: new mongoose.Types.ObjectId(semesterId),
 		});
@@ -90,9 +83,9 @@ export const getReviewStatements = tryCatch(
 
 export const updateReviewStatement = tryCatch(
 	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
-		const { startDate, endDate, startAfter } = req.body;
+		const { period, startAfter } = req.body;
 
-		if (!startDate || !endDate || !startAfter)
+		if (!period || !startAfter)
 			throw new CustomError('Please fill in all the required fields.', 400);
 
 		const semester = await getCurrentSemester(new Date());
@@ -100,12 +93,6 @@ export const updateReviewStatement = tryCatch(
 			throw new CustomError(
 				'Seems like there is no defined semester for current period. Define a semester first in order to update review statement configuration.',
 				404
-			);
-
-		if (startDate < semester.startDate)
-			throw new CustomError(
-				'Review starting date should be greater than the starting date of the current semester.',
-				400
 			);
 
 		const { id } = req.params;

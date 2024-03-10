@@ -1,4 +1,4 @@
-import { Label, Row, Col, Spinner } from 'reactstrap';
+import { Row, Col, Spinner } from 'reactstrap';
 import { Formik, Form } from 'formik';
 import { ReviewSchema } from '../../../schemas/admin/Review';
 import {
@@ -6,7 +6,6 @@ import {
 	setEditReview,
 	updateReview,
 } from '../../../features/admin/reviewSlice';
-import DatePickerField from '../../form/DatePickerField';
 import NumberField from '../../form/NumberField';
 import ClearButton from '../../buttons/ClearButton';
 import SubmitButton from '../../buttons/SubmitButton';
@@ -22,16 +21,13 @@ export default function ReviewForm({
 		<>
 			<Formik
 				initialValues={{
-					startDate: review ? new Date(review.startDate) : new Date(),
-					endDate: review ? new Date(review.endDate) : new Date(),
-					startAfter: review ? review.startAfter : 0,
-					semesterStartDate: new Date(semester.startDate),
+					period: review ? review.period : 1,
+					startAfter: review ? review.startAfter : 1,
 				}}
 				validationSchema={ReviewSchema}
 				onSubmit={(values, { setSubmitting }) => {
 					const review = {
-						startDate: values.startDate,
-						endDate: values.endDate,
+						period: values.period,
 						startAfter: values.startAfter,
 						semester: semester._id,
 					};
@@ -62,15 +58,9 @@ export default function ReviewForm({
 							<Col>
 								<NumberField name="startAfter" min="1" label="Review start" />
 							</Col>
-						</Row>
-						<Row>
-							<Label
-								for="period"
-								className="text-gray-300 d-flex justify-content-center"
-							>
-								Review duration
-							</Label>
-							<DatePickerField />
+							<Col>
+								<NumberField name="period" min="1" label="Review period" />
+							</Col>
 						</Row>
 						<Row className="mb-3">
 							<ClearButton

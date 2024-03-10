@@ -44,6 +44,12 @@ const finalizeStatement = async (statementId) => {
 	return response.data;
 };
 
+const getStatementsInGradingWindow = async () => {
+	const response = await axiosFetch.get(API_URL_STATEMENT + 's/grading');
+
+	return response.data;
+};
+
 const getStatements = async () => {
 	const response = await axiosFetch.get(API_URL_STATEMENT + 's');
 
@@ -63,6 +69,7 @@ const statementService = {
 	updateStatement,
 	getStatement,
 	deleteStatement,
+	getStatementsInGradingWindow,
 	getStatements,
 	deleteStatements,
 };

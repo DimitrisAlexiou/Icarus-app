@@ -10,6 +10,7 @@ import { masterProgramSlice } from '../features/admin/masterProgramSlice';
 import { courseSlice } from '../features/courses/courseSlice';
 import { teachingSlice } from '../features/courses/teachingSlice';
 import { statementSlice } from '../features/courses/statementSlice';
+import { gradeSlice } from '../features/courses/gradeSlice';
 import { noteSlice } from '../features/notes/noteSlice';
 import { eventSlice } from '../features/calendar/eventSlice';
 import { announcementSlice } from '../features/announcements/announcementSlice';
@@ -25,6 +26,7 @@ export const store = configureStore({
 		courses: courseSlice.reducer,
 		teachings: teachingSlice.reducer,
 		statements: statementSlice.reducer,
+		grades: gradeSlice.reducer,
 		notes: noteSlice.reducer,
 		events: eventSlice.reducer,
 		announcements: announcementSlice.reducer,

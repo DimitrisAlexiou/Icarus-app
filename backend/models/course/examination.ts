@@ -13,7 +13,7 @@ export interface ExaminationProps {
 	lowerGradeThreshold: number;
 }
 
-const examinationSchema = new Schema<ExaminationProps>(
+export const examinationSchema = new Schema<ExaminationProps>(
 	{
 		type: {
 			type: String,
@@ -22,13 +22,13 @@ const examinationSchema = new Schema<ExaminationProps>(
 		},
 		weight: {
 			type: Number,
-			required: true,
 			default: 100,
+			required: true,
 		},
 		lowerGradeThreshold: {
 			type: Number,
-			required: true,
 			default: 5,
+			required: true,
 		},
 	},
 	{ _id: false }

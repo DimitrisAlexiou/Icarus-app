@@ -1,4 +1,6 @@
 import mongoose, { Schema, model } from 'mongoose';
+import { Teaching, TeachingProps } from './teaching';
+import { countGradesForStatementTeachingsByInstructor } from '../../models/course/grade/grade';
 
 export enum Status {
 	Finalized = 'Finalized',
@@ -11,11 +13,16 @@ export enum Type {
 }
 
 export interface StatementProps {
-	teaching: mongoose.Types.ObjectId[];
+	_id?: string;
+	teaching: TeachingProps[];
 	user: mongoose.Types.ObjectId;
 	semester: mongoose.Types.ObjectId;
 	condition: Status;
 	type: Type;
+	isGraded: boolean;
+	numberOfInstructorTeachings?: number;
+	numberOfInstructorGrades?: number;
+	numberOfInstructorGradedGrades?: number;
 }
 
 const statementSchema = new Schema<StatementProps>(
@@ -47,10 +54,22 @@ const statementSchema = new Schema<StatementProps>(
 			enum: Object.values(Type),
 			required: true,
 		},
+		isGraded: {
+			type: Boolean,
+			required: true,
+			default: false,
+		},
+		numberOfInstructorTeachings: {
+			type: Number,
+		},
+		numberOfInstructorGrades: {
+			type: Number,
+		},
+		numberOfInstructorGradedGrades: {
+			type: Number,
+		},
 	},
-	{
-		timestamps: true,
-	}
+	{ timestamps: true }
 );
 
 export const Statement = model<StatementProps>('Statement', statementSchema);
@@ -73,10 +92,16 @@ export const getUserStatements = (userId: string) =>
 						select: 'name surname',
 					},
 				},
+				{
+					path: 'labInstructors',
+					populate: {
+						path: 'user',
+						select: 'name surname',
+					},
+				},
 			],
 		})
-		.populate('user')
-		.populate('semester');
+		.populate('user semester');
 export const getStatementById = (id: string) =>
 	Statement.findById(id)
 		.populate({
@@ -90,6 +115,13 @@ export const getStatementById = (id: string) =>
 				},
 				{
 					path: 'theoryInstructors',
+					populate: {
+						path: 'user',
+						select: 'name surname',
+					},
+				},
+				{
+					path: 'labInstructors',
 					populate: {
 						path: 'user',
 						select: 'name surname',
@@ -142,6 +174,13 @@ export const updateStatementById = (id: string, values: StatementProps) =>
 						select: 'name surname',
 					},
 				},
+				{
+					path: 'labInstructors',
+					populate: {
+						path: 'user',
+						select: 'name surname',
+					},
+				},
 			],
 		})
 		.populate('user semester');
@@ -165,9 +204,95 @@ export const getStatements = () =>
 						select: 'name surname',
 					},
 				},
+				{
+					path: 'labInstructors',
+					populate: {
+						path: 'user',
+						select: 'name surname',
+					},
+				},
 			],
 		})
-		.populate('user')
-		.populate('semester');
+		.populate('user semester');
+export const getInstructorStatements = async (
+	instructorId: mongoose.Types.ObjectId
+) => {
+	const teachings: any = await Teaching.find({
+		$or: [
+			{ theoryInstructors: instructorId },
+			{ labInstructors: instructorId },
+		],
+	});
+
+	const teachingIds = teachings.map((teaching: any) => teaching._id);
+
+	const statements: StatementProps[] = await Statement.find({
+		teaching: { $in: teachingIds },
+	})
+		.populate({
+			path: 'teaching',
+			populate: [
+				{
+					path: 'course',
+					populate: {
+						path: 'cycle',
+					},
+				},
+				{
+					path: 'theoryInstructors',
+					populate: {
+						path: 'user',
+						select: 'name surname',
+					},
+				},
+				{
+					path: 'labInstructors',
+					populate: {
+						path: 'user',
+						select: 'name surname',
+					},
+				},
+			],
+		})
+		.populate('user semester');
+
+	for (const statement of statements) {
+		let totalGradesToSubmit = 0;
+		const numberOfInstructorTeachings = statement.teaching.reduce(
+			(total: number, teaching: any) => {
+				const isTheoryInstructor = teaching.theoryInstructors.some(
+					(instructor: mongoose.Types.ObjectId) =>
+						instructor._id.equals(instructorId)
+				);
+				const isLabInstructor = teaching.labInstructors.some(
+					(instructor: mongoose.Types.ObjectId) =>
+						instructor._id.equals(instructorId)
+				);
+				if (isTheoryInstructor || isLabInstructor) {
+					const theoryGradesCount = isTheoryInstructor
+						? teaching.theoryExamination.length
+						: 0;
+					const labGradesCount = isLabInstructor
+						? teaching.labExamination.length
+						: 0;
+					totalGradesToSubmit += theoryGradesCount + labGradesCount;
+				}
+				return total + (isTheoryInstructor || isLabInstructor ? 1 : 0);
+			},
+			0
+		);
+		statement.numberOfInstructorTeachings = numberOfInstructorTeachings;
+		statement.numberOfInstructorGrades = totalGradesToSubmit;
+
+		const gradedGradesCount =
+			await countGradesForStatementTeachingsByInstructor(
+				statement._id,
+				instructorId
+			);
+		statement.numberOfInstructorGradedGrades = gradedGradesCount;
+	}
+
+	return statements;
+};
 export const deleteStatements = () => Statement.deleteMany();
 export const getTotalStatements = () => Statement.find().countDocuments();

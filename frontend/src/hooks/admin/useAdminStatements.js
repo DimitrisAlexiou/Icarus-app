@@ -19,7 +19,7 @@ const useAdminStatements = () => {
 	const { semester, isSemesterLoading } = useSemester();
 	const {
 		statements,
-		isLoading: statementsIsLoading,
+		isLoading: isStatementsLoading,
 		isEditingStatement,
 		isEditingVaccine,
 		editStatementId,
@@ -116,7 +116,11 @@ const useAdminStatements = () => {
 	}, [dispatch]);
 
 	const handleFinalizeStatement = (statement) => {
-		finalizeAlert(() => dispatch(finalizeStatement(statement._id)));
+		finalizeAlert(
+			'Finalize Course Statement?',
+			'Your current course statement will be finalized if accept!',
+			() => dispatch(finalizeStatement(statement._id))
+		);
 	};
 
 	return {
@@ -125,7 +129,7 @@ const useAdminStatements = () => {
 		semester,
 		statements,
 		isSemesterLoading,
-		statementsIsLoading,
+		isStatementsLoading,
 		isEditingStatement,
 		isEditingVaccine,
 		editStatementId,

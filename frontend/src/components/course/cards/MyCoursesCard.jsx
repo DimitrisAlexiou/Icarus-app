@@ -2,6 +2,7 @@ import { Col, Row } from 'reactstrap';
 import useMyCourses from '../../../hooks/user/useMyCourses';
 import Spinner from '../../boilerplate/spinners/Spinner';
 import SpinnerComponent from '../../boilerplate/spinners/SpinnerMessage';
+import PillHeader from '../../boilerplate/headers/PillHeader';
 
 export default function MyCoursesCard() {
 	const {
@@ -15,20 +16,20 @@ export default function MyCoursesCard() {
 	return (
 		<>
 			<Row className="justify-content-center animated--grow-in mb-3">
-				<h6
-					className="animated--grow-in text-gray-500"
-					style={{ textAlign: 'center' }}
-				>
-					<small
-						className="text-muted pill-label"
-						style={{
-							fontWeight: '700',
-							fontSize: 15,
-						}}
-					>
-						Enrolled Courses
-					</small>
-				</h6>
+				<Col className="text-center">
+					<PillHeader title="Enrolled Courses" />
+					{!isTeachingsLoading ? (
+						<h6
+							className="text-muted pill-label"
+							style={{
+								fontWeight: '700',
+								fontSize: 15,
+							}}
+						>
+							{enrolledCourses.length}
+						</h6>
+					) : null}
+				</Col>
 			</Row>
 			<div className="profile_card">
 				<div className="card-body">
@@ -66,17 +67,11 @@ export default function MyCoursesCard() {
 												>
 													{instructorNames?.join(', ')}
 												</p>
-												<hr />
+												{index !== enrolledCourses.length - 1 && <hr />}
 											</Col>
 										</Row>
 									);
 								})}
-								<Col className="d-flex justify-content-end">
-									<h6 className="text-gray-400 font-weight-bold animated--grow-in">
-										{enrolledCourses.length} course
-										{enrolledCourses.length > 1 && 's'} enrolled
-									</h6>
-								</Col>
 								{/* {numOfPages > 1 ? <PageButton /> : null} */}
 							</>
 						) : (
