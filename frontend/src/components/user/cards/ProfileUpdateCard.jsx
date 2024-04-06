@@ -7,7 +7,7 @@ export default function ProfileUpdateCard({ user }) {
 		<>
 			<div className="profile_card  animated--grow-in">
 				<div className="card-body">
-					{user.user.type === UserType.student ? (
+					{user.user.type.includes(UserType.student) ? (
 						<>
 							<Row>
 								<Col md="5">
@@ -36,7 +36,7 @@ export default function ProfileUpdateCard({ user }) {
 								</Col>
 							</Row>
 						</>
-					) : user.user.type === UserType.instructor ? (
+					) : user.user.type.includes(UserType.instructor) ? (
 						<>
 							<Row>
 								<Col md="4">

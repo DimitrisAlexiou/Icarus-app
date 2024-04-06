@@ -8,6 +8,7 @@ import {
 	Button,
 	CardTitle,
 	CardText,
+	Spinner,
 } from 'reactstrap';
 import { deleteEvent, setEditEvent } from '../../features/calendar/eventSlice';
 import { deleteAlert } from '../../constants/sweetAlertNotification';
@@ -21,7 +22,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import listPlugin from '@fullcalendar/list';
-import Spinner from '../boilerplate/spinners/Spinner';
+import Loading from '../boilerplate/spinners/Spinner';
 import CarouselComponent from '../Carousel';
 import PillHeader from '../boilerplate/headers/PillHeader';
 import EventForm from './EventForm';
@@ -143,12 +144,16 @@ export default function Calendar() {
 								color="null"
 								onClick={() => handleDeleteEvents()}
 							>
-								<FontAwesomeIcon icon={faTrashAlt} />
+								{isLoading ? (
+									<Spinner size="sm" color="dark" type="grow" />
+								) : (
+									<FontAwesomeIcon icon={faTrashAlt} />
+								)}
 							</Button>
 						</Col>
 					</Row>
 					{isLoading ? (
-						<Spinner card />
+						<Loading card />
 					) : (
 						<CarouselComponent
 							objects={events}

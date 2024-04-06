@@ -19,7 +19,7 @@ export default function Teaching() {
 
 	return (
 		<>
-			{user.user.type === STUDENT ? null : (
+			{user.user.type.includes(STUDENT) ? null : (
 				<Row className="animated--grow-in">
 					<Col>
 						<BreadcrumbNav

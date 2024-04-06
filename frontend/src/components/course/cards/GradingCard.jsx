@@ -40,11 +40,11 @@ const GradingCard = ({ teaching }) => {
 								<br />
 								<small
 									className={`pill-label ${
-										examination.type === ExaminationType.Progress
+										examination.type.includes(ExaminationType.Progress)
 											? 'text-primary'
-											: examination.type === ExaminationType.Final
+											: examination.type.includes(ExaminationType.Final)
 											? 'text-danger'
-											: examination.type === ExaminationType.Exercise
+											: examination.type.includes(ExaminationType.Exercise)
 											? 'text-warning'
 											: 'text-info'
 									}`}
@@ -114,11 +114,11 @@ const GradingCard = ({ teaching }) => {
 								<br />
 								<small
 									className={`pill-label ${
-										examination.type === ExaminationType.Progress
+										examination.type.includes(ExaminationType.Progress)
 											? 'text-primary'
-											: examination.type === ExaminationType.Final
+											: examination.type.includes(ExaminationType.Final)
 											? 'text-danger'
-											: examination.type === ExaminationType.Exercise
+											: examination.type.includes(ExaminationType.Exercise)
 											? 'text-warning'
 											: 'text-info'
 									}`}

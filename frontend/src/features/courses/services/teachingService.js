@@ -76,6 +76,12 @@ const getInstructorTeachings = async () => {
 	return response.data;
 };
 
+const getSemesterActiveTeachings = async () => {
+	const response = await axiosFetch.get(API_URL_TEACHING + '/semester');
+
+	return response.data;
+};
+
 const deleteTeachings = async () => {
 	const response = await axiosFetch.delete(API_URL_TEACHING + '/delete');
 
@@ -166,6 +172,7 @@ const teachingService = {
 	getTeachings,
 	getSystemTeachings,
 	getInstructorTeachings,
+	getSemesterActiveTeachings,
 	deleteTeachings,
 	assignTheoryInstructors,
 	assignLabInstructors,

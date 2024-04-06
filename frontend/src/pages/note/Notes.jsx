@@ -9,6 +9,7 @@ import {
 	Badge,
 	NavItem,
 	NavLink,
+	Spinner,
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -20,7 +21,7 @@ import { faNoteSticky } from '@fortawesome/free-regular-svg-icons';
 import useNotes from '../../hooks/note/useNotes';
 import NoteForm from '../../components/note/NoteForm';
 import NoteItem from '../../components/note/NoteItem';
-import Spinner from '../../components/boilerplate/spinners/Spinner';
+import Loading from '../../components/boilerplate/spinners/Spinner';
 import PillHeader from '../../components/boilerplate/headers/PillHeader';
 import UserNotes from '../../components/admin/UserNotes';
 
@@ -192,7 +193,11 @@ export default function Notes() {
 							className={`mx-1 d-flex align-items-center`}
 							onClick={() => handleDeleteUserNotes()}
 						>
-							<FontAwesomeIcon className="clickable" icon={faTrashAlt} />
+							{isLoading ? (
+								<Spinner size="sm" color="dark" type="grow" />
+							) : (
+								<FontAwesomeIcon className="clickable" icon={faTrashAlt} />
+							)}
 						</Badge>
 					</Col>
 				</Row>
@@ -224,7 +229,7 @@ export default function Notes() {
 
 			{filteredNotesByCategory.length ? (
 				isLoading ? (
-					<Spinner card />
+					<Loading card />
 				) : user.user.isAdmin ? (
 					<UserNotes
 						notes={notes}

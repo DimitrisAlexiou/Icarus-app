@@ -26,7 +26,7 @@ export default function MyCoursesCard() {
 								fontSize: 15,
 							}}
 						>
-							{enrolledCourses.length}
+							{enrolledCourses ? enrolledCourses.length : 0}
 						</h6>
 					) : null}
 				</Col>

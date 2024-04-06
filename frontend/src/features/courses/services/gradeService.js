@@ -2,6 +2,7 @@ import axiosFetch from '../../../utils/axios';
 import {
 	API_URL_ADMIN_GRADES,
 	API_URL_GRADE,
+	API_URL_MYGRADES,
 } from '../../../constants/apiConfig';
 
 const addGrade = async (data) => {
@@ -50,6 +51,40 @@ const getStatementGrades = async (statementId) => {
 	return response.data;
 };
 
+const getRecentGrades = async () => {
+	const response = await axiosFetch.get(API_URL_GRADE);
+
+	return response.data;
+};
+
+const getStudentRecentGrades = async () => {
+	const response = await axiosFetch.get(API_URL_GRADE + '/student/recent');
+
+	return response.data;
+};
+
+const getStudentOverallGrades = async () => {
+	const response = await axiosFetch.get(API_URL_GRADE + '/student/overall');
+
+	return response.data;
+};
+
+const getStudentOverallRecentGrades = async () => {
+	const response = await axiosFetch.get(
+		API_URL_GRADE + '/student/overall/recent'
+	);
+
+	return response.data;
+};
+
+const getStudentTeachingGrades = async (teachingId) => {
+	const response = await axiosFetch.get(
+		API_URL_MYGRADES + '/teaching/' + teachingId + '/details'
+	);
+
+	return response.data;
+};
+
 const getGrades = async () => {
 	const response = await axiosFetch.get(API_URL_ADMIN_GRADES);
 
@@ -70,6 +105,11 @@ const gradeService = {
 	finalizeGrade,
 	finalizeGrades,
 	getStatementGrades,
+	getRecentGrades,
+	getStudentRecentGrades,
+	getStudentOverallGrades,
+	getStudentOverallRecentGrades,
+	getStudentTeachingGrades,
 	getGrades,
 	deleteGrades,
 };

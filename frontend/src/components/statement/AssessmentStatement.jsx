@@ -1,4 +1,4 @@
-import { Row, Col, Button } from 'reactstrap';
+import { Row, Col, Button, Spinner } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckDouble, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { faEdit, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
@@ -6,7 +6,7 @@ import { AssessmentStatus, AssessmentType } from '../../constants/enums';
 import StatementForm from '../user/forms/StatementForm';
 import StatementCard from '../course/cards/StatementCard';
 import PillHeader from '../boilerplate/headers/PillHeader';
-import Spinner from '../boilerplate/spinners/Spinner';
+import Loading from '../boilerplate/spinners/Spinner';
 import SpinnerComponent from '../boilerplate/spinners/SpinnerMessage';
 
 export default function AssessmentStatement({
@@ -37,7 +37,7 @@ export default function AssessmentStatement({
 			</Row>
 
 			{isSemesterLoading || isStatementsLoading ? (
-				<Spinner card />
+				<Loading card />
 			) : !isStatementSubmitted || isEditingStatement ? (
 				<Row className="justify-content-center animated--grow-in">
 					<Col xl="8" lg="12" md="12">
@@ -104,7 +104,7 @@ export default function AssessmentStatement({
 			) : (
 				<>
 					{assessmentIsAvailable &&
-					currentStatement.condition === AssessmentStatus.Pending ? (
+					currentStatement.condition.includes(AssessmentStatus.Pending) ? (
 						<Row className="mb-3 justify-content-center animated--grow-in">
 							<Col xs="auto" className="text-center">
 								<Row>
@@ -117,7 +117,11 @@ export default function AssessmentStatement({
 											}}
 											onClick={() => handleFinalizeStatement(currentStatement)}
 										>
-											<FontAwesomeIcon icon={faCheckDouble} />
+											{isStatementsLoading ? (
+												<Spinner size="sm" color="dark" type="grow" />
+											) : (
+												<FontAwesomeIcon icon={faCheckDouble} />
+											)}
 										</Button>
 									</Col>
 									<Col>
@@ -151,7 +155,11 @@ export default function AssessmentStatement({
 												)
 											}
 										>
-											<FontAwesomeIcon icon={faTrashAlt} />
+											{isStatementsLoading ? (
+												<Spinner size="sm" color="dark" type="grow" />
+											) : (
+												<FontAwesomeIcon icon={faTrashAlt} />
+											)}
 										</Button>
 									</Col>
 								</Row>

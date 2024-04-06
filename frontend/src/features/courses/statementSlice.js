@@ -15,6 +15,8 @@ import {
 	GET_STUDENT_STATEMENTS,
 	FINALIZE_STATEMENT,
 	GET_STATEMENTS_IN_GRADING_WINDOW,
+	GET_STUDENT_CURRENT_STATEMENT,
+	GET_STUDENT_STATEMENTS_TOTAL_TEACHINGS,
 } from '../actions';
 import { AssessmentType } from '../../constants/enums';
 
@@ -34,6 +36,17 @@ export const getStudentStatements = createAsyncThunk(
 	async (_, thunkAPI) => {
 		try {
 			return await statementService.getStudentStatements();
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
+	}
+);
+
+export const getStudentCurrentStatement = createAsyncThunk(
+	GET_STUDENT_CURRENT_STATEMENT,
+	async (_, thunkAPI) => {
+		try {
+			return await statementService.getStudentCurrentStatement();
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -106,6 +119,17 @@ export const getStatementsInGradingWindow = createAsyncThunk(
 	}
 );
 
+export const getStudentStatementsTotalTeachings = createAsyncThunk(
+	GET_STUDENT_STATEMENTS_TOTAL_TEACHINGS,
+	async (_, thunkAPI) => {
+		try {
+			return await statementService.getStudentStatementsTotalTeachings();
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
+	}
+);
+
 export const getStatements = createAsyncThunk(
 	GET_STATEMENTS,
 	async (_, thunkAPI) => {
@@ -162,6 +186,20 @@ export const statementSlice = createSlice({
 				)
 					displayErrorNotification(payload);
 			})
+			.addCase(getStudentCurrentStatement.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(getStudentCurrentStatement.fulfilled, (state, { payload }) => {
+				state.isLoading = false;
+				state.statement = payload;
+			})
+			.addCase(getStudentCurrentStatement.rejected, (state, { payload }) => {
+				state.isLoading = false;
+				if (
+					payload !== `Seems like you haven't submitted a course statement yet.`
+				)
+					displayErrorNotification(payload);
+			})
 			.addCase(createStatement.pending, (state) => {
 				state.isLoading = true;
 			})
@@ -186,6 +224,7 @@ export const statementSlice = createSlice({
 				if (finalizedStatementIndex !== -1)
 					state.statements[finalizedStatementIndex] =
 						payload.finalizedStatement;
+				state.statement = payload.finalizedStatement;
 			})
 			.addCase(finalizeStatement.rejected, (state, { payload }) => {
 				state.isLoading = false;
@@ -277,6 +316,23 @@ export const statementSlice = createSlice({
 				)
 					displayErrorNotification(payload);
 			})
+			.addCase(getStudentStatementsTotalTeachings.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(
+				getStudentStatementsTotalTeachings.fulfilled,
+				(state, { payload }) => {
+					state.isLoading = false;
+					state.statements = payload;
+				}
+			)
+			.addCase(
+				getStudentStatementsTotalTeachings.rejected,
+				(state, { payload }) => {
+					state.isLoading = false;
+					displayErrorNotification(payload);
+				}
+			)
 			.addCase(deleteStatements.pending, (state) => {
 				state.isLoading = true;
 			})

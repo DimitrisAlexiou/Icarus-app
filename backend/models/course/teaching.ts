@@ -159,6 +159,30 @@ export const getTeachings = () =>
 				select: 'surname name',
 			},
 		});
+export const getSemesterActiveTeachings = async (semesterId: string) => {
+	return Teaching.find({ semester: semesterId }, { isDeleted: false })
+		.populate('semester')
+		.populate({
+			path: 'course',
+			populate: {
+				path: 'cycle',
+			},
+		})
+		.populate({
+			path: 'theoryInstructors',
+			populate: {
+				path: 'user',
+				select: 'surname name',
+			},
+		})
+		.populate({
+			path: 'labInstructors',
+			populate: {
+				path: 'user',
+				select: 'surname name',
+			},
+		});
+};
 export const getInstructorTeachings = async (
 	instructorId: mongoose.Types.ObjectId,
 	semesterId: string

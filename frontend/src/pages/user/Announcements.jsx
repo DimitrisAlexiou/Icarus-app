@@ -9,6 +9,7 @@ import {
 	ModalHeader,
 	ModalBody,
 	Button,
+	Spinner,
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleXmark, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
@@ -17,7 +18,7 @@ import CarouselComponent from '../../components/Carousel';
 import AnnouncementForm from '../../components/user/forms/AnnouncementForm';
 import HeaderWithSemester from '../../components/boilerplate/headers/HeaderWithSemester';
 import FormHeader from '../../components/boilerplate/headers/FormHeader';
-import Spinner from '../../components/boilerplate/spinners/Spinner';
+import Loading from '../../components/boilerplate/spinners/Spinner';
 import SpinnerComponent from '../../components/boilerplate/spinners/SpinnerMessage';
 import PillHeader from '../../components/boilerplate/headers/PillHeader';
 
@@ -68,7 +69,11 @@ export default function Announcements() {
 							toggle();
 						}}
 					>
-						<FontAwesomeIcon icon={faTrashAlt} />
+						{isAnnouncementsLoading ? (
+							<Spinner size="sm" color="dark" type="grow" />
+						) : (
+							<FontAwesomeIcon icon={faTrashAlt} />
+						)}
 					</Button>
 				</ModalHeader>
 				<ModalBody>
@@ -123,7 +128,7 @@ export default function Announcements() {
 			</Row>
 
 			{isAnnouncementsLoading ? (
-				<Spinner card />
+				<Loading card />
 			) : announcements.length > 0 ? (
 				<CarouselComponent
 					objects={announcements}

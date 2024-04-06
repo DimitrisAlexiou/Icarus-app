@@ -7,7 +7,10 @@ import { generateToken } from '../../middleware/authMiddleware';
 import bcrypt from 'bcryptjs';
 import CustomError from '../../utils/CustomError';
 
-export const register = async (req: Request, res: Response): Promise<Response> => {
+export const register = async (
+	req: Request,
+	res: Response
+): Promise<Response> => {
 	const {
 		name,
 		surname,
@@ -29,20 +32,35 @@ export const register = async (req: Request, res: Response): Promise<Response> =
 		session.startTransaction();
 
 		if (!name || !surname || !username || !email || !password) {
-			if (type === UserType.student && (!studentId || !entranceYear || !studentType)) {
-				throw new CustomError('Please fill in all the student required fields.', 400);
-			} else if (type === UserType.instructor && !facultyType) {
-				throw new CustomError('Please fill in all the instructor required fields.', 400);
-			}
+			if (
+				type === UserType.student &&
+				(!studentId || !entranceYear || !studentType)
+			)
+				throw new CustomError(
+					'Please fill in all the student required fields.',
+					400
+				);
+			else if (type === UserType.instructor && !facultyType)
+				throw new CustomError(
+					'Please fill in all the instructor required fields.',
+					400
+				);
+
 			throw new CustomError('Please fill in all the required fields.', 400);
 		}
 
 		const userExists = await User.findOne({ email: email }).session(session);
 		if (userExists)
-			throw new CustomError('Seems like a user with this email already exists.', 400);
+			throw new CustomError(
+				'Seems like a user with this email already exists.',
+				400
+			);
 
-		const usernameTaken = await User.findOne({ username: username }).session(session);
-		if (usernameTaken) throw new CustomError('Seems like this username is taken.', 400);
+		const usernameTaken = await User.findOne({ username: username }).session(
+			session
+		);
+		if (usernameTaken)
+			throw new CustomError('Seems like this username is taken.', 400);
 
 		const salt = await bcrypt.genSalt(12);
 		const hashedPassword = await bcrypt.hash(password, salt);
@@ -76,7 +94,9 @@ export const register = async (req: Request, res: Response): Promise<Response> =
 			await session.commitTransaction();
 			session.endSession();
 
-			return res.status(201).json({ user, token: generateToken({ id: user._id }) });
+			return res
+				.status(201)
+				.json({ user, token: generateToken({ id: user._id }) });
 		} else if (user.type === UserType.instructor) {
 			const instructor = new Instructor({
 				facultyType,
@@ -94,7 +114,9 @@ export const register = async (req: Request, res: Response): Promise<Response> =
 			await session.commitTransaction();
 			session.endSession();
 
-			return res.status(201).json({ user, token: generateToken({ id: user._id }) });
+			return res
+				.status(201)
+				.json({ user, token: generateToken({ id: user._id }) });
 		}
 	} catch (error) {
 		await session.abortTransaction();

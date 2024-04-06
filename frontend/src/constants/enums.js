@@ -24,6 +24,11 @@ export const CourseType = {
 	Mixed: 'Mixed',
 };
 
+export const CourseObligation = {
+	Obligatory: 'Obligatory',
+	Optional: 'Optional',
+};
+
 export const PrerequisiteType = {
 	Hard: 'Hard',
 	Soft: 'Soft',
@@ -66,4 +71,40 @@ export const GradingStatus = {
 export const AssessmentType = {
 	Assessment: 'Assessment',
 	Vaccine: 'Vaccine',
+};
+
+export const DoughnutType = {
+	Period: 'Period',
+	General: 'General',
+};
+
+export const MyGradesMenu = {
+	Recent: 'Recent Grades',
+	Grades: 'Grades',
+	Thesis: 'Thesis',
+};
+
+export const ProfileMenu = {
+	Overview: 'overview',
+	Security: 'security',
+};
+
+export const PortfolioMenu = {
+	Documents: 'Documents',
+	Announcements: 'Announcements',
+	Exercises: 'Exercises',
+	Calendar: 'Calendar',
+	Messages: 'Messages',
+	Chat: 'Chat',
+};
+
+export const DegreeCompletionMenu = {
+	Prerequisites: 'Prerequisites',
+	Progress: 'Progress',
+};
+
+export const ExamPeriods = {
+	FEB: 'FEB',
+	JUN: 'JUN',
+	SEP: 'SEP',
 };

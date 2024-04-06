@@ -14,6 +14,8 @@ import {
 	Type,
 	getTotalStatements,
 	getInstructorStatements,
+	getUserCurrentStatement,
+	getUserStatementsTotalTeachings,
 } from '../../models/course/statement';
 import { getCurrentSemester } from '../../models/admin/semester';
 import { getAssessmentBySemester } from '../../models/admin/assessment';
@@ -112,7 +114,7 @@ export const finalizeStatement = tryCatch(
 			);
 
 		const finalizedStatement = await updateStatementById(statementId, {
-			...existingStatement,
+			...existingStatement.toObject(),
 			condition: Status.Finalized,
 		});
 
@@ -121,6 +123,7 @@ export const finalizeStatement = tryCatch(
 				'Seems like the course statement that you are trying to finalize does not exist.',
 				404
 			);
+		console.log('finalized: ' + finalizedStatement);
 
 		return res
 			.status(200)
@@ -258,6 +261,45 @@ export const viewStudentStatements = tryCatch(
 	}
 );
 
+export const getStudentStatementsTotalTeachings = tryCatch(
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
+		const userId = req.user.id;
+		const { totalTeachings, totalTeachingsECTS } =
+			await getUserStatementsTotalTeachings(userId);
+
+		return res.status(200).json({ totalTeachings, totalTeachingsECTS });
+	}
+);
+
+export const viewStudentCurrentStatement = tryCatch(
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
+		const userId = req.user.id;
+
+		const currentDate = new Date();
+		const semester = await getCurrentSemester(currentDate);
+
+		if (!semester)
+			throw new CustomError(
+				`Seems like there is no defined semester for current period, so you can't submit a course statement.`,
+				404
+			);
+
+		const semesterId = semester._id.toString();
+		const userCurrentStatement = await getUserCurrentStatement(
+			userId,
+			semesterId
+		);
+
+		if (!userCurrentStatement)
+			throw new CustomError(
+				`Seems like you haven't submitted a course statement yet.`,
+				404
+			);
+
+		return res.status(200).json(userCurrentStatement);
+	}
+);
+
 export const viewSystemStatements = tryCatch(
 	async (_: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const statements = await getStatements();
@@ -291,6 +333,10 @@ export const viewStatementsInGradingWindow = tryCatch(
 			const gradingWeeks = semester.grading;
 			const { gradingEndDate } = calculateGradingWindow(endDate, gradingWeeks);
 
+			//? Maybe make the canBeGradedStatements to be visible between the semester end date
+			//? and semester grading end date so the statement grades can only submitted in that period.
+			//? Or maybe define the exams period and make the canBeGradedStatements visible only in that period,
+			//? so the statement grades can only be submitted in the exams period and after.
 			return currentDate <= gradingEndDate;
 		});
 

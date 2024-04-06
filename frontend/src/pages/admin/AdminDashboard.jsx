@@ -1,4 +1,4 @@
-import { Col, Row, Badge, Button } from 'reactstrap';
+import { Col, Row, Badge, Button, Spinner } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
 	faUserTie,
@@ -20,7 +20,7 @@ import useAdminDashboard from '../../hooks/admin/useAdminDashboard';
 import Calendar from '../../components/calendar/Calendar';
 import CoursesDataTable from '../../components/admin/CoursesDataTable';
 import SemestersDataTable from '../../components/admin/SemestersDataTable';
-import Spinner from '../../components/boilerplate/spinners/Spinner';
+import Loading from '../../components/boilerplate/spinners/Spinner';
 import SpinnerComponent from '../../components/boilerplate/spinners/SpinnerMessage';
 import DashboardCard from '../../components/boilerplate/DashboardCard';
 
@@ -65,7 +65,7 @@ export default function AdminDashboard() {
 	return (
 		<>
 			{coursesIsLoading || teachingsIsLoading || isStatementsLoading ? (
-				<Spinner card />
+				<Loading card />
 			) : (
 				<>
 					<Badge color="success" className="mb-3 animated--grow-in">
@@ -105,7 +105,7 @@ export default function AdminDashboard() {
 			)}
 
 			{cyclesIsLoading || semestersIsLoading || mastersIsLoading ? (
-				<Spinner card />
+				<Loading card />
 			) : (
 				<>
 					<Badge color="warning" className="mb-3 animated--grow-in">
@@ -138,7 +138,7 @@ export default function AdminDashboard() {
 			)}
 
 			{usersIsLoading ? (
-				<Spinner card />
+				<Loading card />
 			) : (
 				<>
 					<Badge color="dark" className="mb-3 animated--grow-in">
@@ -173,7 +173,7 @@ export default function AdminDashboard() {
 			{teachingReviewsIsLoading ||
 			instructorReviewsIsLoading ||
 			generalReviewsIsLoading ? (
-				<Spinner card />
+				<Loading card />
 			) : (
 				<>
 					<Badge color="primary" className="mb-3 animated--grow-in">
@@ -206,7 +206,7 @@ export default function AdminDashboard() {
 			)}
 
 			{coursesIsLoading ? (
-				<Spinner card />
+				<Loading card />
 			) : courses.length ? (
 				<>
 					<Row className="animated--grow-in mb-3">
@@ -221,7 +221,11 @@ export default function AdminDashboard() {
 										color="null"
 										onClick={() => deleteSystemCourses()}
 									>
-										<FontAwesomeIcon icon={faTrashAlt} />
+										{coursesIsLoading ? (
+											<Spinner size="sm" color="dark" type="grow" />
+										) : (
+											<FontAwesomeIcon icon={faTrashAlt} />
+										)}
 									</Button>
 								</Col>
 							) : null}
@@ -264,7 +268,7 @@ export default function AdminDashboard() {
 			)}
 
 			{semestersIsLoading ? (
-				<Spinner card />
+				<Loading card />
 			) : semesters.length ? (
 				<>
 					<Row className="animated--grow-in mb-3">
@@ -279,7 +283,11 @@ export default function AdminDashboard() {
 										color="null"
 										// onClick={() => deleteAlert(() => dispatch(deleteSemesters()))}
 									>
-										<FontAwesomeIcon icon={faTrashAlt} />
+										{semestersIsLoading ? (
+											<Spinner size="sm" color="dark" type="grow" />
+										) : (
+											<FontAwesomeIcon icon={faTrashAlt} />
+										)}
 									</Button>
 								</Col>
 							) : null}

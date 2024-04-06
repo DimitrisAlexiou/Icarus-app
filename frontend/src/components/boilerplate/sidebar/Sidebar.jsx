@@ -50,12 +50,12 @@ export default function Sidebar({
 					</NavLink>
 				</NavItem>
 
-				{user && user.user.type === UserType.student ? (
+				{user && user.user.type.includes(UserType.student) ? (
 					<StudentSidebar
 						smallSidebar={smallSidebar}
 						smallToggled={smallToggled}
 					/>
-				) : user && user.user.type === UserType.instructor ? (
+				) : user && user.user.type.includes(UserType.instructor) ? (
 					<InstructorSidebar
 						smallSidebar={smallSidebar}
 						smallToggled={smallToggled}

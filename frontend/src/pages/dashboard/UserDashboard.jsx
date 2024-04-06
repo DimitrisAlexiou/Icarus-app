@@ -12,9 +12,9 @@ export default function UserDashboard({ user }) {
 		<>
 			<Row className="mb-3 animated--grow-in">
 				<Col>
-					{user.user.type === STUDENT ? (
+					{user.user.type.includes(STUDENT) ? (
 						<MyCoursesCard />
-					) : user.user.type === INSTRUCTOR ? (
+					) : user.user.type.includes(INSTRUCTOR) ? (
 						<MyTeachingsCard />
 					) : null}
 				</Col>
@@ -25,9 +25,9 @@ export default function UserDashboard({ user }) {
 
 			<Row className="mb-3 animated--grow-in">
 				<Col>
-					<MyGradesCard user={user} />
+					<MyGradesCard />
 				</Col>
-				<Col md="12" xl="7">
+				<Col md="12" xl="7" lg="6">
 					<MessagesCard user={user} />
 				</Col>
 			</Row>

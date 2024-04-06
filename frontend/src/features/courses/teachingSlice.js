@@ -22,6 +22,7 @@ import {
 	GET_INSTRUCTOR_TEACHINGS,
 	DOWNLOAD_ENROLLED_STUDENTS_PDF,
 	GET_SYSTEM_TEACHINGS,
+	GET_SEMESTER_ACTIVE_TEACHINGS,
 } from '../actions';
 import teachingService from './services/teachingService';
 
@@ -112,6 +113,17 @@ export const getTeachings = createAsyncThunk(
 			const { page } = thunkAPI.getState().teachings;
 			let url = `?page=${page}`;
 			return await teachingService.getTeachings(url);
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
+	}
+);
+
+export const getSemesterActiveTeachings = createAsyncThunk(
+	GET_SEMESTER_ACTIVE_TEACHINGS,
+	async (_, thunkAPI) => {
+		try {
+			return await teachingService.getSemesterActiveTeachings();
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -361,6 +373,23 @@ export const teachingSlice = createSlice({
 				if (
 					payload !==
 					'Seems like there are no active course teachings registered in the system.'
+				)
+					displayErrorNotification(payload);
+			})
+			.addCase(getSemesterActiveTeachings.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(getSemesterActiveTeachings.fulfilled, (state, { payload }) => {
+				state.isLoading = false;
+				state.teachings = payload.teachings;
+				state.numOfPages = payload.numOfPages;
+				state.totalTeachings = payload.totalTeachings;
+			})
+			.addCase(getSemesterActiveTeachings.rejected, (state, { payload }) => {
+				state.isLoading = false;
+				if (
+					payload !==
+					'Seems like there are no active course teachings for the current semester.'
 				)
 					displayErrorNotification(payload);
 			})

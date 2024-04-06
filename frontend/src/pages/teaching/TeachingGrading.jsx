@@ -15,7 +15,6 @@ export default function TeachingGrading() {
 	const {
 		teachings,
 		semester,
-		availableTeachings,
 		isTeachingsLoading,
 		isSemesterLoading,
 		handleTeachingClick,
@@ -36,7 +35,7 @@ export default function TeachingGrading() {
 								fontSize: 15,
 							}}
 						>
-							{availableTeachings.length}
+							{teachings.length}
 						</h6>
 					) : null}
 				</Col>
@@ -45,143 +44,137 @@ export default function TeachingGrading() {
 			{isTeachingsLoading || isSemesterLoading ? (
 				<Spinner card />
 			) : teachings.length > 0 && semester ? (
-				availableTeachings.length > 0 ? (
-					<CarouselComponent
-						objects={availableTeachings}
-						renderItem={(teaching) => (
-							<>
-								<Row className="mb-2">
+				<CarouselComponent
+					objects={teachings}
+					renderItem={(teaching) => (
+						<>
+							<Row className="mb-2">
+								<Col>
+									<CardTitle
+										style={{
+											textAlign: 'justify',
+											fontWeight: '700',
+											fontSize: 15,
+										}}
+										className="text-light-cornflower-blue mb-2"
+									>
+										<Row>
+											<Col>{teaching.course.title}</Col>
+										</Row>
+									</CardTitle>
+								</Col>
+								<Col className="d-flex justify-content-end">
+									<CardText
+										style={{
+											textAlign: 'justify',
+											fontWeight: '600',
+											fontSize: 11,
+										}}
+									>
+										{teaching.course.courseId}
+									</CardText>
+								</Col>
+							</Row>
+							<CardText>
+								<Row className="mt-1">
 									<Col>
-										<CardTitle
+										<small
+											className={
+												teaching.theoryExamination.length
+													? 'text-success pill-label'
+													: 'text-muted pill-label'
+											}
 											style={{
 												textAlign: 'justify',
 												fontWeight: '700',
-												fontSize: 15,
+												fontSize: 12,
 											}}
-											className="text-light-cornflower-blue mb-2"
 										>
-											<Row>
-												<Col>{teaching.course.title}</Col>
-											</Row>
-										</CardTitle>
+											Theory
+										</small>
 									</Col>
-									<Col className="d-flex justify-content-end">
-										<CardText
+									<Col>
+										<small
+											className={
+												teaching.theoryExamination.length
+													? 'text-success'
+													: 'text-muted'
+											}
 											style={{
 												textAlign: 'justify',
-												fontWeight: '600',
-												fontSize: 11,
+												fontWeight: '700',
+												fontSize: 14,
 											}}
 										>
-											{teaching.course.courseId}
-										</CardText>
+											{teaching.theoryExamination.length ? (
+												<>
+													<FontAwesomeIcon icon={faCircleCheck} />
+													<span className="mx-2">Assigned</span>
+												</>
+											) : (
+												<>
+													<FontAwesomeIcon icon={faCircleXmark} />
+													<span className="mx-2">Unassigned</span>
+												</>
+											)}
+										</small>
 									</Col>
 								</Row>
-								<CardText>
-									<Row className="mt-1">
-										<Col>
-											<small
-												className={
-													teaching.theoryExamination.length
-														? 'text-success pill-label'
-														: 'text-muted pill-label'
-												}
-												style={{
-													textAlign: 'justify',
-													fontWeight: '700',
-													fontSize: 12,
-												}}
-											>
-												Theory
-											</small>
-										</Col>
-										<Col>
-											<small
-												className={
-													teaching.theoryExamination.length
-														? 'text-success'
-														: 'text-muted'
-												}
-												style={{
-													textAlign: 'justify',
-													fontWeight: '700',
-													fontSize: 14,
-												}}
-											>
-												{teaching.theoryExamination.length ? (
-													<>
-														<FontAwesomeIcon icon={faCircleCheck} />
-														<span className="mx-2">Assigned</span>
-													</>
-												) : (
-													<>
-														<FontAwesomeIcon icon={faCircleXmark} />
-														<span className="mx-2">Unassigned</span>
-													</>
-												)}
-											</small>
-										</Col>
-									</Row>
-								</CardText>
-								<CardText>
-									<Row className="mt-1">
-										<Col>
-											<small
-												className={
-													teaching.labExamination.length
-														? 'text-success pill-label'
-														: 'text-muted pill-label'
-												}
-												style={{
-													textAlign: 'justify',
-													fontWeight: '700',
-													fontSize: 12,
-												}}
-											>
-												Lab
-											</small>
-										</Col>
-										<Col>
-											<small
-												className={
-													teaching.labExamination.length
-														? 'text-success'
-														: 'text-muted'
-												}
-												style={{
-													textAlign: 'justify',
-													fontWeight: '700',
-													fontSize: 14,
-												}}
-											>
-												{teaching.labExamination.length ? (
-													<>
-														<FontAwesomeIcon icon={faCircleCheck} />
-														<span className="mx-2">Assigned</span>
-													</>
-												) : (
-													<>
-														<FontAwesomeIcon icon={faCircleXmark} />
-														<span className="mx-2">Unassigned</span>
-													</>
-												)}
-											</small>
-										</Col>
-									</Row>
-								</CardText>
-							</>
-						)}
-						onObjectClick={(teaching) => handleTeachingClick(teaching)}
-					/>
-				) : (
-					<span className="mt-5 mb-5">
-						<SpinnerComponent message="There are no active teachings available in the current semester." />
-					</span>
-				)
+							</CardText>
+							<CardText>
+								<Row className="mt-1">
+									<Col>
+										<small
+											className={
+												teaching.labExamination.length
+													? 'text-success pill-label'
+													: 'text-muted pill-label'
+											}
+											style={{
+												textAlign: 'justify',
+												fontWeight: '700',
+												fontSize: 12,
+											}}
+										>
+											Lab
+										</small>
+									</Col>
+									<Col>
+										<small
+											className={
+												teaching.labExamination.length
+													? 'text-success'
+													: 'text-muted'
+											}
+											style={{
+												textAlign: 'justify',
+												fontWeight: '700',
+												fontSize: 14,
+											}}
+										>
+											{teaching.labExamination.length ? (
+												<>
+													<FontAwesomeIcon icon={faCircleCheck} />
+													<span className="mx-2">Assigned</span>
+												</>
+											) : (
+												<>
+													<FontAwesomeIcon icon={faCircleXmark} />
+													<span className="mx-2">Unassigned</span>
+												</>
+											)}
+										</small>
+									</Col>
+								</Row>
+							</CardText>
+						</>
+					)}
+					onObjectClick={(teaching) => handleTeachingClick(teaching)}
+				/>
 			) : (
-				<div className="mt-5 mb-5">
-					<SpinnerComponent message="There are no teachings available right now." />
-				</div>
+				<span className="mt-5 mb-5">
+					<SpinnerComponent message="There are no active teachings available in the current semester." />
+				</span>
 			)}
 		</>
 	);

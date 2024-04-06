@@ -1,5 +1,5 @@
 import express from 'express';
-import { updateProfile } from '../controllers/user';
+import { updateProfile, viewPassedTeachings } from '../controllers/user';
 import {
 	getAllUserTeachingReviews,
 	viewUserTeachingReview,
@@ -27,7 +27,11 @@ import {
 	validateInstructorReview,
 	validateGeneralReview,
 } from '../middleware/validations';
-import { authorize, checkUserRole, isOwner } from '../middleware/authMiddleware';
+import {
+	authorize,
+	checkUserRole,
+	isOwner,
+} from '../middleware/authMiddleware';
 import { UserType } from '../models/users/user';
 
 export default (router: express.Router) => {
@@ -118,5 +122,14 @@ export default (router: express.Router) => {
 	// @desc    Update User Profile
 	// @route   PUT /api/user/profile/:id
 	// @access  Private User
-	router.route('/user/profile/:id').put(authorize, isOwner, validateProfile, updateProfile);
+	router
+		.route('/user/profile/:id')
+		.put(authorize, isOwner, validateProfile, updateProfile);
+
+	// @desc    Get Student User Passed Teachings
+	// @route   GET /api/user/activity/passedTeachings
+	// @access  Private User
+	router
+		.route('/user/activity/passedTeachings')
+		.get(authorize, viewPassedTeachings);
 };

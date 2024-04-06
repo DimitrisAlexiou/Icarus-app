@@ -2,7 +2,7 @@ import mongoose, { Schema, model } from 'mongoose';
 import { getStatementById } from '../statement';
 import { TeachingProps } from '../teaching';
 
-enum Examination {
+export enum Examination {
 	Theory = 'Theory',
 	Lab = 'Lab',
 }
@@ -13,12 +13,20 @@ interface ExamType {
 	grade: number;
 }
 
+interface Statement {
+	_id: mongoose.Types.ObjectId;
+	user?: {
+		_id: mongoose.Types.ObjectId;
+		student: mongoose.Types.ObjectId;
+	};
+}
+
 export interface GradeProps {
 	exam: ExamType;
 	isFinalized: boolean;
 	teaching: mongoose.Types.ObjectId;
 	user: mongoose.Types.ObjectId;
-	statement: mongoose.Types.ObjectId;
+	statement: Statement;
 }
 
 const gradeSchema = new Schema<GradeProps>(
@@ -40,7 +48,6 @@ const gradeSchema = new Schema<GradeProps>(
 				required: true,
 			},
 		},
-
 		isFinalized: {
 			type: Boolean,
 			default: false,
@@ -75,6 +82,97 @@ export const getGrades = () =>
 			},
 		})
 		.populate('teaching statement');
+export const getRecentGrades = (userId: string) =>
+	Grade.find({ user: userId })
+		.sort({ updatedAt: -1, createdAt: -1 })
+		.limit(15)
+		.populate({
+			path: 'teaching',
+			populate: {
+				path: 'course',
+			},
+		});
+export const getStudentRecentGrades = (statementId: string) =>
+	Grade.find({ statement: statementId })
+		.sort({ updatedAt: -1, createdAt: -1 })
+		.limit(15)
+		.populate({
+			path: 'teaching',
+			populate: [
+				{
+					path: 'course',
+				},
+				{
+					path: 'theoryInstructors',
+					populate: {
+						path: 'user',
+						select: 'name surname',
+					},
+				},
+				{
+					path: 'labInstructors',
+					populate: {
+						path: 'user',
+						select: 'name surname',
+					},
+				},
+			],
+		})
+		.populate('statement');
+export const getStudentTeachingGrades = (
+	teachingId: string,
+	statementId: mongoose.Types.ObjectId
+) =>
+	Grade.find({
+		teaching: teachingId,
+		statement: statementId,
+	})
+		.populate({
+			path: 'teaching',
+			populate: [
+				{
+					path: 'course',
+				},
+				{
+					path: 'theoryInstructors',
+					populate: {
+						path: 'user',
+						select: 'name surname',
+					},
+				},
+				{
+					path: 'labInstructors',
+					populate: {
+						path: 'user',
+						select: 'name surname',
+					},
+				},
+			],
+		})
+		.populate('statement');
+export const getGradesByTeachingInStatement = (
+	teachingId: mongoose.Types.ObjectId,
+	statementId: mongoose.Types.ObjectId
+) =>
+	Grade.find({
+		teaching: teachingId,
+		statement: statementId,
+	}).populate('teaching statement');
+export const getGradesByStatementTeachings = (
+	statementId: string,
+	teachings: TeachingProps[]
+) =>
+	Grade.find({
+		statement: statementId,
+		teaching: { $in: teachings.map((teaching) => teaching._id) },
+	})
+		.populate({
+			path: 'statement',
+			populate: {
+				path: 'user',
+			},
+		})
+		.populate('teaching');
 export const getTeachingGrades = (statementId: string) =>
 	Grade.find({
 		statement: statementId,
@@ -117,7 +215,13 @@ export const updateGradeById = (id: string, values: GradeProps) =>
 				path: 'instructor',
 			},
 		})
-		.populate('teaching statement');
+		.populate({
+			path: 'statement',
+			populate: {
+				path: 'user',
+			},
+		})
+		.populate('teaching');
 export const deleteGradeById = (id: string) => Grade.findByIdAndDelete(id);
 export const deleteGrades = () => Grade.deleteMany();
 export const countGradesForStatementTeachingsByInstructor = async (
@@ -163,11 +267,3 @@ export const countGradesForStatementTeachingsByInstructor = async (
 
 	return totalGradedGradesCount;
 };
-export const getGradesByStatementTeachings = (
-	statementId: string,
-	teachings: TeachingProps[]
-) =>
-	Grade.find({
-		statement: statementId,
-		teaching: { $in: teachings.map((teaching) => teaching._id) },
-	});

@@ -6,6 +6,9 @@ export const GET_TEACHINGS = createAction('teaching/get_teachings');
 export const GET_SYSTEM_TEACHINGS = createAction(
 	'teaching/get_system_teachings'
 );
+export const GET_SEMESTER_ACTIVE_TEACHINGS = createAction(
+	'teaching/get_semester_active_teachings'
+);
 export const GET_INSTRUCTOR_TEACHINGS = createAction(
 	'teaching/get_instructor_teachings'
 );
@@ -57,12 +60,18 @@ export const FINALIZE_STATEMENT = createAction('course/finalize_statement');
 export const GET_STUDENT_STATEMENTS = createAction(
 	'course/get_student_statements'
 );
+export const GET_STUDENT_CURRENT_STATEMENT = createAction(
+	'course/get_student_current_statement'
+);
 export const GET_STATEMENT = createAction('course/get_statement');
 export const UPDATE_STATEMENT = createAction('course/update_statement');
 export const DELETE_STATEMENT = createAction('course/delete_statement');
 export const GET_STATEMENTS = createAction('course/get_statements');
 export const GET_STATEMENTS_IN_GRADING_WINDOW = createAction(
 	'course/get_statements_in_grading_window'
+);
+export const GET_STUDENT_STATEMENTS_TOTAL_TEACHINGS = createAction(
+	'course/get_student_statements_total_teachings'
 );
 export const DELETE_STATEMENTS = createAction('course/delete_statements');
 export const ADD_GRADE = createAction('grade/add_grade');
@@ -73,6 +82,19 @@ export const UPDATE_GRADE = createAction('grade/update_grade');
 export const DELETE_GRADE = createAction('grade/delete_grade');
 export const GET_GRADES = createAction('grade/get_grades');
 export const GET_STATEMENT_GRADES = createAction('grade/get_statement_grades');
+export const GET_RECENT_GRADES = createAction('grade/get_recent_grades');
+export const GET_STUDENT_RECENT_GRADES = createAction(
+	'grade/get_student_recent_grades'
+);
+export const GET_STUDENT_OVERALL_GRADES = createAction(
+	'grade/get_student_overall_grades'
+);
+export const GET_STUDENT_OVERALL_RECENT_GRADES = createAction(
+	'grade/get_student_overall_recent_grades'
+);
+export const GET_STUDENT_TEACHING_GRADES = createAction(
+	'my-grades/get_student_teaching_grades'
+);
 export const DELETE_GRADES = createAction('grade/delete_grades');
 
 export const GET_NOTES = createAction('note/get_notes');
@@ -167,6 +189,9 @@ export const FORGOT_PASSWORD = createAction('auth/forgot_password');
 export const CHANGE_PASSWORD = createAction('user/profile/change_password');
 export const UPDATE_PROFILE = createAction('user/profile/update_profile');
 export const GET_PROFILE = createAction('user/profile/get_profile');
+export const GET_PASSED_TEACHINGS = createAction(
+	'user/activity/passedTeachings'
+);
 
 export const GET_USERS = createAction('user/get_users');
 export const GET_STUDENTS = createAction('user/get_students');

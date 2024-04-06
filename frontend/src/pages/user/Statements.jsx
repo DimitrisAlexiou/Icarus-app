@@ -53,7 +53,7 @@ export default function Statements() {
 
 	const ModalComponent = forwardRef((props, ref) => {
 		return (
-			<Modal ref={ref} isOpen={modal} toggle={closeModal} className="modal-lg">
+			<Modal ref={ref} isOpen={modal} toggle={closeModal} className="modal-xl">
 				<ModalHeader toggle={closeModal}>Statement Information</ModalHeader>
 				<ModalBody>
 					<StatementCard statement={selectedItem} />

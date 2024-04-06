@@ -19,6 +19,7 @@ import {
 	getInstructorTeachings,
 	getSystemTeachings,
 	getTotalTeachings,
+	getSemesterActiveTeachings,
 } from '../../models/course/teaching';
 import { getCourseById } from '../../models/course/course';
 import {
@@ -193,6 +194,30 @@ export const viewInstructorTeachings = tryCatch(
 		if (!teachings.length)
 			throw new CustomError(
 				'Seems like there are no active course teachings assigned to you.',
+				404
+			);
+
+		const totalTeachings = await getTotalTeachings();
+
+		return res.status(200).json({ teachings, totalTeachings });
+	}
+);
+
+export const viewSemesterActiveTeachings = tryCatch(
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
+		const currentSemester = await getCurrentSemester(new Date());
+		if (!currentSemester)
+			throw new CustomError(
+				'No current semester found. Unable to retrieve instructor teachings.',
+				404
+			);
+		const semesterId = currentSemester._id.toString();
+
+		const teachings = await getSemesterActiveTeachings(semesterId);
+
+		if (!teachings.length)
+			throw new CustomError(
+				'Seems like there are no active course teachings for the current semester.',
 				404
 			);
 

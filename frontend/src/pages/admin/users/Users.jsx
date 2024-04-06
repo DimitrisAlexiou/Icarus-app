@@ -1,7 +1,16 @@
 import { useState, forwardRef, useRef } from 'react';
-import { Button, Modal, ModalHeader, ModalBody, Row, Col } from 'reactstrap';
+import {
+	Button,
+	Modal,
+	ModalHeader,
+	ModalBody,
+	Row,
+	Col,
+	Spinner,
+} from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
+import { faUserPlus, faUserXmark } from '@fortawesome/free-solid-svg-icons';
 import useUsers from '../../../hooks/admin/useUsers';
 import DataTable from '../../../components/DataTable';
 import Switch from 'react-switch';
@@ -9,7 +18,6 @@ import UserForm from '../../../components/admin/forms/UserForm';
 import RegisterForm from '../../../components/auth/RegisterForm';
 import CustomSpinner from '../../../components/boilerplate/spinners/Spinner';
 import SpinnerComponent from '../../../components/boilerplate/spinners/SpinnerMessage';
-import { faUserPlus, faUserXmark } from '@fortawesome/free-solid-svg-icons';
 
 export default function Users() {
 	const {
@@ -155,7 +163,11 @@ export default function Users() {
 							className="btn btn-light"
 							onClick={() => handleDeleteUser(user)}
 						>
-							<FontAwesomeIcon icon={faTrashAlt} />
+							{isLoading ? (
+								<Spinner size="sm" color="dark" type="grow" />
+							) : (
+								<FontAwesomeIcon icon={faTrashAlt} />
+							)}
 						</Button>
 					</Col>
 				</Row>
@@ -189,7 +201,11 @@ export default function Users() {
 									color="null"
 									onClick={() => handleDeleteUsers()}
 								>
-									<FontAwesomeIcon icon={faUserXmark} />
+									{isLoading ? (
+										<Spinner size="sm" color="dark" type="grow" />
+									) : (
+										<FontAwesomeIcon icon={faUserXmark} />
+									)}
 								</Button>
 							</Col>
 						) : null}

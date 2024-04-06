@@ -20,6 +20,7 @@ import { resetTeachingReview } from '../reviews/teachingReviewSlice';
 import {
 	CHANGE_PASSWORD,
 	FORGOT_PASSWORD,
+	GET_PASSED_TEACHINGS,
 	GET_PROFILE,
 	LOGIN,
 	LOGOUT,
@@ -180,6 +181,17 @@ export const updateProfile = createAsyncThunk(
 	}
 );
 
+export const getPassedTeachings = createAsyncThunk(
+	GET_PASSED_TEACHINGS,
+	async (_, thunkAPI) => {
+		try {
+			return await authService.getPassedTeachings();
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
+	}
+);
+
 export const clearStore = createAsyncThunk(RESET, async (thunkAPI) => {
 	try {
 		await thunkAPI.dispatch(resetCalendar());
@@ -307,6 +319,17 @@ export const authSlice = createSlice({
 				addUserToLocalStorage(state.user);
 			})
 			.addCase(updateProfile.rejected, (state, { payload }) => {
+				state.isLoading = false;
+				displayErrorNotification(payload);
+			})
+			.addCase(getPassedTeachings.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(getPassedTeachings.fulfilled, (state, { payload }) => {
+				state.isLoading = false;
+				state.user.user.student = payload;
+			})
+			.addCase(getPassedTeachings.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				displayErrorNotification(payload);
 			});

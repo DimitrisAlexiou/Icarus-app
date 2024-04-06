@@ -10,7 +10,7 @@ const useCalculateGrades = () => {
 		let totalLabGrade = 0;
 
 		teaching.theoryExamination.forEach((exam) => {
-			const grade = grades.find(
+			const grade = grades?.find(
 				(g) =>
 					g.teaching._id === teaching._id &&
 					g.exam.examination === Examination.Theory &&
@@ -21,7 +21,7 @@ const useCalculateGrades = () => {
 		});
 
 		teaching.labExamination.forEach((exam) => {
-			const grade = grades.find(
+			const grade = grades?.find(
 				(g) =>
 					g.teaching._id === teaching._id &&
 					g.exam.examination === Examination.Lab &&
@@ -61,8 +61,17 @@ const useCalculateGrades = () => {
 		return calculatedGrades;
 	};
 
+	const recentGradesOverallGrade = (teachings) => {
+		const calculatedGrades = {};
+		Object.entries(teachings).forEach(([teachingId, teaching]) => {
+			calculatedGrades[teachingId] = calculateOverallGrade(teaching?.teaching);
+		});
+		return calculatedGrades;
+	};
+
 	return {
 		overallGrade,
+		recentGradesOverallGrade,
 	};
 };
 

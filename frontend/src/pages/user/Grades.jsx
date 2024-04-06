@@ -1,4 +1,4 @@
-import { Button, Col, Row } from 'reactstrap';
+import { Button, Col, Row, Spinner } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleDot, faClock } from '@fortawesome/free-regular-svg-icons';
 import {
@@ -8,17 +8,22 @@ import {
 	faListCheck,
 	faUserGraduate,
 } from '@fortawesome/free-solid-svg-icons';
-import { GradingStatus, SemesterType } from '../../constants/enums';
-import useGrades from '../../hooks/user/useGrades';
+import {
+	ExamPeriods,
+	GradingStatus,
+	SemesterType,
+} from '../../constants/enums';
+import useGrades from '../../hooks/course/useGrades';
 import HeaderWithSemester from '../../components/boilerplate/headers/HeaderWithSemester';
 import PillHeader from '../../components/boilerplate/headers/PillHeader';
-import Spinner from '../../components/boilerplate/spinners/Spinner';
+import Loading from '../../components/boilerplate/spinners/Spinner';
 import SpinnerComponent from '../../components/boilerplate/spinners/SpinnerMessage';
 
 export default function Grades() {
 	const {
 		semester,
 		statements,
+		isGradeLoading,
 		isStatementsLoading,
 		getInstructorRoles,
 		handleStatementClick,
@@ -49,7 +54,7 @@ export default function Grades() {
 			<Row className="animated--grow-in">
 				<Col>
 					{isStatementsLoading ? (
-						<Spinner card />
+						<Loading card />
 					) : statements.length > 0 ? (
 						<>
 							{statements.map((statement) => (
@@ -91,7 +96,11 @@ export default function Grades() {
 														handleFinalizeGrading(statement);
 													}}
 												>
-													<FontAwesomeIcon icon={faCheckDouble} />
+													{isGradeLoading ? (
+														<Spinner size="sm" color="dark" type="grow" />
+													) : (
+														<FontAwesomeIcon icon={faCheckDouble} />
+													)}
 												</Button>
 											</Col>
 										</Row>
@@ -162,10 +171,11 @@ export default function Grades() {
 																		fontSize: 12,
 																	}}
 																>
-																	{statement.semester?.type ===
-																	SemesterType.Winter
-																		? 'FEB'
-																		: 'JUN'}{' '}
+																	{statement.semester?.type?.includes(
+																		SemesterType.Spring
+																	)
+																		? ExamPeriods.JUN
+																		: ExamPeriods.FEB}{' '}
 																	{semester?.academicYear}
 																</small>
 															</small>

@@ -9,12 +9,17 @@ import {
 	finalizeGrades,
 	updateGrade,
 	viewGrade,
+	viewRecentGrades,
+	viewStudentOverallGrades,
+	viewStudentOverallRecentGrades,
+	viewStudentRecentGrades,
+	viewStudentTeachingGrades,
 	viewTeachingGrades,
-} from '../../controllers/course/grade';
+} from '../../controllers/course/grades/grade';
 
 export default (router: express.Router) => {
-	// @desc    Add Teaching Grade
-	// @route   POST /api/grade
+	// @desc    Add Teaching Grade / Get Recent Grades
+	// @route   GET/POST /api/grade
 	// @access  Private
 	router
 		.route('/grade')
@@ -23,6 +28,36 @@ export default (router: express.Router) => {
 			checkUserRole([UserType.admin, UserType.instructor]),
 			validateGrade,
 			addTeachingGrade
+		)
+		.get(authorize, checkUserRole([UserType.instructor]), viewRecentGrades);
+
+	// @desc    Get Student Recent Grades
+	// @route   GET /api/grade/student/recent
+	// @access  Private
+	router
+		.route('/grade/student/recent')
+		.get(authorize, checkUserRole([UserType.student]), viewStudentRecentGrades);
+
+	// @desc    Get Student Overall Grades
+	// @route   GET /api/grade/student/overall
+	// @access  Private
+	router
+		.route('/grade/student/overall')
+		.get(
+			authorize,
+			checkUserRole([UserType.student]),
+			viewStudentOverallGrades
+		);
+
+	// @desc    Get Student Overall Recent Grades
+	// @route   GET /api/grade/student/overall/recent
+	// @access  Private
+	router
+		.route('/grade/student/overall/recent')
+		.get(
+			authorize,
+			checkUserRole([UserType.student]),
+			viewStudentOverallRecentGrades
 		);
 
 	// @desc    Get Statement Teachings Grades
@@ -78,5 +113,16 @@ export default (router: express.Router) => {
 			authorize,
 			checkUserRole([UserType.admin, UserType.instructor]),
 			finalizeGrades
+		);
+
+	// @desc    Student Teaching Grades
+	// @route   GET /api/my-grades/teaching/:teachingId/details
+	// @access  Private
+	router
+		.route('/my-grades/teaching/:teachingId/details')
+		.get(
+			authorize,
+			checkUserRole([UserType.student]),
+			viewStudentTeachingGrades
 		);
 };

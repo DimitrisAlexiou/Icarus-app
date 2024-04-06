@@ -1,4 +1,4 @@
-import { Row, Col, Badge, Button } from 'reactstrap';
+import { Row, Col, Badge, Button, Spinner } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
 	deleteReview,
@@ -8,7 +8,7 @@ import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt, faEdit } from '@fortawesome/free-regular-svg-icons';
 import { deleteAlert } from '../../../constants/sweetAlertNotification';
 import ReviewForm from '../forms/ReviewForm';
-import Spinner from '../../boilerplate/spinners/Spinner';
+import Loading from '../../boilerplate/spinners/Spinner';
 
 const ReviewCard = ({
 	review,
@@ -41,7 +41,7 @@ const ReviewCard = ({
 										statement configuration for this period!
 									</Col>
 								) : isReviewLoading ? (
-									<Spinner card />
+									<Loading card />
 								) : !review || isEditingReview ? (
 									<>
 										<Row>
@@ -195,7 +195,11 @@ const ReviewCard = ({
 																	)
 																}
 															>
-																<FontAwesomeIcon icon={faTrashAlt} />
+																{isReviewLoading ? (
+																	<Spinner size="sm" color="dark" type="grow" />
+																) : (
+																	<FontAwesomeIcon icon={faTrashAlt} />
+																)}
 															</Button>
 														</Col>
 													</Col>

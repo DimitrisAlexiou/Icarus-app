@@ -1,5 +1,9 @@
 import { Row, Col, Badge } from 'reactstrap';
-import { CourseType, PrerequisiteType } from '../../../constants/enums';
+import {
+	CourseObligation,
+	CourseType,
+	PrerequisiteType,
+} from '../../../constants/enums';
 
 const CourseCard = ({ course }) => {
 	return (
@@ -125,7 +129,9 @@ const CourseCard = ({ course }) => {
 						style={{ textAlign: 'justify' }}
 						className={course.isObligatory ? 'text-warning' : 'text-success'}
 					>
-						{course.isObligatory ? 'Obligatory' : 'Optional'}
+						{course.isObligatory
+							? CourseObligation.Obligatory
+							: CourseObligation.Optional}
 					</p>
 					{course.hasPrerequisites ? (
 						<hr />
@@ -157,7 +163,9 @@ const CourseCard = ({ course }) => {
 									<p
 										style={{ textAlign: 'justify' }}
 										className={
-											prerequisite.prerequisiteType === PrerequisiteType.Hard
+											prerequisite.prerequisiteType.includes(
+												PrerequisiteType.Hard
+											)
 												? 'text-danger'
 												: 'text-warning'
 										}

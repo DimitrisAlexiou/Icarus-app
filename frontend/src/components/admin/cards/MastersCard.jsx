@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Row, Col, Badge, Button } from 'reactstrap';
+import { Row, Col, Badge, Button, Spinner } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt, faEdit } from '@fortawesome/free-regular-svg-icons';
@@ -11,7 +11,7 @@ import {
 } from '../../../features/admin/masterProgramSlice';
 import moment from 'moment';
 import MasterProgramForm from '../forms/MasterProgramForm';
-import Spinner from '../../boilerplate/spinners/Spinner';
+import Loading from '../../boilerplate/spinners/Spinner';
 
 const MastersCard = ({
 	masters,
@@ -40,7 +40,7 @@ const MastersCard = ({
 						<div className="card shadow mb-3 py-1">
 							<div className="card-body">
 								{isMastersLoading ? (
-									<Spinner card />
+									<Loading card />
 								) : !masters.length > 0 || addingMaster ? (
 									<Row>
 										<MasterProgramForm
@@ -308,7 +308,15 @@ const MastersCard = ({
 																		}}
 																		onClick={() => handleDeleteMaster(master)}
 																	>
-																		<FontAwesomeIcon icon={faTrashAlt} />
+																		{isMastersLoading ? (
+																			<Spinner
+																				size="sm"
+																				color="dark"
+																				type="grow"
+																			/>
+																		) : (
+																			<FontAwesomeIcon icon={faTrashAlt} />
+																		)}
 																	</Button>
 																</Col>
 															</div>
@@ -341,7 +349,11 @@ const MastersCard = ({
 													}}
 													onClick={() => handleDeleteMasters()}
 												>
-													<FontAwesomeIcon icon={faTrashAlt} />
+													{isMastersLoading ? (
+														<Spinner size="sm" color="dark" type="grow" />
+													) : (
+														<FontAwesomeIcon icon={faTrashAlt} />
+													)}
 												</Button>
 											</Col>
 										</Row>

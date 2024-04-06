@@ -30,7 +30,7 @@ const useMyCourses = () => {
 	);
 
 	const filteredAvailableTeachings = availableTeachings.filter(
-		(teaching) => !enrolledCourses.includes(teaching._id)
+		(teaching) => enrolledCourses && !enrolledCourses.includes(teaching._id)
 	);
 
 	const hasMoreAvailableCoursesToEnroll = filteredAvailableTeachings.length > 0;

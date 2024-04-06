@@ -174,6 +174,7 @@ export const semesterSlice = createSlice({
 				);
 				if (updatedSemesterIndex !== -1)
 					state.semesters[updatedSemesterIndex] = payload.updatedSemester;
+				state.semester = payload.updatedSemester;
 			})
 			.addCase(updateSemester.rejected, (state, { payload }) => {
 				state.isLoading = false;

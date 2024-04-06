@@ -5,25 +5,24 @@ import {
 	faCheckDouble,
 	faClockRotateLeft,
 } from '@fortawesome/free-solid-svg-icons';
-import useStatements from '../../hooks/user/useStatements';
+import useCurrentStatement from '../../hooks/user/useCurrentStatement';
 import Spinner from '../../components/boilerplate/spinners/Spinner';
 
 export default function CurrentStatement() {
-	const { isStatementsLoading, isStatementSubmitted, currentStatement } =
-		useStatements();
+	const { statement, isLoading } = useCurrentStatement();
 
 	return (
 		<>
-			{isStatementSubmitted ? (
+			{statement ? (
 				<Col xl="2" lg="3" md="4" className="text-center mb-3">
 					<Card className="card-note">
 						<CardBody>
-							{isStatementsLoading ? (
+							{isLoading ? (
 								<Spinner card />
 							) : (
 								<small
 									className={
-										currentStatement.condition === AssessmentStatus.Finalized
+										statement?.condition?.includes(AssessmentStatus.Finalized)
 											? 'text-success'
 											: 'text-warning'
 									}
@@ -34,7 +33,9 @@ export default function CurrentStatement() {
 									}}
 								>
 									<span className="mx-2">statement</span>
-									{currentStatement.condition === AssessmentStatus.Finalized ? (
+									{statement?.condition?.includes(
+										AssessmentStatus.Finalized
+									) ? (
 										<FontAwesomeIcon icon={faCheckDouble} />
 									) : (
 										<FontAwesomeIcon icon={faClockRotateLeft} />

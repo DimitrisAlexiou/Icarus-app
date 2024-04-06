@@ -57,7 +57,7 @@ export default function UserStatements({ statements, handleStatementClick }) {
 									<Col xs="auto" className="text-right">
 										<small
 											className={
-												userStatements.type === AssessmentType.Assessment
+												userStatements.type.includes(AssessmentType.Assessment)
 													? 'text-success'
 													: 'text-warning'
 											}

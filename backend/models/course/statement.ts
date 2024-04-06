@@ -102,6 +102,34 @@ export const getUserStatements = (userId: string) =>
 			],
 		})
 		.populate('user semester');
+export const getUserCurrentStatement = (userId: string, semesterId: string) =>
+	Statement.findOne({ user: userId, semester: semesterId })
+		.populate({
+			path: 'teaching',
+			populate: [
+				{
+					path: 'course',
+					populate: {
+						path: 'cycle',
+					},
+				},
+				{
+					path: 'theoryInstructors',
+					populate: {
+						path: 'user',
+						select: 'name surname',
+					},
+				},
+				{
+					path: 'labInstructors',
+					populate: {
+						path: 'user',
+						select: 'name surname',
+					},
+				},
+			],
+		})
+		.populate('user semester');
 export const getStatementById = (id: string) =>
 	Statement.findById(id)
 		.populate({
@@ -296,3 +324,25 @@ export const getInstructorStatements = async (
 };
 export const deleteStatements = () => Statement.deleteMany();
 export const getTotalStatements = () => Statement.find().countDocuments();
+export const getUserStatementsTotalTeachings = async (userId: string) => {
+	const userStatements: StatementProps[] = await Statement.find({
+		user: userId,
+	}).populate([
+		{
+			path: 'teaching',
+			populate: { path: 'course' },
+		},
+	]);
+
+	let totalTeachings = 0;
+	let totalTeachingsECTS = 0;
+
+	userStatements.forEach((statement: any) => {
+		statement.teaching.forEach((teaching: any) => {
+			totalTeachings++;
+			totalTeachingsECTS += teaching.course.ects;
+		});
+	});
+
+	return { totalTeachings, totalTeachingsECTS };
+};

@@ -1,5 +1,13 @@
 import { useState, forwardRef, useRef } from 'react';
-import { Row, Col, Modal, ModalHeader, ModalBody, Button } from 'reactstrap';
+import {
+	Row,
+	Col,
+	Modal,
+	ModalHeader,
+	ModalBody,
+	Button,
+	Spinner,
+} from 'reactstrap';
 import { deleteEvent, setEditEvent } from '../../features/calendar/eventSlice';
 import { deleteAlert } from '../../constants/sweetAlertNotification';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -11,7 +19,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import listPlugin from '@fullcalendar/list';
-import Spinner from '../boilerplate/spinners/Spinner';
+import Loading from '../boilerplate/spinners/Spinner';
 import SpinnerComponent from '../boilerplate/spinners/SpinnerMessage';
 import PillHeader from '../boilerplate/headers/PillHeader';
 import EventForm from '../calendar/EventForm';
@@ -132,7 +140,11 @@ export default function AdminCalendar() {
 							color="null"
 							onClick={() => handleDeleteEvents()}
 						>
-							<FontAwesomeIcon icon={faTrashAlt} />
+							{isLoading ? (
+								<Spinner size="sm" color="dark" type="grow" />
+							) : (
+								<FontAwesomeIcon icon={faTrashAlt} />
+							)}
 						</Button>
 					</Col>
 				) : null}
@@ -172,7 +184,7 @@ export default function AdminCalendar() {
 			</Row>
 			{events.length > 0 ? (
 				isLoading ? (
-					<Spinner card />
+					<Loading card />
 				) : (
 					<UserEvents
 						events={events}

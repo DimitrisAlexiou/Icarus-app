@@ -18,6 +18,7 @@ import {
 	Statements,
 	DegreeCompletion,
 	Activity,
+	GradeDetails,
 } from './pages/user/index';
 import {
 	TeachingReview,
@@ -223,6 +224,11 @@ export const studentRoutes = [
 	{
 		path: '/my-grades',
 		element: <MyGrades />,
+		allowedRoles: [UserType.student],
+	},
+	{
+		path: '/my-grades/teaching/:teachingId/details',
+		element: <GradeDetails />,
 		allowedRoles: [UserType.student],
 	},
 	{

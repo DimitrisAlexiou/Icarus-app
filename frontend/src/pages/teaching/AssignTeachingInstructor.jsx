@@ -30,7 +30,6 @@ export default function AssignTeachingInstructor() {
 		isSemesterLoading,
 		isTeachingsLoading,
 		isInstructorsLoading,
-		availableTeachings,
 		handleUnassignTheoryInstructors,
 		handleUnassignLabInstructors,
 		dispatch,
@@ -99,7 +98,7 @@ export default function AssignTeachingInstructor() {
 								fontSize: 15,
 							}}
 						>
-							{availableTeachings.length}
+							{teachings.length}
 						</h6>
 					) : null}
 				</Col>
@@ -108,37 +107,121 @@ export default function AssignTeachingInstructor() {
 			{isSemesterLoading || isTeachingsLoading || isInstructorsLoading ? (
 				<Spinner card />
 			) : teachings.length > 0 && semester ? (
-				availableTeachings.length > 0 ? (
-					<>
-						<CarouselComponent
-							objects={availableTeachings}
-							renderItem={(teaching) => (
-								<>
-									<CardTitle
-										style={{
-											textAlign: 'justify',
-											fontWeight: '700',
-											fontSize: 15,
-										}}
-										className="text-light-cornflower-blue mb-2"
-									>
-										{teaching.course.title}
-									</CardTitle>
-									<CardText
-										style={{
-											textAlign: 'justify',
-											fontWeight: '600',
-											fontSize: 11,
-										}}
-									>
-										{teaching.course.courseId}
-									</CardText>
+				<>
+					<CarouselComponent
+						objects={teachings}
+						renderItem={(teaching) => (
+							<>
+								<CardTitle
+									style={{
+										textAlign: 'justify',
+										fontWeight: '700',
+										fontSize: 15,
+									}}
+									className="text-light-cornflower-blue mb-2"
+								>
+									{teaching.course.title}
+								</CardTitle>
+								<CardText
+									style={{
+										textAlign: 'justify',
+										fontWeight: '600',
+										fontSize: 11,
+									}}
+								>
+									{teaching.course.courseId}
+								</CardText>
+								<CardText>
+									<Row className="d-flex align-items-center">
+										<Col>
+											<small
+												className={
+													teaching.theoryInstructors.length
+														? 'text-success pill-label'
+														: 'text-muted pill-label'
+												}
+												style={{
+													textAlign: 'justify',
+													fontWeight: '700',
+													fontSize: 12,
+												}}
+											>
+												{teaching.theoryInstructors.length ? (
+													<>
+														<FontAwesomeIcon icon={faCircleCheck} />
+														<span className="mx-2">Theory</span>
+													</>
+												) : (
+													<>Theory</>
+												)}
+											</small>
+										</Col>
+										{teaching.theoryInstructors.length ? (
+											<Col className="d-flex justify-content-end">
+												<FontAwesomeIcon
+													className="text-muted clickable"
+													style={{
+														textAlign: 'justify',
+														fontWeight: '700',
+														fontSize: 15,
+													}}
+													icon={faXmark}
+													onClick={(e) => {
+														e.stopPropagation();
+														handleUnassignTheoryInstructors(teaching);
+													}}
+												/>
+											</Col>
+										) : null}
+									</Row>
+									<Row className="mt-1">
+										<Col>
+											<small
+												className={
+													teaching.theoryInstructors.length
+														? 'text-success'
+														: 'text-muted'
+												}
+												style={{
+													textAlign: 'justify',
+													fontWeight: '700',
+													fontSize: 14,
+												}}
+											>
+												{teaching.theoryInstructors.length ? (
+													teaching.theoryInstructors
+														.map((instructor) => {
+															return instructor ? instructor.user.surname : '';
+														})
+														.join(' | ')
+												) : (
+													<small
+														className={
+															teaching.theoryInstructors.length
+																? 'text-success'
+																: 'text-muted'
+														}
+														style={{
+															textAlign: 'justify',
+															fontWeight: '500',
+															fontSize: 11,
+														}}
+													>
+														<FontAwesomeIcon icon={faCircleXmark} />
+														<span className="mx-2">Unassigned</span>
+													</small>
+												)}
+											</small>
+										</Col>
+									</Row>
+								</CardText>
+								{teaching.course.hasLab ? (
 									<CardText>
 										<Row className="d-flex align-items-center">
 											<Col>
 												<small
 													className={
-														teaching.theoryInstructors.length
+														teaching.labInstructors.length
 															? 'text-success pill-label'
 															: 'text-muted pill-label'
 													}
@@ -148,29 +231,29 @@ export default function AssignTeachingInstructor() {
 														fontSize: 12,
 													}}
 												>
-													{teaching.theoryInstructors.length ? (
+													{teaching.labInstructors.length ? (
 														<>
 															<FontAwesomeIcon icon={faCircleCheck} />
-															<span className="mx-2">Theory</span>
+															<span className="mx-2">Lab</span>
 														</>
 													) : (
-														<>Theory</>
+														<>Lab</>
 													)}
 												</small>
 											</Col>
-											{teaching.theoryInstructors.length ? (
+											{teaching.labInstructors.length ? (
 												<Col className="d-flex justify-content-end">
 													<FontAwesomeIcon
 														className="text-muted clickable"
 														style={{
 															textAlign: 'justify',
 															fontWeight: '700',
-															fontSize: 15,
+															fontSize: 13,
 														}}
 														icon={faXmark}
 														onClick={(e) => {
 															e.stopPropagation();
-															handleUnassignTheoryInstructors(teaching);
+															handleUnassignLabInstructors(teaching);
 														}}
 													/>
 												</Col>
@@ -180,7 +263,7 @@ export default function AssignTeachingInstructor() {
 											<Col>
 												<small
 													className={
-														teaching.theoryInstructors.length
+														teaching.labInstructors.length
 															? 'text-success'
 															: 'text-muted'
 													}
@@ -190,8 +273,8 @@ export default function AssignTeachingInstructor() {
 														fontSize: 14,
 													}}
 												>
-													{teaching.theoryInstructors.length ? (
-														teaching.theoryInstructors
+													{teaching.labInstructors.length ? (
+														teaching.labInstructors
 															.map((instructor) => {
 																return instructor
 																	? instructor.user.surname
@@ -201,7 +284,7 @@ export default function AssignTeachingInstructor() {
 													) : (
 														<small
 															className={
-																teaching.theoryInstructors.length
+																teaching.labInstructors.length
 																	? 'text-success'
 																	: 'text-muted'
 															}
@@ -219,111 +302,19 @@ export default function AssignTeachingInstructor() {
 											</Col>
 										</Row>
 									</CardText>
-									{teaching.course.hasLab ? (
-										<CardText>
-											<Row className="d-flex align-items-center">
-												<Col>
-													<small
-														className={
-															teaching.labInstructors.length
-																? 'text-success pill-label'
-																: 'text-muted pill-label'
-														}
-														style={{
-															textAlign: 'justify',
-															fontWeight: '700',
-															fontSize: 12,
-														}}
-													>
-														{teaching.labInstructors.length ? (
-															<>
-																<FontAwesomeIcon icon={faCircleCheck} />
-																<span className="mx-2">Lab</span>
-															</>
-														) : (
-															<>Lab</>
-														)}
-													</small>
-												</Col>
-												{teaching.labInstructors.length ? (
-													<Col className="d-flex justify-content-end">
-														<FontAwesomeIcon
-															className="text-muted clickable"
-															style={{
-																textAlign: 'justify',
-																fontWeight: '700',
-																fontSize: 13,
-															}}
-															icon={faXmark}
-															onClick={(e) => {
-																e.stopPropagation();
-																handleUnassignLabInstructors(teaching);
-															}}
-														/>
-													</Col>
-												) : null}
-											</Row>
-											<Row className="mt-1">
-												<Col>
-													<small
-														className={
-															teaching.labInstructors.length
-																? 'text-success'
-																: 'text-muted'
-														}
-														style={{
-															textAlign: 'justify',
-															fontWeight: '700',
-															fontSize: 14,
-														}}
-													>
-														{teaching.labInstructors.length ? (
-															teaching.labInstructors
-																.map((instructor) => {
-																	return instructor
-																		? instructor.user.surname
-																		: '';
-																})
-																.join(' | ')
-														) : (
-															<small
-																className={
-																	teaching.labInstructors.length
-																		? 'text-success'
-																		: 'text-muted'
-																}
-																style={{
-																	textAlign: 'justify',
-																	fontWeight: '500',
-																	fontSize: 11,
-																}}
-															>
-																<FontAwesomeIcon icon={faCircleXmark} />
-																<span className="mx-2">Unassigned</span>
-															</small>
-														)}
-													</small>
-												</Col>
-											</Row>
-										</CardText>
-									) : null}
-								</>
-							)}
-							onObjectClick={(teaching) => {
-								handleTeachingClick(teaching);
-							}}
-						/>
-						<ModalComponent ref={modalRef} toggle={toggle} />
-					</>
-				) : (
-					<span className="mt-5 mb-5">
-						<SpinnerComponent message="There are no active teachings available in the current semester." />
-					</span>
-				)
+								) : null}
+							</>
+						)}
+						onObjectClick={(teaching) => {
+							handleTeachingClick(teaching);
+						}}
+					/>
+					<ModalComponent ref={modalRef} toggle={toggle} />
+				</>
 			) : (
-				<div className="mb-5">
-					<SpinnerComponent message="There are no teachings available right now." />
-				</div>
+				<span className="mt-5 mb-5">
+					<SpinnerComponent message="There are no active teachings available in the current semester." />
+				</span>
 			)}
 		</>
 	);

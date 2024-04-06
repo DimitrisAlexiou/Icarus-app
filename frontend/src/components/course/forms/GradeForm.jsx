@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form, Formik } from 'formik';
-import { Button, Col, Row } from 'reactstrap';
+import { Button, Col, Row, Spinner } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
 	addGrade,
@@ -42,7 +42,6 @@ export default function GradeForm({
 						statementId: statementId,
 						userId: userId,
 					};
-					console.log(updateGradeData);
 					dispatch(
 						updateGrade({
 							gradeId: editGradeId,
@@ -107,7 +106,11 @@ export default function GradeForm({
 								}}
 								disabled={isSubmitting}
 							>
-								<FontAwesomeIcon icon={faCircleCheck} />
+								{isSubmitting ? (
+									<Spinner size="sm" color="dark" type="grow" />
+								) : (
+									<FontAwesomeIcon icon={faCircleCheck} />
+								)}
 							</Button>
 						</Col>
 					</Row>

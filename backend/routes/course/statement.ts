@@ -10,6 +10,8 @@ import {
 	finalizeStatement,
 	viewStatementsInGradingWindow,
 	finalizePendingStatements,
+	viewStudentCurrentStatement,
+	getStudentStatementsTotalTeachings,
 } from '../../controllers/course/statement';
 import { validateStatement } from '../../middleware/validations';
 import {
@@ -39,6 +41,17 @@ export default (router: express.Router) => {
 			viewStatementsInGradingWindow
 		);
 
+	// @desc    Get Student Statements Total Teachings
+	// @route   GET /api/statements/teachings
+	// @access  Private
+	router
+		.route('/statements/teachings')
+		.get(
+			authorize,
+			checkUserRole([UserType.admin, UserType.student]),
+			getStudentStatementsTotalTeachings
+		);
+
 	// @desc    Get / Create Statements
 	// @route   GET/POST /api/statement
 	// @access  Private
@@ -55,6 +68,18 @@ export default (router: express.Router) => {
 			checkUserRole([UserType.admin, UserType.student]),
 			validateStatement,
 			createStudentStatement
+		);
+
+	// @desc    Get Student Current Statement
+	// @route   GET /api/statement/current
+	// @access  Private
+	router
+		.route('/statement/current')
+		.get(
+			authorize,
+			isOwner,
+			checkUserRole([UserType.admin, UserType.student]),
+			viewStudentCurrentStatement
 		);
 
 	// @desc    Get / Delete / Update Statement

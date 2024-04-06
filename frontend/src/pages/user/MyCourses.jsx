@@ -1,6 +1,7 @@
 import { Row, Col, CardTitle, CardText } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
+import { CourseObligation } from '../../constants/enums';
 import useMyCourses from '../../hooks/user/useMyCourses';
 import Spinner from '../../components/boilerplate/spinners/Spinner';
 import SpinnerComponent from '../../components/boilerplate/spinners/SpinnerMessage';
@@ -72,7 +73,9 @@ export default function MyCourses() {
 											fontSize: 13,
 										}}
 									>
-										{teaching.course.isObligatory ? 'Obligatory' : 'Optional'}
+										{teaching.course.isObligatory
+											? CourseObligation.Obligatory
+											: CourseObligation.Optional}
 									</small>
 								</CardText>
 								<Row>
@@ -185,7 +188,9 @@ export default function MyCourses() {
 											fontSize: 13,
 										}}
 									>
-										{teaching?.course?.isObligatory ? 'Obligatory' : 'Optional'}
+										{teaching?.course?.isObligatory
+											? CourseObligation.Obligatory
+											: CourseObligation.Optional}
 									</small>
 								</CardText>
 								<Row>

@@ -16,6 +16,7 @@ import {
 	unassignLabGradingFromTeaching,
 	viewInstructorTeachings,
 	downloadEnrolledStudents,
+	viewSemesterActiveTeachings,
 } from '../../controllers/course/teaching';
 import {
 	validateInstructorsAssignment,
@@ -42,6 +43,17 @@ export default (router: express.Router) => {
 			authorize,
 			checkUserRole([UserType.admin, UserType.instructor]),
 			viewInstructorTeachings
+		);
+
+	// @desc    Get Semester Active Teachings
+	// @route   GET /api/teaching/semester
+	// @access  Private
+	router
+		.route('/teaching/semester')
+		.get(
+			authorize,
+			checkUserRole([UserType.admin, UserType.student]),
+			viewSemesterActiveTeachings
 		);
 
 	// @desc    Get / Delete / Update Teaching

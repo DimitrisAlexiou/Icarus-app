@@ -1,4 +1,4 @@
-import { Row, Col, Badge, Button } from 'reactstrap';
+import { Row, Col, Badge, Button, Spinner } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt, faEdit } from '@fortawesome/free-regular-svg-icons';
@@ -8,7 +8,7 @@ import {
 } from '../../../features/admin/degreeRulesSlice';
 import { deleteAlert } from '../../../constants/sweetAlertNotification';
 import DegreeRulesForm from '../forms/DegreeRulesForm';
-import Spinner from '../../boilerplate/spinners/Spinner';
+import Loading from '../../boilerplate/spinners/Spinner';
 
 const DegreeRulesCard = ({
 	degreeRules,
@@ -26,7 +26,7 @@ const DegreeRulesCard = ({
 						<div className="card shadow mb-3 py-1">
 							<div className="card-body">
 								{isDegreeRulesLoading ? (
-									<Spinner card />
+									<Loading card />
 								) : !degreeRules || isEditingDegreeRules ? (
 									<>
 										<Row>
@@ -167,7 +167,11 @@ const DegreeRulesCard = ({
 																	)
 																}
 															>
-																<FontAwesomeIcon icon={faTrashAlt} />
+																{isDegreeRulesLoading ? (
+																	<Spinner size="sm" color="dark" type="grow" />
+																) : (
+																	<FontAwesomeIcon icon={faTrashAlt} />
+																)}
 															</Button>
 														</Col>
 													</Col>

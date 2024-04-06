@@ -68,7 +68,7 @@ export default function PreviousStatements({
 									<Col xs="auto" className="text-right">
 										<small
 											className={
-												statement.type === AssessmentType.Assessment
+												statement.type.includes(AssessmentType.Assessment)
 													? 'text-success'
 													: 'text-warning'
 											}

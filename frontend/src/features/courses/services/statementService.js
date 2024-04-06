@@ -7,6 +7,18 @@ const getStudentStatements = async () => {
 	return response.data;
 };
 
+const getStudentStatementsTotalTeachings = async () => {
+	const response = await axiosFetch.get(API_URL_STATEMENT + 's/teachings');
+
+	return response.data;
+};
+
+const getStudentCurrentStatement = async () => {
+	const response = await axiosFetch.get(API_URL_STATEMENT + '/current');
+
+	return response.data;
+};
+
 const createStatement = async (data) => {
 	const response = await axiosFetch.post(API_URL_STATEMENT, data);
 
@@ -64,6 +76,8 @@ const deleteStatements = async () => {
 
 const statementService = {
 	getStudentStatements,
+	getStudentStatementsTotalTeachings,
+	getStudentCurrentStatement,
 	createStatement,
 	finalizeStatement,
 	updateStatement,

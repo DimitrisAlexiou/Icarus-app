@@ -1,7 +1,7 @@
-import { CardText, Col, Row } from 'reactstrap';
+import { CardText, Col, Row, Spinner } from 'reactstrap';
 import { AssessmentStatus } from '../../../constants/enums';
 
-const StatementCardInfo = ({ statement }) => {
+const StatementCardInfo = ({ statement, isStatementsLoading }) => {
 	return (
 		<>
 			<Row className="mb-2">
@@ -31,20 +31,24 @@ const StatementCardInfo = ({ statement }) => {
 					</Row>
 				</Col>
 				<Col className="text-right">
-					<small
-						className={
-							statement?.condition === AssessmentStatus.Finalized
-								? 'text-success pill-label'
-								: 'text-warning pill-label'
-						}
-						style={{
-							textAlign: 'justify',
-							fontWeight: '700',
-							fontSize: 12,
-						}}
-					>
-						{statement?.condition}
-					</small>
+					{isStatementsLoading ? (
+						<Spinner size="sm" color="dark" type="grow" />
+					) : (
+						<small
+							className={
+								statement?.condition?.includes(AssessmentStatus.Finalized)
+									? 'text-success pill-label'
+									: 'text-warning pill-label'
+							}
+							style={{
+								textAlign: 'justify',
+								fontWeight: '700',
+								fontSize: 12,
+							}}
+						>
+							{statement?.condition}
+						</small>
+					)}
 				</Col>
 			</Row>
 			<Row className="text-center">

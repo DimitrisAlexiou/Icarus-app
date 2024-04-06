@@ -12,7 +12,12 @@ import {
 	FINALIZE_GRADES,
 	GET_GRADE,
 	GET_GRADES,
+	GET_RECENT_GRADES,
 	GET_STATEMENT_GRADES,
+	GET_STUDENT_OVERALL_GRADES,
+	GET_STUDENT_OVERALL_RECENT_GRADES,
+	GET_STUDENT_RECENT_GRADES,
+	GET_STUDENT_TEACHING_GRADES,
 	UPDATE_GRADE,
 } from '../actions';
 import gradeService from './services/gradeService';
@@ -96,6 +101,61 @@ export const getStatementGrades = createAsyncThunk(
 	async (statementId, thunkAPI) => {
 		try {
 			return await gradeService.getStatementGrades(statementId);
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
+	}
+);
+
+export const getRecentGrades = createAsyncThunk(
+	GET_RECENT_GRADES,
+	async (_, thunkAPI) => {
+		try {
+			return await gradeService.getRecentGrades();
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
+	}
+);
+
+export const getStudentRecentGrades = createAsyncThunk(
+	GET_STUDENT_RECENT_GRADES,
+	async (_, thunkAPI) => {
+		try {
+			return await gradeService.getStudentRecentGrades();
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
+	}
+);
+
+export const getStudentOverallGrades = createAsyncThunk(
+	GET_STUDENT_OVERALL_GRADES,
+	async (_, thunkAPI) => {
+		try {
+			return await gradeService.getStudentOverallGrades();
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
+	}
+);
+
+export const getStudentOverallRecentGrades = createAsyncThunk(
+	GET_STUDENT_OVERALL_RECENT_GRADES,
+	async (_, thunkAPI) => {
+		try {
+			return await gradeService.getStudentOverallRecentGrades();
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
+	}
+);
+
+export const getStudentTeachingGrades = createAsyncThunk(
+	GET_STUDENT_TEACHING_GRADES,
+	async (teachingId, thunkAPI) => {
+		try {
+			return await gradeService.getStudentTeachingGrades(teachingId);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -229,6 +289,72 @@ export const gradeSlice = createSlice({
 				if (
 					payload !==
 					'Seems like there are no grades defined for this statement teachings.'
+				)
+					displayErrorNotification(payload);
+			})
+			.addCase(getRecentGrades.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(getRecentGrades.fulfilled, (state, { payload }) => {
+				state.isLoading = false;
+				state.grades = payload;
+			})
+			.addCase(getRecentGrades.rejected, (state, { payload }) => {
+				state.isLoading = false;
+				if (payload !== 'Seems like there are no recent grades submitted.')
+					displayErrorNotification(payload);
+			})
+			.addCase(getStudentRecentGrades.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(getStudentRecentGrades.fulfilled, (state, { payload }) => {
+				state.isLoading = false;
+				state.grades = payload;
+			})
+			.addCase(getStudentRecentGrades.rejected, (state, { payload }) => {
+				state.isLoading = false;
+				if (payload !== 'Seems like there are no recent grades submitted.')
+					displayErrorNotification(payload);
+			})
+			.addCase(getStudentOverallGrades.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(getStudentOverallGrades.fulfilled, (state, { payload }) => {
+				state.isLoading = false;
+				state.grades = payload;
+			})
+			.addCase(getStudentOverallGrades.rejected, (state, { payload }) => {
+				state.isLoading = false;
+				if (payload !== 'Seems like there are no grades submitted.')
+					displayErrorNotification(payload);
+			})
+			.addCase(getStudentOverallRecentGrades.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(
+				getStudentOverallRecentGrades.fulfilled,
+				(state, { payload }) => {
+					state.isLoading = false;
+					state.grades = payload;
+				}
+			)
+			.addCase(getStudentOverallRecentGrades.rejected, (state, { payload }) => {
+				state.isLoading = false;
+				if (payload !== 'Seems like there are no grades submitted.')
+					displayErrorNotification(payload);
+			})
+			.addCase(getStudentTeachingGrades.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(getStudentTeachingGrades.fulfilled, (state, { payload }) => {
+				state.isLoading = false;
+				state.grades = payload;
+			})
+			.addCase(getStudentTeachingGrades.rejected, (state, { payload }) => {
+				state.isLoading = false;
+				if (
+					payload !==
+					'Seems like there are no grades for this teaching submitted.'
 				)
 					displayErrorNotification(payload);
 			})

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Row, Col, Badge, Button } from 'reactstrap';
+import { Row, Col, Badge, Button, Spinner } from 'reactstrap';
 import {
 	deleteCycle,
 	deleteCycles,
@@ -10,7 +10,7 @@ import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt, faEdit } from '@fortawesome/free-regular-svg-icons';
 import { deleteAlert } from '../../../constants/sweetAlertNotification';
 import CycleForm from '../forms/CycleForm';
-import Spinner from '../../boilerplate/spinners/Spinner';
+import Loading from '../../boilerplate/spinners/Spinner';
 
 const CycleCard = ({
 	cycles,
@@ -31,7 +31,7 @@ const CycleCard = ({
 						<div className="card shadow mb-3 py-1">
 							<div className="card-body">
 								{isCyclesLoading ? (
-									<Spinner card />
+									<Loading card />
 								) : !cycles.length > 0 || addingCycle ? (
 									<Row>
 										{addingCycle ? (
@@ -199,7 +199,15 @@ const CycleCard = ({
 																					)
 																				}
 																			>
-																				<FontAwesomeIcon icon={faTrashAlt} />
+																				{isCyclesLoading ? (
+																					<Spinner
+																						size="sm"
+																						color="dark"
+																						type="grow"
+																					/>
+																				) : (
+																					<FontAwesomeIcon icon={faTrashAlt} />
+																				)}
 																			</Button>
 																		</Col>
 																	</Row>
@@ -251,7 +259,11 @@ const CycleCard = ({
 																deleteAlert(() => dispatch(deleteCycles()))
 															}
 														>
-															<FontAwesomeIcon icon={faTrashAlt} />
+															{isCyclesLoading ? (
+																<Spinner size="sm" color="dark" type="grow" />
+															) : (
+																<FontAwesomeIcon icon={faTrashAlt} />
+															)}
 														</Button>
 													</Col>
 												</Row>

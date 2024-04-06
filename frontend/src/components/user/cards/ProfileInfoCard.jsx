@@ -22,7 +22,7 @@ export default function ProfileInfoCard({ user }) {
 							src={img}
 							alt="profile_picture"
 							className={
-								user.user.type === UserType.admin
+								user.user.type.includes(UserType.admin)
 									? `rounded-circle p-1 bg-danger mb-1`
 									: `rounded-circle p-1 bg-primary mb-1`
 							}
@@ -49,7 +49,7 @@ export default function ProfileInfoCard({ user }) {
 							</p>
 						</Col>
 					</div>
-					{user.user.type === UserType.student ? (
+					{user.user.type.includes(UserType.student) ? (
 						<>
 							<hr />
 							<ul className="list-group list-group-flush">
@@ -95,7 +95,7 @@ export default function ProfileInfoCard({ user }) {
 								</li>
 							</ul>
 						</>
-					) : user.user.type === UserType.instructor ? (
+					) : user.user.type.includes(UserType.instructor) ? (
 						<>
 							<hr />
 							<ul className="list-group list-group-flush">

@@ -8,6 +8,7 @@ import {
 	Modal,
 	ModalHeader,
 	ModalBody,
+	Spinner,
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleXmark } from '@fortawesome/free-regular-svg-icons';
@@ -15,7 +16,7 @@ import useModal from '../../hooks/generic/useModal';
 import AnnouncementCard from '../user/cards/AnnouncementCard';
 import CarouselComponent from '../Carousel';
 import PillHeader from '../boilerplate/headers/PillHeader';
-import Spinner from '../boilerplate/spinners/Spinner';
+import Loading from '../boilerplate/spinners/Spinner';
 import SpinnerComponent from '../boilerplate/spinners/SpinnerMessage';
 
 export default function TeachingAnnouncements({
@@ -76,11 +77,15 @@ export default function TeachingAnnouncements({
 									fontSize: 15,
 								}}
 							>
-								<FontAwesomeIcon
-									className="clickable"
-									icon={faCircleXmark}
-									onClick={() => handleDeleteTeachingAnnouncements()}
-								/>
+								{isAnnouncementsLoading ? (
+									<Spinner size="sm" color="dark" type="grow" />
+								) : (
+									<FontAwesomeIcon
+										className="clickable"
+										icon={faCircleXmark}
+										onClick={() => handleDeleteTeachingAnnouncements()}
+									/>
+								)}
 							</span>
 						) : null}
 					</Col>
@@ -90,7 +95,7 @@ export default function TeachingAnnouncements({
 			<Row className="justify-content-center animated--grow-in">
 				<Col xs="12" sm="12" md="12" lg="10" xl="10">
 					{isAnnouncementsLoading ? (
-						<Spinner card />
+						<Loading card />
 					) : announcements?.length > 0 ? (
 						<CarouselComponent
 							objects={announcements}

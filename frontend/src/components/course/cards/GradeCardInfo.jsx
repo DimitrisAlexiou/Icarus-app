@@ -8,7 +8,11 @@ import {
 	faPersonChalkboard,
 } from '@fortawesome/free-solid-svg-icons';
 import { academicYearEnd } from '../../../utils/academicYears';
-import { SemesterType } from '../../../constants/enums';
+import {
+	CourseObligation,
+	ExamPeriods,
+	SemesterType,
+} from '../../../constants/enums';
 
 const GradeCardInfo = ({ teaching, statement, overallGrade }) => {
 	return (
@@ -117,9 +121,9 @@ const GradeCardInfo = ({ teaching, statement, overallGrade }) => {
 						}}
 					>
 						<FontAwesomeIcon className="mr-2 text-gray-600" icon={faClock} />
-						{statement?.semester?.type === SemesterType.Spring
-							? 'JUN '
-							: 'FEB '}
+						{statement?.semester?.type?.includes(SemesterType.Spring)
+							? ExamPeriods.JUN
+							: ExamPeriods.FEB}{' '}
 						{academicYearEnd}
 					</small>
 				</Col>
@@ -138,7 +142,7 @@ const GradeCardInfo = ({ teaching, statement, overallGrade }) => {
 						/>
 						{teaching?.course?.cycle
 							? teaching.course.cycle.cycle
-							: 'Obligatory'}
+							: CourseObligation.Obligatory}
 					</small>
 				</Col>
 			</Row>

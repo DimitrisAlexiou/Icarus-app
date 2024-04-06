@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Row, Col, Badge, Button } from 'reactstrap';
+import { Row, Col, Badge, Button, Spinner } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt, faEdit } from '@fortawesome/free-regular-svg-icons';
@@ -7,7 +7,7 @@ import { SemesterType } from '../../../constants/enums';
 import useSemesterCard from '../../../hooks/admin/useSemesterCard';
 import moment from 'moment';
 import SemesterForm from '../forms/SemesterForm';
-import Spinner from '../../boilerplate/spinners/Spinner';
+import Loading from '../../boilerplate/spinners/Spinner';
 
 const SemesterCard = ({
 	isSemesterLoading,
@@ -34,7 +34,7 @@ const SemesterCard = ({
 						<div className="card shadow mb-3 py-1">
 							<div className="card-body">
 								{isSemesterLoading ? (
-									<Spinner card />
+									<Loading card />
 								) : !semester || addingSemester ? (
 									<Row>
 										{addingSemester ? (
@@ -188,7 +188,7 @@ const SemesterCard = ({
 												<hr />
 											</Col>
 										</Row>
-										{semester.type === SemesterType.Any ? (
+										{semester.type.includes(SemesterType.Any) ? (
 											<Row className="mb-3">
 												<Col>
 													<label>
@@ -263,7 +263,11 @@ const SemesterCard = ({
 																}}
 																onClick={() => handleDeleteSemester(semester)}
 															>
-																<FontAwesomeIcon icon={faTrashAlt} />
+																{isSemesterLoading ? (
+																	<Spinner size="sm" color="dark" type="grow" />
+																) : (
+																	<FontAwesomeIcon icon={faTrashAlt} />
+																)}
 															</Button>
 														</Col>
 													</Col>

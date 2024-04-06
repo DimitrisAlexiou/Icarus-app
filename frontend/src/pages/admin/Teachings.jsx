@@ -1,5 +1,13 @@
 import { useRef, useState, forwardRef } from 'react';
-import { Row, Col, Button, Modal, ModalHeader, ModalBody } from 'reactstrap';
+import {
+	Row,
+	Col,
+	Button,
+	Modal,
+	ModalHeader,
+	ModalBody,
+	Spinner,
+} from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
 	faEdit,
@@ -201,7 +209,11 @@ export default function Teachings() {
 								handleGenerateEnrolledStudentsPDF(teaching);
 							}}
 						>
-							<FontAwesomeIcon icon={faFilePdf} />
+							{isLoading ? (
+								<Spinner size="sm" color="dark" type="grow" />
+							) : (
+								<FontAwesomeIcon icon={faFilePdf} />
+							)}
 						</Button>
 					</Col>
 					{user.user.isAdmin ? (
@@ -213,7 +225,11 @@ export default function Teachings() {
 									handleDeleteTeaching(teaching);
 								}}
 							>
-								<FontAwesomeIcon icon={faTrashAlt} />
+								{isLoading ? (
+									<Spinner size="sm" color="dark" type="grow" />
+								) : (
+									<FontAwesomeIcon icon={faTrashAlt} />
+								)}
 							</Button>
 						</Col>
 					) : null}
@@ -244,7 +260,13 @@ export default function Teachings() {
 							color="null"
 							onClick={() => handleDeleteTeachings()}
 						>
-							<FontAwesomeIcon icon={faTrashAlt} /> Delete Teachings
+							{isLoading ? (
+								<Spinner size="sm" color="dark" type="grow" />
+							) : (
+								<>
+									<FontAwesomeIcon icon={faTrashAlt} /> Delete Teachings
+								</>
+							)}
 						</Button>
 					</Col>
 				) : null}

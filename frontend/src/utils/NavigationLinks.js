@@ -374,7 +374,7 @@ export const myGradesCategories = [
 	},
 	{
 		id: 2,
-		text: 'Transcript of Records',
+		text: 'Grades',
 	},
 	{
 		id: 3,

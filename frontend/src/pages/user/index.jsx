@@ -8,3 +8,4 @@ export { default as Statements } from './Statements';
 export { default as Announcements } from './Announcements';
 export { default as DegreeCompletion } from './DegreeCompletion';
 export { default as StatisticsReports } from './StatisticsReports';
+export { default as GradeDetails } from './GradeDetails';

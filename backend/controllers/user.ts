@@ -2,7 +2,7 @@ import { Response } from 'express';
 import { startSession } from 'mongoose';
 import { AuthenticatedRequest } from '../interfaces/AuthRequest';
 import { updateUserById, getUserById, UserType } from '../models/users/user';
-import { Student } from '../models/users/student';
+import { Student, getStudentPassedTeachings } from '../models/users/student';
 import { Instructor, updateInstructorById } from '../models/users/instructor';
 import { tryCatch } from '../utils/tryCatch';
 import CustomError from '../utils/CustomError';
@@ -97,3 +97,18 @@ export const updateProfile = async (
 		throw new CustomError('User profile did not updated.', 500);
 	}
 };
+
+export const viewPassedTeachings = tryCatch(
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
+		const id = req.user.id;
+		const user = await getStudentPassedTeachings(id);
+
+		if (!user)
+			throw new CustomError(
+				'Seems like the user that you are trying to view does not exist.',
+				404
+			);
+
+		return res.status(200).json(user);
+	}
+);

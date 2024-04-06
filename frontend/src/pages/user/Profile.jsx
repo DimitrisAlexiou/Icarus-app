@@ -5,6 +5,7 @@ import { NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShieldHalved } from '@fortawesome/free-solid-svg-icons';
 import { faAddressCard } from '@fortawesome/free-regular-svg-icons';
+import { ProfileMenu } from '../../constants/enums';
 import ProfileInfoCard from '../../components/user/cards/ProfileInfoCard';
 import ProfileUpdateCard from '../../components/user/cards/ProfileUpdateCard';
 import ProfileProgressCard from '../../components/user/cards/ProfileProgressCard';
@@ -47,7 +48,7 @@ export default function Profile() {
 							<NavItem className="nav-item mx-1">
 								<NavLink
 									className={`nav-link ${
-										selectedNavItem === 'overview'
+										selectedNavItem.includes(ProfileMenu.Overview)
 											? 'font-weight-bold text-gray-500'
 											: ''
 									}`}
@@ -61,7 +62,7 @@ export default function Profile() {
 							<NavItem className="nav-item  mx-1">
 								<NavLink
 									className={`nav-link ${
-										selectedNavItem === 'security'
+										selectedNavItem.includes(ProfileMenu.Security)
 											? 'font-weight-bold text-gray-500'
 											: ''
 									}`}
@@ -73,9 +74,9 @@ export default function Profile() {
 							</NavItem>
 						</div>
 					</Nav>
-					{selectedNavItem === 'overview' ? (
+					{selectedNavItem.includes(ProfileMenu.Overview) ? (
 						<ProfileUpdateCard user={user} />
-					) : selectedNavItem === 'security' ? (
+					) : selectedNavItem.includes(ProfileMenu.Security) ? (
 						<ChangePassword user={user} />
 					) : null}
 				</Col>

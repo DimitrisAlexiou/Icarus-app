@@ -9,6 +9,7 @@ import {
 	ModalHeader,
 	ModalBody,
 	Button,
+	Spinner,
 } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleXmark, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
@@ -18,7 +19,7 @@ import useAdminAnnouncements from '../../hooks/admin/useAdminAnnouncements';
 import useModal from '../../hooks/generic/useModal';
 import CarouselComponent from '../../components/Carousel';
 import HeaderWithSemester from '../../components/boilerplate/headers/HeaderWithSemester';
-import Spinner from '../../components/boilerplate/spinners/Spinner';
+import Loading from '../../components/boilerplate/spinners/Spinner';
 import SpinnerComponent from '../../components/boilerplate/spinners/SpinnerMessage';
 import PillHeader from '../../components/boilerplate/headers/PillHeader';
 import AnnouncementCard from '../../components/user/cards/AnnouncementCard';
@@ -51,7 +52,11 @@ export default function AdminAnnouncements() {
 							closeModal();
 						}}
 					>
-						<FontAwesomeIcon icon={faTrashAlt} />
+						{isAnnouncementsLoading ? (
+							<Spinner size="sm" color="dark" type="grow" />
+						) : (
+							<FontAwesomeIcon icon={faTrashAlt} />
+						)}
 					</Button>
 				</ModalHeader>
 				<ModalBody>
@@ -87,20 +92,24 @@ export default function AdminAnnouncements() {
 								fontSize: 15,
 							}}
 						>
-							<FontAwesomeIcon
-								className="clickable"
-								icon={faCircleXmark}
-								onClick={() => {
-									handleDeleteAnnouncements();
-								}}
-							/>
+							{isAnnouncementsLoading ? (
+								<Spinner size="sm" color="dark" type="grow" />
+							) : (
+								<FontAwesomeIcon
+									className="clickable"
+									icon={faCircleXmark}
+									onClick={() => {
+										handleDeleteAnnouncements();
+									}}
+								/>
+							)}
 						</span>
 					) : null}
 				</Col>
 			</Row>
 
 			{isAnnouncementsLoading ? (
-				<Spinner card />
+				<Loading card />
 			) : announcements.length > 0 ? (
 				<CarouselComponent
 					objects={announcements}

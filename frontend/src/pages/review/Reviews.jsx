@@ -7,7 +7,14 @@ import GeneralReviews from '../../components/review/GeneralReviews';
 import Spinner from '../../components/boilerplate/spinners/Spinner';
 
 export default function Reviews() {
-	const { review, isLoading, reviewStartDate, reviewHasStarted } = useReviews();
+	const {
+		review,
+		isLoading,
+		reviewStartDate,
+		reviewEndDate,
+		reviewHasStarted,
+		reviewHasEnded,
+	} = useReviews();
 
 	return (
 		<>
@@ -31,11 +38,37 @@ export default function Reviews() {
 										fontSize: 15,
 									}}
 								>
-									{reviewHasStarted ? (
-										'Reviews are available to submit'
+									{reviewHasStarted && !reviewHasEnded ? (
+										<>
+											Available to submit until{' '}
+											<small
+												className="pill-label"
+												style={{
+													textAlign: 'justify',
+													fontWeight: '700',
+													fontSize: 15,
+												}}
+											>
+												{new Date(reviewEndDate).toDateString()}
+											</small>
+										</>
+									) : reviewHasEnded ? (
+										<>
+											Submission ended on{' '}
+											<small
+												className="pill-label"
+												style={{
+													textAlign: 'justify',
+													fontWeight: '700',
+													fontSize: 15,
+												}}
+											>
+												{new Date(reviewEndDate).toDateString()}
+											</small>
+										</>
 									) : (
 										<>
-											Reviews start on{' '}
+											Submission starts on{' '}
 											<small
 												className="pill-label"
 												style={{
@@ -71,8 +104,9 @@ export default function Reviews() {
 					<Link
 						style={{
 							textDecoration: 'none',
-							pointerEvents: review && reviewHasStarted ? 'auto' : 'none',
-							opacity: review && reviewHasStarted ? 1 : 0.6,
+							pointerEvents:
+								reviewHasEnded || !reviewHasStarted ? 'none' : 'auto',
+							opacity: reviewHasEnded || !reviewHasStarted ? 0.6 : 1,
 						}}
 						to="/review/teaching"
 					>
@@ -86,8 +120,9 @@ export default function Reviews() {
 					<Link
 						style={{
 							textDecoration: 'none',
-							pointerEvents: review && reviewHasStarted ? 'auto' : 'none',
-							opacity: review && reviewHasStarted ? 1 : 0.6,
+							pointerEvents:
+								reviewHasEnded || !reviewHasStarted ? 'none' : 'auto',
+							opacity: reviewHasEnded || !reviewHasStarted ? 0.6 : 1,
 						}}
 						to="/review/instructor"
 					>
@@ -104,8 +139,9 @@ export default function Reviews() {
 					<Link
 						style={{
 							textDecoration: 'none',
-							pointerEvents: review && reviewHasStarted ? 'auto' : 'none',
-							opacity: review && reviewHasStarted ? 1 : 0.6,
+							pointerEvents:
+								reviewHasEnded || !reviewHasStarted ? 'none' : 'auto',
+							opacity: reviewHasEnded || !reviewHasStarted ? 0.6 : 1,
 						}}
 						to="/review/general"
 						disabled={!review}

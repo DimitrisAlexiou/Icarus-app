@@ -23,6 +23,7 @@ export const API_URL_USERS = `${BASE_URL}/admin/users`;
 export const API_URL_COURSE = `${BASE_URL}/course`;
 export const API_URL_STATEMENT = `${BASE_URL}/statement`;
 export const API_URL_GRADE = `${BASE_URL}/grade`;
+export const API_URL_MYGRADES = `${BASE_URL}/my-grades`;
 export const API_URL_MYCOURSES = `${BASE_URL}/course/my-courses`;
 export const API_URL_TEACHING = `${BASE_URL}/teaching`;
 export const API_URL_REVIEW = `${BASE_URL}/review`;

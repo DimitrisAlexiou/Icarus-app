@@ -14,6 +14,7 @@ export const Toast = MySwal.mixin({
 	showConfirmButton: false,
 	timer: 4500,
 	timerProgressBar: true,
+	showCloseButton: true,
 });
 
 export const fileSizeAlert = (fileName) => {

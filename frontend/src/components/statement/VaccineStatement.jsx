@@ -1,4 +1,4 @@
-import { Row, Col, Button } from 'reactstrap';
+import { Row, Col, Button, Spinner } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckDouble, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { faEdit, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
@@ -6,7 +6,7 @@ import { AssessmentStatus, AssessmentType } from '../../constants/enums';
 import StatementForm from '../user/forms/StatementForm';
 import StatementCard from '../course/cards/StatementCard';
 import PillHeader from '../boilerplate/headers/PillHeader';
-import Spinner from '../boilerplate/spinners/Spinner';
+import Loading from '../boilerplate/spinners/Spinner';
 
 export default function VaccineStatement({
 	user,
@@ -36,7 +36,7 @@ export default function VaccineStatement({
 			</Row>
 
 			{isSemesterLoading || isStatementsLoading ? (
-				<Spinner card />
+				<Loading card />
 			) : !isVaccineSubmitted || isEditingVaccine ? (
 				<Row className="justify-content-center animated--grow-in">
 					<Col xl="8" lg="12" md="12">
@@ -112,7 +112,7 @@ export default function VaccineStatement({
 			) : (
 				<>
 					{vaccineIsAvailable &&
-					currentVaccine.condition === AssessmentStatus.Pending ? (
+					currentVaccine.condition.includes(AssessmentStatus.Pending) ? (
 						<Row className="mb-3 justify-content-center animated--grow-in">
 							<Col xs="auto" className="text-center">
 								<Row>
@@ -125,7 +125,11 @@ export default function VaccineStatement({
 											}}
 											onClick={() => handleFinalizeStatement(currentVaccine)}
 										>
-											<FontAwesomeIcon icon={faCheckDouble} />
+											{isStatementsLoading ? (
+												<Spinner size="sm" color="dark" type="grow" />
+											) : (
+												<FontAwesomeIcon icon={faCheckDouble} />
+											)}
 										</Button>
 									</Col>
 									<Col>
@@ -159,7 +163,11 @@ export default function VaccineStatement({
 												)
 											}
 										>
-											<FontAwesomeIcon icon={faTrashAlt} />
+											{isStatementsLoading ? (
+												<Spinner size="sm" color="dark" type="grow" />
+											) : (
+												<FontAwesomeIcon icon={faTrashAlt} />
+											)}
 										</Button>
 									</Col>
 								</Row>

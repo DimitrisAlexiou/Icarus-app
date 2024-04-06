@@ -1,4 +1,4 @@
-import { Button, Col, Row } from 'reactstrap';
+import { Button, Col, Row, Spinner } from 'reactstrap';
 import { Examination } from '../../../constants/enums';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit } from '@fortawesome/free-regular-svg-icons';
@@ -7,7 +7,7 @@ import {
 	setEditTheoryGrade,
 	setEditLabGrade,
 } from '../../../features/courses/gradeSlice';
-import Spinner from '../../../components/boilerplate/spinners/Spinner';
+import Loading from '../../../components/boilerplate/spinners/Spinner';
 import GradeForm from '../forms/GradeForm';
 import GradeCardInfo from './GradeCardInfo';
 import StatementCardInfo from './StatementCardInfo';
@@ -17,6 +17,7 @@ const GradeCard = ({
 	grades,
 	statement,
 	teachingsToGrade,
+	isGradeLoading,
 	isStatementsLoading,
 	isEditingTheoryGrade,
 	isEditingLabGrade,
@@ -31,9 +32,12 @@ const GradeCard = ({
 }) => {
 	return (
 		<>
-			<StatementCardInfo statement={statement} />
+			<StatementCardInfo
+				statement={statement}
+				isStatementsLoading={isStatementsLoading}
+			/>
 			{isStatementsLoading ? (
-				<Spinner card />
+				<Loading card />
 			) : (
 				teachingsToGrade.map((teaching, index) => (
 					<div key={index}>
@@ -199,7 +203,15 @@ const GradeCard = ({
 																				);
 																			}}
 																		>
-																			<FontAwesomeIcon icon={faEdit} />
+																			{isGradeLoading ? (
+																				<Spinner
+																					size="sm"
+																					color="dark"
+																					type="grow"
+																				/>
+																			) : (
+																				<FontAwesomeIcon icon={faEdit} />
+																			)}
 																		</Button>
 																	</Col>
 																) : null}
@@ -214,7 +226,15 @@ const GradeCard = ({
 																			handleFinalizeGrade(findGrade)
 																		}
 																	>
-																		<FontAwesomeIcon icon={faCheckDouble} />
+																		{isGradeLoading ? (
+																			<Spinner
+																				size="sm"
+																				color="dark"
+																				type="grow"
+																			/>
+																		) : (
+																			<FontAwesomeIcon icon={faCheckDouble} />
+																		)}
 																	</Button>
 																</Col>
 															</Row>
@@ -413,7 +433,15 @@ const GradeCard = ({
 																				);
 																			}}
 																		>
-																			<FontAwesomeIcon icon={faEdit} />
+																			{isGradeLoading ? (
+																				<Spinner
+																					size="sm"
+																					color="dark"
+																					type="grow"
+																				/>
+																			) : (
+																				<FontAwesomeIcon icon={faEdit} />
+																			)}
 																		</Button>
 																	</Col>
 																) : null}
@@ -428,7 +456,15 @@ const GradeCard = ({
 																			handleFinalizeGrade(findGrade)
 																		}
 																	>
-																		<FontAwesomeIcon icon={faCheckDouble} />
+																		{isGradeLoading ? (
+																			<Spinner
+																				size="sm"
+																				color="dark"
+																				type="grow"
+																			/>
+																		) : (
+																			<FontAwesomeIcon icon={faCheckDouble} />
+																		)}
 																	</Button>
 																</Col>
 															</Row>

@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { Col, NavItem, NavLink, Row } from 'reactstrap';
 import { degreeCompletionCategories } from '../../utils/NavigationLinks';
+import { DegreeCompletionMenu } from '../../constants/enums';
 import Header from '../../components/boilerplate/headers/Header';
+import SpinnerComponent from '../../components/boilerplate/spinners/SpinnerMessage';
 
 export default function DegreeCompletion() {
 	const [selectedCategory, setSelectedCategory] = useState('Prerequisites');
@@ -43,13 +45,18 @@ export default function DegreeCompletion() {
 				</Col>
 			</Row>
 			<Row className="animated--grow-in">
-				{selectedCategory === 'Prerequisites' ? (
+				{selectedCategory.includes(DegreeCompletionMenu.Prerequisites) ? (
 					<h5>Degree Prerequisites Card</h5>
 				) : // <DegreePrerequisitesCard />
-				selectedCategory === 'Progress' ? (
+				selectedCategory.includes(DegreeCompletionMenu.Progress) ? (
 					<h5>Degree Progress Card</h5>
 				) : // <ProgressCard />
 				null}
+			</Row>
+			<Row className="animated--grow-in text-gray-500">
+				<Col>
+					<SpinnerComponent message="To be implemented." />
+				</Col>
 			</Row>
 		</>
 	);

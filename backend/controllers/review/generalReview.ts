@@ -10,8 +10,7 @@ import {
 	getUserSubmittedGeneralReview,
 	deleteUserGeneralReviews,
 } from '../../models/review/generalReview';
-import { getCurrentSemester } from '../../models/admin/semester';
-import { getReviewBySemester } from '../../models/admin/review';
+import { checkReviewAvailability } from '../../utils/reviewsAvailability';
 import { tryCatch } from '../../utils/tryCatch';
 import CustomError from '../../utils/CustomError';
 
@@ -26,46 +25,11 @@ export const createUserGeneralReview = tryCatch(
 				400
 			);
 
-		const currentDate = new Date();
-		const semester = await getCurrentSemester(currentDate);
-
-		if (!semester)
-			throw new CustomError(
-				`Seems like there is no defined semester for current period, so you can't submit a review.`,
-				404
-			);
-
-		const semesterId = semester._id.toString();
-		const reviewDuration = await getReviewBySemester(semesterId);
-
-		if (!reviewDuration)
-			throw new CustomError(
-				`There is no review duration defined for the current semester.`,
-				404
-			);
-
-		const reviewStart = new Date(
-			semester.startDate.getDate() + reviewDuration.startAfter * 7
-		);
-
-		if (reviewStart > currentDate)
-			throw new CustomError(
-				'The review duration period has not started yet. Please wait until the review period starts.',
-				406
-			);
-
-		const reviewEnd = new Date(
-			reviewStart.getDate() + reviewDuration.period * 7
-		);
-
-		if (reviewEnd < currentDate)
-			throw new CustomError(
-				'The review duration period has ended. No more teaching reviews can be submitted.',
-				406
-			);
-
 		const userId = req.user.id;
 		const { teachingReviewId } = req.params;
+
+		await checkReviewAvailability();
+
 		const existingGeneralReview = await getUserSubmittedGeneralReview(
 			userId,
 			teachingReviewId
@@ -109,8 +73,7 @@ export const viewUserGeneralReview = tryCatch(
 
 export const updateUserGeneralReview = tryCatch(
 	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
-		const { course_opinion, instructor_opinion, likes, dislikes, teaching } =
-			req.body;
+		const { course_opinion, instructor_opinion, likes, dislikes } = req.body;
 
 		if (!course_opinion || !instructor_opinion || !likes || !dislikes)
 			throw new CustomError(
@@ -118,45 +81,10 @@ export const updateUserGeneralReview = tryCatch(
 				400
 			);
 
-		const currentDate = new Date();
-		const semester = await getCurrentSemester(currentDate);
-
-		if (!semester)
-			throw new CustomError(
-				`Seems like there is no defined semester for current period, so you can't submit a review.`,
-				404
-			);
-
-		const semesterId = semester._id.toString();
-		const reviewDuration = await getReviewBySemester(semesterId);
-
-		if (!reviewDuration)
-			throw new CustomError(
-				`There is no review duration defined for the current semester.`,
-				404
-			);
-
-		const reviewStart = new Date(
-			semester.startDate.getDate() + reviewDuration.startAfter * 7
-		);
-
-		if (reviewStart > currentDate)
-			throw new CustomError(
-				'The review duration period has not started yet. Please wait until the review period starts.',
-				406
-			);
-
-		const reviewEnd = new Date(
-			reviewStart.getDate() + reviewDuration.period * 7
-		);
-
-		if (reviewEnd < currentDate)
-			throw new CustomError(
-				'The review duration period has ended. No more teaching reviews can be submitted.',
-				406
-			);
-
 		const { generalReviewId } = req.params;
+
+		await checkReviewAvailability();
+
 		const updatedGeneralReview = await updateGeneralReviewById(
 			generalReviewId,
 			{

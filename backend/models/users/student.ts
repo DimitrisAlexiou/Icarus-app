@@ -72,6 +72,47 @@ export const updateStudentById = (
 	student: Partial<StudentProps>,
 	options?: Record<string, any>
 ) => Student.findByIdAndUpdate(id, student, { new: true });
+export const getStudentPassedTeachings = (userId: string) =>
+	Student.findOne({ user: userId }).populate({
+		path: 'passedTeachings',
+		populate: [
+			{
+				path: 'course',
+				populate: {
+					path: 'cycle',
+				},
+			},
+			{
+				path: 'course',
+				populate: {
+					path: 'master',
+				},
+			},
+			{
+				path: 'theoryInstructors',
+				populate: {
+					path: 'user',
+					select: 'name surname',
+				},
+			},
+			{
+				path: 'labInstructors',
+				populate: {
+					path: 'user',
+					select: 'name surname',
+				},
+			},
+		],
+	});
+export const updatePassedTeachings = (
+	studentId: mongoose.Types.ObjectId,
+	teachingId: mongoose.Types.ObjectId
+) =>
+	Student.findOneAndUpdate(
+		{ _id: studentId },
+		{ $addToSet: { passedTeachings: teachingId } },
+		{ new: true }
+	);
 export const deleteStudentByUserId = (id: string, session: ClientSession) =>
 	Student.findOneAndDelete({ user: id }).session(session);
 export const deleteStudents = () => Student.deleteMany();

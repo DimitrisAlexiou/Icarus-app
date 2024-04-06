@@ -6,6 +6,7 @@ import {
 	API_URL_FORGOT_PASSWORD,
 	API_URL_USER,
 	headers,
+	API_URL_USER_ACTIVITY,
 } from '../../constants/apiConfig';
 import {
 	addUserToLocalStorage,
@@ -90,6 +91,14 @@ const updateProfile = async (userId, data) => {
 	return response.data;
 };
 
+const getPassedTeachings = async () => {
+	const response = await axiosFetch.get(
+		API_URL_USER_ACTIVITY + '/passedTeachings'
+	);
+
+	return response.data;
+};
+
 // const clearStore = async () => {
 // 	try {
 // 		thunkAPI.dispatch(resetCalendar());
@@ -111,6 +120,7 @@ const authService = {
 	changePassword,
 	getProfile,
 	updateProfile,
+	getPassedTeachings,
 };
 
 export default authService;

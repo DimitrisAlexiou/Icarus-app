@@ -1,6 +1,6 @@
 import { Row, Col } from 'reactstrap';
-import useGrades from '../../hooks/user/useGrades';
-import useCalculateGrades from '../../hooks/user/useCalculateGrades';
+import useGrades from '../../hooks/course/useGrades';
+import useCalculateGrades from '../../hooks/course/useCalculateGrades';
 import Header from '../../components/boilerplate/headers/Header';
 import BreadcrumbNav from '../../components/boilerplate/Breadcrumb';
 import GradeCard from '../../components/course/cards/GradeCard';
@@ -11,6 +11,7 @@ export default function Grade() {
 		grades,
 		statement,
 		teachingsToGrade,
+		isGradeLoading,
 		isStatementsLoading,
 		isEditingTheoryGrade,
 		isEditingLabGrade,
@@ -45,6 +46,7 @@ export default function Grade() {
 								grades={grades}
 								statement={statement}
 								teachingsToGrade={teachingsToGrade}
+								isGradeLoading={isGradeLoading}
 								isStatementsLoading={isStatementsLoading}
 								isEditingTheoryGrade={isEditingTheoryGrade}
 								isEditingLabGrade={isEditingLabGrade}

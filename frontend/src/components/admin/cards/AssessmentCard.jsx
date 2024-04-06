@@ -1,4 +1,4 @@
-import { Row, Col, Badge, Button } from 'reactstrap';
+import { Row, Col, Badge, Button, Spinner } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
 	deleteAssessment,
@@ -9,7 +9,7 @@ import { faTrashAlt, faEdit } from '@fortawesome/free-regular-svg-icons';
 import { deleteAlert } from '../../../constants/sweetAlertNotification';
 import moment from 'moment';
 import AssessmentForm from '../forms/AssessmentForm';
-import Spinner from '../../boilerplate/spinners/Spinner';
+import Loading from '../../boilerplate/spinners/Spinner';
 
 const AssessementCard = ({
 	assessment,
@@ -40,7 +40,7 @@ const AssessementCard = ({
 										Assessment statement configuration for this period!
 									</Col>
 								) : assessmentIsLoading ? (
-									<Spinner card />
+									<Loading card />
 								) : !assessment || isEditingAssessment ? (
 									<>
 										<Row>
@@ -185,7 +185,11 @@ const AssessementCard = ({
 																	)
 																}
 															>
-																<FontAwesomeIcon icon={faTrashAlt} />
+																{assessmentIsLoading ? (
+																	<Spinner size="sm" color="dark" type="grow" />
+																) : (
+																	<FontAwesomeIcon icon={faTrashAlt} />
+																)}
 															</Button>
 														</Col>
 													</Col>

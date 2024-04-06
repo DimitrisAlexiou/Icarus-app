@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Row, Col, CardTitle, CardText } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsis, faMinus } from '@fortawesome/free-solid-svg-icons';
+import { CourseObligation } from '../../constants/enums';
 import useInstructorReview from '../../hooks/review/useInstructorReview';
 import InstructorReviewForm from '../../components/review/forms/InstructorReviewForm';
 import BreadcrumbNav from '../../components/boilerplate/Breadcrumb';
@@ -117,7 +118,9 @@ export default function InstructorReview() {
 											fontSize: 13,
 										}}
 									>
-										{teaching?.course?.isObligatory ? 'Obligatory' : 'Optional'}
+										{teaching?.course?.isObligatory
+											? CourseObligation.Obligatory
+											: CourseObligation.Optional}
 									</small>
 								</CardText>
 								<CardText

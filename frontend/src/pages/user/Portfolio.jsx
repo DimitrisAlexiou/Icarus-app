@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Row, Col, NavItem, NavLink } from 'reactstrap';
 import { portfolioCategories } from '../../utils/NavigationLinks';
+import { PortfolioMenu } from '../../constants/enums';
 import usePortfolio from '../../hooks/user/usePortfolio';
 import Documents from '../../components/portfolio/Documents';
 import TeachingAnnouncements from '../../components/portfolio/TeachingAnnouncements';
@@ -106,13 +107,13 @@ export default function Portfolio() {
 			</Row>
 
 			<Row className="animated--grow-in">
-				{selectedCategory === 'Documents' ? (
+				{selectedCategory.includes(PortfolioMenu.Documents) ? (
 					isTeachingsLoading ? (
 						<Spinner card />
 					) : (
 						<Documents />
 					)
-				) : selectedCategory === 'Announcements' ? (
+				) : selectedCategory.includes(PortfolioMenu.Announcements) ? (
 					isAnnouncementsLoading ? (
 						<Spinner card />
 					) : (
@@ -125,25 +126,25 @@ export default function Portfolio() {
 							}
 						/>
 					)
-				) : selectedCategory === 'Exercises' ? (
+				) : selectedCategory.includes(PortfolioMenu.Exercises) ? (
 					isTeachingsLoading ? (
 						<Spinner card />
 					) : (
 						<Exercises />
 					)
-				) : selectedCategory === 'Calendar' ? (
+				) : selectedCategory.includes(PortfolioMenu.Calendar) ? (
 					isTeachingsLoading ? (
 						<Spinner card />
 					) : (
 						<Calendar />
 					)
-				) : selectedCategory === 'Messages' ? (
+				) : selectedCategory.includes(PortfolioMenu.Messages) ? (
 					isTeachingsLoading ? (
 						<Spinner card />
 					) : (
 						<Messages />
 					)
-				) : selectedCategory === 'Chat' ? (
+				) : selectedCategory.includes(PortfolioMenu.Chat) ? (
 					isTeachingsLoading ? (
 						<Spinner card />
 					) : (

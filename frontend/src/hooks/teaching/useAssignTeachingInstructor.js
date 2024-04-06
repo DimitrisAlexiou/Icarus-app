@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-	getTeachings,
+	getSemesterActiveTeachings,
 	unassignLabInstructors,
 	unassignTheoryInstructors,
 } from '../../features/courses/teachingSlice';
@@ -20,12 +20,8 @@ const useAssignTeachingInstructor = () => {
 		(state) => state.users
 	);
 
-	const availableTeachings = teachings.filter(
-		(teaching) => teaching.semester._id === semester._id
-	);
-
 	useEffect(() => {
-		dispatch(getTeachings());
+		dispatch(getSemesterActiveTeachings());
 		dispatch(getInstructors());
 	}, [dispatch]);
 
@@ -44,7 +40,6 @@ const useAssignTeachingInstructor = () => {
 		isSemesterLoading,
 		isTeachingsLoading,
 		isInstructorsLoading,
-		availableTeachings,
 		handleUnassignTheoryInstructors,
 		handleUnassignLabInstructors,
 		dispatch,
