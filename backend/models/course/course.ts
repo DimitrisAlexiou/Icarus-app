@@ -12,6 +12,11 @@ export enum PrerequisiteType {
 	Soft = 'Soft',
 }
 
+export enum CourseObligation {
+	Obligatory = 'Obligatory',
+	Optional = 'Optional',
+}
+
 export interface CourseProps {
 	courseId: string;
 	title: string;

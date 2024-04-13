@@ -14,7 +14,6 @@ import StatementCardInfo from './StatementCardInfo';
 
 const GradeCard = ({
 	user,
-	grades,
 	statement,
 	teachingsToGrade,
 	isGradeLoading,
@@ -26,6 +25,10 @@ const GradeCard = ({
 	teachingToEditId,
 	isTheoryInstructor,
 	isLabInstructor,
+	gradeFilter,
+	gradeCheck,
+	gradeFind,
+	gradeFinalized,
 	handleFinalizeGrade,
 	overallGrade,
 	dispatch,
@@ -100,34 +103,25 @@ const GradeCard = ({
 											</Col>
 										</Row>
 										{teaching.theoryExamination.map((examination, index) => {
-											const filterGrade = grades.filter(
-												(grade) =>
-													grade.teaching._id === teaching._id &&
-													grade.exam.examination === Examination.Theory &&
-													grade.exam.type === examination.type &&
-													grade.statement._id === statement._id
+											const filterGrade = gradeFilter(
+												teaching,
+												examination,
+												Examination.Theory
 											);
-											const checkGrade = grades.some(
-												(grade) =>
-													grade.teaching._id === teaching._id &&
-													grade.exam.examination === Examination.Theory &&
-													grade.exam.type === examination.type &&
-													grade.statement._id === statement._id
+											const checkGrade = gradeCheck(
+												teaching,
+												examination,
+												Examination.Theory
 											);
-											const findGrade = grades.find(
-												(grade) =>
-													grade.teaching._id === teaching._id &&
-													grade.exam.examination === Examination.Theory &&
-													grade.exam.type === examination.type &&
-													grade.statement._id === statement._id
+											const findGrade = gradeFind(
+												teaching,
+												examination,
+												Examination.Theory
 											);
-											const finalizedGrade = grades.find(
-												(grade) =>
-													grade.teaching._id === teaching._id &&
-													grade.exam.examination === Examination.Theory &&
-													grade.exam.type === examination.type &&
-													grade.statement._id === statement._id &&
-													grade.isFinalized
+											const finalizedGrade = gradeFinalized(
+												teaching,
+												examination,
+												Examination.Theory
 											);
 											return (
 												<Row
@@ -330,34 +324,25 @@ const GradeCard = ({
 											</Col>
 										</Row>
 										{teaching.labExamination.map((examination, index) => {
-											const filterGrade = grades.filter(
-												(grade) =>
-													grade.teaching._id === teaching._id &&
-													grade.exam.examination === Examination.Lab &&
-													grade.exam.type === examination.type &&
-													grade.statement._id === statement._id
+											const filterGrade = gradeFilter(
+												teaching,
+												examination,
+												Examination.Lab
 											);
-											const checkGrade = grades.some(
-												(grade) =>
-													grade.teaching._id === teaching._id &&
-													grade.exam.examination === Examination.Lab &&
-													grade.exam.type === examination.type &&
-													grade.statement._id === statement._id
+											const checkGrade = gradeCheck(
+												teaching,
+												examination,
+												Examination.Lab
 											);
-											const findGrade = grades.find(
-												(grade) =>
-													grade.teaching._id === teaching._id &&
-													grade.exam.examination === Examination.Lab &&
-													grade.exam.type === examination.type &&
-													grade.statement._id === statement._id
+											const findGrade = gradeFind(
+												teaching,
+												examination,
+												Examination.Lab
 											);
-											const finalizedGrade = grades.find(
-												(grade) =>
-													grade.teaching._id === teaching._id &&
-													grade.exam.examination === Examination.Lab &&
-													grade.exam.type === examination.type &&
-													grade.statement._id === statement._id &&
-													grade.isFinalized
+											const finalizedGrade = gradeFinalized(
+												teaching,
+												examination,
+												Examination.Lab
 											);
 											return (
 												<Row

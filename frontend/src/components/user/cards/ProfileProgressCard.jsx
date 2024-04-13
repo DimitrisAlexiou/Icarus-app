@@ -1,4 +1,7 @@
-export default function ProfileProgressCard({ user }) {
+export default function ProfileProgressCard({
+	calculatePercentagePassedTeachings,
+	calculatePercentageTotalECTS,
+}) {
 	return (
 		<>
 			<div className="card-body animated--grow-in mb-5">
@@ -10,13 +13,13 @@ export default function ProfileProgressCard({ user }) {
 					<div
 						className="progress-bar bg-primary"
 						role="progressbar"
-						style={{ width: '80%' }}
-						aria-valuenow="80"
+						style={{ width: `${calculatePercentagePassedTeachings()}%` }}
+						aria-valuenow={calculatePercentagePassedTeachings()}
 						aria-valuemin="0"
 						aria-valuemax="100"
 					></div>
 				</div>
-				<p>Closed Cycles</p>
+				<p>Closed Cycles(dummy)</p>
 				<div className="progress mb-3" style={{ height: '5px' }}>
 					<div
 						className="progress-bar bg-danger"
@@ -32,23 +35,23 @@ export default function ProfileProgressCard({ user }) {
 					<div
 						className="progress-bar bg-success"
 						role="progressbar"
-						style={{ width: '89%' }}
-						aria-valuenow="89"
+						style={{ width: `${calculatePercentageTotalECTS()}%` }}
+						aria-valuenow={calculatePercentageTotalECTS()}
 						aria-valuemin="0"
 						aria-valuemax="100"
 					></div>
 				</div>
-				<p>Total registered courses</p>
+				{/* <p>Total registered courses</p>
 				<div className="progress" style={{ height: '5px' }}>
 					<div
 						className="progress-bar bg-warning"
 						role="progressbar"
-						style={{ width: '55%' }}
-						aria-valuenow="55"
+						style={{ width: `${registeredTeachings}%` }}
+						aria-valuenow={registeredTeachings}
 						aria-valuemin="0"
 						aria-valuemax="100"
 					></div>
-				</div>
+				</div> */}
 			</div>
 		</>
 	);

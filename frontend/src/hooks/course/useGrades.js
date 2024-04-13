@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
 	deleteAlert,
+	downloadAlert,
 	finalizeAlert,
 } from '../../constants/sweetAlertNotification';
 import { useSemester } from '../../context/SemesterProvider';
@@ -13,6 +14,7 @@ import {
 	setEditTheoryGrade,
 	setEditLabGrade,
 	finalizeGrades,
+	downloadTeachingGradingTranscriptPDF,
 } from '../../features/courses/gradeSlice';
 import {
 	getStatement,
@@ -99,6 +101,47 @@ const useGrades = () => {
 		return roles.join(', ');
 	};
 
+	const gradeFilter = (teaching, examination, examinationType) => {
+		return grades.filter(
+			(grade) =>
+				grade.teaching._id === teaching._id &&
+				grade.exam.examination === examinationType &&
+				grade.exam.type === examination.type &&
+				grade.statement._id === statement._id
+		);
+	};
+
+	const gradeCheck = (teaching, examination, examinationType) => {
+		return grades.some(
+			(grade) =>
+				grade.teaching._id === teaching._id &&
+				grade.exam.examination === examinationType &&
+				grade.exam.type === examination.type &&
+				grade.statement._id === statement._id
+		);
+	};
+
+	const gradeFind = (teaching, examination, examinationType) => {
+		return grades.find(
+			(grade) =>
+				grade.teaching._id === teaching._id &&
+				grade.exam.examination === examinationType &&
+				grade.exam.type === examination.type &&
+				grade.statement._id === statement._id
+		);
+	};
+
+	const gradeFinalized = (teaching, examination, examinationType) => {
+		return grades.find(
+			(grade) =>
+				grade.teaching._id === teaching._id &&
+				grade.exam.examination === examinationType &&
+				grade.exam.type === examination.type &&
+				grade.statement._id === statement._id &&
+				grade.isFinalized
+		);
+	};
+
 	const teachingsToGrade =
 		statement?.teaching?.filter(
 			(teaching) =>
@@ -110,10 +153,28 @@ const useGrades = () => {
 				)
 		) ?? [];
 
+	const hasUnsubmittedGrades = () => {
+		return teachingsToGrade.some((teaching) => {
+			return (
+				teaching.theoryExamination.some((examination) => {
+					return !gradeFinalized(teaching, examination, Examination.Theory);
+				}) ||
+				teaching.labExamination.some((examination) => {
+					return !gradeFinalized(teaching, examination, Examination.Lab);
+				})
+			);
+		});
+	};
+
+	const handleGenerateTeachingGradingTranscriptPDF = (statement) => {
+		downloadAlert(() =>
+			dispatch(downloadTeachingGradingTranscriptPDF(statement._id))
+		);
+	};
+
 	return {
 		user,
 		grade,
-		grades,
 		semester,
 		statement,
 		statements,
@@ -130,10 +191,16 @@ const useGrades = () => {
 		isTheoryInstructor,
 		isLabInstructor,
 		getInstructorRoles,
+		gradeFilter,
+		gradeCheck,
+		gradeFind,
+		gradeFinalized,
+		hasUnsubmittedGrades,
 		handleStatementClick,
 		handleFinalizeGrade,
 		handleDeleteGrade,
 		handleFinalizeGrading,
+		handleGenerateTeachingGradingTranscriptPDF,
 		dispatch,
 	};
 };

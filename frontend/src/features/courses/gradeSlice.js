@@ -8,6 +8,8 @@ import {
 	ADD_GRADE,
 	DELETE_GRADE,
 	DELETE_GRADES,
+	DOWNLOAD_STUDENT_GRADES_TRANSCRIPT_PDF,
+	DOWNLOAD_TEACHING_GRADING_TRANSCRIPT_PDF,
 	FINALIZE_GRADE,
 	FINALIZE_GRADES,
 	GET_GRADE,
@@ -175,6 +177,30 @@ export const deleteGrades = createAsyncThunk(
 	async (_, thunkAPI) => {
 		try {
 			return await gradeService.deleteGrades();
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
+	}
+);
+
+export const downloadStudentGradesTranscriptPDF = createAsyncThunk(
+	DOWNLOAD_STUDENT_GRADES_TRANSCRIPT_PDF,
+	async (_, thunkAPI) => {
+		try {
+			return await gradeService.downloadStudentGradesTranscriptPDF();
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
+	}
+);
+
+export const downloadTeachingGradingTranscriptPDF = createAsyncThunk(
+	DOWNLOAD_TEACHING_GRADING_TRANSCRIPT_PDF,
+	async (statementId, thunkAPI) => {
+		try {
+			return await gradeService.downloadTeachingGradingTranscriptPDF(
+				statementId
+			);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -383,7 +409,37 @@ export const gradeSlice = createSlice({
 			.addCase(deleteGrades.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				displayErrorNotification(payload);
-			});
+			})
+			.addCase(downloadStudentGradesTranscriptPDF.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(downloadStudentGradesTranscriptPDF.fulfilled, (state) => {
+				state.isLoading = false;
+				displaySuccessNotification('Grades Transcript PDF downloaded.');
+			})
+			.addCase(
+				downloadStudentGradesTranscriptPDF.rejected,
+				(state, { payload }) => {
+					state.isLoading = false;
+					displayErrorNotification(payload);
+				}
+			)
+			.addCase(downloadTeachingGradingTranscriptPDF.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(downloadTeachingGradingTranscriptPDF.fulfilled, (state) => {
+				state.isLoading = false;
+				displaySuccessNotification(
+					'Teaching Grading Transcript PDF downloaded.'
+				);
+			})
+			.addCase(
+				downloadTeachingGradingTranscriptPDF.rejected,
+				(state, { payload }) => {
+					state.isLoading = false;
+					displayErrorNotification(payload);
+				}
+			);
 	},
 });
 

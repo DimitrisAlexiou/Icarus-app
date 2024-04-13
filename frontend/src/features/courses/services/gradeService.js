@@ -4,6 +4,7 @@ import {
 	API_URL_GRADE,
 	API_URL_MYGRADES,
 } from '../../../constants/apiConfig';
+import { documentDownload } from '../../../utils/documentDownload';
 
 const addGrade = async (data) => {
 	const response = await axiosFetch.post(API_URL_GRADE, data);
@@ -97,6 +98,29 @@ const deleteGrades = async () => {
 	return response.data;
 };
 
+const downloadStudentGradesTranscriptPDF = async () => {
+	const response = await axiosFetch.get(API_URL_MYGRADES + '/download-pdf', {
+		responseType: 'blob',
+	});
+
+	documentDownload(response, 'student_grades_transcript.pdf');
+
+	return response.data;
+};
+
+const downloadTeachingGradingTranscriptPDF = async (statementId) => {
+	const response = await axiosFetch.get(
+		API_URL_GRADE + '/' + statementId + '/download-pdf',
+		{
+			responseType: 'blob',
+		}
+	);
+
+	documentDownload(response, 'teaching_grading_transcript.pdf');
+
+	return response.data;
+};
+
 const gradeService = {
 	addGrade,
 	updateGrade,
@@ -112,6 +136,8 @@ const gradeService = {
 	getStudentTeachingGrades,
 	getGrades,
 	deleteGrades,
+	downloadStudentGradesTranscriptPDF,
+	downloadTeachingGradingTranscriptPDF,
 };
 
 export default gradeService;

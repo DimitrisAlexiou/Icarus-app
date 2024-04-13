@@ -89,7 +89,7 @@ export default function GradeForm({
 					<Row className="align-items-center">
 						<Col xl="3" lg="5" md="6" xs="10">
 							<NumberField
-								min="1"
+								min="0"
 								max="10"
 								step="0.5"
 								name={type}

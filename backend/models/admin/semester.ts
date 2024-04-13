@@ -6,6 +6,12 @@ export enum SemesterType {
 	Any = 'Any',
 }
 
+export enum Exams {
+	FEB = 'February',
+	JUN = 'June',
+	SEP = 'September',
+}
+
 export interface SemesterProps {
 	type: SemesterType;
 	academicYear: string;

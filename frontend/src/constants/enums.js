@@ -98,11 +98,6 @@ export const PortfolioMenu = {
 	Chat: 'Chat',
 };
 
-export const DegreeCompletionMenu = {
-	Prerequisites: 'Prerequisites',
-	Progress: 'Progress',
-};
-
 export const ExamPeriods = {
 	FEB: 'FEB',
 	JUN: 'JUN',

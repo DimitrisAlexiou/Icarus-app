@@ -40,5 +40,10 @@ export default (): express.Router => {
 	instructorReview(router);
 	teachingReview(router);
 
+	// router.get('/csrf-token', (req, res) => {
+	// 	res.json({ csrfToken: req.csrfToken() });
+	// });
+	// router.use(addCsrfTokenToResponse);
+
 	return router;
 };

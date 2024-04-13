@@ -381,16 +381,3 @@ export const myGradesCategories = [
 		text: 'Thesis',
 	},
 ];
-
-export const degreeCompletionCategories = [
-	{
-		id: 1,
-		text: 'Prerequisites',
-		icon: <FontAwesomeIcon icon={faNetworkWired} />,
-	},
-	{
-		id: 2,
-		text: 'Progress',
-		icon: <FontAwesomeIcon icon={faBarsProgress} />,
-	},
-];

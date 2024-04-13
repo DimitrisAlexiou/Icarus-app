@@ -28,6 +28,7 @@ export default function MyGrades() {
 		getGradeExamPeriod,
 		handleTeachingRowClick,
 		filterPassedTeachingsBySemester,
+		handleGenerateGradesTranscriptPDF,
 	} = useMyGrades();
 
 	return (
@@ -108,6 +109,9 @@ export default function MyGrades() {
 							totalECTSBySemester={totalECTSBySemester}
 							handleTeachingRowClick={handleTeachingRowClick}
 							filterPassedTeachingsBySemester={filterPassedTeachingsBySemester}
+							handleGenerateGradesTranscriptPDF={
+								handleGenerateGradesTranscriptPDF
+							}
 						/>
 					</Col>
 				</Row>

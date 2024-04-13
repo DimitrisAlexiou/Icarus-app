@@ -5,7 +5,7 @@ export const GradeSchema = (type) => {
 		[type]: Yup.number()
 			.typeError(`${type} grade must be a number.`)
 			.required(`${type} grade is required.`)
-			.min(1, `${type} grade must be at least 1.`)
+			.min(0, `${type} grade can not be negative.`)
 			.max(10, `${type} grade must be at most 10.`),
 	});
 };

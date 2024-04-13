@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import PDFDocument from 'pdfkit';
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../../../interfaces/AuthRequest';
 import { tryCatch } from '../../../utils/tryCatch';
@@ -28,7 +29,12 @@ import {
 	getStatementById,
 	getUserCurrentStatement,
 } from '../../../models/course/statement';
-import { getCurrentSemester } from '../../../models/admin/semester';
+import {
+	Exams,
+	SemesterType,
+	getCurrentSemester,
+} from '../../../models/admin/semester';
+import { CourseObligation } from '../../../models/course/course';
 import { updatePassedTeachings } from '../../../models/users/student';
 import {
 	TeachingProps,
@@ -171,6 +177,273 @@ export const viewStudentTeachingGrades = tryCatch(
 			);
 
 		return res.status(200).json({ studentTeachingGrades, overallGrade });
+	}
+);
+
+export const downloadStudentGradesTranscript = tryCatch(
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
+		const userId = req.user.id;
+
+		const overallGrades = await getStudentOverallGrades(userId);
+		if (!overallGrades.length)
+			throw new CustomError('Seems like there are no grades submitted.', 404);
+
+		// Set response headers
+		res.setHeader('Content-Type', 'application/pdf');
+		res.setHeader(
+			'Content-Disposition',
+			`attachment; filename=grades_transcript_report_${userId}.pdf`
+		);
+
+		const doc = new PDFDocument();
+		// Pipe the PDF content to the response
+		doc.pipe(res);
+
+		// Add content to the PDF
+		doc.fontSize(20).font('Helvetica-Bold').text('Grades Transcript Report', {
+			align: 'center',
+		});
+		doc.moveDown();
+
+		// Group grades by semester
+		const gradesBySemesterCategory = new Map<number, any[]>();
+
+		overallGrades.forEach((grade) => {
+			const { teaching } = grade;
+			const { course } = teaching as any;
+			const semesterCategory = calculateSemesterCategory(
+				course.year,
+				course.semester
+			) as any;
+
+			if (!gradesBySemesterCategory.has(semesterCategory)) {
+				gradesBySemesterCategory.set(semesterCategory, []);
+			}
+			gradesBySemesterCategory.get(semesterCategory).push(grade);
+		});
+
+		// Sort semester categories in ascending order
+		const sortedSemesterCategories = Array.from(
+			gradesBySemesterCategory.keys()
+		).sort((a: any, b: any) => {
+			const [aYear] = a.split(' ');
+			const [bYear] = b.split(' ');
+			return parseInt(aYear) - parseInt(bYear);
+		});
+
+		// Iterate over each semester and add grades
+		sortedSemesterCategories.forEach((semesterCategory) => {
+			doc
+				.fontSize(16)
+				.font('Helvetica-Bold')
+				.text(`${semesterCategory}`, { align: 'center' });
+			doc.moveDown();
+
+			const gradesInCategory = gradesBySemesterCategory.get(semesterCategory);
+			gradesInCategory.forEach((grade) => {
+				const { teaching, statement } = grade;
+				const { course } = teaching as any;
+				const { semester } = statement as any;
+
+				doc
+					.fontSize(12)
+					.font('Helvetica')
+					.text(`Course: `, { oblique: true, continued: true })
+					.font('Helvetica-Bold')
+					.text(`${course.title}`)
+					.moveDown(0.2);
+				doc
+					.fontSize(12)
+					.font('Helvetica')
+					.text(`ID: `, { oblique: true, continued: true })
+					.font('Helvetica-Bold')
+					.text(`${course.courseId}`)
+					.moveDown(0.2);
+				doc
+					.fontSize(12)
+					.font('Helvetica')
+					.text(`Type: `, { oblique: true, continued: true })
+					.font('Helvetica-Bold')
+					.text(`${course.type}`)
+					.moveDown(0.2);
+				doc
+					.fontSize(12)
+					.font('Helvetica')
+					.text(`Cycle: `, { oblique: true, continued: true })
+					.font('Helvetica-Bold')
+					.text(`${course.cycle || 'N/A'}`)
+					.moveDown(0.2);
+				doc
+					.fontSize(12)
+					.font('Helvetica')
+					.text(`Obligation: `, { oblique: true, continued: true })
+					.font('Helvetica-Bold')
+					.text(
+						`${
+							course.isObligatory
+								? CourseObligation.Obligatory
+								: CourseObligation.Optional
+						}`
+					)
+					.moveDown(0.2);
+				doc
+					.fontSize(12)
+					.font('Helvetica')
+					.text(`Examination: `, { oblique: true, continued: true })
+					.font('Helvetica-Bold')
+					.text(
+						`${semester.type === SemesterType.Winter ? Exams.FEB : Exams.JUN} ${
+							semester.academicYear
+						}`
+					)
+					.moveDown(0.2);
+				doc
+					.fontSize(12)
+					.font('Helvetica')
+					.text('Overall Grade: ', { oblique: true, continued: true })
+					.font('Helvetica-Bold')
+					.text(`${grade.overallGrade}`);
+
+				doc.moveDown();
+			});
+		});
+
+		// Finalize the PDF
+		doc.end();
+
+		return res.status(200);
+	}
+);
+
+export const downloadTeachingGradingTranscript = tryCatch(
+	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
+		const { statementId } = req.params;
+
+		const statementGrades = await getTeachingGrades(statementId);
+		if (!statementGrades.length)
+			throw new CustomError(
+				'Seems like there are no grades defined for this statement teachings.',
+				404
+			);
+
+		res.setHeader('Content-Type', 'application/pdf');
+		res.setHeader(
+			'Content-Disposition',
+			`attachment; filename=teaching_grading_transcript_report.pdf`
+		);
+
+		const doc = new PDFDocument();
+		doc.pipe(res);
+
+		const student = statementGrades[0]?.statement?.user as any;
+		const semester = statementGrades[0]?.statement?.semester as any;
+		doc
+			.fontSize(14)
+			.font('Helvetica-Bold')
+			.text(`${semester.type} ${semester.academicYear}`, {
+				align: 'left',
+			});
+		doc
+			.fontSize(14)
+			.font('Helvetica-Bold')
+			.text(`${student.name} ${student.surname}`, {
+				align: 'right',
+			});
+		doc.fontSize(14).font('Helvetica-Bold').text(`${student.username}`, {
+			align: 'right',
+		});
+		doc.moveDown(2);
+
+		doc
+			.fontSize(20)
+			.font('Helvetica-Bold')
+			.text('Teaching Grading Transcript Report', {
+				align: 'center',
+			});
+		doc.moveDown();
+
+		const teachings = statementGrades.reduce((acc: any, grade: any) => {
+			const { teaching, exam } = grade;
+			const teachingExamination =
+				exam.examination === Examination.Theory
+					? Examination.Theory
+					: Examination.Lab;
+			if (!acc[teaching._id]) {
+				acc[teaching._id] = {
+					teaching,
+					theoryGrades: [],
+					labGrades: [],
+				};
+			}
+			if (teachingExamination === Examination.Theory)
+				acc[teaching._id].theoryGrades.push(grade);
+			else if (teachingExamination === Examination.Lab)
+				acc[teaching._id].labGrades.push(grade);
+
+			return acc;
+		}, {});
+
+		Object.values(teachings).forEach(async (teachingGroup: any) => {
+			const { teaching, theoryGrades, labGrades } = teachingGroup;
+			const { course } = teaching;
+
+			const { totalGrade: totalTheoryGrade } = calculateTotalGrade(
+				theoryGrades,
+				teaching
+			);
+			const { totalGrade: totalLabGrade } = calculateTotalGrade(
+				labGrades,
+				teaching
+			);
+			const { roundedOverallGrade: overallGrade } = calculateOverallGrade(
+				totalTheoryGrade,
+				totalLabGrade,
+				teaching
+			);
+
+			doc
+				.fontSize(16)
+				.font('Helvetica-Bold')
+				.text(`${course.title} - ${overallGrade}`, {
+					align: 'center',
+				});
+			doc.moveDown();
+
+			doc
+				.fontSize(14)
+				.font('Helvetica-Bold')
+				.text(`Theory Examination - ${totalTheoryGrade}`, { oblique: true });
+			doc.moveDown();
+
+			theoryGrades.forEach((grade: any) => {
+				const { exam } = grade;
+				doc.fontSize(12).font('Helvetica').text(`Exam: ${exam.type}`);
+				doc.moveDown(0.1);
+				doc.fontSize(12).font('Helvetica').text(`Grade: ${exam.grade}`);
+				doc.moveDown(0.5);
+			});
+			doc.moveDown();
+
+			doc
+				.fontSize(14)
+				.font('Helvetica-Bold')
+				.text(`Lab Examination - ${totalLabGrade}`, { oblique: true });
+			doc.moveDown();
+
+			labGrades.forEach((grade: any) => {
+				const { exam } = grade;
+				doc.fontSize(12).font('Helvetica').text(`Exam: ${exam.type}`);
+				doc.moveDown(0.1);
+				doc.fontSize(12).font('Helvetica').text(`Grade: ${exam.grade}`);
+				doc.moveDown(0.5);
+			});
+
+			doc.moveDown();
+		});
+
+		doc.end();
+
+		return res.status(200);
 	}
 );
 
@@ -354,6 +627,34 @@ export const finalizeGrades = tryCatch(
 	}
 );
 
+const calculateTotalGrade = (grades: any[], teaching: TeachingProps) => {
+	let totalGrade = 0;
+
+	grades.forEach((grade: any) => {
+		const exam = grade.exam;
+		const weight = getExamWeight(teaching, exam.examination, exam.type);
+		totalGrade += (grade.isFinalized ? grade.exam.grade : 0) * weight;
+	});
+	totalGrade = Math.round(totalGrade * 10) / 10;
+
+	return { totalGrade };
+};
+
+const calculateOverallGrade = (
+	totalTheoryGrade: number,
+	totalLabGrade: number,
+	teaching: TeachingProps
+) => {
+	const overallGrade =
+		(totalTheoryGrade * (teaching.theoryWeight / 100) +
+			totalLabGrade * (teaching.labWeight / 100)) /
+		(teaching.theoryWeight / 100 + teaching.labWeight / 100);
+
+	const roundedOverallGrade = Math.round(overallGrade * 2) / 2;
+
+	return { roundedOverallGrade };
+};
+
 const calculateTeachingPassStatus = async (
 	teaching: TeachingProps,
 	statement: StatementProps
@@ -421,7 +722,6 @@ const calculateAndSaveOverallGrade = async (
 		new mongoose.Types.ObjectId(statement._id),
 		new mongoose.Types.ObjectId(teaching._id)
 	);
-	console.log(existingOverallGrade);
 
 	if (existingOverallGrade) return;
 
@@ -439,4 +739,24 @@ const calculateAndSaveOverallGrade = async (
 		overallGrade: roundedOverallGrade,
 		overallGradeCalculated: true,
 	});
+};
+
+const calculateSemesterCategory = (year: number, semester: string): string => {
+	const isWinterSemester = SemesterType.Winter.includes(semester);
+	const adjustedYear = isWinterSemester ? year * 2 - 1 : year * 2;
+	return `${adjustedYear}${getSemesterSuffix(adjustedYear)}`;
+};
+
+const getSemesterSuffix = (year: number): string => {
+	const lastDigit = year % 10;
+	switch (lastDigit) {
+		case 1:
+			return 'st Semester';
+		case 2:
+			return 'nd Semester';
+		case 3:
+			return 'rd Semester';
+		default:
+			return 'th Semester';
+	}
 };

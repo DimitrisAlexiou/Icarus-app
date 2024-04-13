@@ -2558,8 +2558,8 @@ fieldset:disabled a.btn {
 }
 .btn-ut-orange:hover {
 	color: var(--white);
-	background-color: #E87F06;
-	border-color: #E87F06;
+	background-color: #e87f06;
+	border-color: #e87f06;
 }
 
 .btn-blue-green {
@@ -10934,7 +10934,7 @@ a:focus {
 		width: 20rem !important;
 	}
 	.topbar .dropdown-list .dropdown-item .text-truncate {
-		max-width: 13.375rem;
+		max-width: 17rem;
 	}
 }
 

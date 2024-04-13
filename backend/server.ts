@@ -7,6 +7,7 @@ import http from 'http';
 import cookieParser from 'cookie-parser';
 import mongoSanitize from 'express-mongo-sanitize';
 // import helmet from 'helmet';
+// import csrf from 'csurf';
 import connectDB from './database/db';
 import router from './routes';
 import setCache from './middleware/cache';
@@ -18,6 +19,13 @@ const PORT: number | string = process.env.PORT || 4000;
 mongoose.set('strictQuery', false);
 connectDB();
 
+// const csrfProtection = csrf({
+// 	cookie: {
+// 		httpOnly: true,
+// 		sameSite: 'strict',
+// 		secure: true,
+// 	},
+// });
 const app: Application = express();
 
 app.use(express.json());
@@ -34,7 +42,12 @@ app.use(
 app.use(cookieParser());
 app.use(mongoSanitize({ replaceWith: '_' }));
 app.use(setCache);
+// app.use(csrfProtection);
+// app.use(addCsrfTokenToResponse);
 // app.use(helmet({ contentSecurityPolicy: false }));
+// app.get('/api/v1/csrf-token', (req, res) => {
+// 	res.json({ csrfToken: req.csrfToken() });
+// });
 app.use('/api/v1', router());
 
 app.all('*', (req: Request, res: Response, next: NextFunction) => {

@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { useSelector } from 'react-redux';
 import { Row, Col, Nav, NavItem } from 'reactstrap';
 import { NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faShieldHalved } from '@fortawesome/free-solid-svg-icons';
 import { faAddressCard } from '@fortawesome/free-regular-svg-icons';
 import { ProfileMenu } from '../../constants/enums';
+import useProfile from '../../hooks/user/useProfile';
 import ProfileInfoCard from '../../components/user/cards/ProfileInfoCard';
 import ProfileUpdateCard from '../../components/user/cards/ProfileUpdateCard';
 import ProfileProgressCard from '../../components/user/cards/ProfileProgressCard';
@@ -13,7 +13,11 @@ import ChangePassword from '../../components/user/ChangePassword';
 import moment from 'moment';
 
 export default function Profile() {
-	const { user } = useSelector((state) => state.auth);
+	const {
+		user,
+		calculatePercentagePassedTeachings,
+		calculatePercentageTotalECTS,
+	} = useProfile();
 	const [selectedNavItem, setSelectedNavItem] = useState('overview');
 
 	return (
@@ -82,7 +86,14 @@ export default function Profile() {
 				</Col>
 				{/* <img src={undraw_account} alt="undraw_account" className="profile_card_photo" /> */}
 			</Row>
-			{user.user.isAdmin ? null : <ProfileProgressCard user={user} />}
+			{user.user.isAdmin ? null : (
+				<ProfileProgressCard
+					calculatePercentagePassedTeachings={
+						calculatePercentagePassedTeachings
+					}
+					calculatePercentageTotalECTS={calculatePercentageTotalECTS}
+				/>
+			)}
 			<Row className="mb-5 animated--grow-in">
 				<Col className="d-flex justify-content-end">
 					<span className="text-xs text-gray-500">

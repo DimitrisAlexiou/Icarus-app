@@ -5,6 +5,8 @@ import { validateGrade } from '../../middleware/validations';
 import {
 	addTeachingGrade,
 	deleteGrade,
+	downloadStudentGradesTranscript,
+	downloadTeachingGradingTranscript,
 	finalizeGrade,
 	finalizeGrades,
 	updateGrade,
@@ -115,6 +117,17 @@ export default (router: express.Router) => {
 			finalizeGrades
 		);
 
+	// @desc    Download Teaching Grading Transcript
+	// @route   GET /api/grade/:statementId
+	// @access  Private
+	router
+		.route('/grade/:statementId/download-pdf')
+		.get(
+			authorize,
+			checkUserRole([UserType.admin, UserType.instructor]),
+			downloadTeachingGradingTranscript
+		);
+
 	// @desc    Student Teaching Grades
 	// @route   GET /api/my-grades/teaching/:teachingId/details
 	// @access  Private
@@ -124,5 +137,16 @@ export default (router: express.Router) => {
 			authorize,
 			checkUserRole([UserType.student]),
 			viewStudentTeachingGrades
+		);
+
+	// @desc    Download Student Grades Transcript
+	// @route   GET /api/my-grades/download-pdf
+	// @access  Private
+	router
+		.route('/my-grades/download-pdf')
+		.get(
+			authorize,
+			checkUserRole([UserType.student]),
+			downloadStudentGradesTranscript
 		);
 };

@@ -19,6 +19,9 @@ interface Statement {
 		_id: mongoose.Types.ObjectId;
 		student: mongoose.Types.ObjectId;
 	};
+	semester?: {
+		_id: mongoose.Types.ObjectId;
+	};
 }
 
 export interface GradeProps {
@@ -183,7 +186,18 @@ export const getTeachingGrades = (statementId: string) =>
 				path: 'instructor',
 			},
 		})
-		.populate('teaching statement');
+		.populate({
+			path: 'teaching',
+			populate: {
+				path: 'course',
+			},
+		})
+		.populate({
+			path: 'statement',
+			populate: {
+				path: 'user semester',
+			},
+		});
 export const getGradeById = (id: string) =>
 	Grade.findById(id)
 		.populate({

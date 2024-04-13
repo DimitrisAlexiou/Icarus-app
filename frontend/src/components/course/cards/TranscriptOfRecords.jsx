@@ -1,5 +1,5 @@
 import React from 'react';
-import { Col, Row } from 'reactstrap';
+import { Col, Row, Button } from 'reactstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
 	faBarcode,
@@ -12,6 +12,7 @@ import {
 	faCircleDot,
 	faClock,
 	faFileLines,
+	faFilePdf,
 } from '@fortawesome/free-regular-svg-icons';
 import { getOrdinalNumbers } from '../../../utils/ordinalNumbers';
 import { academicSemesters } from '../../../utils/academicSemesters';
@@ -26,6 +27,7 @@ export default function TranscriptOfRecords({
 	totalECTSBySemester,
 	handleTeachingRowClick,
 	filterPassedTeachingsBySemester,
+	handleGenerateGradesTranscriptPDF,
 }) {
 	return (
 		<>
@@ -43,6 +45,18 @@ export default function TranscriptOfRecords({
 							>
 								Transcript of records
 							</small>
+						</Col>
+						<Col className="text-end">
+							<Button
+								className="btn btn-light"
+								onClick={() => handleGenerateGradesTranscriptPDF()}
+							>
+								{isGradesLoading ? (
+									<Spinner size="sm" color="dark" type="grow" />
+								) : (
+									<FontAwesomeIcon icon={faFilePdf} />
+								)}
+							</Button>
 						</Col>
 					</Row>
 					{isGradesLoading ? (

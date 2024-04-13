@@ -179,7 +179,11 @@ export default (router: express.Router) => {
 			validateDegreeRules,
 			defineDegreeRules
 		)
-		.get(authorize, checkUserRole([UserType.admin]), viewDegreeRules);
+		.get(
+			authorize,
+			checkUserRole([UserType.admin, UserType.student]),
+			viewDegreeRules
+		);
 
 	// @desc    Update / Delete Degree Rules
 	// @route   PUT/DELETE /api/admin/configuration/degree_rules/:id

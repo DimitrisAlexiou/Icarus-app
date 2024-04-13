@@ -96,6 +96,12 @@ export const GET_STUDENT_TEACHING_GRADES = createAction(
 	'my-grades/get_student_teaching_grades'
 );
 export const DELETE_GRADES = createAction('grade/delete_grades');
+export const DOWNLOAD_STUDENT_GRADES_TRANSCRIPT_PDF = createAction(
+	'grade/download_student_grades_transcript_pdf'
+);
+export const DOWNLOAD_TEACHING_GRADING_TRANSCRIPT_PDF = createAction(
+	'grade/download_teaching_grading_transcript_pdf'
+);
 
 export const GET_NOTES = createAction('note/get_notes');
 export const GET_USER_NOTES = createAction('note/get_user_notes');

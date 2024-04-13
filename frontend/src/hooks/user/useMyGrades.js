@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
+	downloadStudentGradesTranscriptPDF,
 	getStudentOverallGrades,
 	getStudentOverallRecentGrades,
 } from '../../features/courses/gradeSlice';
@@ -11,6 +12,7 @@ import {
 } from '../../features/courses/statementSlice';
 import { getPassedTeachings } from '../../features/auth/authSlice';
 import { ExamPeriods, MyGradesMenu, SemesterType } from '../../constants/enums';
+import { downloadAlert } from '../../constants/sweetAlertNotification';
 
 const useMyGrades = () => {
 	const dispatch = useDispatch();
@@ -113,6 +115,10 @@ const useMyGrades = () => {
 		return adjustedYear;
 	};
 
+	const handleGenerateGradesTranscriptPDF = () => {
+		downloadAlert(() => dispatch(downloadStudentGradesTranscriptPDF()));
+	};
+
 	useEffect(() => {
 		if (selectedCategory.includes(MyGradesMenu.Recent))
 			dispatch(getStudentOverallRecentGrades());
@@ -143,6 +149,7 @@ const useMyGrades = () => {
 		filterPassedTeachingsBySemester,
 		totalECTS: calculateTotalECTS(),
 		totalECTSBySemester: calculateTotalECTSBySemester(),
+		handleGenerateGradesTranscriptPDF,
 		dispatch,
 	};
 };
