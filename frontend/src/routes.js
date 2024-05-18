@@ -18,13 +18,8 @@ import {
 	Statements,
 	DegreeCompletion,
 	Activity,
-	GradeDetails,
 } from './pages/user/index';
-import {
-	TeachingReview,
-	InstructorReview,
-	GeneralReview,
-} from './pages/review/index';
+import { GradeDetails } from './pages/grade/index';
 import { NewCourse, CreateStatement, CreateVaccine } from './pages/admin/index';
 import { Phd, Course, Master } from './pages/course/index';
 import { Teaching } from './pages/teaching/index';
@@ -56,8 +51,8 @@ const Announcements = lazy(() => import('./pages/user/Announcements'));
 const Notes = lazy(() => import('./pages/note/Notes'));
 const Calendar = lazy(() => import('./components/calendar/Calendar'));
 const StatisticsReports = lazy(() => import('./pages/user/StatisticsReports'));
-const Grades = lazy(() => import('./pages/user/Grades'));
-const Grade = lazy(() => import('./pages/user/Grade'));
+const Grades = lazy(() => import('./pages/grade/Grades'));
+const Grade = lazy(() => import('./pages/grade/Grade'));
 
 export const publicRoutes = [
 	{
@@ -235,21 +230,6 @@ export const studentRoutes = [
 		path: '/degree-completion',
 		element: <DegreeCompletion />,
 		allowedRoles: [UserType.student],
-	},
-	{
-		path: '/review/teaching',
-		element: <TeachingReview />,
-		allowedRoles: [UserType.admin, UserType.student],
-	},
-	{
-		path: '/review/instructor',
-		element: <InstructorReview />,
-		allowedRoles: [UserType.admin, UserType.student],
-	},
-	{
-		path: '/review/general',
-		element: <GeneralReview />,
-		allowedRoles: [UserType.admin, UserType.student],
 	},
 ];
 

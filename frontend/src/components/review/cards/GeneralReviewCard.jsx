@@ -1,9 +1,6 @@
-export default function GeneralReviewCard({ generalReview }) {
+const GeneralReviewCard = ({ review }) => {
 	return (
 		<>
-			<h5 className="d-flex align-items-center mb-3 font-weight-bold mb-4">
-				{generalReview.teaching.course.title}
-			</h5>
 			<p>Course Opinion</p>
 			<p
 				className="card-text"
@@ -20,7 +17,7 @@ export default function GeneralReviewCard({ generalReview }) {
 					WebkitBoxOrient: 'vertical',
 				}}
 			>
-				{generalReview.course_opinion}
+				{review?.course_opinion}
 			</p>
 			<p>Instructor Opinion</p>
 			<p
@@ -38,7 +35,7 @@ export default function GeneralReviewCard({ generalReview }) {
 					WebkitBoxOrient: 'vertical',
 				}}
 			>
-				{generalReview.instructor_opinion}
+				{review?.instructor_opinion}
 			</p>
 			<p>Likes</p>
 			<p
@@ -56,7 +53,7 @@ export default function GeneralReviewCard({ generalReview }) {
 					WebkitBoxOrient: 'vertical',
 				}}
 			>
-				{generalReview.likes}
+				{review?.likes}
 			</p>
 			<p>Dislikes</p>
 			<p
@@ -74,8 +71,10 @@ export default function GeneralReviewCard({ generalReview }) {
 					WebkitBoxOrient: 'vertical',
 				}}
 			>
-				{generalReview.dislikes}
+				{review?.dislikes}
 			</p>
 		</>
 	);
-}
+};
+
+export default GeneralReviewCard;

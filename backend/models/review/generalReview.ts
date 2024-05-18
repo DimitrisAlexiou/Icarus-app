@@ -1,12 +1,11 @@
-import mongoose, { ClientSession, Schema, model } from 'mongoose';
+import { Schema, model } from 'mongoose';
+import { ReviewProps } from '../../types/ReviewProps';
 
-export interface GeneralReviewProps {
+export interface GeneralReviewProps extends ReviewProps {
 	course_opinion: string;
 	instructor_opinion: string;
 	likes: string;
 	dislikes: string;
-	user: mongoose.Types.ObjectId;
-	teaching: mongoose.Types.ObjectId;
 }
 
 const generalReviewSchema = new Schema<GeneralReviewProps>(
@@ -47,38 +46,3 @@ export const GeneralReview = model<GeneralReviewProps>(
 	'GeneralReview',
 	generalReviewSchema
 );
-
-export const createGeneralReview = (values: GeneralReviewProps) =>
-	new GeneralReview(values)
-		.save()
-		.then((generalReview) => generalReview.toObject());
-export const getGeneralReviewById = (id: string) =>
-	GeneralReview.findById(id).populate('teaching');
-export const getUserSubmittedGeneralReview = (
-	userId: string,
-	teachingId: string
-) => GeneralReview.findOne({ user: userId, teaching: teachingId });
-export const updateGeneralReviewById = (
-	id: string,
-	generalReview: GeneralReviewProps
-) => GeneralReview.findByIdAndUpdate(id, generalReview, { new: true });
-export const deleteGeneralReviewById = (id: string) =>
-	GeneralReview.findByIdAndDelete(id);
-export const getUserGeneralReviews = (userId: string) =>
-	GeneralReview.find({ user: userId })
-		.populate({
-			path: 'teaching',
-			populate: {
-				path: 'course',
-				select: 'title',
-			},
-		})
-		.populate('user');
-export const deleteUserGeneralReviews = (
-	userId: string,
-	session: ClientSession
-) => GeneralReview.deleteMany({ user: userId }).session(session);
-export const getGeneralReviews = () => GeneralReview.find();
-export const deleteGeneralReviews = () => GeneralReview.deleteMany();
-export const getTotalGeneralReviews = () =>
-	GeneralReview.find().countDocuments();

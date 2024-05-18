@@ -12,6 +12,7 @@ import {
 	getTotalCourses,
 	CourseType,
 	getSystemCourses,
+	Course,
 } from '../../models/course/course';
 import {
 	createTeaching,
@@ -126,7 +127,7 @@ export const newCourse = tryCatch(
 				409
 			);
 
-		const course = await createCourse({
+		const createdCourse = await createCourse({
 			courseId,
 			title,
 			type,
@@ -142,6 +143,15 @@ export const newCourse = tryCatch(
 			prerequisites,
 			isActive,
 		});
+
+		const course = await Course.populate(createdCourse, [
+			{
+				path: 'prerequisites.prerequisite',
+				select: 'title',
+			},
+			{ path: 'cycle' },
+			{ path: 'master' },
+		]);
 
 		return res.status(201).json({ message: 'Course created!', course });
 	}

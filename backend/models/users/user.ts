@@ -106,7 +106,7 @@ const userSchema: Schema = new Schema<UserProps>(
 		events: [
 			{
 				type: Schema.Types.ObjectId,
-				ref: 'Calendar',
+				ref: 'Event',
 			},
 		],
 	},

@@ -9,13 +9,11 @@ export const noteSchema = Joi.object({
 	owner: Joi.string().required(),
 });
 
-export const calendarSchema = Joi.object({
-	eventId: Joi.string().required(),
+export const eventSchema = Joi.object({
 	title: Joi.string().max(50).required(),
 	startDate: Joi.date().required(),
 	endDate: Joi.date().required(),
 	allDay: Joi.boolean().required(),
-	owner: Joi.string().required(),
 });
 
 export const announcementSchema = Joi.object({

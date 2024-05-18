@@ -16,6 +16,7 @@ import {
 	getInstructorStatements,
 	getUserCurrentStatement,
 	getUserStatementsTotalTeachings,
+	Statement,
 } from '../../models/course/statement';
 import { getCurrentSemester } from '../../models/admin/semester';
 import { getAssessmentBySemester } from '../../models/admin/assessment';
@@ -95,7 +96,35 @@ export const createStudentStatement = tryCatch(
 			isGraded: false,
 		});
 
-		const statement = await getStatementById(createdStatement._id.toString());
+		const statement = await Statement.populate(createdStatement, [
+			{
+				path: 'teaching',
+				populate: [
+					{
+						path: 'course',
+						populate: {
+							path: 'cycle',
+						},
+					},
+					{
+						path: 'theoryInstructors',
+						populate: {
+							path: 'user',
+							select: 'name surname',
+						},
+					},
+					{
+						path: 'labInstructors',
+						populate: {
+							path: 'user',
+							select: 'name surname',
+						},
+					},
+				],
+			},
+			{ path: 'user' },
+			{ path: 'semester' },
+		]);
 
 		return res.status(201).json({ message: 'Statement submitted!', statement });
 	}

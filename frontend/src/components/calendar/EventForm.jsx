@@ -14,7 +14,6 @@ import SubmitButton from '../buttons/SubmitButton';
 
 export default function EventForm({
 	event,
-	user,
 	isEditingEvent,
 	editEventId,
 	setModal,
@@ -31,19 +30,18 @@ export default function EventForm({
 				}}
 				validationSchema={EventSchema}
 				onSubmit={(values, { setSubmitting }) => {
-					const newEvent = {
+					const event = {
 						title: values.title,
 						startDate: values.startDate,
 						endDate: values.endDate,
 						allDay: values.allDay,
-						eventId: event.eventId,
-						owner: user.user._id,
 					};
 					if (isEditingEvent) {
+						console.log(event);
 						dispatch(
 							updateEvent({
 								eventId: editEventId,
-								data: newEvent,
+								data: event,
 							})
 						);
 						setSubmitting(false);
@@ -56,7 +54,8 @@ export default function EventForm({
 						setModal(false);
 						return;
 					}
-					dispatch(addEvent(newEvent));
+					dispatch(addEvent(event));
+					setModal(false);
 					setSubmitting(false);
 				}}
 				validateOnMount

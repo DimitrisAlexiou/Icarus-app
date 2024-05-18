@@ -57,7 +57,7 @@ export default function TeachingReviewForm({
 						console.log(teachingReview);
 						dispatch(
 							updateTeachingReview({
-								teachingReviewId: editTeachingReviewId,
+								reviewId: editTeachingReviewId,
 								data: teachingReview,
 							})
 						);

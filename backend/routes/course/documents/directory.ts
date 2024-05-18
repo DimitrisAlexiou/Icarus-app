@@ -4,32 +4,32 @@ import { authorize, checkUserRole } from '../../../middleware/authMiddleware';
 import {
 	createTeachingDirectory,
 	deleteDirectory,
-	deleteDirectories,
+	deleteTeachingDirectories,
 	updateDirectory,
-	viewDirectories,
+	viewTeachingDirectories,
 	viewDirectory,
 } from '../../../controllers/course/documents/directory';
 import { validateDirectory } from '../../../middleware/validations';
 import { upload } from '../../../utils/multer/documentFileUpload';
 
 export default (router: express.Router) => {
-	// @desc    Get / Post / Delete Directory
+	// @desc    Get / Post / Delete Directories
 	// @route   GET/POST/DELETE /api/v1/teaching/:teachingId/portfolio/directory
 	// @access  Private
 	router
 		.route('/teaching/:teachingId/portfolio/directory')
-		.get(authorize, viewDirectories)
+		.get(authorize, viewTeachingDirectories)
 		.post(
 			authorize,
 			checkUserRole([UserType.admin, UserType.instructor]),
-			upload.array('items', 10),
+			upload.array('files', 10),
 			// validateDirectory,
 			createTeachingDirectory
 		)
 		.delete(
 			authorize,
 			checkUserRole([UserType.admin, UserType.instructor]),
-			deleteDirectories
+			deleteTeachingDirectories
 		);
 
 	// @desc    Get / Put / Delete Directory

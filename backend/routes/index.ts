@@ -11,12 +11,10 @@ import teaching from './course/teaching';
 import directory from './course/documents/directory';
 import statement from './course/statement';
 import grade from './course/grade';
-import calendar from './calendar';
+import event from './event';
 import announcement from './announcement';
 import note from './note';
-import generalReview from './review/generalReview';
-import instructorReview from './review/instructorReview';
-import teachingReview from './review/teachingReview';
+import review from './review';
 
 const router = express.Router();
 
@@ -28,7 +26,7 @@ export default (): express.Router => {
 	users(router);
 	utilities(router);
 	user(router);
-	calendar(router);
+	event(router);
 	course(router);
 	teaching(router);
 	directory(router);
@@ -36,9 +34,7 @@ export default (): express.Router => {
 	grade(router);
 	note(router);
 	announcement(router);
-	generalReview(router);
-	instructorReview(router);
-	teachingReview(router);
+	review(router);
 
 	// router.get('/csrf-token', (req, res) => {
 	// 	res.json({ csrfToken: req.csrfToken() });

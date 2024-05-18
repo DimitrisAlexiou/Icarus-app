@@ -17,8 +17,8 @@ import {
 import { faArrowUp91 } from '@fortawesome/free-solid-svg-icons';
 import useTeachings from '../../hooks/admin/useTeachings';
 import useAssessmentIsAvailable from '../../hooks/user/useAssessmentIsAvailable';
-import TeachingGradingForm from '../../components/course/forms/TeachingGradingForm';
-import TeachingForm from '../../components/course/forms/TeachingForm';
+import TeachingGradingForm from '../../components/teaching/forms/TeachingGradingForm';
+import TeachingForm from '../../components/teaching/forms/TeachingForm';
 import CustomSpinner from '../../components/boilerplate/spinners/Spinner';
 import DataTable from '../../components/DataTable';
 import SpinnerComponent from '../../components/boilerplate/spinners/SpinnerMessage';

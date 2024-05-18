@@ -9,6 +9,7 @@ import {
 	DELETE_USER_TEACHING_REVIEWS,
 	GET_TEACHING_REVIEWS,
 	DELETE_TEACHING_REVIEWS,
+	GET_TEACHING_REVIEWS_TOTAL_NUMBER,
 } from '../actions';
 import {
 	displayErrorNotification,
@@ -38,12 +39,9 @@ export const createTeachingReview = createAsyncThunk(
 
 export const updateTeachingReview = createAsyncThunk(
 	UPDATE_TEACHING_REVIEW,
-	async ({ teachingReviewId, data }, thunkAPI) => {
+	async ({ reviewId, data }, thunkAPI) => {
 		try {
-			return await teachingReviewService.updateTeachingReview(
-				teachingReviewId,
-				data
-			);
+			return await teachingReviewService.updateTeachingReview(reviewId, data);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -52,9 +50,9 @@ export const updateTeachingReview = createAsyncThunk(
 
 export const getTeachingReview = createAsyncThunk(
 	GET_TEACHING_REVIEW,
-	async (teachingReviewId, thunkAPI) => {
+	async (reviewId, thunkAPI) => {
 		try {
-			return await teachingReviewService.getTeachingReview(teachingReviewId);
+			return await teachingReviewService.getTeachingReview(reviewId);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -63,9 +61,9 @@ export const getTeachingReview = createAsyncThunk(
 
 export const deleteTeachingReview = createAsyncThunk(
 	DELETE_TEACHING_REVIEW,
-	async (teachingReviewId, thunkAPI) => {
+	async (reviewId, thunkAPI) => {
 		try {
-			return await teachingReviewService.deleteTeachingReview(teachingReviewId);
+			return await teachingReviewService.deleteTeachingReview(reviewId);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -105,6 +103,17 @@ export const getTeachingReviews = createAsyncThunk(
 	}
 );
 
+export const getTeachingReviewsTotalNumber = createAsyncThunk(
+	GET_TEACHING_REVIEWS_TOTAL_NUMBER,
+	async (_, thunkAPI) => {
+		try {
+			return await teachingReviewService.getTeachingReviewsTotalNumber();
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
+	}
+);
+
 export const deleteTeachingReviews = createAsyncThunk(
 	DELETE_TEACHING_REVIEWS,
 	async (_, thunkAPI) => {
@@ -133,10 +142,7 @@ export const teachingReviewSlice = createSlice({
 			.addCase(createTeachingReview.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
 				displaySuccessNotification(payload.message);
-				state.teachingReviews = [
-					...state.teachingReviews,
-					payload.teachingReview,
-				];
+				state.teachingReviews = [...state.teachingReviews, payload.review];
 			})
 			.addCase(createTeachingReview.rejected, (state, { payload }) => {
 				state.isLoading = false;
@@ -149,12 +155,11 @@ export const teachingReviewSlice = createSlice({
 				state.isLoading = false;
 				displaySuccessNotification(payload.message);
 				const updatedTeachingReviewIndex = state.teachingReviews.findIndex(
-					(teachingReview) =>
-						teachingReview._id === payload.updatedTeachingReview._id
+					(teachingReview) => teachingReview._id === payload.updatedReview._id
 				);
 				if (updatedTeachingReviewIndex !== -1)
 					state.teachingReviews[updatedTeachingReviewIndex] =
-						payload.updatedTeachingReview;
+						payload.updatedReview;
 			})
 			.addCase(updateTeachingReview.rejected, (state, { payload }) => {
 				state.isLoading = false;
@@ -171,7 +176,7 @@ export const teachingReviewSlice = createSlice({
 				state.isLoading = false;
 				if (
 					payload !==
-					'Seems like the teaching review that you are trying to view does not exist.'
+					'Seems like the Teaching review that you are trying to view does not exist.'
 				)
 					displayErrorNotification(payload);
 			})
@@ -183,7 +188,7 @@ export const teachingReviewSlice = createSlice({
 				displaySuccessNotification(payload.message);
 				state.teachingReviews = state.teachingReviews.filter(
 					(teachingReview) => {
-						return teachingReview._id !== payload.teachingReview;
+						return teachingReview._id !== payload.review;
 					}
 				);
 			})
@@ -202,7 +207,7 @@ export const teachingReviewSlice = createSlice({
 				state.isLoading = false;
 				if (
 					payload !==
-					`Seems like you haven't submitted any teaching reviews yet.`
+					`Seems like you haven't submitted any Teaching reviews yet.`
 				)
 					displayErrorNotification(payload);
 			})
@@ -211,22 +216,37 @@ export const teachingReviewSlice = createSlice({
 			})
 			.addCase(getTeachingReviews.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				state.teachingReviews = payload.teachingReviews;
-				state.totalTeachingReviews = payload.totalTeachingReviews;
+				state.teachingReviews = payload.reviews;
+				state.totalTeachingReviews = payload.totalReviews;
 			})
 			.addCase(getTeachingReviews.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				if (
 					payload !==
-					'Seems like there are no teaching reviews registered in the system.'
+					'Seems like there are no Teaching reviews registered in the system.'
 				)
 					displayErrorNotification(payload);
+			})
+			.addCase(getTeachingReviewsTotalNumber.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(
+				getTeachingReviewsTotalNumber.fulfilled,
+				(state, { payload }) => {
+					state.isLoading = false;
+					state.totalTeachingReviews = payload;
+				}
+			)
+			.addCase(getTeachingReviewsTotalNumber.rejected, (state, { payload }) => {
+				state.isLoading = false;
+				displayErrorNotification(payload);
 			})
 			.addCase(deleteUserTeachingReviews.pending, (state) => {
 				state.isLoading = true;
 			})
 			.addCase(deleteUserTeachingReviews.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
+				state.teachingReviews = [];
 				displaySuccessNotification(payload.message);
 			})
 			.addCase(deleteUserTeachingReviews.rejected, (state, { payload }) => {
@@ -250,3 +270,26 @@ export const teachingReviewSlice = createSlice({
 export const { resetTeachingReview, setEditTeachingReview } =
 	teachingReviewSlice.actions;
 export default teachingReviewSlice.reducer;
+
+// import { ReviewType } from '../../constants/enums';
+// import { reviewSlice } from './reviewSlice';
+// import reviewService from './services/reviewService';
+
+// const teachingReviewSlice = reviewSlice(
+// 	'teachingReview',
+// 	ReviewType.Teaching,
+// 	reviewService
+// );
+
+// export const { resetReview, setEditReview } = teachingReviewSlice;
+// export const {
+// 	createReview,
+// 	updateReview,
+// 	getReview,
+// 	deleteReview,
+// 	getUserReviews,
+// 	deleteUserReviews,
+// 	getReviews,
+// 	deleteReviews,
+// } = teachingReviewSlice.actions;
+// export default teachingReviewSlice.reducer;

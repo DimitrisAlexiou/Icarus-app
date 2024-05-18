@@ -11,26 +11,26 @@ const createInstructorReview = async (data) => {
 	return response.data;
 };
 
-const updateInstructorReview = async (instructorReviewId, data) => {
+const updateInstructorReview = async (reviewId, data) => {
 	const response = await axiosFetch.put(
-		API_URL_REVIEW + '/instructor/' + instructorReviewId,
+		API_URL_REVIEW + '/instructor/' + reviewId,
 		data
 	);
 
 	return response.data;
 };
 
-const getInstructorReview = async (instructorReviewId) => {
+const getInstructorReview = async (reviewId) => {
 	const response = await axiosFetch.get(
-		API_URL_REVIEW + '/instructor/' + instructorReviewId
+		API_URL_REVIEW + '/instructor/' + reviewId
 	);
 
 	return response.data;
 };
 
-const deleteInstructorReview = async (instructorReviewId) => {
+const deleteInstructorReview = async (reviewId) => {
 	const response = await axiosFetch.delete(
-		API_URL_REVIEW + '/instructor/' + instructorReviewId
+		API_URL_REVIEW + '/instructor/' + reviewId
 	);
 
 	return response.data;
@@ -58,6 +58,14 @@ const getInstructorReviews = async () => {
 	return response.data;
 };
 
+const getInstructorReviewsTotalNumber = async () => {
+	const response = await axiosFetch.get(
+		API_URL_ADMIN_REVIEW_INSTRUCTOR + '/total'
+	);
+
+	return response.data;
+};
+
 const deleteInstructorReviews = async () => {
 	const response = await axiosFetch.delete(API_URL_ADMIN_REVIEW_INSTRUCTOR);
 
@@ -72,6 +80,7 @@ const instructorReviewService = {
 	getUserInstructorReviews,
 	deleteUserInstructorReviews,
 	getInstructorReviews,
+	getInstructorReviewsTotalNumber,
 	deleteInstructorReviews,
 };
 

@@ -55,7 +55,7 @@ export default function InstructorReviewForm({
 						console.log(instructorReview);
 						dispatch(
 							updateInstructorReview({
-								instructorReviewId: editInstructorReviewId,
+								reviewId: editInstructorReviewId,
 								data: instructorReview,
 							})
 						);

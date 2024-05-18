@@ -1,13 +1,32 @@
 import { Col, Row } from 'reactstrap';
-import usePortfolio from '../../hooks/user/usePortfolio';
-import DirectoryForm from '../../components/course/forms/DirectoryForm';
+import useDirectory from '../../hooks/directory/useDirectory';
+import Directories from '../../components/directory/Directories';
+import DirectoryForm from '../../components/directory/forms/DirectoryForm';
 import BreadcrumbNav from '../../components/boilerplate/Breadcrumb';
-import Spinner from '../../components/boilerplate/spinners/Spinner';
-import Header from '../../components/boilerplate/headers/Header';
 import FormHeader from '../../components/boilerplate/headers/FormHeader';
+import Header from '../../components/boilerplate/headers/Header';
 
 export default function Directory() {
-	const { teaching, dispatch } = usePortfolio();
+	const {
+		teaching,
+		directories,
+		isDirectoriesLoading,
+		setEditDirectory,
+		isEditingDirectory,
+		editDirectoryId,
+		document,
+		showDocument,
+		addDocument,
+		handleDeleteDirectory,
+		handleDeleteTeachingDirectories,
+		myRef,
+		modal,
+		setModal,
+		toggle,
+		selectedDirectory,
+		setSelectedDirectory,
+		dispatch,
+	} = useDirectory();
 
 	return (
 		<>
@@ -25,11 +44,39 @@ export default function Directory() {
 					<div className="card shadow mb-5">
 						<FormHeader title="Fill the form below to create a new teaching directory" />
 						<div className="card-body">
-							<DirectoryForm teaching={teaching} dispatch={dispatch} />
+							<DirectoryForm
+								teaching={teaching}
+								setEditDirectory={setEditDirectory}
+								document={document}
+								showDocument={showDocument}
+								addDocument={addDocument}
+								dispatch={dispatch}
+							/>
 						</div>
 					</div>
 				</Col>
 			</Row>
+
+			<Directories
+				directories={directories}
+				teaching={teaching}
+				document={document}
+				showDocument={showDocument}
+				addDocument={addDocument}
+				isDirectoriesLoading={isDirectoriesLoading}
+				setEditDirectory={setEditDirectory}
+				isEditingDirectory={isEditingDirectory}
+				editDirectoryId={editDirectoryId}
+				handleDeleteDirectory={handleDeleteDirectory}
+				handleDeleteTeachingDirectories={handleDeleteTeachingDirectories}
+				myRef={myRef}
+				modal={modal}
+				setModal={setModal}
+				toggle={toggle}
+				selectedDirectory={selectedDirectory}
+				setSelectedDirectory={setSelectedDirectory}
+				dispatch={dispatch}
+			/>
 		</>
 	);
 }

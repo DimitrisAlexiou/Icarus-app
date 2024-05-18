@@ -7,6 +7,7 @@ import {
 	DELETE_USER_INSTRUCTOR_REVIEWS,
 	GET_INSTRUCTOR_REVIEW,
 	GET_INSTRUCTOR_REVIEWS,
+	GET_INSTRUCTOR_REVIEWS_TOTAL_NUMBER,
 	GET_USER_INSTRUCTOR_REVIEWS,
 	UPDATE_INSTRUCTOR_REVIEW,
 } from '../actions';
@@ -38,10 +39,10 @@ export const createInstructorReview = createAsyncThunk(
 
 export const updateInstructorReview = createAsyncThunk(
 	UPDATE_INSTRUCTOR_REVIEW,
-	async ({ instructorReviewId, data }, thunkAPI) => {
+	async ({ reviewId, data }, thunkAPI) => {
 		try {
 			return await instructorReviewService.updateInstructorReview(
-				instructorReviewId,
+				reviewId,
 				data
 			);
 		} catch (error) {
@@ -52,11 +53,9 @@ export const updateInstructorReview = createAsyncThunk(
 
 export const getInstructorReview = createAsyncThunk(
 	GET_INSTRUCTOR_REVIEW,
-	async (instructorReviewId, thunkAPI) => {
+	async (reviewId, thunkAPI) => {
 		try {
-			return await instructorReviewService.getInstructorReview(
-				instructorReviewId
-			);
+			return await instructorReviewService.getInstructorReview(reviewId);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -65,11 +64,9 @@ export const getInstructorReview = createAsyncThunk(
 
 export const deleteInstructorReview = createAsyncThunk(
 	DELETE_INSTRUCTOR_REVIEW,
-	async (instructorReviewId, thunkAPI) => {
+	async (reviewId, thunkAPI) => {
 		try {
-			return await instructorReviewService.deleteInstructorReview(
-				instructorReviewId
-			);
+			return await instructorReviewService.deleteInstructorReview(reviewId);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -109,6 +106,17 @@ export const getInstructorReviews = createAsyncThunk(
 	}
 );
 
+export const getInstructorReviewsTotalNumber = createAsyncThunk(
+	GET_INSTRUCTOR_REVIEWS_TOTAL_NUMBER,
+	async (_, thunkAPI) => {
+		try {
+			return await instructorReviewService.getInstructorReviewsTotalNumber();
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
+	}
+);
+
 export const deleteInstructorReviews = createAsyncThunk(
 	DELETE_INSTRUCTOR_REVIEWS,
 	async (_, thunkAPI) => {
@@ -137,10 +145,7 @@ export const instructorReviewSlice = createSlice({
 			.addCase(createInstructorReview.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
 				displaySuccessNotification(payload.message);
-				state.instructorReviews = [
-					...state.instructorReviews,
-					payload.instructorReview,
-				];
+				state.instructorReviews = [...state.instructorReviews, payload.review];
 			})
 			.addCase(createInstructorReview.rejected, (state, { payload }) => {
 				state.isLoading = false;
@@ -154,11 +159,11 @@ export const instructorReviewSlice = createSlice({
 				displaySuccessNotification(payload.message);
 				const updatedInstructorReviewIndex = state.instructorReviews.findIndex(
 					(instructorReview) =>
-						instructorReview._id === payload.updatedInstructorReview._id
+						instructorReview._id === payload.updatedReview._id
 				);
 				if (updatedInstructorReviewIndex !== -1)
 					state.instructorReviews[updatedInstructorReviewIndex] =
-						payload.updatedInstructorReview;
+						payload.updatedReview;
 			})
 			.addCase(updateInstructorReview.rejected, (state, { payload }) => {
 				state.isLoading = false;
@@ -175,7 +180,7 @@ export const instructorReviewSlice = createSlice({
 				state.isLoading = false;
 				if (
 					payload !==
-					'Seems like the instructor review that you are trying to view does not exist.'
+					'Seems like the Instructor review that you are trying to view does not exist.'
 				)
 					displayErrorNotification(payload);
 			})
@@ -187,7 +192,7 @@ export const instructorReviewSlice = createSlice({
 				displaySuccessNotification(payload.message);
 				state.instructorReviews = state.instructorReviews.filter(
 					(instructorReview) => {
-						return instructorReview._id !== payload.instructorReview;
+						return instructorReview._id !== payload.review;
 					}
 				);
 			})
@@ -206,7 +211,7 @@ export const instructorReviewSlice = createSlice({
 				state.isLoading = false;
 				if (
 					payload !==
-					`Seems like you haven't submitted any instructor reviews yet.`
+					`Seems like you haven't submitted any Instructor reviews yet.`
 				)
 					displayErrorNotification(payload);
 			})
@@ -215,6 +220,7 @@ export const instructorReviewSlice = createSlice({
 			})
 			.addCase(deleteUserInstructorReviews.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
+				state.instructorReviews = [];
 				displaySuccessNotification(payload.message);
 			})
 			.addCase(deleteUserInstructorReviews.rejected, (state, { payload }) => {
@@ -226,17 +232,34 @@ export const instructorReviewSlice = createSlice({
 			})
 			.addCase(getInstructorReviews.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				state.instructorReviews = payload.instructorReviews;
-				state.totalInstructorReviews = payload.totalInstructorReviews;
+				state.instructorReviews = payload.reviews;
+				state.totalInstructorReviews = payload.totalReviews;
 			})
 			.addCase(getInstructorReviews.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				if (
 					payload !==
-					'Seems like there are no instructor reviews registered in the system.'
+					'Seems like there are no Instructor reviews registered in the system.'
 				)
 					displayErrorNotification(payload);
 			})
+			.addCase(getInstructorReviewsTotalNumber.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(
+				getInstructorReviewsTotalNumber.fulfilled,
+				(state, { payload }) => {
+					state.isLoading = false;
+					state.totalInstructorReviews = payload;
+				}
+			)
+			.addCase(
+				getInstructorReviewsTotalNumber.rejected,
+				(state, { payload }) => {
+					state.isLoading = false;
+					displayErrorNotification(payload);
+				}
+			)
 			.addCase(deleteInstructorReviews.pending, (state) => {
 				state.isLoading = true;
 			})

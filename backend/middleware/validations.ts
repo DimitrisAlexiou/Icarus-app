@@ -25,7 +25,7 @@ import {
 import { profileSchema, userSchema } from '../validations/user';
 import {
 	announcementSchema,
-	calendarSchema,
+	eventSchema,
 	noteSchema,
 } from '../validations/utilities';
 import CustomError from '../utils/CustomError';
@@ -89,7 +89,7 @@ export const validateMasterProgram = validateSchema(
 	'Master program'
 );
 export const validateNote = validateSchema(noteSchema, 'Note');
-export const validateCalendar = validateSchema(calendarSchema, 'Calendar');
+export const validateEvent = validateSchema(eventSchema, 'Event');
 export const validateAnnouncement = validateSchema(
 	announcementSchema,
 	'Announcement'

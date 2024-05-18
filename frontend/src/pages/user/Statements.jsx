@@ -4,7 +4,7 @@ import { deleteAlert } from '../../constants/sweetAlertNotification';
 import useAssessmentIsAvailable from '../../hooks/user/useAssessmentIsAvailable';
 import useStatements from '../../hooks/user/useStatements';
 import useModal from '../../hooks/generic/useModal';
-import StatementCard from '../../components/course/cards/StatementCard';
+import StatementCard from '../../components/statement/cards/StatementCard';
 import CurrentSemester from '../../components/boilerplate/CurrentSemester';
 import VaccineStatement from '../../components/statement/VaccineStatement';
 import AssessmentStatement from '../../components/statement/AssessmentStatement';

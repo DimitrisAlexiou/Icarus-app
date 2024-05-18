@@ -12,44 +12,65 @@ export const login = tryCatch(
 		if (!username || !password)
 			throw new CustomError('Please fill in all the required fields.', 400);
 
-		const user = await getUserByUsername(username).select('+password');
-		if (user && (await bcrypt.compare(password, user.password))) {
-			if (user.lastLogin === null && user.isActive === false) {
+		const retrievedUser = await getUserByUsername(username).select('+password');
+		if (
+			retrievedUser &&
+			(await bcrypt.compare(password, retrievedUser.password))
+		) {
+			if (
+				retrievedUser.lastLogin === null &&
+				retrievedUser.isActive === false
+			) {
 				throw new CustomError(
 					'Account is not yet active, it will be available soon.',
 					400
 				);
-			} else if (user.lastLogin !== null && user.isActive === false) {
+			} else if (
+				retrievedUser.lastLogin !== null &&
+				retrievedUser.isActive === false
+			) {
 				throw new CustomError(
 					'Account is deactivated due to three login failed attempts, please contact the admin.',
 					400
 				);
 			} else {
-				user.lastLogin = new Date();
-				user.loginFailedAttempts = 0;
-				await user.save();
-				if (user.type === UserType.student) await user.populate('student');
-				else if (user.type === UserType.instructor)
-					await user.populate('instructor');
-				return res
-					.status(200)
-					.json({ user, token: generateToken({ id: user._id }) });
-				// return res.status(200).json({ user, token: generateToken(res, { id: user._id }) });
+				retrievedUser.lastLogin = new Date();
+				retrievedUser.loginFailedAttempts = 0;
+				await retrievedUser.save();
+				if (retrievedUser.type === UserType.student)
+					await retrievedUser.populate('student');
+				else if (retrievedUser.type === UserType.instructor)
+					await retrievedUser.populate('instructor');
+
+				const { password, ...user } = retrievedUser.toObject();
+				return res.status(200).json({
+					user,
+					token: generateToken({ id: retrievedUser._id }),
+				});
+				// return res.status(200).json({ retrievedUser, token: generateToken(res, { id: retrievedUser._id }) });
 			}
 		} else {
-			if (user && user.lastLogin !== null && user.isActive === true) {
-				user.loginFailedAttempts++;
-				if (user.loginFailedAttempts >= 3) {
-					user.isActive = false;
-					await user.save();
+			if (
+				retrievedUser &&
+				retrievedUser.lastLogin !== null &&
+				retrievedUser.isActive === true
+			) {
+				retrievedUser.loginFailedAttempts++;
+				if (retrievedUser.loginFailedAttempts >= 3) {
+					retrievedUser.isActive = false;
+					await retrievedUser.save();
 					throw new CustomError(
 						'Account is deactivated due to three login failed attempts, please contact the admin.',
 						400
 					);
 				} else {
-					await user.save();
+					await retrievedUser.save();
 				}
-			} else if (user && user.lastLogin !== null && user.isActive === false) {
+			} else if (
+				retrievedUser &&
+				retrievedUser.lastLogin !== null &&
+				retrievedUser.isActive === false
+			) {
 				throw new CustomError(
 					'Account is deactivated due to three login failed attempts, please contact the admin.',
 					400

@@ -103,3 +103,9 @@ export const ExamPeriods = {
 	JUN: 'JUN',
 	SEP: 'SEP',
 };
+
+export const ReviewType = {
+	General: 'General',
+	Instructor: 'Instructor',
+	Teaching: 'Teaching',
+};

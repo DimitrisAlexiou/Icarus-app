@@ -131,6 +131,9 @@ export const DELETE_USER_GENERAL_REVIEWS = createAction(
 	'review/delete_user_general_reviews'
 );
 export const GET_GENERAL_REVIEWS = createAction('review/get_general_reviews');
+export const GET_GENERAL_REVIEWS_TOTAL_NUMBER = createAction(
+	'review/get_general_reviews_total_number'
+);
 export const DELETE_GENERAL_REVIEWS = createAction(
 	'review/delete_general_reviews'
 );
@@ -156,6 +159,9 @@ export const DELETE_USER_INSTRUCTOR_REVIEWS = createAction(
 export const GET_INSTRUCTOR_REVIEWS = createAction(
 	'review/get_instructor_reviews'
 );
+export const GET_INSTRUCTOR_REVIEWS_TOTAL_NUMBER = createAction(
+	'review/get_instructor_reviews_total_number'
+);
 export const DELETE_INSTRUCTOR_REVIEWS = createAction(
 	'review/delete_instructor_reviews'
 );
@@ -177,6 +183,9 @@ export const DELETE_USER_TEACHING_REVIEWS = createAction(
 	'review/delete_user_teaching_reviews'
 );
 export const GET_TEACHING_REVIEWS = createAction('review/get_teaching_reviews');
+export const GET_TEACHING_REVIEWS_TOTAL_NUMBER = createAction(
+	'review/get_teaching_reviews_total_number'
+);
 export const DELETE_TEACHING_REVIEWS = createAction(
 	'review/delete_teaching_reviews'
 );
@@ -185,6 +194,7 @@ export const GET_USER_EVENTS = createAction('event/get_user_events');
 export const CREATE_EVENT = createAction('event/create_event');
 export const UPDATE_EVENT = createAction('event/update_event');
 export const DELETE_EVENT = createAction('event/delete_event');
+export const DELETE_USER_EVENTS = createAction('event/delete_user_events');
 export const GET_EVENTS = createAction('event/get_events');
 export const DELETE_EVENTS = createAction('event/delete_events');
 
@@ -304,5 +314,11 @@ export const GET_DIRECTORY = createAction('directory/get_directory');
 export const CREATE_DIRECTORY = createAction('directory/create_directory');
 export const UPDATE_DIRECTORY = createAction('directory/update_directory');
 export const DELETE_DIRECTORY = createAction('directory/delete_directory');
+export const DELETE_TEACHING_DIRECTORIES = createAction(
+	'directory/delete_teaching_directories'
+);
+export const GET_TEACHING_DIRECTORIES = createAction(
+	'directory/get_teaching_directories'
+);
 export const DELETE_DIRECTORIES = createAction('directory/delete_directories');
 export const GET_DIRECTORIES = createAction('directory/get_directories');

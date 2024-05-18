@@ -7,6 +7,10 @@ import {
 	deleteSystemGrades,
 	viewSystemGrades,
 } from '../../controllers/admin/course/grade';
+import {
+	deleteSystemDirectories,
+	viewSystemDirectories,
+} from '../../controllers/admin/course/directories';
 
 export default (router: express.Router) => {
 	// @desc    Get System Courses
@@ -30,4 +34,16 @@ export default (router: express.Router) => {
 		.route('/admin/grade')
 		.get(authorize, checkUserRole([UserType.admin]), viewSystemGrades)
 		.delete(authorize, checkUserRole([UserType.admin]), deleteSystemGrades);
+
+	// @desc    Get / Delete System Teaching Directories
+	// @route   GET/DELETE /api/directories
+	// @access  Private
+	router
+		.route('/admin/directories')
+		.get(authorize, checkUserRole([UserType.admin]), viewSystemDirectories)
+		.delete(
+			authorize,
+			checkUserRole([UserType.admin]),
+			deleteSystemDirectories
+		);
 };

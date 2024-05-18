@@ -45,7 +45,7 @@ export default function GeneralReviewForm({
 						console.log(generalReview);
 						dispatch(
 							updateGeneralReview({
-								generalReviewId: editGeneralReviewId,
+								reviewId: editGeneralReviewId,
 								data: generalReview,
 							})
 						);

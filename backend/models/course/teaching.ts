@@ -268,6 +268,8 @@ export const getTeachingByCourseId = (id: string) =>
 				select: 'surname name',
 			},
 		});
+export const getTeachingByDirectoryId = (id: string) =>
+	Teaching.findOne({ directories: id });
 //TODO: make this work, it should return all teachings for a cycle
 export const getTeachingsByCycleId = (id: string) =>
 	Teaching.find({

@@ -6,7 +6,7 @@ import { portfolioCategories } from '../../utils/NavigationLinks';
 import { PortfolioMenu } from '../../constants/enums';
 import usePortfolio from '../../hooks/user/usePortfolio';
 import Documents from '../../components/portfolio/Documents';
-import TeachingAnnouncements from '../../components/portfolio/TeachingAnnouncements';
+import TeachingAnnouncements from '../../components/announcement/cards/TeachingAnnouncements';
 import Calendar from '../../components/calendar/Calendar';
 import Exercises from '../../components/portfolio/Exercises';
 import Chat from '../../components/portfolio/Chat';
@@ -63,7 +63,7 @@ export default function Portfolio() {
 							style={{
 								textAlign: 'justify',
 								fontWeight: '700',
-								fontSize: 12,
+								fontSize: 16,
 							}}
 							onClick={() => navigateToTeachingDirectories(teaching)}
 						>

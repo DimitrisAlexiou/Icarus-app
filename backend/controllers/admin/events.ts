@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../../interfaces/AuthRequest';
-import { deleteAllEvents, getAllEvents } from '../../models/calendar';
+import { deleteAllEvents, getAllEvents } from '../../models/event';
 import { tryCatch } from '../../utils/tryCatch';
 import CustomError from '../../utils/CustomError';
 

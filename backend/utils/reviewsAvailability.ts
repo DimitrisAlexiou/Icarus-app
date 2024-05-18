@@ -22,7 +22,8 @@ export const checkReviewAvailability = async () => {
 		);
 
 	const reviewStart = new Date(
-		semester.startDate.getDate() + reviewDuration.startAfter * 7
+		semester.startDate.getTime() +
+			reviewDuration.startAfter * 7 * 24 * 60 * 60 * 1000
 	);
 
 	if (reviewStart > currentDate)
@@ -31,7 +32,9 @@ export const checkReviewAvailability = async () => {
 			406
 		);
 
-	const reviewEnd = new Date(reviewStart.getDate() + reviewDuration.period * 7);
+	const reviewEnd = new Date(
+		reviewStart.getTime() + reviewDuration.period * 7 * 24 * 60 * 60 * 1000
+	);
 
 	if (reviewEnd < currentDate)
 		throw new CustomError(

@@ -7,6 +7,7 @@ import {
 	DELETE_USER_GENERAL_REVIEWS,
 	GET_GENERAL_REVIEW,
 	GET_GENERAL_REVIEWS,
+	GET_GENERAL_REVIEWS_TOTAL_NUMBER,
 	GET_USER_GENERAL_REVIEWS,
 	UPDATE_GENERAL_REVIEW,
 } from '../actions';
@@ -38,12 +39,9 @@ export const createGeneralReview = createAsyncThunk(
 
 export const updateGeneralReview = createAsyncThunk(
 	UPDATE_GENERAL_REVIEW,
-	async ({ generalReviewId, data }, thunkAPI) => {
+	async ({ reviewId, data }, thunkAPI) => {
 		try {
-			return await generalReviewService.updateGeneralReview(
-				generalReviewId,
-				data
-			);
+			return await generalReviewService.updateGeneralReview(reviewId, data);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -52,9 +50,9 @@ export const updateGeneralReview = createAsyncThunk(
 
 export const getGeneralReview = createAsyncThunk(
 	GET_GENERAL_REVIEW,
-	async (generalReviewId, thunkAPI) => {
+	async (reviewId, thunkAPI) => {
 		try {
-			return await generalReviewService.getGeneralReview(generalReviewId);
+			return await generalReviewService.getGeneralReview(reviewId);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -63,9 +61,9 @@ export const getGeneralReview = createAsyncThunk(
 
 export const deleteGeneralReview = createAsyncThunk(
 	DELETE_GENERAL_REVIEW,
-	async (generalReviewId, thunkAPI) => {
+	async (reviewId, thunkAPI) => {
 		try {
-			return await generalReviewService.deleteGeneralReview(generalReviewId);
+			return await generalReviewService.deleteGeneralReview(reviewId);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -105,6 +103,17 @@ export const getGeneralReviews = createAsyncThunk(
 	}
 );
 
+export const getGeneralReviewsTotalNumber = createAsyncThunk(
+	GET_GENERAL_REVIEWS_TOTAL_NUMBER,
+	async (_, thunkAPI) => {
+		try {
+			return await generalReviewService.getGeneralReviewsTotalNumber();
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
+	}
+);
+
 export const deleteGeneralReviews = createAsyncThunk(
 	DELETE_GENERAL_REVIEWS,
 	async (_, thunkAPI) => {
@@ -133,7 +142,7 @@ export const generalReviewSlice = createSlice({
 			.addCase(createGeneralReview.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
 				displaySuccessNotification(payload.message);
-				state.generalReviews = [...state.generalReviews, payload.generalReview];
+				state.generalReviews = [...state.generalReviews, payload.review];
 			})
 			.addCase(createGeneralReview.rejected, (state, { payload }) => {
 				state.isLoading = false;
@@ -146,12 +155,11 @@ export const generalReviewSlice = createSlice({
 				state.isLoading = false;
 				displaySuccessNotification(payload.message);
 				const updatedGeneralReviewIndex = state.generalReviews.findIndex(
-					(generalReview) =>
-						generalReview._id === payload.updatedGeneralReview._id
+					(generalReview) => generalReview._id === payload.updatedReview._id
 				);
 				if (updatedGeneralReviewIndex !== -1)
 					state.generalReviews[updatedGeneralReviewIndex] =
-						payload.updatedGeneralReview;
+						payload.updatedReview;
 			})
 			.addCase(updateGeneralReview.rejected, (state, { payload }) => {
 				state.isLoading = false;
@@ -168,7 +176,7 @@ export const generalReviewSlice = createSlice({
 				state.isLoading = false;
 				if (
 					payload !==
-					'Seems like the general review that you are trying to view does not exist.'
+					'Seems like the General review that you are trying to view does not exist.'
 				)
 					displayErrorNotification(payload);
 			})
@@ -179,7 +187,7 @@ export const generalReviewSlice = createSlice({
 				state.isLoading = false;
 				displaySuccessNotification(payload.message);
 				state.generalReviews = state.generalReviews.filter((generalReview) => {
-					return generalReview._id !== payload.generalReview;
+					return generalReview._id !== payload.review;
 				});
 			})
 			.addCase(deleteGeneralReview.rejected, (state, { payload }) => {
@@ -197,7 +205,7 @@ export const generalReviewSlice = createSlice({
 				state.isLoading = false;
 				if (
 					payload !==
-					`Seems like you haven't submitted any general reviews yet.`
+					`Seems like you haven't submitted any General reviews yet.`
 				)
 					displayErrorNotification(payload);
 			})
@@ -206,6 +214,7 @@ export const generalReviewSlice = createSlice({
 			})
 			.addCase(deleteUserGeneralReviews.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
+				state.generalReviews = [];
 				displaySuccessNotification(payload.message);
 			})
 			.addCase(deleteUserGeneralReviews.rejected, (state, { payload }) => {
@@ -217,16 +226,27 @@ export const generalReviewSlice = createSlice({
 			})
 			.addCase(getGeneralReviews.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				state.generalReviews = payload.generalReviews;
-				state.totalGeneralReviews = payload.totalGeneralReviews;
+				state.generalReviews = payload.reviews;
+				state.totalGeneralReviews = payload.totalReviews;
 			})
 			.addCase(getGeneralReviews.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				if (
 					payload !==
-					'Seems like there are no general reviews registered in the system.'
+					'Seems like there are no General reviews registered in the system.'
 				)
 					displayErrorNotification(payload);
+			})
+			.addCase(getGeneralReviewsTotalNumber.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(getGeneralReviewsTotalNumber.fulfilled, (state, { payload }) => {
+				state.isLoading = false;
+				state.totalGeneralReviews = payload;
+			})
+			.addCase(getGeneralReviewsTotalNumber.rejected, (state, { payload }) => {
+				state.isLoading = false;
+				displayErrorNotification(payload);
 			})
 			.addCase(deleteGeneralReviews.pending, (state) => {
 				state.isLoading = true;

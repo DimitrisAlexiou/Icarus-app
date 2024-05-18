@@ -3,8 +3,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckDouble, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { faEdit, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import { AssessmentStatus, AssessmentType } from '../../constants/enums';
-import StatementForm from '../user/forms/StatementForm';
-import StatementCard from '../course/cards/StatementCard';
+import StatementForm from '../statement/forms/StatementForm';
+import StatementCard from '../statement/cards/StatementCard';
 import PillHeader from '../boilerplate/headers/PillHeader';
 import Loading from '../boilerplate/spinners/Spinner';
 

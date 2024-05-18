@@ -11,6 +11,7 @@ import {
 	DELETE_EVENTS,
 	GET_EVENTS,
 	GET_USER_EVENTS,
+	DELETE_USER_EVENTS,
 } from '../actions';
 import eventService from './eventService';
 
@@ -57,9 +58,20 @@ export const updateEvent = createAsyncThunk(
 
 export const deleteEvent = createAsyncThunk(
 	DELETE_EVENT,
-	async (eventId, thunkAPI) => {
+	async (data, thunkAPI) => {
 		try {
-			return await eventService.deleteEvent(eventId);
+			return await eventService.deleteEvent(data);
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
+	}
+);
+
+export const deleteUserEvents = createAsyncThunk(
+	DELETE_USER_EVENTS,
+	async (_, thunkAPI) => {
+		try {
+			return await eventService.deleteUserEvents();
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -147,6 +159,18 @@ export const eventSlice = createSlice({
 				});
 			})
 			.addCase(deleteEvent.rejected, (state, { payload }) => {
+				state.isLoading = false;
+				displayErrorNotification(payload);
+			})
+			.addCase(deleteUserEvents.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(deleteUserEvents.fulfilled, (state, { payload }) => {
+				state.isLoading = false;
+				displaySuccessNotification(payload.message);
+				state.events = null;
+			})
+			.addCase(deleteUserEvents.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				displayErrorNotification(payload);
 			})

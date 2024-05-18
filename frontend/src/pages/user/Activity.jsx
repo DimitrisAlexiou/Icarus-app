@@ -1,13 +1,24 @@
 import { useState } from 'react';
 import { Row, Col, NavItem, NavLink } from 'reactstrap';
 import { activityCategories } from '../../utils/NavigationLinks';
-import TeachingReviews from '../../components/review/TeachingReviews';
-import InstructorReviews from '../../components/review/InstructorReviews';
-import GeneralReviews from '../../components/review/GeneralReviews';
+import { ReviewType } from '../../constants/enums';
+import useUserReviews from '../../hooks/review/useUserReviews';
+import ReviewCard from '../../components/review/cards/ReviewCard';
+import ReviewSection from '../../components/review/ReviewSection';
 import Header from '../../components/boilerplate/headers/Header';
 
 export default function Activity() {
 	const [selectedCategory, setSelectedCategory] = useState('Reviews');
+	const {
+		generalReviews,
+		isGeneralReviewLoading,
+		instructorReviews,
+		isInstructorReviewLoading,
+		teachingReviews,
+		isTeachingReviewLoading,
+		handleDeleteReview,
+		handleDeleteReviews,
+	} = useUserReviews();
 
 	return (
 		<>
@@ -50,17 +61,47 @@ export default function Activity() {
 
 			<Row className="animated--grow-in">
 				{selectedCategory === 'Reviews' ? (
-					<>
-						<Row className="mb-4 justify-content-center">
-							<TeachingReviews />
-						</Row>
-						<Row className="mb-4 justify-content-center">
-							<InstructorReviews />
-						</Row>
-						<Row className="mb-4 justify-content-center">
-							<GeneralReviews />
-						</Row>
-					</>
+					<Row className="mb-4 justify-content-center animated--grow-in">
+						<ReviewSection
+							title="Teaching"
+							reviews={teachingReviews}
+							isLoading={isTeachingReviewLoading}
+							reviewType={ReviewType.Teaching}
+							ReviewCardComponent={ReviewCard}
+							handleDeleteReview={handleDeleteReview}
+							handleDeleteReviews={() =>
+								handleDeleteReviews(ReviewType.Teaching)
+							}
+						/>
+
+						<ReviewSection
+							title="Instructor"
+							reviews={instructorReviews}
+							isLoading={isInstructorReviewLoading}
+							reviewType={ReviewType.Instructor}
+							ReviewCardComponent={ReviewCard}
+							handleDeleteReview={(reviewId) =>
+								handleDeleteReview(ReviewType.Instructor, reviewId)
+							}
+							handleDeleteReviews={() =>
+								handleDeleteReviews(ReviewType.Instructor)
+							}
+						/>
+
+						<ReviewSection
+							title="General"
+							reviews={generalReviews}
+							isLoading={isGeneralReviewLoading}
+							reviewType={ReviewType.General}
+							ReviewCardComponent={ReviewCard}
+							handleDeleteReview={(reviewId) =>
+								handleDeleteReview(ReviewType.General, reviewId)
+							}
+							handleDeleteReviews={() =>
+								handleDeleteReviews(ReviewType.General)
+							}
+						/>
+					</Row>
 				) : selectedCategory === 'ACTIVITY' ? null : selectedCategory ===
 				  'ACTIVITY' ? null : null}
 			</Row>

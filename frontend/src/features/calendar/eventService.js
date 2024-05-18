@@ -22,14 +22,21 @@ const updateEvent = async (eventId, data) => {
 	return response.data;
 };
 
-const deleteEvent = async (eventId) => {
-	const response = await axiosFetch.delete(API_URL_CALENDAR + '/' + eventId);
+const deleteEvent = async (data) => {
+	console.log(data);
+	const response = await axiosFetch.delete(API_URL_CALENDAR + '/delete', data);
+
+	return response.data;
+};
+
+const deleteUserEvents = async () => {
+	const response = await axiosFetch.delete(API_URL_CALENDAR);
 
 	return response.data;
 };
 
 const deleteEvents = async () => {
-	const response = await axiosFetch.delete(API_URL_CALENDAR + '/delete');
+	const response = await axiosFetch.delete(API_URL_ADMIN_EVENTS);
 
 	return response.data;
 };
@@ -45,6 +52,7 @@ const eventService = {
 	addEvent,
 	updateEvent,
 	deleteEvent,
+	deleteUserEvents,
 	getEvents,
 	deleteEvents,
 };

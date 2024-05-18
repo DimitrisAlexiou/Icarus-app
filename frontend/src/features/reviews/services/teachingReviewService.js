@@ -11,26 +11,26 @@ const createTeachingReview = async (data) => {
 	return response.data;
 };
 
-const updateTeachingReview = async (teachingReviewId, data) => {
+const updateTeachingReview = async (reviewId, data) => {
 	const response = await axiosFetch.put(
-		API_URL_REVIEW + '/teaching/' + teachingReviewId,
+		API_URL_REVIEW + '/teaching/' + reviewId,
 		data
 	);
 
 	return response.data;
 };
 
-const getTeachingReview = async (teachingReviewId) => {
+const getTeachingReview = async (reviewId) => {
 	const response = await axiosFetch.get(
-		API_URL_REVIEW + '/teaching/' + teachingReviewId
+		API_URL_REVIEW + '/teaching/' + reviewId
 	);
 
 	return response.data;
 };
 
-const deleteTeachingReview = async (teachingReviewId) => {
+const deleteTeachingReview = async (reviewId) => {
 	const response = await axiosFetch.delete(
-		API_URL_REVIEW + '/teaching/' + teachingReviewId
+		API_URL_REVIEW + '/teaching/' + reviewId
 	);
 
 	return response.data;
@@ -58,6 +58,14 @@ const getTeachingReviews = async () => {
 	return response.data;
 };
 
+const getTeachingReviewsTotalNumber = async () => {
+	const response = await axiosFetch.get(
+		API_URL_ADMIN_REVIEW_TEACHING + '/total'
+	);
+
+	return response.data;
+};
+
 const deleteTeachingReviews = async () => {
 	const response = await axiosFetch.delete(API_URL_ADMIN_REVIEW_TEACHING);
 
@@ -72,6 +80,7 @@ const teachingReviewService = {
 	getUserTeachingReviews,
 	deleteUserTeachingReviews,
 	getTeachingReviews,
+	getTeachingReviewsTotalNumber,
 	deleteTeachingReviews,
 };
 

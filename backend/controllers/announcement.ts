@@ -3,6 +3,7 @@ import { startSession } from 'mongoose';
 import { Response } from 'express';
 import { AuthenticatedRequest } from '../interfaces/AuthRequest';
 import {
+	Announcement,
 	createAnnouncement,
 	deleteAnnouncement,
 	deleteInstructorAnnouncements,
@@ -58,9 +59,13 @@ export const createTeachingAnnouncement = tryCatch(
 			owner: new mongoose.Types.ObjectId(userId),
 		});
 
-		const announcement = await getAnnouncementById(
-			createdAnnouncement._id.toString()
-		);
+		const announcement = await Announcement.populate(createdAnnouncement, {
+			path: 'teaching',
+			populate: {
+				path: 'course',
+				select: 'title',
+			},
+		});
 
 		return res
 			.status(201)

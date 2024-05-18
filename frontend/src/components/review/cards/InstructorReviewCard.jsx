@@ -1,22 +1,21 @@
-import { convertToPercentage, getProgressBarColor } from '../../../utils/progressBar';
-
-export default function InstructorReviewCard({ instructorReview }) {
+const InstructorReviewCard = ({
+	review,
+	getProgressBarColor,
+	convertToPercentage,
+}) => {
 	return (
 		<>
-			<h5 className="d-flex align-items-center mb-3 font-weight-bold mb-4">
-				{instructorReview.teaching.course.title}
-			</h5>
 			<p>Good Organization</p>
 			<div className="progress mb-3" style={{ height: '5px' }}>
 				<div
 					className={`progress-bar ${getProgressBarColor(
-						convertToPercentage(instructorReview.good_organization)
+						convertToPercentage(review?.good_organization)
 					)}`}
 					role="progressbar"
 					style={{
-						width: `${convertToPercentage(instructorReview.good_organization)}%`,
+						width: `${convertToPercentage(review?.good_organization)}%`,
 					}}
-					aria-valuenow={instructorReview.good_organization}
+					aria-valuenow={review?.good_organization}
 					aria-valuemin="0"
 					aria-valuemax="100"
 				></div>
@@ -25,15 +24,15 @@ export default function InstructorReviewCard({ instructorReview }) {
 			<div className="progress mb-3" style={{ height: '5px' }}>
 				<div
 					className={`progress-bar ${getProgressBarColor(
-						convertToPercentage(instructorReview.clear_comprehensive_answers)
+						convertToPercentage(review?.clear_comprehensive_answers)
 					)}`}
 					role="progressbar"
 					style={{
 						width: `${convertToPercentage(
-							instructorReview.clear_comprehensive_answers
+							review?.clear_comprehensive_answers
 						)}%`,
 					}}
-					aria-valuenow={instructorReview.clear_comprehensive_answers}
+					aria-valuenow={review?.clear_comprehensive_answers}
 					aria-valuemin="0"
 					aria-valuemax="100"
 				></div>
@@ -42,13 +41,13 @@ export default function InstructorReviewCard({ instructorReview }) {
 			<div className="progress mb-3" style={{ height: '5px' }}>
 				<div
 					className={`progress-bar ${getProgressBarColor(
-						convertToPercentage(instructorReview.student_participation)
+						convertToPercentage(review?.student_participation)
 					)}`}
 					role="progressbar"
 					style={{
-						width: `${convertToPercentage(instructorReview.student_participation)}%`,
+						width: `${convertToPercentage(review?.student_participation)}%`,
 					}}
-					aria-valuenow={instructorReview.student_participation}
+					aria-valuenow={review?.student_participation}
 					aria-valuemin="0"
 					aria-valuemax="100"
 				></div>
@@ -57,13 +56,13 @@ export default function InstructorReviewCard({ instructorReview }) {
 			<div className="progress mb-3" style={{ height: '5px' }}>
 				<div
 					className={`progress-bar ${getProgressBarColor(
-						convertToPercentage(instructorReview.course_consistency)
+						convertToPercentage(review?.course_consistency)
 					)}`}
 					role="progressbar"
 					style={{
-						width: `${convertToPercentage(instructorReview.course_consistency)}%`,
+						width: `${convertToPercentage(review?.course_consistency)}%`,
 					}}
-					aria-valuenow={instructorReview.course_consistency}
+					aria-valuenow={review?.course_consistency}
 					aria-valuemin="0"
 					aria-valuemax="100"
 				></div>
@@ -72,17 +71,19 @@ export default function InstructorReviewCard({ instructorReview }) {
 			<div className="progress mb-3" style={{ height: '5px' }}>
 				<div
 					className={`progress-bar ${getProgressBarColor(
-						convertToPercentage(instructorReview.instructor_approachable)
+						convertToPercentage(review?.instructor_approachable)
 					)}`}
 					role="progressbar"
 					style={{
-						width: `${convertToPercentage(instructorReview.instructor_approachable)}%`,
+						width: `${convertToPercentage(review?.instructor_approachable)}%`,
 					}}
-					aria-valuenow={instructorReview.instructor_approachable}
+					aria-valuenow={review?.instructor_approachable}
 					aria-valuemin="0"
 					aria-valuemax="100"
 				></div>
 			</div>
 		</>
 	);
-}
+};
+
+export default InstructorReviewCard;

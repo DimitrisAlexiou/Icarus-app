@@ -14,9 +14,9 @@ import {
 	getStudents,
 	getUsers,
 } from '../../features/admin/userSlice';
-import { getTeachingReviews } from '../../features/reviews/teachingReviewSlice';
-import { getInstructorReviews } from '../../features/reviews/instructorReviewSlice';
-import { getGeneralReviews } from '../../features/reviews/generalReviewSlice';
+import { getTeachingReviewsTotalNumber } from '../../features/reviews/teachingReviewSlice';
+import { getInstructorReviewsTotalNumber } from '../../features/reviews/instructorReviewSlice';
+import { getGeneralReviewsTotalNumber } from '../../features/reviews/generalReviewSlice';
 import { deleteAlert } from '../../constants/sweetAlertNotification';
 
 const useAdminDashboard = () => {
@@ -81,9 +81,9 @@ const useAdminDashboard = () => {
 		dispatch(getStudents());
 		dispatch(getInstructors());
 		dispatch(getMasters());
-		dispatch(getTeachingReviews());
-		dispatch(getInstructorReviews());
-		dispatch(getGeneralReviews());
+		dispatch(getTeachingReviewsTotalNumber());
+		dispatch(getInstructorReviewsTotalNumber());
+		dispatch(getGeneralReviewsTotalNumber());
 	}, [dispatch]);
 
 	const deleteSystemCourses = () => {

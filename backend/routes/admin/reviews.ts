@@ -1,16 +1,15 @@
 import express from 'express';
 import {
-	deleteSystemGeneralReviews,
-	getSystemGeneralReviews,
-} from '../../controllers/admin/review/generalReview';
-import {
-	deleteSystemInstructorReviews,
-	getSystemInstructorReviews,
-} from '../../controllers/admin/review/instructorReview';
-import {
 	deleteSystemTeachingReviews,
 	getSystemTeachingReviews,
-} from '../../controllers/admin/review/teachingReview';
+	deleteSystemGeneralReviews,
+	getSystemGeneralReviews,
+	deleteSystemInstructorReviews,
+	getSystemInstructorReviews,
+	getSystemTeachingReviewsTotalNumber,
+	getSystemInstructorReviewsTotalNumber,
+	getSystemGeneralReviewsTotalNumber,
+} from '../../controllers/admin/review';
 import { authorize, checkUserRole } from '../../middleware/authMiddleware';
 import { UserType } from '../../models/users/user';
 
@@ -27,6 +26,13 @@ export default (router: express.Router) => {
 			deleteSystemTeachingReviews
 		);
 
+	// @desc    Get System Teaching Reviews Total Number
+	// @route   GET /api/admin/review/teaching/total
+	// @access  Private
+	router
+		.route('/admin/review/teaching/total')
+		.get(authorize, getSystemTeachingReviewsTotalNumber);
+
 	// @desc    Get / Delete System Instructor Reviews
 	// @route   GET/DELETE /api/admin/review/instructor
 	// @access  Private ADMIN
@@ -39,6 +45,13 @@ export default (router: express.Router) => {
 			deleteSystemInstructorReviews
 		);
 
+	// @desc    Get System Instructor Reviews Total Number
+	// @route   GET /api/admin/review/instructor/total
+	// @access  Private
+	router
+		.route('/admin/review/instructor/total')
+		.get(authorize, getSystemInstructorReviewsTotalNumber);
+
 	// @desc    Get / Delete System General Reviews
 	// @route   GET/DELETE /api/admin/review/general
 	// @access  Private ADMIN
@@ -50,4 +63,11 @@ export default (router: express.Router) => {
 			checkUserRole([UserType.admin]),
 			deleteSystemGeneralReviews
 		);
+
+	// @desc    Get System General Reviews Total Number
+	// @route   GET /api/admin/review/general/total
+	// @access  Private
+	router
+		.route('/admin/review/general/total')
+		.get(authorize, getSystemGeneralReviewsTotalNumber);
 };

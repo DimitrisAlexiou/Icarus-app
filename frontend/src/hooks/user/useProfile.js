@@ -9,7 +9,7 @@ const useProfile = () => {
 	const passedTeachings = user?.user?.student?.passedTeachings;
 
 	const calculatePercentagePassedTeachings = () => {
-		const totalPassedTeachings = passedTeachings.length;
+		const totalPassedTeachings = passedTeachings?.length;
 		const totalCourses = 56;
 
 		const progressPassedTeachings = (totalPassedTeachings / totalCourses) * 100;
@@ -20,7 +20,7 @@ const useProfile = () => {
 	const calculatePercentageTotalECTS = () => {
 		let totalECTS = 0;
 
-		passedTeachings.forEach((teaching) => {
+		passedTeachings?.forEach((teaching) => {
 			totalECTS += teaching?.course?.ects;
 		});
 

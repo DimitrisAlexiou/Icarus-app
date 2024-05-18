@@ -11,26 +11,26 @@ const createGeneralReview = async (data) => {
 	return response.data;
 };
 
-const updateGeneralReview = async (generalReviewId, data) => {
+const updateGeneralReview = async (reviewId, data) => {
 	const response = await axiosFetch.put(
-		API_URL_REVIEW + '/general/' + generalReviewId,
+		API_URL_REVIEW + '/general/' + reviewId,
 		data
 	);
 
 	return response.data;
 };
 
-const getGeneralReview = async (generalReviewId) => {
+const getGeneralReview = async (reviewId) => {
 	const response = await axiosFetch.get(
-		API_URL_REVIEW + '/general/' + generalReviewId
+		API_URL_REVIEW + '/general/' + reviewId
 	);
 
 	return response.data;
 };
 
-const deleteGeneralReview = async (generalReviewId) => {
+const deleteGeneralReview = async (reviewId) => {
 	const response = await axiosFetch.delete(
-		API_URL_REVIEW + '/general/' + generalReviewId
+		API_URL_REVIEW + '/general/' + reviewId
 	);
 
 	return response.data;
@@ -58,6 +58,14 @@ const getGeneralReviews = async () => {
 	return response.data;
 };
 
+const getGeneralReviewsTotalNumber = async () => {
+	const response = await axiosFetch.get(
+		API_URL_ADMIN_REVIEW_GENERAL + '/total'
+	);
+
+	return response.data;
+};
+
 const deleteGeneralReviews = async () => {
 	const response = await axiosFetch.delete(API_URL_ADMIN_REVIEW_GENERAL);
 
@@ -72,6 +80,7 @@ const generalReviewService = {
 	getUserGeneralReviews,
 	deleteUserGeneralReviews,
 	getGeneralReviews,
+	getGeneralReviewsTotalNumber,
 	deleteGeneralReviews,
 };
 

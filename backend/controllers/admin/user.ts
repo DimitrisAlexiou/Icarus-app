@@ -28,7 +28,7 @@ import {
 	getTotalInstructors,
 	updateInstructorById,
 } from '../../models/users/instructor';
-import { deleteEvents } from '../../models/calendar';
+import { deleteEvents } from '../../models/event';
 import { deleteNotes } from '../../models/note';
 import { tryCatch } from '../../utils/tryCatch';
 import CustomError from '../../utils/CustomError';

@@ -8,8 +8,10 @@ import {
 	CREATE_DIRECTORY,
 	DELETE_DIRECTORIES,
 	DELETE_DIRECTORY,
+	DELETE_TEACHING_DIRECTORIES,
 	GET_DIRECTORIES,
 	GET_DIRECTORY,
+	GET_TEACHING_DIRECTORIES,
 	UPDATE_DIRECTORY,
 } from '../actions';
 import directoryService from './services/directoryService';
@@ -22,22 +24,22 @@ const initialState = {
 	editDirectoryId: '',
 };
 
-export const getDirectory = createAsyncThunk(
-	GET_DIRECTORY,
-	async ({ teachingId, directoryId }, thunkAPI) => {
+export const createDirectory = createAsyncThunk(
+	CREATE_DIRECTORY,
+	async ({ teachingId, data }, thunkAPI) => {
 		try {
-			return await directoryService.getDirectory(teachingId, directoryId);
+			return await directoryService.createDirectory(teachingId, data);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
 	}
 );
 
-export const createDirectory = createAsyncThunk(
-	CREATE_DIRECTORY,
-	async ({ teachingId, data }, thunkAPI) => {
+export const getDirectory = createAsyncThunk(
+	GET_DIRECTORY,
+	async ({ teachingId, directoryId }, thunkAPI) => {
 		try {
-			return await directoryService.createDirectory(teachingId, data);
+			return await directoryService.getDirectory(teachingId, directoryId);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -70,11 +72,22 @@ export const deleteDirectory = createAsyncThunk(
 	}
 );
 
-export const deleteDirectories = createAsyncThunk(
-	DELETE_DIRECTORIES,
+export const getTeachingDirectories = createAsyncThunk(
+	GET_TEACHING_DIRECTORIES,
 	async (teachingId, thunkAPI) => {
 		try {
-			return await directoryService.deleteDirectories(teachingId);
+			return await directoryService.getTeachingDirectories(teachingId);
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
+	}
+);
+
+export const deleteTeachingDirectories = createAsyncThunk(
+	DELETE_TEACHING_DIRECTORIES,
+	async (teachingId, thunkAPI) => {
+		try {
+			return await directoryService.deleteTeachingDirectories(teachingId);
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -83,9 +96,20 @@ export const deleteDirectories = createAsyncThunk(
 
 export const getDirectories = createAsyncThunk(
 	GET_DIRECTORIES,
-	async (teachingId, thunkAPI) => {
+	async (_, thunkAPI) => {
 		try {
-			return await directoryService.getDirectories(teachingId);
+			return await directoryService.getDirectories();
+		} catch (error) {
+			return thunkAPI.rejectWithValue(extractErrorMessage(error));
+		}
+	}
+);
+
+export const deleteDirectories = createAsyncThunk(
+	DELETE_DIRECTORIES,
+	async (_, thunkAPI) => {
+		try {
+			return await directoryService.deleteDirectories();
 		} catch (error) {
 			return thunkAPI.rejectWithValue(extractErrorMessage(error));
 		}
@@ -103,14 +127,14 @@ export const directorySlice = createSlice({
 	},
 	extraReducers: (builder) => {
 		builder
-			.addCase(getDirectories.pending, (state) => {
+			.addCase(getTeachingDirectories.pending, (state) => {
 				state.isLoading = true;
 			})
-			.addCase(getDirectories.fulfilled, (state, { payload }) => {
+			.addCase(getTeachingDirectories.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
 				state.directories = payload;
 			})
-			.addCase(getDirectories.rejected, (state, { payload }) => {
+			.addCase(getTeachingDirectories.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				if (
 					payload !== `Seems like this teaching does not have any directories.`
@@ -161,7 +185,7 @@ export const directorySlice = createSlice({
 			})
 			.addCase(deleteDirectory.fulfilled, (state, { payload }) => {
 				state.isLoading = false;
-				displaySuccessNotification(payload.messsage);
+				displaySuccessNotification(payload.message);
 				state.directories = state.directories.filter((directory) => {
 					return directory._id !== payload.directory;
 				});
@@ -169,6 +193,33 @@ export const directorySlice = createSlice({
 			.addCase(deleteDirectory.rejected, (state, { payload }) => {
 				state.isLoading = false;
 				displayErrorNotification(payload);
+			})
+			.addCase(deleteTeachingDirectories.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(deleteTeachingDirectories.fulfilled, (state, { payload }) => {
+				state.isLoading = false;
+				state.directories = null;
+				displaySuccessNotification(payload.message);
+			})
+			.addCase(deleteTeachingDirectories.rejected, (state, { payload }) => {
+				state.isLoading = false;
+				displayErrorNotification(payload);
+			})
+			.addCase(getDirectories.pending, (state) => {
+				state.isLoading = true;
+			})
+			.addCase(getDirectories.fulfilled, (state, { payload }) => {
+				state.isLoading = false;
+				state.directories = payload;
+			})
+			.addCase(getDirectories.rejected, (state, { payload }) => {
+				state.isLoading = false;
+				if (
+					payload !==
+					`Seems like there are no course teaching directories in the system.`
+				)
+					displayErrorNotification(payload);
 			})
 			.addCase(deleteDirectories.pending, (state) => {
 				state.isLoading = true;

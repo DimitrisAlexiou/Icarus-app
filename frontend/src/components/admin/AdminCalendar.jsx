@@ -1,4 +1,4 @@
-import { useState, forwardRef, useRef } from 'react';
+import { forwardRef } from 'react';
 import {
 	Row,
 	Col,
@@ -8,8 +8,6 @@ import {
 	Button,
 	Spinner,
 } from 'reactstrap';
-import { deleteEvent, setEditEvent } from '../../features/calendar/eventSlice';
-import { deleteAlert } from '../../constants/sweetAlertNotification';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import useCalendar from '../../hooks/calendar/useCalendar';
@@ -27,64 +25,23 @@ import UserEvents from './UserEvents';
 
 export default function AdminCalendar() {
 	const {
-		user,
 		events,
 		isLoading,
 		isEditingEvent,
 		editEventId,
+		setEditEvent,
+		modal,
+		setModal,
+		selectedEvent,
+		setSelectedEvent,
+		calendarRef,
+		modalRef,
+		toggle,
+		handleDateClick,
+		handleEventClick,
 		handleDeleteEvents,
 		dispatch,
 	} = useCalendar();
-
-	const calendarRef = useRef(null);
-	const [selectedEvent, setSelectedEvent] = useState(null);
-	const myRef = useRef(null);
-	const [modal, setModal] = useState(false);
-
-	const toggle = () => {
-		setModal(!modal);
-		dispatch(
-			setEditEvent({
-				isEditingEvent: false,
-				editEventId: '',
-			})
-		);
-
-		if (selectedEvent && calendarRef.current) {
-			calendarRef.current.getApi().unselect();
-			setSelectedEvent(null);
-		}
-	};
-
-	const handleDateClick = (selected) => {
-		const calendarApi = selected.view.calendar;
-		calendarApi.unselect();
-
-		calendarApi.addEvent({
-			title: '',
-			start: selected.startStr,
-			end: selected.endStr,
-			allDay: selected.allDay,
-		});
-
-		const newEvent = {
-			title: '',
-			startDate: new Date(selected.start),
-			endDate: new Date(selected.end),
-			// startDate: selected.start.toISOString(),
-			// endDate: selected.end.toISOString(),
-			allDay: selected.allDay,
-		};
-
-		setSelectedEvent(newEvent);
-		setModal(true);
-		console.log(newEvent);
-	};
-
-	const handleEventClick = (selected) => {
-		deleteAlert(() => dispatch(deleteEvent(selected.event.extendedProps._id)));
-		selected.event.remove();
-	};
 
 	const ModalComponent = forwardRef(({ event, ...props }, ref) => {
 		return (
@@ -105,7 +62,6 @@ export default function AdminCalendar() {
 				<ModalBody>
 					<EventForm
 						event={event}
-						user={user}
 						isEditingEvent={isEditingEvent}
 						editEventId={editEventId}
 						setModal={setModal}
@@ -206,9 +162,9 @@ export default function AdminCalendar() {
 				</Row>
 			)}
 			<ModalComponent
-				ref={myRef}
-				isEditingEvent={isEditingEvent}
+				ref={modalRef}
 				toggle={toggle}
+				isEditingEvent={isEditingEvent}
 				event={selectedEvent}
 			/>
 		</>

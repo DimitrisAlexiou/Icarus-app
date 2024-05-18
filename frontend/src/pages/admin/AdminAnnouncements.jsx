@@ -22,7 +22,7 @@ import HeaderWithSemester from '../../components/boilerplate/headers/HeaderWithS
 import Loading from '../../components/boilerplate/spinners/Spinner';
 import SpinnerComponent from '../../components/boilerplate/spinners/SpinnerMessage';
 import PillHeader from '../../components/boilerplate/headers/PillHeader';
-import AnnouncementCard from '../../components/user/cards/AnnouncementCard';
+import AnnouncementCard from '../../components/announcement/cards/AnnouncementCard';
 
 export default function AdminAnnouncements() {
 	const { user } = useSelector((state) => state.auth);

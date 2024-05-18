@@ -69,6 +69,8 @@ export const updateProfile = async (
 				404
 			);
 
+		await updatedUser.populate('student');
+
 		if (type === UserType.instructor) {
 			const instructor = await updateInstructorById(
 				updatedUser.instructor.toString(),

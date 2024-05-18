@@ -1,22 +1,21 @@
-import { convertToPercentage, getProgressBarColor } from '../../../utils/progressBar';
-
-export default function TeachingReviewCard({ teachingReview }) {
+const TeachingReviewCard = ({
+	review,
+	getProgressBarColor,
+	convertToPercentage,
+}) => {
 	return (
 		<>
-			<h5 className="d-flex align-items-center mb-3 font-weight-bold mb-4">
-				{teachingReview.teaching.course.title}
-			</h5>
 			<p>Clear Course Objectives</p>
 			<div className="progress mb-3" style={{ height: '5px' }}>
 				<div
 					className={`progress-bar ${getProgressBarColor(
-						convertToPercentage(teachingReview.clear_course_objectives)
+						convertToPercentage(review?.clear_course_objectives)
 					)}`}
 					role="progressbar"
 					style={{
-						width: `${convertToPercentage(teachingReview.clear_course_objectives)}%`,
+						width: `${convertToPercentage(review?.clear_course_objectives)}%`,
 					}}
-					aria-valuenow={teachingReview.clear_course_objectives}
+					aria-valuenow={review?.clear_course_objectives}
 					aria-valuemin="0"
 					aria-valuemax="100"
 				></div>
@@ -25,13 +24,13 @@ export default function TeachingReviewCard({ teachingReview }) {
 			<div className="progress mb-3" style={{ height: '5px' }}>
 				<div
 					className={`progress-bar ${getProgressBarColor(
-						convertToPercentage(teachingReview.course_material)
+						convertToPercentage(review?.course_material)
 					)}`}
 					role="progressbar"
 					style={{
-						width: `${convertToPercentage(teachingReview.course_material)}%`,
+						width: `${convertToPercentage(review?.course_material)}%`,
 					}}
-					aria-valuenow={teachingReview.course_material}
+					aria-valuenow={review?.course_material}
 					aria-valuemin="0"
 					aria-valuemax="100"
 				></div>
@@ -40,13 +39,13 @@ export default function TeachingReviewCard({ teachingReview }) {
 			<div className="progress mb-3" style={{ height: '5px' }}>
 				<div
 					className={`progress-bar ${getProgressBarColor(
-						convertToPercentage(teachingReview.course_comprehension)
+						convertToPercentage(review?.course_comprehension)
 					)}`}
 					role="progressbar"
 					style={{
-						width: `${convertToPercentage(teachingReview.course_comprehension)}%`,
+						width: `${convertToPercentage(review?.course_comprehension)}%`,
 					}}
-					aria-valuenow={teachingReview.course_comprehension}
+					aria-valuenow={review?.course_comprehension}
 					aria-valuemin="0"
 					aria-valuemax="100"
 				></div>
@@ -55,13 +54,13 @@ export default function TeachingReviewCard({ teachingReview }) {
 			<div className="progress mb-3" style={{ height: '5px' }}>
 				<div
 					className={`progress-bar ${getProgressBarColor(
-						convertToPercentage(teachingReview.course_difficulty)
+						convertToPercentage(review?.course_difficulty)
 					)}`}
 					role="progressbar"
 					style={{
-						width: `${convertToPercentage(teachingReview.course_difficulty)}%`,
+						width: `${convertToPercentage(review?.course_difficulty)}%`,
 					}}
-					aria-valuenow={teachingReview.course_difficulty}
+					aria-valuenow={review?.course_difficulty}
 					aria-valuemin="0"
 					aria-valuemax="100"
 				></div>
@@ -70,13 +69,13 @@ export default function TeachingReviewCard({ teachingReview }) {
 			<div className="progress mb-3" style={{ height: '5px' }}>
 				<div
 					className={`progress-bar ${getProgressBarColor(
-						convertToPercentage(teachingReview.course_activities)
+						convertToPercentage(review?.course_activities)
 					)}`}
 					role="progressbar"
 					style={{
-						width: `${convertToPercentage(teachingReview.course_activities)}%`,
+						width: `${convertToPercentage(review?.course_activities)}%`,
 					}}
-					aria-valuenow={teachingReview.course_activities}
+					aria-valuenow={review?.course_activities}
 					aria-valuemin="0"
 					aria-valuemax="100"
 				></div>
@@ -85,17 +84,19 @@ export default function TeachingReviewCard({ teachingReview }) {
 			<div className="progress" style={{ height: '5px' }}>
 				<div
 					className={`progress-bar ${getProgressBarColor(
-						convertToPercentage(teachingReview.examination_method)
+						convertToPercentage(review?.examination_method)
 					)}`}
 					role="progressbar"
 					style={{
-						width: `${convertToPercentage(teachingReview.examination_method)}%`,
+						width: `${convertToPercentage(review?.examination_method)}%`,
 					}}
-					aria-valuenow={teachingReview.examination_method}
+					aria-valuenow={review?.examination_method}
 					aria-valuemin="0"
 					aria-valuemax="100"
 				></div>
 			</div>
 		</>
 	);
-}
+};
+
+export default TeachingReviewCard;

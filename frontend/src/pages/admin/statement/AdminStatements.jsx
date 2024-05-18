@@ -3,7 +3,7 @@ import { Row, Col, Modal, ModalBody, ModalHeader } from 'reactstrap';
 import useAssessmentIsAvailable from '../../../hooks/user/useAssessmentIsAvailable';
 import useAdminStatements from '../../../hooks/admin/useAdminStatements';
 import useModal from '../../../hooks/generic/useModal';
-import StatementCard from '../../../components/course/cards/StatementCard';
+import StatementCard from '../../../components/statement/cards/StatementCard';
 import CurrentSemester from '../../../components/boilerplate/CurrentSemester';
 import PreviousStatements from '../../../components/statement/PreviousStatements';
 import CurrentAssessment from '../../../components/boilerplate/CurrentAssessment';
