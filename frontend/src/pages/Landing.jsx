@@ -60,8 +60,7 @@ export default function Landing() {
 											</Row>
 											<Row className="mb-3 text-center">
 												<li>
-													your{' '}
-													<span className="text-success">academic</span>{' '}
+													your <span className="text-success">academic</span>{' '}
 													account if you are a{' '}
 													<i>
 														<small
@@ -77,8 +76,7 @@ export default function Landing() {
 													</i>
 												</li>
 												<li className="mt-1">
-													your{' '}
-													<span className="text-success">instuctor</span>{' '}
+													your <span className="text-success">instuctor</span>{' '}
 													account if you are an{' '}
 													<i>
 														<small
@@ -121,11 +119,12 @@ export default function Landing() {
 													<li>apply for semester registration</li>
 													<li>apply for academic certificates</li>
 													<li>
-														view courses, semester registrations and
-														grades
+														view courses, semester registrations and grades
 													</li>
+													<li>review and communicate with their professors</li>
 													<li>
-														review and communicate with their professors
+														submit course/reassessment statements and also
+														manage them
 													</li>
 												</Row>
 											</Row>
@@ -146,12 +145,11 @@ export default function Landing() {
 												<Row className="mt-2 text-center">
 													<li>viewing courses, teachings and students</li>
 													<li>
-														managing active teachings and course
-														examinations
+														managing active teachings and course examinations
 													</li>
 													<li>
-														uploading digital course material for
-														students to study
+														uploading digital course material for students to
+														study
 													</li>
 													<li>
 														uploading digitally signed grades for course
@@ -185,10 +183,7 @@ export default function Landing() {
 																color="success"
 																inverse
 															>
-																<CardTitle
-																	tag="h5"
-																	className="mt-2"
-																>
+																<CardTitle tag="h5" className="mt-2">
 																	Login
 																</CardTitle>
 															</Card>

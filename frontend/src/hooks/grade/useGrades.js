@@ -42,6 +42,7 @@ const useGrades = () => {
 		isEditingLabGrade,
 		editGradeId,
 		examinationType,
+		examId,
 		teachingToEditId,
 	} = useSelector((state) => state.grades);
 
@@ -107,6 +108,7 @@ const useGrades = () => {
 				grade.teaching._id === teaching._id &&
 				grade.exam.examination === examinationType &&
 				grade.exam.type === examination.type &&
+				grade.exam.examId === examination._id &&
 				grade.statement._id === statement._id
 		);
 	};
@@ -117,6 +119,7 @@ const useGrades = () => {
 				grade.teaching._id === teaching._id &&
 				grade.exam.examination === examinationType &&
 				grade.exam.type === examination.type &&
+				grade.exam.examId === examination._id &&
 				grade.statement._id === statement._id
 		);
 	};
@@ -127,6 +130,7 @@ const useGrades = () => {
 				grade.teaching._id === teaching._id &&
 				grade.exam.examination === examinationType &&
 				grade.exam.type === examination.type &&
+				grade.exam.examId === examination._id &&
 				grade.statement._id === statement._id
 		);
 	};
@@ -137,6 +141,7 @@ const useGrades = () => {
 				grade.teaching._id === teaching._id &&
 				grade.exam.examination === examinationType &&
 				grade.exam.type === examination.type &&
+				grade.exam.examId === examination._id &&
 				grade.statement._id === statement._id &&
 				grade.isFinalized
 		);
@@ -185,6 +190,7 @@ const useGrades = () => {
 		isEditingLabGrade,
 		editGradeId,
 		examinationType,
+		examId,
 		teachingToEditId,
 		setEditTheoryGrade,
 		setEditLabGrade,

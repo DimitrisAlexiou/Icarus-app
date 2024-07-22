@@ -13,26 +13,23 @@ export interface ExaminationProps {
 	lowerGradeThreshold: number;
 }
 
-export const examinationSchema = new Schema<ExaminationProps>(
-	{
-		type: {
-			type: String,
-			enum: Object.values(ExaminationType),
-			required: true,
-		},
-		weight: {
-			type: Number,
-			default: 100,
-			required: true,
-		},
-		lowerGradeThreshold: {
-			type: Number,
-			default: 5,
-			required: true,
-		},
+export const examinationSchema = new Schema<ExaminationProps>({
+	type: {
+		type: String,
+		enum: Object.values(ExaminationType),
+		required: true,
 	},
-	{ _id: false }
-);
+	weight: {
+		type: Number,
+		default: 100,
+		required: true,
+	},
+	lowerGradeThreshold: {
+		type: Number,
+		default: 5,
+		required: true,
+	},
+});
 
 export const Examination = model<ExaminationProps>(
 	'Examination',

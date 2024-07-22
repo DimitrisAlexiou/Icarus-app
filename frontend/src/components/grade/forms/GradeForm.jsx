@@ -16,6 +16,7 @@ export default function GradeForm({
 	grade,
 	type,
 	examination,
+	examId,
 	teachingId,
 	statementId,
 	userId,
@@ -37,6 +38,7 @@ export default function GradeForm({
 						exam: {
 							...grade[0].exam,
 							grade: values[type],
+							examId: examId,
 						},
 						teachingId: teachingId,
 						statementId: statementId,
@@ -54,6 +56,7 @@ export default function GradeForm({
 								isEditingTheoryGrade: false,
 								editGradeId: '',
 								examinationType: '',
+								examId: '',
 								teachingToEditId: '',
 							})
 						);
@@ -63,6 +66,7 @@ export default function GradeForm({
 								isEditingLabGrade: false,
 								editGradeId: '',
 								examinationType: '',
+								examId: '',
 								teachingToEditId: '',
 							})
 						);
@@ -71,6 +75,7 @@ export default function GradeForm({
 						type: type,
 						examination: examination,
 						grade: values[type],
+						examId: examId,
 					};
 					const gradeData = {
 						exam: examData,

@@ -70,7 +70,7 @@ export default function Reviews() {
 					</Row>
 
 					<Row className="mb-4 justify-content-center animated--grow-in">
-						<Col md="7" lg="4">
+						<Col md="8" lg="5">
 							<Link
 								style={{
 									textDecoration: 'none',
@@ -86,7 +86,7 @@ export default function Reviews() {
 								</Card>
 							</Link>
 						</Col>
-						<Col md="7" lg="4">
+						<Col className="mt-sm-0 mt-md-4 mt-lg-0 mt-xl-0 mt-4" md="8" lg="5">
 							<Link
 								style={{
 									textDecoration: 'none',
@@ -105,7 +105,7 @@ export default function Reviews() {
 					</Row>
 
 					<Row className="mb-4 justify-content-center animated--grow-in">
-						<Col md="7" lg="4" className="mb-3">
+						<Col md="8" lg="5" className="mb-3">
 							<Link
 								style={{
 									textDecoration: 'none',

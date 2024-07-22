@@ -101,6 +101,7 @@ export const gradeSchema = Joi.object({
 	exam: Joi.object({
 		type: Joi.string().required(),
 		examination: Joi.string().required(),
+		examId: Joi.string().required(),
 		grade: Joi.number().min(0).max(10).required(),
 	}).required(),
 	teachingId: Joi.string().required(),

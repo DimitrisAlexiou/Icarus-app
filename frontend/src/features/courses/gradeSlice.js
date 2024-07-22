@@ -32,6 +32,7 @@ const initialState = {
 	isEditingLabGrade: false,
 	editGradeId: '',
 	examinationType: '',
+	examId: '',
 	teachingToEditId: '',
 };
 
@@ -339,7 +340,10 @@ export const gradeSlice = createSlice({
 			})
 			.addCase(getStudentRecentGrades.rejected, (state, { payload }) => {
 				state.isLoading = false;
-				if (payload !== 'Seems like there are no recent grades submitted.')
+				if (
+					payload !== 'Seems like there are no recent grades submitted.' &&
+					payload !== `Seems like you haven't submitted a course statement yet.`
+				)
 					displayErrorNotification(payload);
 			})
 			.addCase(getStudentOverallGrades.pending, (state) => {

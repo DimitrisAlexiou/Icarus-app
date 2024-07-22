@@ -18,6 +18,7 @@ export default function Grade() {
 		isEditingLabGrade,
 		editGradeId,
 		examinationType,
+		examId,
 		teachingToEditId,
 		isTheoryInstructor,
 		isLabInstructor,
@@ -78,6 +79,7 @@ export default function Grade() {
 								isEditingLabGrade={isEditingLabGrade}
 								editGradeId={editGradeId}
 								examinationType={examinationType}
+								examId={examId}
 								teachingToEditId={teachingToEditId}
 								isTheoryInstructor={isTheoryInstructor}
 								isLabInstructor={isLabInstructor}

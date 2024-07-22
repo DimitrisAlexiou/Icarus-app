@@ -32,33 +32,33 @@ const useAdminStatements = () => {
 	const isVaccineStatement = (stmt) => stmt.type === AssessmentType.Vaccine;
 
 	const isStatementSubmitted = statements.some(
-		(stmt) => stmt.semester._id === semester._id && !isVaccineStatement(stmt)
+		(stmt) => stmt?.semester?._id === semester?._id && !isVaccineStatement(stmt)
 	);
 
 	const isVaccineSubmitted = statements.some(
-		(stmt) => stmt.semester._id === semester._id && isVaccineStatement(stmt)
+		(stmt) => stmt?.semester?._id === semester?._id && isVaccineStatement(stmt)
 	);
 
 	const currentStatement = statements.find(
-		(stmt) => stmt.semester._id === semester._id && !isVaccineStatement(stmt)
+		(stmt) => stmt?.semester?._id === semester?._id && !isVaccineStatement(stmt)
 	);
 
 	const currentVaccine = statements.find(
-		(stmt) => stmt.semester._id === semester._id && isVaccineStatement(stmt)
+		(stmt) => stmt?.semester?._id === semester?._id && isVaccineStatement(stmt)
 	);
 
 	const getPreviousStatements = () => {
 		const previousAssessments = statements.filter(
-			(stmt) => stmt._id === currentStatement?._id && !isVaccineStatement(stmt)
+			(stmt) => stmt?._id === currentStatement?._id && !isVaccineStatement(stmt)
 		);
 		const previousVaccines = statements.filter(
-			(stmt) => stmt._id === currentVaccine?._id && isVaccineStatement(stmt)
+			(stmt) => stmt?._id === currentVaccine?._id && isVaccineStatement(stmt)
 		);
 		return [...previousAssessments, ...previousVaccines];
 	};
 
 	const availableTeachings = teachings.filter(
-		(teaching) => teaching.semester._id === semester._id
+		(teaching) => teaching?.semester?._id === semester?._id
 	);
 
 	const studentPassedTeachings = student ? student.passedTeachings : [];
@@ -80,7 +80,7 @@ const useAdminStatements = () => {
 
 			// Check if the student has already passed the teachings that has no prerequisites defined
 			const passedTeachingWithoutPrerequisites = passedTeachings.includes(
-				teaching._id
+				teaching?._id
 			);
 
 			return (
@@ -98,7 +98,7 @@ const useAdminStatements = () => {
 	const filterTeachingsForVaccine = (availableTeachings, passedTeachings) => {
 		return availableTeachings.filter((teaching) => {
 			// Check if the student has already passed the teaching
-			const passedTeaching = passedTeachings.includes(teaching._id);
+			const passedTeaching = passedTeachings.includes(teaching?._id);
 
 			return passedTeaching;
 		});
@@ -119,7 +119,7 @@ const useAdminStatements = () => {
 		finalizeAlert(
 			'Finalize Course Statement?',
 			'Your current course statement will be finalized if accept!',
-			() => dispatch(finalizeStatement(statement._id))
+			() => dispatch(finalizeStatement(statement?._id))
 		);
 	};
 

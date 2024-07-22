@@ -61,14 +61,14 @@ export default function PreviousStatements({
 											}}
 											className="text-light-cornflower-blue mb-2"
 										>
-											{statement.semester.type}{' '}
-											{statement.semester.academicYear}
+											{statement?.semester?.type}{' '}
+											{statement?.semester?.academicYear}
 										</CardTitle>
 									</Col>
 									<Col xs="auto" className="text-right">
 										<small
 											className={
-												statement.type.includes(AssessmentType.Assessment)
+												statement?.type.includes(AssessmentType.Assessment)
 													? 'text-success'
 													: 'text-warning'
 											}
@@ -78,7 +78,7 @@ export default function PreviousStatements({
 												fontSize: 12,
 											}}
 										>
-											{statement.type}
+											{statement?.type}
 										</small>
 									</Col>
 								</Row>
@@ -101,7 +101,7 @@ export default function PreviousStatements({
 											fontSize: 13,
 										}}
 									>
-										{statement.teaching.length}
+										{statement?.teaching.length}
 									</small>
 								</CardText>
 							</>

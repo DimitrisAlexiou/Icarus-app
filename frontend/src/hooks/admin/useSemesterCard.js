@@ -40,7 +40,7 @@ const useSemesterCard = () => {
 		const isSpringStart =
 			startDate.getMonth() + 1 === 2 && startDate.getDate() === 1;
 		const isSpringEnd =
-			endDate.getMonth() + 1 === 5 && endDate.getDate() === 31;
+			endDate.getMonth() + 1 === 8 && endDate.getDate() === 31;
 
 		return (
 			semester.academicYear === `${academicYearStart}-${academicYearEnd}` &&

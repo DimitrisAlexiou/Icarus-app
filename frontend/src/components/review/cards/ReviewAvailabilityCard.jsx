@@ -28,7 +28,7 @@ const ReviewAvailabilityCard = ({
 								<>
 									Available to submit until{' '}
 									<small
-										className="pill-label"
+										className="pill-label text-success"
 										style={{
 											textAlign: 'justify',
 											fontWeight: '700',
@@ -42,7 +42,7 @@ const ReviewAvailabilityCard = ({
 								<>
 									Submission ended on{' '}
 									<small
-										className="pill-label"
+										className="pill-label text-warning"
 										style={{
 											textAlign: 'justify',
 											fontWeight: '700',
@@ -56,7 +56,7 @@ const ReviewAvailabilityCard = ({
 								<>
 									Submission starts on{' '}
 									<small
-										className="pill-label"
+										className="pill-label text-info"
 										style={{
 											textAlign: 'justify',
 											fontWeight: '700',

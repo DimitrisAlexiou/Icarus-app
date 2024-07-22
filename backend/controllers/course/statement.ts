@@ -357,9 +357,9 @@ export const viewStatementsInGradingWindow = tryCatch(
 
 		const currentDate = new Date();
 		const canBeGradedStatements = statements.filter((statement) => {
-			const semester: any = statement.semester;
-			const endDate = new Date(semester.endDate);
-			const gradingWeeks = semester.grading;
+			const semester: any = statement?.semester;
+			const endDate = new Date(semester?.endDate);
+			const gradingWeeks = semester?.grading;
 			const { gradingEndDate } = calculateGradingWindow(endDate, gradingWeeks);
 
 			//? Maybe make the canBeGradedStatements to be visible between the semester end date

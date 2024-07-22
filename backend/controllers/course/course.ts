@@ -295,20 +295,23 @@ export const activateCourse = async (
 			labGradeRetentionYears = 4;
 		}
 
+		const academicYear = getCurrentAcademicYear(new Date());
+		const currentSemester = await getSemesterByTypeAndAcademicYear(
+			activatedCourse.semester,
+			academicYear
+		);
+
 		teaching = await getTeachingByCourseId(id);
 
-		if (teaching) {
-			teaching = await updateTeachingById(teaching._id.toString(), {
-				...teaching.toObject(),
-				isDeleted: false,
-			});
-		} else {
-			const academicYear = getCurrentAcademicYear(new Date());
-			const semester = await getSemesterByTypeAndAcademicYear(
-				activatedCourse.semester,
-				academicYear
-			);
+		if (teaching && !teaching.isDeleted) {
+			const teachingSemester = teaching.semester._id.toString();
 
+			if (teachingSemester === currentSemester._id.toString())
+				teaching = await updateTeachingById(teaching._id.toString(), {
+					...teaching.toObject(),
+					isDeleted: false,
+				});
+		} else {
 			teaching = await createTeaching(
 				{
 					labWeight,
@@ -318,7 +321,7 @@ export const activateCourse = async (
 					theoryGradeThreshold,
 					labGradeThreshold,
 					course: new mongoose.Types.ObjectId(activatedCourse._id),
-					semester: new mongoose.Types.ObjectId(semester._id),
+					semester: new mongoose.Types.ObjectId(currentSemester._id),
 					directories: [],
 					isDeleted: false,
 				},

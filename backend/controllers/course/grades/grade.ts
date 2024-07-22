@@ -458,6 +458,7 @@ export const addTeachingGrade = tryCatch(
 		const existingGrade = await getSubmittedGrade(
 			exam.type,
 			exam.examination,
+			new mongoose.Types.ObjectId(exam.examId),
 			teachingId,
 			statementId
 		);
@@ -495,7 +496,7 @@ export const updateGrade = tryCatch(
 	async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
 		const { exam, ...grade } = req.body;
 
-		if (!exam || !exam.grade)
+		if (!exam || !exam.grade || !exam.examId)
 			throw new CustomError('Please provide a grade.', 400);
 
 		const { id } = req.params;
@@ -504,6 +505,7 @@ export const updateGrade = tryCatch(
 				type: exam.type,
 				examination: exam.examination,
 				grade: exam.grade,
+				examId: new mongoose.Types.ObjectId(exam.examId),
 			},
 			...grade,
 		});

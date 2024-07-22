@@ -147,17 +147,17 @@ export default function Teachings() {
 		{
 			name: 'course',
 			label: 'Course Title',
-			render: (teaching) => teaching.course.title,
+			render: (teaching) => teaching?.course?.title,
 		},
 		{
 			name: 'courseId',
 			label: 'Course ID',
-			render: (teaching) => teaching.course.courseId,
+			render: (teaching) => teaching?.course?.courseId,
 		},
 		{
 			name: 'semester',
 			label: 'Semester',
-			render: (teaching) => teaching.semester.type,
+			render: (teaching) => teaching?.semester?.type,
 		},
 		{
 			name: 'actions',
@@ -169,7 +169,7 @@ export default function Teachings() {
 							className="btn btn-light"
 							onClick={(e) => {
 								e.stopPropagation();
-								dispatch(setEditTeaching({ editTeachingId: teaching._id }));
+								dispatch(setEditTeaching({ editTeachingId: teaching?._id }));
 								setCurrentTeaching(teaching);
 								setModal(true);
 							}}
@@ -183,7 +183,7 @@ export default function Teachings() {
 							onClick={(e) => {
 								e.stopPropagation();
 								dispatch(
-									setEditTeachingGrading({ editTeachingId: teaching._id })
+									setEditTeachingGrading({ editTeachingId: teaching?._id })
 								);
 								setCurrentTeaching(teaching);
 								setModalGrading(true);

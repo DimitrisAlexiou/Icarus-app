@@ -22,6 +22,7 @@ const GradeCard = ({
 	isEditingLabGrade,
 	editGradeId,
 	examinationType,
+	examId,
 	teachingToEditId,
 	isTheoryInstructor,
 	isLabInstructor,
@@ -93,6 +94,7 @@ const GradeCard = ({
 																	isEditingTheoryGrade: false,
 																	editGradeId: '',
 																	examinationType: '',
+																	examId: '',
 																	teachingToEditId: '',
 																})
 															)
@@ -137,11 +139,13 @@ const GradeCard = ({
 													<Col xs="9">
 														{isEditingTheoryGrade &&
 														examinationType === examination.type &&
+														examId === examination._id &&
 														teachingToEditId === teaching._id ? (
 															<GradeForm
 																grade={filterGrade}
 																examination={Examination.Theory}
 																type={examination.type}
+																examId={examination._id}
 																teachingId={teaching._id}
 																statementId={statement._id}
 																userId={user.user._id}
@@ -166,6 +170,7 @@ const GradeCard = ({
 															<GradeForm
 																examination={Examination.Theory}
 																type={examination.type}
+																examId={examination._id}
 																teachingId={teaching._id}
 																statementId={statement._id}
 																userId={user.user._id}
@@ -192,6 +197,7 @@ const GradeCard = ({
 																						isEditingTheoryGrade: true,
 																						editGradeId: findGrade?._id,
 																						examinationType: examination.type,
+																						examId: examination._id,
 																						teachingToEditId: teaching._id,
 																					})
 																				);
@@ -314,6 +320,7 @@ const GradeCard = ({
 																	isEditingLabGrade: false,
 																	editGradeId: '',
 																	examinationType: '',
+																	examId: '',
 																	teachingToEditId: '',
 																})
 															)
@@ -358,11 +365,13 @@ const GradeCard = ({
 													<Col xs="9">
 														{isEditingLabGrade &&
 														examinationType === examination.type &&
+														examId === examination._id &&
 														teachingToEditId === teaching._id ? (
 															<GradeForm
 																grade={filterGrade}
 																examination={Examination.Lab}
 																type={examination.type}
+																examId={examination._id}
 																teachingId={teaching._id}
 																statementId={statement._id}
 																userId={user.user._id}
@@ -387,6 +396,7 @@ const GradeCard = ({
 															<GradeForm
 																examination={Examination.Lab}
 																type={examination.type}
+																examId={examination._id}
 																teachingId={teaching._id}
 																statementId={statement._id}
 																userId={user.user._id}
@@ -413,6 +423,7 @@ const GradeCard = ({
 																						isEditingLabGrade: true,
 																						editGradeId: findGrade?._id,
 																						examinationType: examination.type,
+																						examId: examination._id,
 																						teachingToEditId: teaching._id,
 																					})
 																				);

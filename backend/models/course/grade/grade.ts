@@ -11,6 +11,7 @@ interface ExamType {
 	type: string;
 	examination: Examination;
 	grade: number;
+	examId: mongoose.Types.ObjectId;
 }
 
 interface Statement {
@@ -43,6 +44,11 @@ const gradeSchema = new Schema<GradeProps>(
 				type: String,
 				enum: Object.values(Examination),
 				required: true,
+			},
+			examId: {
+				type: Schema.Types.ObjectId,
+				required: true,
+				ref: 'Examination',
 			},
 			grade: {
 				type: Number,
@@ -210,12 +216,14 @@ export const getGradeById = (id: string) =>
 export const getSubmittedGrade = (
 	examType: string,
 	examination: string,
+	examId: mongoose.Types.ObjectId,
 	teachingId: string,
 	statementId: string
 ) =>
 	Grade.findOne({
 		'exam.type': examType,
 		'exam.examination': examination,
+		'exam.examId': examId,
 		teaching: teachingId,
 		statement: statementId,
 	}).populate('teaching statement');

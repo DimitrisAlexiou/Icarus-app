@@ -96,10 +96,6 @@ export const getInstructorAnnouncements = (userId: string) =>
 			select: 'title',
 		},
 	});
-export const deleteInstructorAnnouncements = (
-	userId: string,
-	session: ClientSession
-) => Announcement.deleteMany({ owner: userId }).session(session);
 export const getTeachingAnnouncements = (teachingId: string) =>
 	Announcement.find({ teaching: teachingId })
 		.populate({
@@ -124,10 +120,14 @@ export const updateAnnouncementById = (
 			select: 'title',
 		},
 	});
-export const deleteAnnouncement = (id: string) =>
-	Announcement.findByIdAndDelete(id);
+export const deleteInstructorAnnouncements = (
+	userId: string,
+	session: ClientSession
+) => Announcement.deleteMany({ owner: userId }).session(session);
 export const deleteTeachingAnnouncements = (
 	teachingId: string,
 	session: ClientSession
 ) => Announcement.deleteMany({ teaching: teachingId }).session(session);
+export const deleteAnnouncement = (id: string) =>
+	Announcement.findByIdAndDelete(id);
 export const deleteAnnouncements = () => Announcement.deleteMany();

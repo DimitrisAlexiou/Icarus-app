@@ -53,7 +53,7 @@ export default function FooterLanding() {
 												style={{ fontSize: '0.9rem' }}
 												icon={faCode}
 											/>
-											Developed
+											Developed by Dimitris Alexiou
 										</span>
 									</a>
 								</NavItem>
