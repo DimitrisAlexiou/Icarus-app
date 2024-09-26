@@ -117,7 +117,7 @@ export default function CourseForm({
 					semester: course ? course.semester : '',
 					ects: course ? course.ects : 0,
 					year: course ? course.year : '',
-					cycle: course ? course.cycle : '',
+					cycle: course && course.cycle ? course.cycle.cycle : '',
 					master: course ? course.master : '',
 					prerequisites: course ? course.prerequisites : [],
 				}}
@@ -138,7 +138,11 @@ export default function CourseForm({
 						semester: values.semester,
 						ects: values.ects,
 						year: values.year,
-						cycle: values.cycle ? values.cycle : null,
+						cycle: values.cycle
+							? typeof values.cycle === 'string'
+								? values.cycle
+								: values.cycle.cycle
+							: null,
 						master: values.master ? values.master : null,
 						prerequisites: values.prerequisites.some(Boolean)
 							? values.prerequisites

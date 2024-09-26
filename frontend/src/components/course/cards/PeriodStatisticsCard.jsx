@@ -147,7 +147,7 @@ export default function PeriodStatisticsCard({
 										/>
 										Degree Average
 									</h6>
-									<span className="text-secondary">6.31(dummy)</span>
+									<span className="text-secondary">0.0</span>
 								</Col>
 							</Row>
 						</li>

@@ -209,7 +209,7 @@ export default function CoursesCard({
 										/>
 										Weighted Grade Average
 									</h6>
-									<span className="text-secondary">6.31(dummy)</span>
+									<span className="text-secondary">0.0</span>
 								</Col>
 								<small
 									className="text-muted"

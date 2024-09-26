@@ -19,7 +19,7 @@ export default function ProfileProgressCard({
 						aria-valuemax="100"
 					></div>
 				</div>
-				<p>Closed Cycles(dummy)</p>
+				<p>Closed Cycles</p>
 				<div className="progress mb-3" style={{ height: '5px' }}>
 					<div
 						className="progress-bar bg-danger"

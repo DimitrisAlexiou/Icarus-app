@@ -153,7 +153,9 @@ export default function ReviewForm({ reviewType }) {
 				<Row className="justify-content-center animated--grow-in">
 					<Col sm="12" md="10" lg="8" xl="8">
 						<div className="card shadow mb-4">
-							<FormHeader title="Leave your review" />
+							<FormHeader
+								title={`Leave your review for '${selectedTeaching.course.title}'`}
+							/>
 							<div className="card-body">
 								{isLoading ? (
 									<Spinner card />
